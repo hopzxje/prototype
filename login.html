@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Đăng nhập Hệ thống</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center p-4 font-sans text-slate-100">
+
+  <div class="max-w-md w-full space-y-6">
+
+    <!-- Brand Header -->
+    <div class="text-center space-y-2">
+      <div class="inline-flex w-12 h-12 rounded-xl bg-teal-600 items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-teal-500/30">
+        S
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-white">StayHub Living</h1>
+      <p class="text-xs text-slate-400">Hệ Thống Quản Lý Chuỗi Nhà Trọ & Căn Hộ Cho Thuê Hiện Đại</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 shadow-2xl backdrop-blur-md space-y-5">
+      <div>
+        <h2 class="text-base font-bold text-white">Trải nghiệm Nhanh với 4 Vai Trò</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Chọn một vai trò bên dưới để đăng nhập ngay mà không cần mật khẩu:</p>
+      </div>
+
+      <!-- Quick Role Selection Grid -->
+      <div class="space-y-2.5">
+        <button onclick="loginAs('MANAGER')" class="w-full flex items-center justify-between p-3 rounded-xl bg-slate-700/70 hover:bg-teal-700/80 border border-slate-600/60 hover:border-teal-500 transition-all text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center group-hover:bg-white group-hover:text-teal-700 transition-colors">
+              <i data-lucide="user-check" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="font-bold text-xs text-white">Quản Lý Cơ Sở (Manager)</p>
+              <p class="text-[11px] text-slate-400">Trần Minh Đức • QL 3 cơ sở, hợp đồng, hóa đơn</p>
+            </div>
+          </div>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+        </button>
+
+        <button onclick="loginAs('STAFF')" class="w-full flex items-center justify-between p-3 rounded-xl bg-slate-700/70 hover:bg-teal-700/80 border border-slate-600/60 hover:border-teal-500 transition-all text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center group-hover:bg-white group-hover:text-teal-700 transition-colors">
+              <i data-lucide="wrench" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="font-bold text-xs text-white">Nhân Viên Vận Hành (Staff)</p>
+              <p class="text-[11px] text-slate-400">Phạm Tuấn Anh • Ghi điện nước, sửa chữa, khách thăm</p>
+            </div>
+          </div>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+        </button>
+
+        <button onclick="loginAs('RESIDENT')" class="w-full flex items-center justify-between p-3 rounded-xl bg-slate-700/70 hover:bg-teal-700/80 border border-slate-600/60 hover:border-teal-500 transition-all text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:bg-white group-hover:text-teal-700 transition-colors">
+              <i data-lucide="home" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="font-bold text-xs text-white">Cư Dân Căn Hộ (Resident)</p>
+              <p class="text-[11px] text-slate-400">Lê Văn An • Xem phòng P201, thanh toán VietQR, báo hỏng</p>
+            </div>
+          </div>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+        </button>
+
+        <button onclick="loginAs('ADMIN')" class="w-full flex items-center justify-between p-3 rounded-xl bg-slate-700/70 hover:bg-teal-700/80 border border-slate-600/60 hover:border-teal-500 transition-all text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:bg-white group-hover:text-teal-700 transition-colors">
+              <i data-lucide="shield" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="font-bold text-xs text-white">Quản Trị Hệ Thống (Admin)</p>
+              <p class="text-[11px] text-slate-400">Nguyễn Hoàng Nam • Quản trị tài khoản, kiểm toán, cấu hình</p>
+            </div>
+          </div>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+        </button>
+      </div>
+
+      <div class="pt-2 border-t border-slate-700/60 text-center text-[11px] text-slate-400">
+        Bản mẫu HTML Prototype độc lập • Không cần cấu hình Server
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    lucide.createIcons();
+
+    function loginAs(role) {
+      DataStore.setRole(role);
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

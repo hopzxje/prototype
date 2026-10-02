@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Giám sát & Nhật ký Kiểm toán</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Giám sát Hệ thống & Nhật ký Kiểm toán (Audit Logs)</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Lưu vết toàn bộ hoạt động đăng nhập, sửa đổi dữ liệu phòng, lập hóa đơn và đối soát thanh toán</p>
+          </div>
+          <button onclick="showToast('Xuất file nhật ký kiểm toán CSV thành công')" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-semibold shadow-sm transition-colors">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Xuất Nhật Ký CSV</span>
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">Thời Gian</th>
+                  <th class="p-3.5">Người Thực Hiện</th>
+                  <th class="p-3.5">Vai Trò</th>
+                  <th class="p-3.5">Hành Động</th>
+                  <th class="p-3.5">Thực Thể</th>
+                  <th class="p-3.5">Chi Tiết Thao Tác</th>
+                  <th class="p-3.5 font-mono">Địa Chỉ IP</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 font-medium">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3.5 font-mono text-slate-400">02/10/2026 09:24:12</td>
+                  <td class="p-3.5 font-bold text-slate-900">SePay Webhook</td>
+                  <td class="p-3.5"><span class="badge badge-neutral">SYSTEM</span></td>
+                  <td class="p-3.5 font-bold text-emerald-600">GẠCH NỢ TỰ ĐỘNG</td>
+                  <td class="p-3.5">Hóa đơn INV-2026-10-P201</td>
+                  <td class="p-3.5">Khớp mã chuyển khoản MB Bank +9.445.000 ₫</td>
+                  <td class="p-3.5 font-mono">118.69.182.4</td>
+                </tr>
+
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3.5 font-mono text-slate-400">02/10/2026 08:30:00</td>
+                  <td class="p-3.5 font-bold text-slate-900">Trần Minh Đức</td>
+                  <td class="p-3.5"><span class="badge badge-info">MANAGER</span></td>
+                  <td class="p-3.5 font-bold text-teal-700">LẬP HÓA ĐƠN</td>
+                  <td class="p-3.5">Kỳ thu tháng 10/2026</td>
+                  <td class="p-3.5">Tính toán chỉ số điện nước 12 phòng tại Ba Đình</td>
+                  <td class="p-3.5 font-mono">14.161.22.89</td>
+                </tr>
+
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3.5 font-mono text-slate-400">02/10/2026 07:15:22</td>
+                  <td class="p-3.5 font-bold text-slate-900">Lê Văn An</td>
+                  <td class="p-3.5"><span class="badge badge-success">RESIDENT</span></td>
+                  <td class="p-3.5 font-bold text-amber-600">BÁO SỰ CỐ</td>
+                  <td class="p-3.5">Phòng P201</td>
+                  <td class="p-3.5">Tạo phiếu báo hỏng vòi sen rỉ nước chân ren</td>
+                  <td class="p-3.5 font-mono">27.72.101.55</td>
+                </tr>
+
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3.5 font-mono text-slate-400">01/10/2026 14:35:10</td>
+                  <td class="p-3.5 font-bold text-slate-900">Phạm Tuấn Anh</td>
+                  <td class="p-3.5"><span class="badge badge-neutral">STAFF</span></td>
+                  <td class="p-3.5 font-bold text-blue-600">TIẾP NHẬN BẢO TRÌ</td>
+                  <td class="p-3.5">Phòng P202</td>
+                  <td class="p-3.5">Chuyển trạng thái yêu cầu điều hòa sang đang xử lý</td>
+                  <td class="p-3.5 font-mono">14.161.22.89</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSidebar('audit-logs.html');
+      renderTopbar('Giám sát & Nhật ký Kiểm toán', 'Hệ thống / Audit Logs');
+    });
+  </script>
+</body>
+</html>

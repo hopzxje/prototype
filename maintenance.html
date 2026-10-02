@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Quản lý Sửa chữa & Báo hỏng</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Bảng Kanban Quản lý Sửa chữa & Sự cố</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Tiếp nhận sự cố từ cư dân, phân công kỹ thuật viên và theo dõi tiến độ xử lý</p>
+          </div>
+          <button onclick="openModal('createMaintenanceModal')" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Tạo Yêu Cầu Sửa Chữa</span>
+          </button>
+        </div>
+
+        <!-- Kanban Columns -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <!-- Column 1: Chờ tiếp nhận -->
+          <div class="bg-slate-100/70 p-4 rounded-xl border border-slate-200 flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <h3 class="font-bold text-slate-900 text-sm">Chờ Tiếp Nhận</h3>
+              </div>
+              <span id="badge-pending-count" class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full font-bold text-xs">1</span>
+            </div>
+            <div id="col-pending" class="space-y-3 flex-1 overflow-y-auto">
+              <!-- Ticket 1 -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover-lift">
+                <div class="flex items-center justify-between">
+                  <span class="badge badge-warning text-[10px]">P201 • Central</span>
+                  <span class="text-[11px] text-slate-400">07:15 hôm nay</span>
+                </div>
+                <h4 class="font-bold text-slate-900 text-sm mt-2">Vòi sen tắm bị rỉ nước ở chân ren</h4>
+                <p class="text-xs text-slate-500 mt-1">Chân ren vòi tắm rỉ nước giọt giọt liên tục gây ồn vào ban đêm.</p>
+                <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span class="text-slate-500 font-medium">Bởi: Lê Văn An</span>
+                  <button onclick="moveTicket('IN_PROGRESS')" class="px-2.5 py-1 bg-teal-50 text-teal-700 font-semibold rounded hover:bg-teal-100">Tiếp nhận &rarr;</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Đang xử lý -->
+          <div class="bg-slate-100/70 p-4 rounded-xl border border-slate-200 flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                <h3 class="font-bold text-slate-900 text-sm">Đang Xử Lý</h3>
+              </div>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full font-bold text-xs">1</span>
+            </div>
+            <div id="col-progress" class="space-y-3 flex-1 overflow-y-auto">
+              <!-- Ticket 2 -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover-lift">
+                <div class="flex items-center justify-between">
+                  <span class="badge badge-danger text-[10px]">P202 • Khẩn cấp</span>
+                  <span class="text-[11px] text-slate-400">Hôm qua</span>
+                </div>
+                <h4 class="font-bold text-slate-900 text-sm mt-2">Điều hòa Daikin không phả hơi lạnh</h4>
+                <p class="text-xs text-slate-500 mt-1">Bật 18 độ nhưng chỉ có gió thường, đang nạp gas R32.</p>
+                <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span class="text-teal-700 font-semibold">🔧 KT Tuấn Anh</span>
+                  <button onclick="moveTicket('RESOLVED')" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold rounded hover:bg-emerald-100">Xong &rarr;</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: Đã hoàn thành -->
+          <div class="bg-slate-100/70 p-4 rounded-xl border border-slate-200 flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <h3 class="font-bold text-slate-900 text-sm">Đã Hoàn Thành</h3>
+              </div>
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-bold text-xs">1</span>
+            </div>
+            <div id="col-resolved" class="space-y-3 flex-1 overflow-y-auto">
+              <!-- Ticket 3 -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover-lift opacity-90">
+                <div class="flex items-center justify-between">
+                  <span class="badge badge-success text-[10px]">P104 • Đã nghiệm thu</span>
+                  <span class="text-[11px] text-slate-400">28/09</span>
+                </div>
+                <h4 class="font-bold text-slate-900 text-sm mt-2">Khóa cửa vân tay báo pin yếu</h4>
+                <p class="text-xs text-slate-500 mt-1">Đã thay 4 viên pin Energizer AA mới, hoạt động bình thường.</p>
+                <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-slate-400">
+                  Hoàn tất bởi: Phạm Tuấn Anh
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: Tạo yêu cầu sửa chữa -->
+  <div id="createMaintenanceModal" class="modal-backdrop">
+    <div class="modal-content p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="text-lg font-bold text-slate-900">Báo Hỏng & Yêu Cầu Sửa Chữa</h3>
+        <button onclick="closeModal('createMaintenanceModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateTicket(event)" class="mt-4 space-y-4 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Phòng gặp sự cố <span class="text-red-500">*</span></label>
+            <input type="text" id="ticket-room" value="P201" required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Mức độ ưu tiên</label>
+            <select id="ticket-priority" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+              <option value="MEDIUM">Bình thường</option>
+              <option value="HIGH">Khẩn cấp (Điện, nước, khóa)</option>
+              <option value="LOW">Thấp (Chờ bảo dưỡng)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Tiêu đề sự cố <span class="text-red-500">*</span></label>
+          <input type="text" id="ticket-title" placeholder="VD: Đèn trần phòng khách bị chập chờn..." required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Mô tả chi tiết</label>
+          <textarea id="ticket-desc" rows="3" placeholder="Mô tả hiện tượng và thời gian thuận tiện để kỹ thuật vào phòng..." class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5"></textarea>
+        </div>
+
+        <div class="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+          <button type="button" onclick="closeModal('createMaintenanceModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-[#0F766E] text-white rounded-lg font-semibold hover:bg-[#115E59]">Gửi Yêu Cầu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function moveTicket(targetCol) {
+      showToast(`Đã chuyển trạng thái yêu cầu sang: ${targetCol === 'IN_PROGRESS' ? 'Đang xử lý' : 'Đã hoàn thành'}`);
+    }
+
+    function handleCreateTicket(e) {
+      e.preventDefault();
+      const title = document.getElementById('ticket-title').value.trim();
+      const room = document.getElementById('ticket-room').value.trim();
+      closeModal('createMaintenanceModal');
+      showToast(`Đã ghi nhận yêu cầu sửa chữa "${title}" cho phòng ${room}!`);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSidebar('maintenance.html');
+      renderTopbar('Quản lý Sửa chữa & Báo hỏng', 'Vận hành / Bảo trì');
+    });
+  </script>
+</body>
+</html>

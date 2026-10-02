@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Thông báo & Zalo ZNS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Trung Tâm Thông Báo & Gửi Tin Zalo ZNS</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Phát thông báo nội bộ tới cư dân hoặc gửi tin nhắn chăm sóc tự động qua Zalo OA</p>
+          </div>
+          <button onclick="openModal('createNotifModal')" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Soạn Thông Báo Mới</span>
+          </button>
+        </div>
+
+        <!-- Notification List -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="bell" class="w-5 h-5 text-teal-600"></i>
+              <h3 class="font-bold text-slate-900 text-sm">Thông Báo Gần Đây</h3>
+            </div>
+            <span class="badge badge-info text-xs">3 tin mới phát</span>
+          </div>
+
+          <div class="divide-y divide-slate-100">
+            <!-- Item 1 -->
+            <div class="p-4 hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-warning text-[10px]">Bảo trì định kỳ</span>
+                <span class="text-xs text-slate-400">01/10/2026 09:00</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm mt-1">Thông báo bảo dưỡng định kỳ hệ thống thang máy và máy bơm nước</h4>
+              <p class="text-xs text-slate-500 mt-1">Ban quản lý sẽ tiến hành bảo dưỡng toàn bộ hệ thống kỹ thuật từ 13:30 - 15:30 chiều Thứ Bảy. Thang máy sẽ tạm ngưng trong khoảng 30 phút.</p>
+              <div class="mt-2 text-[11px] text-slate-400 flex items-center gap-2">
+                <span>Phạm vi: Toàn bộ 3 cơ sở</span> • <span>Đã gửi qua: In-App & Zalo ZNS</span>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="p-4 hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success text-[10px]">Hóa đơn thu phí</span>
+                <span class="text-xs text-slate-400">01/10/2026 08:00</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm mt-1">Phát hành thông báo tiền phòng & điện nước tháng 10/2026</h4>
+              <p class="text-xs text-slate-500 mt-1">Hóa đơn kỳ thu phí tháng 10/2026 đã sẵn sàng. Quý cư dân vui lòng kiểm tra và quét mã VietQR để thanh toán trước ngày 05/10/2026.</p>
+              <div class="mt-2 text-[11px] text-slate-400 flex items-center gap-2">
+                <span>Phạm vi: Cư dân đang thuê</span> • <span>Đã gửi qua: Zalo ZNS</span>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="p-4 hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-danger text-[10px]">An toàn PCCC</span>
+                <span class="text-xs text-slate-400">25/09/2026 14:00</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm mt-1">Nhắc nhở kiểm tra ngắt điện khi ra khỏi phòng và quy định PCCC</h4>
+              <p class="text-xs text-slate-500 mt-1">Nghiêm cấm để bếp điện cắm qua đêm hoặc cắm sạc xe điện trong phòng trọ không đúng nơi quy định.</p>
+              <div class="mt-2 text-[11px] text-slate-400 flex items-center gap-2">
+                <span>Phạm vi: Tất cả cư dân</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: Soạn thông báo -->
+  <div id="createNotifModal" class="modal-backdrop">
+    <div class="modal-content p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="text-lg font-bold text-slate-900">Soạn & Phát Thông Báo</h3>
+        <button onclick="closeModal('createNotifModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSendNotif(event)" class="mt-4 space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Tiêu đề thông báo <span class="text-red-500">*</span></label>
+          <input type="text" id="notif-title" placeholder="VD: Lịch vệ sinh bể nước ngầm..." required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Danh mục</label>
+            <select id="notif-cat" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+              <option value="MAINTENANCE">Bảo trì & Sửa chữa</option>
+              <option value="INVOICE">Hóa đơn & Tiền phòng</option>
+              <option value="SECURITY">An ninh & Nội quy</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Kênh gửi</label>
+            <select id="notif-channel" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+              <option value="BOTH">Cả Ứng dụng & Zalo ZNS</option>
+              <option value="APP">Chỉ trên ứng dụng</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Nội dung chi tiết <span class="text-red-500">*</span></label>
+          <textarea id="notif-content" rows="4" placeholder="Nhập nội dung đầy đủ gửi đến cư dân..." required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5"></textarea>
+        </div>
+
+        <div class="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+          <button type="button" onclick="closeModal('createNotifModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-[#0F766E] text-white rounded-lg font-semibold hover:bg-[#115E59]">Phát Thông Báo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function handleSendNotif(e) {
+      e.preventDefault();
+      const title = document.getElementById('notif-title').value.trim();
+      closeModal('createNotifModal');
+      showToast(`Đã phát thông báo "${title}" thành công tới cư dân!`);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSidebar('notifications.html');
+      renderTopbar('Thông báo & Zalo ZNS', 'Truyền thông / Thông báo');
+    });
+  </script>
+</body>
+</html>
