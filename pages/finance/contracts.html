@@ -62,7 +62,7 @@
             <p class="text-xs text-slate-500 mt-0.5">Theo dõi thời hạn, tiền cọc, thông tin pháp lý cư dân và tự động
               cảnh báo hết hạn</p>
           </div>
-          <!-- Nút Tạo hợp đồng mới (Chỉ Staff mới có quyền thao tác) -->
+          <!-- Nút Tạo hợp đồng mới -->
           <div id="contract-top-action-container">
             <!-- Rendered by checkContractRoleAccess() -->
           </div>
@@ -408,44 +408,31 @@
   <script data-stayhub-page="contracts.html">
     let currentContractDraft = null;
 
-    // Kiểm tra quyền: Chỉ STAFF mới được tạo hợp đồng mới
+    // Kiểm tra quyền và hiển thị nút Tạo Hợp Đồng Mới
     function checkContractRoleAccess() {
       const role = DataStore.getRole();
       const container = document.getElementById('contract-top-action-container');
       if (!container) return;
 
-      if (role === 'STAFF') {
-        container.innerHTML = `
-          <button onclick="openCreateContractModal()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors cursor-pointer">
-            <i data-lucide="plus-circle" class="w-4 h-4"></i>
-            <span>Tạo Hợp Đồng Mới</span>
-          </button>
-        `;
-      } else {
-        container.innerHTML = `
-          <div class="flex items-center gap-2">
-            <button onclick="handleNonStaffContractClick()" class="flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-semibold border border-slate-200 transition-colors shadow-xs" title="Chỉ nhân viên vận hành (Staff) mới có quyền tạo hợp đồng mới">
-              <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-600"></i>
-              <span>Tạo Hợp Đồng (Chỉ dành cho Staff)</span>
-            </button>
-          </div>
-        `;
+      if (role === 'RESIDENT') {
+        container.innerHTML = '';
+        return;
       }
+
+      container.innerHTML = `
+        <button onclick="openCreateContractModal()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors cursor-pointer">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Tạo Hợp Đồng Mới</span>
+        </button>
+      `;
       lucide.createIcons();
     }
 
-    // Xử lý khi tài khoản không phải Staff bấm vào nút tạo hợp đồng
-    function handleNonStaffContractClick() {
-      const role = DataStore.getRole();
-      showToast(`⚠️ Quyền hạn bị từ chối: Tài khoản vai trò [${role}] không có quyền tạo hợp đồng mới. Vui lòng chuyển vai trò sang [Kỹ thuật / Staff (Tuấn Anh)] trên thanh Demo để thao tác!`, 'error');
-    }
-
-    // Mở Modal Tạo Hợp Đồng Mới (Guard role = STAFF)
-    // Mở Modal Tạo Hợp Đồng Mới (Guard role = STAFF)
+    // Mở Modal Tạo Hợp Đồng Mới
     function openCreateContractModal() {
       const role = DataStore.getRole();
-      if (role !== 'STAFF') {
-        handleNonStaffContractClick();
+      if (role === 'RESIDENT') {
+        showToast('Tài khoản cư dân không có quyền tạo hợp đồng.', 'error');
         return;
       }
 
