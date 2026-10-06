@@ -128,7 +128,7 @@ function renderSidebar(activePage = 'index.html') {
   } else if (role === 'RESIDENT') {
     navItems = [
       { href: 'index.html', icon: 'home', label: 'Căn hộ P201 của tôi' },
-      { href: 'invoices.html', icon: 'receipt', label: 'Hóa đơn & Tiền phòng' },
+      { href: 'resident-invoices.html', icon: 'receipt', label: 'Hóa đơn hàng tháng' },
       { href: 'maintenance.html', icon: 'wrench', label: 'Báo hỏng & Sửa chữa' },
       { href: 'visitors.html', icon: 'user-check', label: 'Đăng ký Khách thăm' },
       { href: 'notifications.html', icon: 'bell', label: 'Thông báo BQL' },

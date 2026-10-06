@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hóa đơn hàng tháng · StayHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/resident-invoices.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans resident-billing">
+  <a class="billing-skip" href="#billing-main">Đến danh sách hóa đơn</a>
+  <div id="demo-role-bar"></div>
+  <div class="flex-1 flex overflow-hidden">
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0"></aside>
+    <main id="billing-main" class="flex-1 flex flex-col min-w-0 overflow-y-auto" tabindex="-1">
+      <header id="app-topbar"></header>
+      <div class="billing-mobile-nav"><a href="index.html">← Căn hộ của tôi</a><a href="#history">Lịch sử thanh toán</a></div>
+      <div class="billing-page">
+        <div class="billing-heading">
+          <div><p class="billing-eyebrow">KHÔNG GIAN CƯ DÂN</p><h2>Hóa đơn hàng tháng</h2><p id="billing-resident" class="billing-muted"></p></div>
+          <a class="billing-button billing-secondary" href="#history">Lịch sử thanh toán ↗</a>
+        </div>
+        <p class="billing-demo-note">Bản trải nghiệm · QR và kết quả thanh toán được mô phỏng, không chuyển tiền thật.</p>
+        <div id="billing-summary" class="billing-summary"></div>
+        <div id="billing-reminder"></div>
+        <section class="billing-card" aria-labelledby="invoices-heading">
+          <div class="billing-section-heading"><div><h3 id="invoices-heading">Hóa đơn của bạn</h3><p class="billing-muted">Kiểm tra các khoản phí và thanh toán theo từng kỳ.</p></div></div>
+          <div class="billing-filters">
+            <label>Kỳ hóa đơn<select id="billing-month"><option value="ALL">Tất cả các kỳ</option></select></label>
+            <label>Trạng thái<select id="billing-status"><option value="ALL">Tất cả trạng thái</option><option value="UNPAID">Chưa thanh toán</option><option value="PAID">Đã thanh toán</option></select></label>
+            <p id="billing-count" class="billing-muted" aria-live="polite"></p>
+          </div>
+          <div class="billing-table-scroll"><table class="billing-table"><thead><tr><th>Kỳ / Mã hóa đơn</th><th>Hạn thanh toán</th><th>Tổng tiền</th><th>Trạng thái</th><th><span class="billing-sr-only">Thao tác</span></th></tr></thead><tbody id="billing-invoices"></tbody></table></div>
+        </section>
+        <section id="history" class="billing-card" aria-labelledby="history-heading">
+          <div class="billing-section-heading"><div><h3 id="history-heading">Lịch sử thanh toán</h3><p class="billing-muted">Mỗi lần thử được lưu riêng, kể cả khi chưa thành công.</p></div><span id="billing-history-count" class="billing-pill"></span></div>
+          <div class="billing-table-scroll"><table class="billing-table"><thead><tr><th>Giao dịch / Hóa đơn</th><th>Thời gian</th><th>Số tiền</th><th>Kết quả</th><th><span class="billing-sr-only">Chi tiết</span></th></tr></thead><tbody id="billing-history"></tbody></table></div>
+        </section>
+        <p class="billing-help">Cần kiểm tra khoản thu? Liên hệ ban quản lý: <a href="tel:0912345678">0912 345 678</a>.</p>
+      </div>
+    </main>
+  </div>
+  <dialog id="billing-dialog" aria-labelledby="billing-dialog-title">
+    <div class="billing-dialog-header"><div><p class="billing-eyebrow">STAYHUB · HÓA ĐƠN CƯ DÂN</p><h2 id="billing-dialog-title" tabindex="-1">Chi tiết hóa đơn</h2></div><button class="billing-close" type="button" data-action="close" aria-label="Đóng chi tiết hóa đơn">×</button></div>
+    <ol id="billing-steps" class="billing-steps" aria-label="Các bước thanh toán"></ol>
+    <p id="billing-error" class="billing-error" role="alert" hidden></p>
+    <div id="billing-dialog-body"></div>
+    <div id="billing-dialog-actions" class="billing-dialog-actions"></div>
+  </dialog>
+  <script src="js/data.js"></script>
+  <script>
+    // This is a resident demo entry point, including links from the older static portal.
+    if (DataStore.getRole() !== 'RESIDENT') DataStore.setRole('RESIDENT');
+  </script>
+  <script src="js/app.js"></script>
+  <script src="js/invoice-payment-state.js"></script>
+  <script src="js/resident-invoices.js"></script>
+</body>
+</html>

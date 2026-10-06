@@ -218,6 +218,10 @@
   </div>
 
   <script src="js/data.js"></script>
+  <script>
+    // Resident links from older pages still open the resident payment workspace.
+    if (DataStore.getRole() === 'RESIDENT') window.location.replace('resident-invoices.html');
+  </script>
   <script src="js/app.js"></script>
   <script>
     let activeInvoiceId = null;

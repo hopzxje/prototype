@@ -1,4 +1,7 @@
-/** Optional authoring helper. Outputs plain HTML; never loaded by a browser. */
+/** Legacy snapshot authoring helper; regenerates index.html and invoices.html.
+ * Do not run against the integrated app without reviewing those overwritten pages.
+ * Never loaded by a browser.
+ */
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
@@ -32,6 +35,14 @@ function filters(states, label = 'Trạng thái') {
   return `<div role="group" aria-label="${label}">${options.map(([s])=>`<input class="filter-radio" type="radio" id="filter-${s}" name="status"${s==='all'?' checked':''}>`).join('')}<div class="filter-tabs">${options.map(([s,t])=>`<label for="filter-${s}">${t}</label>`).join('')}</div></div>`;
 }
 function write(file, title, body) {
+  // Resident snapshots enter the shared, persistent monthly payment flow.
+  if (/^resident-(?:dashboard|apartment|notifications|profile)(?:-(?:paid|retry))?\.html$/.test(file)) {
+    body = body.replace(/href="((?:invoices?|payment)(?:-[a-z0-9]+)*\.html)"/g,
+      (_, href) => `href="resident-invoices.html${href.startsWith('payment-history') ? '#history' : ''}"`);
+  }
+  if (file === 'login.html') {
+    body += `<script src="js/data.js"></script><script>document.querySelector('form').addEventListener('submit', () => { DataStore.setRole('RESIDENT'); });</script>`;
+  }
   pages.add(file);
   fs.writeFileSync(path.join(root,file), `<!DOCTYPE html>
 <html lang="vi">

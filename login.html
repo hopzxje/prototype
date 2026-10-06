@@ -109,5 +109,11 @@
         </div>
       </section>
     </main>
+    <script src="js/data.js"></script>
+    <script>
+      document.querySelector('form').addEventListener('submit', () => {
+        DataStore.setRole('RESIDENT');
+      });
+    </script>
   </body>
 </html>

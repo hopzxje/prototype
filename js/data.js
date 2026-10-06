@@ -98,6 +98,7 @@ const INITIAL_CONTRACTS = [
 const INITIAL_INVOICES = [
   {
     id: 'inv-1001',
+    residentId: 'usr-res-1',
     code: 'INV-2026-10-P201',
     month: '10/2026',
     room: 'P201',
@@ -195,6 +196,67 @@ const INITIAL_INVOICES = [
     status: 'UNPAID',
     paymentDate: null,
     method: null
+  }
+];
+
+// Demo monthly bills for the resident payment flow. Existing stored bills are
+// never replaced by these examples, including their payment attempts/history.
+const RESIDENT_DEMO_INVOICES = [
+  {
+    id: 'inv-res-2026-09',
+    residentId: 'usr-res-1',
+    isDemo: true,
+    code: 'INV-2026-09-P201',
+    month: '09/2026',
+    dueDate: '2026-09-05',
+    room: 'P201',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    rent: 8500000,
+    elecOld: 1080,
+    elecNew: 1240,
+    elecUnits: 160,
+    elecRate: 3500,
+    elecTotal: 560000,
+    waterOld: 78,
+    waterNew: 85,
+    waterUnits: 7,
+    waterRate: 25000,
+    waterTotal: 175000,
+    serviceFee: 150000,
+    total: 9385000,
+    status: 'UNPAID',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-res-2026-08',
+    residentId: 'usr-res-1',
+    isDemo: true,
+    code: 'INV-2026-08-P201',
+    month: '08/2026',
+    dueDate: '2026-08-05',
+    room: 'P201',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    rent: 8500000,
+    elecOld: 930,
+    elecNew: 1080,
+    elecUnits: 150,
+    elecRate: 3500,
+    elecTotal: 525000,
+    waterOld: 71,
+    waterNew: 78,
+    waterUnits: 7,
+    waterRate: 25000,
+    waterTotal: 175000,
+    serviceFee: 150000,
+    total: 9350000,
+    status: 'PAID',
+    paymentDate: '2026-08-03 09:15',
+    method: 'VietQR SePay (demo)'
   }
 ];
 
@@ -429,6 +491,7 @@ const DataStore = {
     if (!localStorage.getItem(STORAGE_KEYS.INVOICES)) {
       localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(INITIAL_INVOICES));
     }
+    this.migrateResidentDemoInvoices();
     if (!localStorage.getItem(STORAGE_KEYS.MAINTENANCE)) {
       localStorage.setItem(STORAGE_KEYS.MAINTENANCE, JSON.stringify(INITIAL_MAINTENANCE));
     }
@@ -487,6 +550,37 @@ const DataStore = {
 
   getInvoices() {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.INVOICES) || '[]');
+  },
+
+  isResidentInvoice(invoice, user = DataStore.getUser()) {
+    if (!invoice || !user || user.role !== 'RESIDENT') return false;
+    if (invoice.residentId) return Boolean(user.id) && invoice.residentId === user.id;
+    return Boolean(user.room && user.building && user.fullName)
+      && invoice.room === user.room
+      && invoice.building === user.building
+      && invoice.tenant === user.fullName;
+  },
+
+  getResidentInvoices(user = DataStore.getUser()) {
+    return this.getInvoices().filter(invoice => this.isResidentInvoice(invoice, user));
+  },
+
+  migrateResidentDemoInvoices() {
+    const invoices = this.getInvoices();
+    let changed = false;
+    // Add the stable ID only to the known, unchanged owner of the legacy seed.
+    const legacy = invoices.find(invoice => invoice.id === 'inv-1001');
+    if (legacy && !legacy.residentId && this.isResidentInvoice(legacy, DEFAULT_USERS.RESIDENT)) {
+      legacy.residentId = DEFAULT_USERS.RESIDENT.id;
+      changed = true;
+    }
+    for (const example of RESIDENT_DEMO_INVOICES) {
+      if (!invoices.some(invoice => invoice.id === example.id)) {
+        invoices.push({ ...example });
+        changed = true;
+      }
+    }
+    if (changed) this.saveInvoices(invoices);
   },
 
   saveInvoices(invoices) {
