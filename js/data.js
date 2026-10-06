@@ -20,7 +20,8 @@ const STORAGE_KEYS = {
   SYSTEM_CONFIG: 'stayhub_system_config',
   CURRENT_BUILDING: 'stayhub_current_building',
   USERS: 'stayhub_users',
-  HANDOVER: 'stayhub_handover'
+  HANDOVER: 'stayhub_handover',
+  CONTRACT_TEMPLATE: 'stayhub_contract_template'
 };
 
 const DEFAULT_USERS = {
@@ -208,11 +209,25 @@ const INITIAL_ROOMS = [
   { id: 'rm-b3-102', buildingId: 'bld-3', roomNumber: 'P102', floor: 1, type: '1 Phòng ngủ', area: 36, price: 7200000, deposit: 7200000, status: 'OCCUPIED', tenant: 'Mai Thanh Tâm', phone: '0923344556' }
 ];
 
+const DEFAULT_CONTRACT_TEMPLATE = {
+  version: '1.0',
+  updatedAt: '2026-10-01',
+  templateName: 'Hợp Đồng Thuê Căn Hộ Dịch Vụ Chuẩn StayHub (Bản Mẫu Gốc)',
+  title: 'HỢP ĐỒNG THUÊ CĂN HỘ DỊCH VỤ / PHÒNG TRỌ',
+  purpose: '1.1 Bên A đồng ý cho Bên B thuê phòng để ở và sinh hoạt hợp pháp.\n1.2 Bên B không được phép sử dụng phòng vào mục đích kinh doanh trái phép hoặc tự ý sang nhượng cho bên thứ ba khi chưa có sự đồng ý bằng văn bản của Bên A.',
+  duration: '2.1 Thời hạn thuê được tính từ ngày bắt đầu đến ngày kết thúc thỏa thuận.\n2.2 Khi hết hạn hợp đồng, nếu Bên B có nhu cầu tiếp tục thuê thì phải thông báo cho Bên A trước ít nhất 30 ngày để làm thủ tục gia hạn hợp đồng.',
+  payment: '3.1 Giá thuê phòng chưa bao gồm chi phí dịch vụ phụ trợ (điện, nước, vệ sinh).\n3.2 Kỳ thanh toán: Hàng tháng, từ ngày 01 đến ngày đến hạn quy định. Phương thức: Quét mã chuyển khoản VietQR tự động tích hợp SePay hoặc tiền mặt.',
+  deposit: '4.1 Tiền đặt cọc được dùng để đảm bảo thực hiện nghĩa vụ hợp đồng và bảo quản tài sản.\n4.2 Bên A sẽ hoàn trả 100% tiền cọc cho Bên B sau khi trừ các chi phí phát sinh (nếu có) khi hợp đồng kết thúc đúng hạn và hai bên hoàn tất biên bản bàn giao phòng.',
+  responsibilities: '5.1 Bên A: Bàn giao phòng đúng hẹn, đảm bảo tiện ích ổn định, bảo trì sửa chữa sự cố kết cấu trong vòng 24h kể từ khi nhận phản ánh.\n5.2 Bên B: Thanh toán đúng hạn, chấp hành nội quy PCCC, giữ gìn vệ sinh chung, đăng ký tạm trú theo hướng dẫn của BQL và bồi thường thiệt hại nếu làm hỏng hóc tài sản bàn giao.',
+  termination: '6.1 Trường hợp một trong hai bên đơn phương chấm dứt hợp đồng trước hạn mà không có lý do chính đáng phải thông báo trước ít nhất 30 ngày và chịu bồi thường số tiền tương đương 01 tháng tiền thuê.\n6.2 Hợp đồng đương nhiên chấm dứt khi hết thời hạn thỏa thuận hoặc có yêu cầu giải tỏa từ cơ quan nhà nước có thẩm quyền.',
+  validity: '7.1 Hợp đồng được lập thành 02 (hai) bản có giá trị pháp lý ngang nhau, mỗi bên giữ 01 bản để thực hiện.\n7.2 Hợp đồng có hiệu lực kể từ ngày hai bên ký kết.'
+};
+
 const INITIAL_CONTRACTS = [
-  { id: 'ct-001', code: 'HD-2025-001', room: 'P201', building: 'StayHub Central - Ba Đình', tenant: 'Lê Văn An', phone: '0904445566', cccd: '001201004567', startDate: '2025-01-01', endDate: '2026-12-31', rent: 8500000, deposit: 8500000, status: 'ACTIVE' },
-  { id: 'ct-002', code: 'HD-2025-002', room: 'P101', building: 'StayHub Central - Ba Đình', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', cccd: '001200001234', startDate: '2025-02-01', endDate: '2026-02-01', rent: 6500000, deposit: 6500000, status: 'EXPIRING_SOON' },
-  { id: 'ct-003', code: 'HD-2025-003', room: 'P102', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', cccd: '001202008899', startDate: '2025-03-01', endDate: '2026-03-01', rent: 7500000, deposit: 7500000, status: 'ACTIVE' },
-  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Ba Đình', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON' }
+  { id: 'ct-001', code: 'HD-2025-001', room: 'P201', building: 'StayHub Central - Ba Đình', tenant: 'Lê Văn An', phone: '0904445566', cccd: '001201004567', startDate: '2025-01-01', endDate: '2026-12-31', rent: 8500000, deposit: 8500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-002', code: 'HD-2025-002', room: 'P101', building: 'StayHub Central - Ba Đình', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', cccd: '001200001234', startDate: '2025-02-01', endDate: '2026-02-01', rent: 6500000, deposit: 6500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-003', code: 'HD-2025-003', room: 'P102', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', cccd: '001202008899', startDate: '2025-03-01', endDate: '2026-03-01', rent: 7500000, deposit: 7500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Ba Đình', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } }
 ];
 
 const INITIAL_INVOICES = [
@@ -566,6 +581,9 @@ const DataStore = {
     if (!localStorage.getItem(STORAGE_KEYS.HANDOVER)) {
       localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(INITIAL_HANDOVER));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.CONTRACT_TEMPLATE)) {
+      localStorage.setItem(STORAGE_KEYS.CONTRACT_TEMPLATE, JSON.stringify(DEFAULT_CONTRACT_TEMPLATE));
+    }
   },
 
   resetAll() {
@@ -695,6 +713,26 @@ const DataStore = {
 
   saveContracts(contracts) {
     localStorage.setItem(STORAGE_KEYS.CONTRACTS, JSON.stringify(contracts));
+  },
+
+  getContractTemplate() {
+    const raw = localStorage.getItem(STORAGE_KEYS.CONTRACT_TEMPLATE);
+    if (!raw) return { ...DEFAULT_CONTRACT_TEMPLATE };
+    try {
+      const parsed = JSON.parse(raw);
+      return { ...DEFAULT_CONTRACT_TEMPLATE, ...parsed };
+    } catch (e) {
+      return { ...DEFAULT_CONTRACT_TEMPLATE };
+    }
+  },
+
+  saveContractTemplate(template) {
+    localStorage.setItem(STORAGE_KEYS.CONTRACT_TEMPLATE, JSON.stringify(template));
+  },
+
+  resetContractTemplate() {
+    localStorage.setItem(STORAGE_KEYS.CONTRACT_TEMPLATE, JSON.stringify(DEFAULT_CONTRACT_TEMPLATE));
+    return { ...DEFAULT_CONTRACT_TEMPLATE };
   },
 
   getInvoices() {
