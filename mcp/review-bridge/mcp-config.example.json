@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "stayhub-review-bridge": {
+      "command": "node",
+      "args": [
+        "D:/ky9/capstone/prototype/mcp/review-bridge/server.mjs"
+      ],
+      "env": {
+        "STAYHUB_WORKSPACE": "D:/ky9/capstone/prototype"
+      }
+    }
+  }
+}

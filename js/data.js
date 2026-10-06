@@ -1,7 +1,4 @@
-/**
- * StayHub Prototype - Data Store & LocalStorage Persistence
- * Contains initial seed data and helper methods to query and update state.
- */
+
 
 const STORAGE_KEYS = {
   ROLE: 'stayhub_role',
@@ -15,7 +12,8 @@ const STORAGE_KEYS = {
   MAINTENANCE: 'stayhub_maintenance',
   VISITORS: 'stayhub_visitors',
   ASSETS: 'stayhub_assets',
-  SEPAY_TXS: 'stayhub_sepay_txs'
+  SEPAY_TXS: 'stayhub_sepay_txs',
+  HANDOVER: 'stayhub_handover'
 };
 
 const DEFAULT_USERS = {
@@ -62,7 +60,6 @@ const INITIAL_BUILDINGS = [
 ];
 
 const INITIAL_ROOMS = [
-  // Building 1
   { id: 'rm-101', buildingId: 'bld-1', roomNumber: 'P101', floor: 1, type: 'Studio', area: 28, price: 6500000, deposit: 6500000, status: 'OCCUPIED', tenant: 'Nguyễn Văn Hùng', phone: '0901112233' },
   { id: 'rm-102', buildingId: 'bld-1', roomNumber: 'P102', floor: 1, type: '1 Phòng ngủ', area: 35, price: 7500000, deposit: 7500000, status: 'OCCUPIED', tenant: 'Trần Thị Thu Thảo', phone: '0902223344' },
   { id: 'rm-103', buildingId: 'bld-1', roomNumber: 'P103', floor: 1, type: 'Studio', area: 26, price: 6000000, deposit: 6000000, status: 'AVAILABLE', tenant: null, phone: null },
@@ -75,14 +72,10 @@ const INITIAL_ROOMS = [
   { id: 'rm-302', buildingId: 'bld-1', roomNumber: 'P302', floor: 3, type: 'Studio', area: 30, price: 6800000, deposit: 6800000, status: 'RESERVED', tenant: 'Bùi Thị Hà', phone: '0908889900' },
   { id: 'rm-303', buildingId: 'bld-1', roomNumber: 'P303', floor: 3, type: '1 Phòng ngủ', area: 36, price: 7800000, deposit: 7800000, status: 'OCCUPIED', tenant: 'Ngô Quốc Bảo', phone: '0909990011' },
   { id: 'rm-304', buildingId: 'bld-1', roomNumber: 'P304', floor: 3, type: 'Studio', area: 28, price: 6500000, deposit: 6500000, status: 'AVAILABLE', tenant: null, phone: null },
-
-  // Building 2
   { id: 'rm-b2-101', buildingId: 'bld-2', roomNumber: 'P101', floor: 1, type: 'View Hồ Tây', area: 35, price: 8500000, deposit: 8500000, status: 'OCCUPIED', tenant: 'Hà Kiều Oanh', phone: '0911223344' },
   { id: 'rm-b2-102', buildingId: 'bld-2', roomNumber: 'P102', floor: 1, type: 'Studio', area: 30, price: 7200000, deposit: 7200000, status: 'OCCUPIED', tenant: 'Lê Hoàng Hải', phone: '0912233445' },
   { id: 'rm-b2-201', buildingId: 'bld-2', roomNumber: 'P201', floor: 2, type: '1 PN View Hồ', area: 42, price: 9800000, deposit: 9800000, status: 'OCCUPIED', tenant: 'Đinh Tiến Đạt', phone: '0913344556' },
   { id: 'rm-b2-202', buildingId: 'bld-2', roomNumber: 'P202', floor: 2, type: 'Studio', area: 30, price: 7200000, deposit: 7200000, status: 'AVAILABLE', tenant: null, phone: null },
-
-  // Building 3
   { id: 'rm-b3-101', buildingId: 'bld-3', roomNumber: 'P101', floor: 1, type: 'Studio Hiện đại', area: 28, price: 6200000, deposit: 6200000, status: 'OCCUPIED', tenant: 'Võ Minh Thắng', phone: '0922334455' },
   { id: 'rm-b3-102', buildingId: 'bld-3', roomNumber: 'P102', floor: 1, type: '1 Phòng ngủ', area: 36, price: 7200000, deposit: 7200000, status: 'OCCUPIED', tenant: 'Mai Thanh Tâm', phone: '0923344556' }
 ];
@@ -250,7 +243,44 @@ const INITIAL_SEPAY_TXS = [
   { id: 'sp-102', txCode: 'FT26275812903411', amount: 8410000, content: 'STAYHUB INV-2026-10-P102', bank: 'Vietcombank', account: '991234567899', time: '2026-10-02 08:15:33', invoiceCode: 'INV-2026-10-P102', status: 'MATCHED' }
 ];
 
-// Initialize Data Store in localStorage
+const INITIAL_HANDOVER = {
+  status: 'NOT_SCHEDULED',
+  apartmentReady: true,
+  appointmentId: '',
+  appointmentDate: '',
+  appointmentTime: '',
+  appointmentAcceptedBy: '',
+  appointmentAcceptedAt: '',
+  note: '',
+  condition: {},
+  assets: [
+    { name: 'Điều hòa', checked: true },
+    { name: 'Tủ lạnh', checked: true },
+    { name: 'Máy giặt', checked: true },
+    { name: 'Bếp từ', checked: true },
+    { name: 'Khóa cửa thẻ từ', checked: true }
+  ],
+  electricity: '',
+  water: '',
+  keysCount: 2,
+  accessCardsCount: 2,
+  usageGuideDone: false,
+  hasIssue: false,
+  issueNote: '',
+  photos: [],
+  managerApproved: false,
+  residentApproved: false,
+  managerApprovalName: '',
+  managerApprovedAt: '',
+  residentApprovedAt: '',
+  revisionComment: '',
+  rejectedBy: '',
+  residentAgrees: null,
+  residentSignature: '',
+  staffSignature: '',
+  managerConfirmed: false
+};
+
 const DataStore = {
   init() {
     if (!localStorage.getItem(STORAGE_KEYS.ROLE)) {
@@ -278,6 +308,9 @@ const DataStore = {
     if (!localStorage.getItem(STORAGE_KEYS.SEPAY_TXS)) {
       localStorage.setItem(STORAGE_KEYS.SEPAY_TXS, JSON.stringify(INITIAL_SEPAY_TXS));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.HANDOVER)) {
+      localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(INITIAL_HANDOVER));
+    }
   },
 
   resetAll() {
@@ -299,6 +332,13 @@ const DataStore = {
       localStorage.setItem(STORAGE_KEYS.ROLE, role);
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(DEFAULT_USERS[role]));
     }
+  },
+
+  updateUser(updates) {
+    const currentUser = this.getUser();
+    const updatedUser = { ...currentUser, ...updates };
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+    return updatedUser;
   },
 
   getBuildings() {
@@ -351,8 +391,49 @@ const DataStore = {
 
   saveSepayTxs(txs) {
     localStorage.setItem(STORAGE_KEYS.SEPAY_TXS, JSON.stringify(txs));
+  },
+
+  getHandover() {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.HANDOVER) || JSON.stringify(INITIAL_HANDOVER));
+    const stored = parsed && typeof parsed === 'object' ? parsed : {};
+    const state = {
+      ...INITIAL_HANDOVER,
+      ...stored,
+      assets: Array.isArray(stored.assets) ? stored.assets : INITIAL_HANDOVER.assets.map(asset => ({ ...asset })),
+      condition: stored.condition && typeof stored.condition === 'object' ? stored.condition : {},
+      photos: Array.isArray(stored.photos) ? stored.photos : []
+    };
+    state.managerApproved ??= false;
+    state.residentApproved ??= false;
+
+    let shouldPersist = false;
+    if (['APPOINTMENT_PENDING', 'SCHEDULED'].includes(state.status) && !state.appointmentId) {
+      state.appointmentId = `apt-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+      shouldPersist = true;
+    }
+    if (state.status === 'SCHEDULED' && !state.appointmentAcceptedBy) {
+      state.status = 'APPOINTMENT_PENDING';
+      state.appointmentAcceptedAt = '';
+      shouldPersist = true;
+    }
+    if (shouldPersist) {
+      localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(state));
+    }
+
+    if (['RESIDENT_REVIEW', 'SIGNED', 'MANAGER_REVIEW'].includes(state.status) && state.photos.length === 0) {
+      state.status = 'NEEDS_REPAIR';
+      state.rejectedBy = 'Hệ thống';
+      state.revisionComment = 'Hồ sơ cũ chưa lưu ảnh hiện trạng. Nhân viên cần chụp và gửi lại hồ sơ cho cả quản lý, cư dân.';
+      state.managerApproved = false;
+      state.residentApproved = false;
+      localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(state));
+    }
+
+    return state;
+  },
+
+  saveHandover(handover) {
+    localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(handover));
   }
 };
-
-// Auto initialize on script load
 DataStore.init();

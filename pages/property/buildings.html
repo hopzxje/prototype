@@ -4,42 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StayHub - Quản lý Cơ sở & Sơ đồ phòng</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
-  <!-- Demo Role Bar -->
+  
   <div id="demo-role-bar"></div>
 
   <div class="flex-1 flex overflow-hidden">
-    <!-- Sidebar -->
-    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+    
+    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
 
-    <!-- Main Content -->
+    
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
-        <!-- Top Actions Bar -->
+        
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h2 class="text-xl font-bold text-slate-900">Sơ đồ Phòng & Trạng thái Vận hành</h2>
             <p class="text-xs text-slate-500 mt-0.5">Trực quan hóa toàn bộ số phòng theo tầng, diện tích và khách thuê thực tế</p>
           </div>
           <div class="flex items-center gap-3">
-            <button onclick="openModal('addRoomModal')" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+            <button onclick="openModal('addRoomModal')" class="flex items-center gap-2 px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
               <i data-lucide="plus-circle" class="w-4 h-4"></i>
               <span>Thêm Phòng Mới</span>
             </button>
           </div>
         </div>
 
-        <!-- Filter & Search Toolbar -->
+        
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
-          <!-- Building Switcher Tabs -->
+          
           <div class="inline-flex rounded-lg bg-slate-100 p-1 text-xs font-semibold" id="building-tabs">
             <button onclick="filterByBuilding('ALL')" class="px-3 py-1.5 rounded-md bg-white text-slate-900 shadow-sm transition-all tab-btn" data-bld="ALL">Tất cả (36)</button>
             <button onclick="filterByBuilding('bld-1')" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all tab-btn" data-bld="bld-1">Central Ba Đình (12)</button>
@@ -47,7 +46,7 @@
             <button onclick="filterByBuilding('bld-3')" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all tab-btn" data-bld="bld-3">Eco Cầu Giấy (12)</button>
           </div>
 
-          <!-- Status Filters -->
+          
           <div class="flex items-center gap-2">
             <span class="text-xs text-slate-500 font-medium">Trạng thái:</span>
             <select id="status-filter" onchange="renderRoomsGrid()" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
@@ -60,16 +59,16 @@
           </div>
         </div>
 
-        <!-- Room Cards Grid -->
+        
         <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <!-- Rendered by JS -->
+          
         </div>
 
       </div>
     </main>
   </div>
 
-  <!-- Modal: Chi tiết phòng -->
+  
   <div id="roomDetailModal" class="modal-backdrop">
     <div class="modal-content p-6">
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -101,11 +100,11 @@
               <p id="detail-room-tenant" class="font-bold text-slate-900">Nguyễn Văn Hùng</p>
               <p id="detail-room-phone" class="text-xs text-slate-500">0901112233</p>
             </div>
-            <a href="contracts.html" class="text-xs font-semibold text-teal-700 hover:underline">Xem hợp đồng &rarr;</a>
+            <a href="../finance/contracts.html" class="text-xs font-semibold text-teal-700 hover:underline">Xem hợp đồng &rarr;</a>
           </div>
         </div>
 
-        <!-- Amenities / Assets in Room -->
+        
         <div>
           <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Trang thiết bị bàn giao sẵn</h4>
           <div class="grid grid-cols-2 gap-2 text-xs">
@@ -131,12 +130,12 @@
 
       <div class="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
         <button onclick="closeModal('roomDetailModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 font-medium">Đóng</button>
-        <button onclick="showToast('Chức năng sửa thông tin phòng mở thành công'); closeModal('roomDetailModal');" class="px-4 py-2 bg-[#0F766E] text-white rounded-lg text-sm font-semibold hover:bg-[#115E59]">Sửa thông tin</button>
+        <button onclick="showToast('Chức năng sửa thông tin phòng mở thành công'); closeModal('roomDetailModal');" class="px-4 py-2 bg-[#166534] text-white rounded-lg text-sm font-semibold hover:bg-[#14532D]">Sửa thông tin</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Thêm phòng mới -->
+  
   <div id="addRoomModal" class="modal-backdrop">
     <div class="modal-content p-6">
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -188,14 +187,14 @@
 
         <div class="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
           <button type="button" onclick="closeModal('addRoomModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 font-medium">Hủy bỏ</button>
-          <button type="submit" class="px-4 py-2 bg-[#0F766E] text-white rounded-lg text-sm font-semibold hover:bg-[#115E59]">Lưu phòng mới</button>
+          <button type="submit" class="px-4 py-2 bg-[#166534] text-white rounded-lg text-sm font-semibold hover:bg-[#14532D]">Lưu phòng mới</button>
         </div>
       </form>
     </div>
   </div>
 
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
   <script>
     let currentSelectedBuilding = 'ALL';
 
