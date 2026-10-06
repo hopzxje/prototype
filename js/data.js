@@ -15,7 +15,8 @@ const STORAGE_KEYS = {
   MAINTENANCE: 'stayhub_maintenance',
   VISITORS: 'stayhub_visitors',
   ASSETS: 'stayhub_assets',
-  SEPAY_TXS: 'stayhub_sepay_txs'
+  SEPAY_TXS: 'stayhub_sepay_txs',
+  CHECKOUT: 'stayhub_checkout_requests'
 };
 
 const DEFAULT_USERS = {
@@ -250,6 +251,165 @@ const INITIAL_SEPAY_TXS = [
   { id: 'sp-102', txCode: 'FT26275812903411', amount: 8410000, content: 'STAYHUB INV-2026-10-P102', bank: 'Vietcombank', account: '991234567899', time: '2026-10-02 08:15:33', invoiceCode: 'INV-2026-10-P102', status: 'MATCHED' }
 ];
 
+const INITIAL_CHECKOUT_REQUESTS = [
+  {
+    id: 'req-01',
+    code: 'REQ-OUT-2026-0045',
+    room: 'P201',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    contractCode: 'HD-2026-001',
+    deposit: 8500000,
+    requestDate: '2026-10-05',
+    expectedDate: '2026-10-20',
+    timeslot: '14:30',
+    status: 'PENDING_APPROVAL', // Staff Phạm Tuấn Anh ĐÃ NGHIỆM THU XONG lúc 14:30 -> Chờ Quản lý duyệt quyết toán
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 1450,
+    meterElectricCurr: 1580,
+    electricRate: 3000,
+    meterWaterPrev: 60,
+    meterWaterCurr: 65,
+    waterRate: 12000,
+    damages: [
+      { item: 'Rèm cửa chống nắng', issue: 'Hư hỏng nhẹ (rách mép)', cost: 350000 }
+    ],
+    cleaningFee: 0,
+    notes: 'Kỹ thuật viên Phạm Tuấn Anh đã kiểm tra phòng lúc 14:30 ngày 20/10. Đã chốt số điện nước, lập biên bản hư hại rèm cửa và gửi dự thảo quyết toán hoàn cọc 7.700.000 ₫ trình Quản lý phê duyệt.',
+    bankAccount: { bank: 'MB Bank', accountNumber: '0904445566', accountName: 'LE VAN AN' },
+    refundAmount: 7700000,
+    isSigned: false,
+    disputeReason: null,
+    isKeyReturned: false
+  },
+  {
+    id: 'req-04',
+    code: 'REQ-OUT-2026-0049',
+    room: 'P402',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Trần Thu Trang',
+    phone: '0908889900',
+    contractCode: 'HD-2025-112',
+    deposit: 10000000,
+    requestDate: '2026-10-01',
+    expectedDate: '2026-10-18',
+    timeslot: '10:00',
+    status: 'REFUND_PENDING', // Staff đã nghiệm thu, cư dân đã ký, Staff đã thu đủ chìa khóa -> Chờ Quản lý duyệt lệnh chi UNC hoàn cọc
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 1800,
+    meterElectricCurr: 1950,
+    electricRate: 3000,
+    meterWaterPrev: 80,
+    meterWaterCurr: 85,
+    waterRate: 12000,
+    damages: [
+      { item: 'Sơn tường phòng ngủ', issue: 'Vết ố bẩn khó tẩy', cost: 290000 }
+    ],
+    cleaningFee: 0,
+    notes: 'Staff đã nghiệm thu, cư dân đã ký biên bản thanh lý và Staff đã thu đủ 02 chìa khóa cơ, 02 thẻ từ, khóa mã phòng. Chờ Quản lý phê duyệt lệnh chi hoàn cọc 9.200.000 ₫.',
+    bankAccount: { bank: 'Techcombank', accountNumber: '1903332211', accountName: 'TRAN THU TRANG' },
+    refundAmount: 9200000,
+    isSigned: true,
+    disputeReason: null,
+    isKeyReturned: true
+  },
+  {
+    id: 'req-05',
+    code: 'REQ-OUT-2026-0050',
+    room: 'P503',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Đỗ Mạnh Quân',
+    phone: '0901112233',
+    contractCode: 'HD-2025-067',
+    deposit: 9000000,
+    requestDate: '2026-10-02',
+    expectedDate: '2026-10-19',
+    timeslot: '15:00',
+    status: 'DISPUTED', // Staff đã nghiệm thu nhưng cư dân khiếu nại mức bồi thường -> Chờ Quản lý thẩm định giải quyết khiếu nại
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 2300,
+    meterElectricCurr: 2420,
+    electricRate: 3000,
+    meterWaterPrev: 95,
+    meterWaterCurr: 98,
+    waterRate: 12000,
+    damages: [
+      { item: 'Cửa kính ban công', issue: 'Vết nứt góc dưới', cost: 1200000 }
+    ],
+    cleaningFee: 0,
+    notes: 'Staff đã nghiệm thu hiện trường và ghi nhận nứt kính 1.200.000 ₫. Cư dân không đồng ý (khiếu nại kính rạn từ lúc nhận nhà, đính kèm ảnh bàn giao đầu vào). Chờ Quản lý thẩm định.',
+    bankAccount: { bank: 'VietinBank', accountNumber: '108877665544', accountName: 'DO MANH QUAN' },
+    refundAmount: 7404000,
+    isSigned: false,
+    disputeReason: 'Vết nứt kính góc ban công đã có từ thời điểm bàn giao nhà ban đầu tháng 10/2025; đã có ảnh chụp đối chiếu.',
+    isKeyReturned: false
+  },
+  {
+    id: 'req-02',
+    code: 'REQ-OUT-2026-0048',
+    room: 'P104',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Hoàng Kim Long',
+    phone: '0903334455',
+    contractCode: 'HD-2026-004',
+    deposit: 6800000,
+    requestDate: '2026-10-06',
+    expectedDate: '2026-10-22',
+    timeslot: '09:30',
+    status: 'SUBMITTED', // Cư dân mới nộp đơn -> Việc của STAFF tiếp nhận, xếp lịch và đi nghiệm thu (Quản lý không quản lý đơn này)
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 920,
+    meterElectricCurr: null,
+    electricRate: 3000,
+    meterWaterPrev: 42,
+    meterWaterCurr: null,
+    waterRate: 12000,
+    damages: [],
+    cleaningFee: 0,
+    notes: 'Chuyển công tác vào TP.HCM. Chờ nhân viên kỹ thuật tiếp nhận xếp lịch và đến phòng nghiệm thu.',
+    bankAccount: { bank: 'Vietcombank', accountNumber: '001100432198', accountName: 'HOANG KIM LONG' },
+    refundAmount: 6800000,
+    isSigned: false,
+    disputeReason: null,
+    isKeyReturned: false
+  },
+  {
+    id: 'req-03',
+    code: 'REQ-OUT-2026-0042',
+    room: 'P301',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Vũ Đức Nam',
+    phone: '0907778899',
+    contractCode: 'HD-2025-089',
+    deposit: 9500000,
+    requestDate: '2026-09-15',
+    expectedDate: '2026-09-30',
+    timeslot: '10:00',
+    status: 'CLOSED', // Đã hoàn tất thanh lý & giải ngân cọc
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 2100,
+    meterElectricCurr: 2250,
+    electricRate: 3000,
+    meterWaterPrev: 110,
+    meterWaterCurr: 115,
+    waterRate: 12000,
+    damages: [],
+    cleaningFee: 0,
+    notes: 'Đã hoàn tất bàn giao phòng và hoàn trả cọc đầy đủ qua UNC ngân hàng.',
+    bankAccount: { bank: 'Techcombank', accountNumber: '190324567890', accountName: 'VU DUC NAM' },
+    refundAmount: 8990000,
+    isSigned: true,
+    disputeReason: null,
+    isKeyReturned: true
+  }
+];
+
 // Initialize Data Store in localStorage
 const DataStore = {
   init() {
@@ -277,6 +437,10 @@ const DataStore = {
     }
     if (!localStorage.getItem(STORAGE_KEYS.SEPAY_TXS)) {
       localStorage.setItem(STORAGE_KEYS.SEPAY_TXS, JSON.stringify(INITIAL_SEPAY_TXS));
+    }
+    const currentCheckout = localStorage.getItem(STORAGE_KEYS.CHECKOUT);
+    if (!currentCheckout || JSON.parse(currentCheckout).length < 5) {
+      localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(INITIAL_CHECKOUT_REQUESTS));
     }
   },
 
@@ -351,6 +515,14 @@ const DataStore = {
 
   saveSepayTxs(txs) {
     localStorage.setItem(STORAGE_KEYS.SEPAY_TXS, JSON.stringify(txs));
+  },
+
+  getCheckoutRequests() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.CHECKOUT) || '[]');
+  },
+
+  saveCheckoutRequests(reqs) {
+    localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(reqs));
   }
 };
 

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StayHub — Prototype HTML/CSS luồng thanh toán hóa đơn hàng tháng. Dữ liệu minh họa, không thực hiện thanh toán.">
+    <title>
+      Tổng quan cư dân · StayHub
+    </title>
+    <link rel="stylesheet" href="css/payment.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Đến nội dung chính
+    </a>
+    <div class="app">
+      <aside class="sidebar">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 21V3h14v18M3 21h18M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1M10 21v-3h4v3"/>
+            </svg>
+          </span>
+          <span>
+            stayhub
+            <small>
+              LIVING, CONNECTED
+            </small>
+          </span>
+        </a>
+        <div class="property">
+          <strong>
+            Sunrise Residence
+          </strong>
+          Tòa A · Căn hộ A-1205
+        </div>
+        <div class="nav-label">
+          KHÔNG GIAN CƯ DÂN
+        </div>
+        <nav class="nav" aria-label="Điều hướng chính">
+          <a href="resident-dashboard.html" class="active" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m3 10 9-7 9 7v10H3Z"/>
+              <path d="M9 20v-8h6v8"/>
+            </svg>
+            Tổng quan
+          </a>
+          <a href="resident-apartment.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 21V3h14v18M3 21h18M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1M10 21v-3h4v3"/>
+            </svg>
+            Căn hộ của tôi
+          </a>
+          <a href="invoices.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/>
+              <path d="M9 8h6M9 12h6"/>
+            </svg>
+            Hóa đơn hàng tháng
+          </a>
+          <a href="payment-history-unpaid.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v5l3 2"/>
+            </svg>
+            Lịch sử thanh toán
+          </a>
+          <a href="resident-notifications.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 17h14l-2-4V9a5 5 0 0 0-10 0v4Zm5 3h4"/>
+            </svg>
+            Thông báo
+          </a>
+          <a href="resident-profile.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+            </svg>
+            Hồ sơ cá nhân
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="support">
+            <strong>
+              Cần hỗ trợ?
+            </strong>
+            Ban quản lý luôn sẵn sàng hỗ trợ.
+            <br>
+            028 3822 1205 · 08:00–18:00
+          </div>
+          <a href="index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 12h16m-6-6 6 6-6 6"/>
+            </svg>
+            Trung tâm prototype
+          </a>
+          <a href="login.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 4H4v16h5M9 12h12m-5-5 5 5-5 5"/>
+            </svg>
+            Đăng xuất
+          </a>
+        </div>
+      </aside>
+      <div class="workspace">
+        <header class="topbar">
+          <div class="breadcrumb">
+            Sunrise Residence
+            <span>
+              /
+            </span>
+            <strong>
+              Cổng cư dân
+            </strong>
+          </div>
+          <details class="mobile-menu">
+            <summary>
+              ☰ Menu
+            </summary>
+            <nav class="nav" aria-label="Điều hướng di động">
+              <a href="resident-dashboard.html" class="active" aria-current="page">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m3 10 9-7 9 7v10H3Z"/>
+                  <path d="M9 20v-8h6v8"/>
+                </svg>
+                Tổng quan
+              </a>
+              <a href="resident-apartment.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 21V3h14v18M3 21h18M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1M10 21v-3h4v3"/>
+                </svg>
+                Căn hộ của tôi
+              </a>
+              <a href="invoices.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/>
+                  <path d="M9 8h6M9 12h6"/>
+                </svg>
+                Hóa đơn hàng tháng
+              </a>
+              <a href="payment-history-unpaid.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v5l3 2"/>
+                </svg>
+                Lịch sử thanh toán
+              </a>
+              <a href="resident-notifications.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 17h14l-2-4V9a5 5 0 0 0-10 0v4Zm5 3h4"/>
+                </svg>
+                Thông báo
+              </a>
+              <a href="resident-profile.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+                </svg>
+                Hồ sơ cá nhân
+              </a>
+              <a href="index.html">
+                Trung tâm prototype
+              </a>
+              <a href="login.html">
+                Đăng xuất
+              </a>
+            </nav>
+          </details>
+          <div class="row">
+            <span class="small muted date-label">
+              Tháng 10, 2026
+            </span>
+            <a class="icon-button" href="resident-notifications.html" aria-label="Xem thông báo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 17h14l-2-4V9a5 5 0 0 0-10 0v4Zm5 3h4"/>
+              </svg>
+            </a>
+            <span class="avatar">
+              VA
+            </span>
+            <div>
+              <div class="user-name">
+                Nguyễn Văn An
+              </div>
+              <div class="user-role">
+                Cư dân · A-1205
+              </div>
+            </div>
+          </div>
+        </header>
+        <main class="main" id="main">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">
+                Sunrise Residence
+              </p>
+              <h1>
+                Tổng quan cư dân
+              </h1>
+              <p class="subheading">
+                Mọi thông tin về căn hộ và thanh toán, trong tầm tay.
+              </p>
+            </div>
+          </div>
+          <section class="hero">
+            <div>
+              <p class="eyebrow">
+                Căn hộ A-1205 · Tòa A
+              </p>
+              <h2>
+                Chào buổi sáng, anh An.
+              </h2>
+              <p>
+                Hóa đơn tháng 10 đã sẵn sàng. Thanh toán trước ngày 10/10 để an tâm tận hưởng cuộc sống.
+              </p>
+            </div>
+            <a class="btn " href="invoice-detail.html">
+              Xem hóa đơn →
+            </a>
+          </section>
+          <div class="stats">
+            <section class="card stat">
+              <div class="row between">
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/>
+                    <path d="M9 8h6M9 12h6"/>
+                  </svg>
+                </div>
+              </div>
+              <p class="stat-label">
+                Hóa đơn tháng 10
+              </p>
+              <div class="stat-value">
+                2.450.000 ₫
+              </div>
+              <div class="stat-foot">
+                <span class="badge unpaid">
+                  UNPAID
+                </span>
+              </div>
+            </section>
+            <section class="card stat">
+              <div class="row between">
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="15" rx="3"/>
+                    <path d="M3 9h18m-5 5h5M6 5V3h12v2"/>
+                  </svg>
+                </div>
+              </div>
+              <p class="stat-label">
+                Trạng thái thanh toán
+              </p>
+              <div class="stat-value">
+                Cần thanh toán
+              </div>
+              <div class="stat-foot">
+                Đến hạn: 10/10/2026
+              </div>
+            </section>
+            <section class="card stat">
+              <div class="row between">
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 21V3h14v18M3 21h18M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1M10 21v-3h4v3"/>
+                  </svg>
+                </div>
+              </div>
+              <p class="stat-label">
+                Căn hộ của tôi
+              </p>
+              <div class="stat-value">
+                A-1205
+              </div>
+              <div class="stat-foot">
+                Sunrise Residence · Tòa A
+              </div>
+            </section>
+            <section class="card stat">
+              <div class="row between">
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m5 12 4 4L19 6"/>
+                  </svg>
+                </div>
+              </div>
+              <p class="stat-label">
+                Thanh toán gần nhất
+              </p>
+              <div class="stat-value">
+                2.300.000 ₫
+              </div>
+              <div class="stat-foot">
+                Tháng 09/2026 · Đã thanh toán
+              </div>
+            </section>
+          </div>
+          <section class="card">
+            <header class="card-header">
+              <div>
+                <h2>
+                  Hóa đơn gần đây
+                </h2>
+                <p class="muted small">
+                  Các khoản phí dịch vụ căn hộ của bạn
+                </p>
+              </div>
+              <a class="text-link" href="invoices.html">
+                Xem tất cả →
+              </a>
+            </header>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      Mã hóa đơn
+                    </th>
+                    <th scope="col">
+                      Kỳ thu
+                    </th>
+                    <th scope="col">
+                      Ngày lập
+                    </th>
+                    <th scope="col">
+                      Hạn thanh toán
+                    </th>
+                    <th scope="col">
+                      Số tiền
+                    </th>
+                    <th scope="col">
+                      Hóa đơn
+                    </th>
+                    <th scope="col">
+                      Thao tác
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-state="unpaid">
+                    <td>
+                      <strong>
+                        INV-2026-10
+                      </strong>
+                    </td>
+                    <td>
+                      10/2026
+                    </td>
+                    <td>
+                      01/10/2026
+                    </td>
+                    <td>
+                      10/10/2026
+                    </td>
+                    <td>
+                      <strong>
+                        2.450.000 ₫
+                      </strong>
+                    </td>
+                    <td>
+                      <span class="badge unpaid">
+                        UNPAID
+                      </span>
+                    </td>
+                    <td>
+                      <a class="text-link" href="invoice-detail.html">
+                        Chi tiết
+                      </a>
+                      <a class="btn compact" href="payment.html">
+                        Thanh toán
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-state="paid">
+                    <td>
+                      <strong>
+                        INV-2026-09
+                      </strong>
+                    </td>
+                    <td>
+                      09/2026
+                    </td>
+                    <td>
+                      01/09/2026
+                    </td>
+                    <td>
+                      10/09/2026
+                    </td>
+                    <td>
+                      2.300.000 ₫
+                    </td>
+                    <td>
+                      <span class="badge paid">
+                        PAID
+                      </span>
+                    </td>
+                    <td>
+                      <a class="text-link" href="invoice-september.html">
+                        Chi tiết
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-state="paid">
+                    <td>
+                      <strong>
+                        INV-2026-08
+                      </strong>
+                    </td>
+                    <td>
+                      08/2026
+                    </td>
+                    <td>
+                      01/08/2026
+                    </td>
+                    <td>
+                      10/08/2026
+                    </td>
+                    <td>
+                      2.280.000 ₫
+                    </td>
+                    <td>
+                      <span class="badge paid">
+                        PAID
+                      </span>
+                    </td>
+                    <td>
+                      <a class="text-link" href="invoice-august.html">
+                        Chi tiết
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span>
+                3 hóa đơn · Năm 2026
+              </span>
+              <span>
+                Đơn vị: VND
+              </span>
+            </div>
+          </section>
+          <div class="grid equal section-space">
+            <section class="card">
+              <header class="card-header">
+                <h2>
+                  Thanh toán dễ dàng, minh bạch
+                </h2>
+              </header>
+              <div class="card-body">
+                <p class="muted small">
+                  Kiểm tra các khoản phí, quét QR trên ứng dụng ngân hàng và theo dõi xác nhận ngay trong tài khoản.
+                </p>
+                <div class="actions">
+                  <a class="text-link" href="payment-history-unpaid.html">
+                    Xem lịch sử thanh toán →
+                  </a>
+                </div>
+              </div>
+            </section>
+            <section class="card">
+              <header class="card-header">
+                <h2>
+                  Thông báo từ ban quản lý
+                </h2>
+              </header>
+              <div class="card-body">
+                <p class="strong">
+                  Hóa đơn dịch vụ tháng 10/2026
+                </p>
+                <p class="muted small subheading">
+                  Phát hành ngày 01/10/2026 · Hạn thanh toán 10/10/2026
+                </p>
+                <div class="actions">
+                  <a class="text-link" href="resident-notifications.html">
+                    Đọc thông báo →
+                  </a>
+                </div>
+              </div>
+            </section>
+          </div>
+          <footer class="footer">
+            <span>
+              © 2026 StayHub · Sunrise Residence
+            </span>
+            <span>
+              Prototype HTML/CSS · Dữ liệu minh họa · Không thực hiện giao dịch
+            </span>
+          </footer>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

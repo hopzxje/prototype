@@ -89,8 +89,13 @@ function renderDemoRoleBar() {
 
 function switchRole(role) {
   DataStore.setRole(role);
-  showToast(`Đã chuyển sang vai trò: ${role}`);
-  setTimeout(() => window.location.href = 'index.html', 300);
+  showToast('Đã chuyển sang vai trò: ' + role);
+  const currentPath = window.location.pathname;
+  if (currentPath.endsWith("checkout.html")) {
+    setTimeout(() => window.location.reload(), 300);
+  } else {
+    setTimeout(() => window.location.href = "index.html", 300);
+  }
 }
 
 function resetDemoData() {
@@ -146,6 +151,9 @@ function renderSidebar(activePage = 'index.html') {
       { href: 'reports.html', icon: 'bar-chart-3', label: 'Báo cáo & Thống kê' }
     ];
   }
+
+  const checkoutEntry = { href: "checkout.html", icon: "door-open", label: "Trả căn hộ & bàn giao" };
+  navItems.push(checkoutEntry);
 
   sidebar.innerHTML = `
     <!-- Brand -->

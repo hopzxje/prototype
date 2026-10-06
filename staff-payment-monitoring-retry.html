@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StayHub — Prototype HTML/CSS luồng thanh toán hóa đơn hàng tháng. Dữ liệu minh họa, không thực hiện thanh toán.">
+    <title>
+      Giao dịch thanh toán · StayHub
+    </title>
+    <link rel="stylesheet" href="css/payment.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Đến nội dung chính
+    </a>
+    <div class="app">
+      <aside class="sidebar">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 21V3h14v18M3 21h18M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1M10 21v-3h4v3"/>
+            </svg>
+          </span>
+          <span>
+            stayhub
+            <small>
+              LIVING, CONNECTED
+            </small>
+          </span>
+        </a>
+        <div class="property">
+          <strong>
+            Sunrise Residence
+          </strong>
+          Ban quản lý · Tòa A, B & C
+        </div>
+        <div class="nav-label">
+          KHÔNG GIAN VẬN HÀNH
+        </div>
+        <nav class="nav" aria-label="Điều hướng chính">
+          <a href="staff-dashboard-retry.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m3 10 9-7 9 7v10H3Z"/>
+              <path d="M9 20v-8h6v8"/>
+            </svg>
+            Tổng quan
+          </a>
+          <a href="staff-residents-retry.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+            </svg>
+            Cư dân
+          </a>
+          <a href="staff-apartments-retry.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 21V3h14v18M3 21h18M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1M10 21v-3h4v3"/>
+            </svg>
+            Căn hộ
+          </a>
+          <a href="staff-invoices-retry.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/>
+              <path d="M9 8h6M9 12h6"/>
+            </svg>
+            Hóa đơn
+          </a>
+          <a href="staff-payment-monitoring-retry.html" class="active" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="15" rx="3"/>
+              <path d="M3 9h18m-5 5h5M6 5V3h12v2"/>
+            </svg>
+            Giao dịch thanh toán
+          </a>
+          <a href="staff-reports-retry.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 3v18h17M8 16v-5m5 5V7m5 9V4"/>
+            </svg>
+            Báo cáo
+          </a>
+          <a href="staff-notifications-retry.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 17h14l-2-4V9a5 5 0 0 0-10 0v4Zm5 3h4"/>
+            </svg>
+            Thông báo
+          </a>
+          <a href="staff-settings-retry.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>
+            </svg>
+            Cài đặt
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="support">
+            <strong>
+              Cần hỗ trợ?
+            </strong>
+            Ban quản lý luôn sẵn sàng hỗ trợ.
+            <br>
+            028 3822 1205 · 08:00–18:00
+          </div>
+          <a href="index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 12h16m-6-6 6 6-6 6"/>
+            </svg>
+            Trung tâm prototype
+          </a>
+          <a href="login.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 4H4v16h5M9 12h12m-5-5 5 5-5 5"/>
+            </svg>
+            Đăng xuất
+          </a>
+        </div>
+      </aside>
+      <div class="workspace">
+        <header class="topbar">
+          <div class="breadcrumb">
+            Sunrise Residence
+            <span>
+              /
+            </span>
+            <strong>
+              Vận hành
+            </strong>
+          </div>
+          <details class="mobile-menu">
+            <summary>
+              ☰ Menu
+            </summary>
+            <nav class="nav" aria-label="Điều hướng di động">
+              <a href="staff-dashboard-retry.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m3 10 9-7 9 7v10H3Z"/>
+                  <path d="M9 20v-8h6v8"/>
+                </svg>
+                Tổng quan
+              </a>
+              <a href="staff-residents-retry.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+                </svg>
+                Cư dân
+              </a>
+              <a href="staff-apartments-retry.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 21V3h14v18M3 21h18M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1M10 21v-3h4v3"/>
+                </svg>
+                Căn hộ
+              </a>
+              <a href="staff-invoices-retry.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/>
+                  <path d="M9 8h6M9 12h6"/>
+                </svg>
+                Hóa đơn
+              </a>
+              <a href="staff-payment-monitoring-retry.html" class="active" aria-current="page">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="15" rx="3"/>
+                  <path d="M3 9h18m-5 5h5M6 5V3h12v2"/>
+                </svg>
+                Giao dịch thanh toán
+              </a>
+              <a href="staff-reports-retry.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 3v18h17M8 16v-5m5 5V7m5 9V4"/>
+                </svg>
+                Báo cáo
+              </a>
+              <a href="staff-notifications-retry.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 17h14l-2-4V9a5 5 0 0 0-10 0v4Zm5 3h4"/>
+                </svg>
+                Thông báo
+              </a>
+              <a href="staff-settings-retry.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4"/>
+                  <path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>
+                </svg>
+                Cài đặt
+              </a>
+              <a href="index.html">
+                Trung tâm prototype
+              </a>
+              <a href="login.html">
+                Đăng xuất
+              </a>
+            </nav>
+          </details>
+          <div class="row">
+            <span class="small muted date-label">
+              Tháng 10, 2026
+            </span>
+            <a class="icon-button" href="staff-notifications-retry.html" aria-label="Xem thông báo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 17h14l-2-4V9a5 5 0 0 0-10 0v4Zm5 3h4"/>
+              </svg>
+            </a>
+            <span class="avatar">
+              TA
+            </span>
+            <div>
+              <div class="user-name">
+                Phạm Tuấn Anh
+              </div>
+              <div class="user-role">
+                Nhân viên vận hành
+              </div>
+            </div>
+          </div>
+        </header>
+        <main class="main" id="main">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">
+                Quản lý thanh toán
+              </p>
+              <h1>
+                Giao dịch thanh toán
+              </h1>
+              <p class="subheading">
+                Tra cứu kết quả giao dịch và trạng thái hóa đơn liên quan.
+              </p>
+            </div>
+          </div>
+          <section class="card filter-card">
+            <header class="card-header">
+              <h2>
+                Theo dõi giao dịch
+              </h2>
+              <span class="small muted">
+                Tháng 10/2026 · Tất cả tòa nhà
+              </span>
+            </header>
+            <div class="filters">
+              <div class="field">
+                <label for="search">
+                  Tìm mã thanh toán · ô nhập minh họa
+                </label>
+                <input id="search" type="search" placeholder="Nhập mã tham chiếu thanh toán…">
+              </div>
+              <div class="field">
+                <label for="building">
+                  Tòa nhà · lựa chọn minh họa
+                </label>
+                <select id="building">
+                  <option>
+                    Tất cả tòa nhà
+                  </option>
+                  <option>
+                    Tòa A
+                  </option>
+                  <option>
+                    Tòa B
+                  </option>
+                  <option>
+                    Tòa C
+                  </option>
+                </select>
+              </div>
+            </div>
+            <p class="small muted card-body">
+              Bộ lọc trạng thái bên dưới hoạt động bằng CSS. Ô tìm kiếm và chọn tòa nhà minh họa bố cục, chưa xử lý dữ liệu.
+            </p>
+            <div role="group" aria-label="Trạng thái">
+              <input class="filter-radio" type="radio" id="filter-all" name="status" checked>
+              <input class="filter-radio" type="radio" id="filter-success" name="status">
+              <input class="filter-radio" type="radio" id="filter-failed" name="status">
+              <input class="filter-radio" type="radio" id="filter-expired" name="status">
+              <input class="filter-radio" type="radio" id="filter-pending" name="status">
+              <div class="filter-tabs">
+                <label for="filter-all">
+                  Tất cả
+                </label>
+                <label for="filter-success">
+                  Success
+                </label>
+                <label for="filter-failed">
+                  Failed
+                </label>
+                <label for="filter-expired">
+                  Expired
+                </label>
+                <label for="filter-pending">
+                  Pending
+                </label>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      Mã thanh toán
+                    </th>
+                    <th scope="col">
+                      Hóa đơn
+                    </th>
+                    <th scope="col">
+                      Cư dân
+                    </th>
+                    <th scope="col">
+                      Căn hộ
+                    </th>
+                    <th scope="col">
+                      Số tiền
+                    </th>
+                    <th scope="col">
+                      Thời gian thanh toán
+                    </th>
+                    <th scope="col">
+                      Giao dịch
+                    </th>
+                    <th scope="col">
+                      Thao tác
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-state="success">
+                    <td>
+                      <strong class="mono">
+                        PAY-202610-00126
+                      </strong>
+                    </td>
+                    <td>
+                      INV-2026-10
+                    </td>
+                    <td>
+                      Nguyễn Văn An
+                    </td>
+                    <td>
+                      A-1205
+                    </td>
+                    <td>
+                      2.450.000 ₫
+                    </td>
+                    <td>
+                      04/10/2026 14:42
+                    </td>
+                    <td>
+                      <span class="badge success">
+                        SUCCESS
+                      </span>
+                    </td>
+                    <td>
+                      <a class="text-link" href="staff-payment-detail-retry.html">
+                        Chi tiết
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-state="expired">
+                    <td>
+                      <span class="mono">
+                        PAY-202610-00124
+                      </span>
+                    </td>
+                    <td>
+                      INV-2026-10
+                    </td>
+                    <td>
+                      Nguyễn Văn An
+                    </td>
+                    <td>
+                      A-1205
+                    </td>
+                    <td>
+                      2.450.000 ₫
+                    </td>
+                    <td>
+                      —
+                      <small>
+                        Kết quả: 04/10/2026 14:10
+                      </small>
+                    </td>
+                    <td>
+                      <span class="badge expired">
+                        EXPIRED
+                      </span>
+                    </td>
+                    <td>
+                      <a class="text-link" href="staff-payment-expired-retry.html">
+                        Chi tiết
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-state="failed">
+                    <td>
+                      <span class="mono">
+                        PAY-202610-00123
+                      </span>
+                    </td>
+                    <td>
+                      INV-2026-10
+                    </td>
+                    <td>
+                      Nguyễn Văn An
+                    </td>
+                    <td>
+                      A-1205
+                    </td>
+                    <td>
+                      2.450.000 ₫
+                    </td>
+                    <td>
+                      —
+                      <small>
+                        Kết quả: 04/10/2026 13:50
+                      </small>
+                    </td>
+                    <td>
+                      <span class="badge failed">
+                        FAILED
+                      </span>
+                    </td>
+                    <td>
+                      <a class="text-link" href="staff-payment-failed-retry.html">
+                        Chi tiết
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-state="pending">
+                    <td>
+                      <span class="mono">
+                        PAY-202610-00127
+                      </span>
+                    </td>
+                    <td>
+                      INV-B0802-10
+                    </td>
+                    <td>
+                      Trần Thị Mai
+                    </td>
+                    <td>
+                      B-0802
+                    </td>
+                    <td>
+                      2.150.000 ₫
+                    </td>
+                    <td>
+                      Chưa ghi nhận
+                    </td>
+                    <td>
+                      <span class="badge pending">
+                        PENDING
+                      </span>
+                    </td>
+                    <td>
+                      <a class="text-link" href="staff-payment-pending-retry.html">
+                        Chi tiết
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span>
+                4 giao dịch mẫu
+              </span>
+              <span>
+                Dữ liệu tĩnh · Không tự làm mới
+              </span>
+            </div>
+          </section>
+          <div class="section-space">
+            <div class="notice ">
+              SUCCESS là trạng thái giao dịch. PAID là trạng thái hóa đơn. Giao dịch FAILED / EXPIRED chỉ ghi lại lần thử, không tự gạch nợ.
+            </div>
+          </div>
+          <footer class="footer">
+            <span>
+              © 2026 StayHub · Sunrise Residence
+            </span>
+            <span>
+              Prototype HTML/CSS · Dữ liệu minh họa · Không thực hiện giao dịch
+            </span>
+          </footer>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

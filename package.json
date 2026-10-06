@@ -1,0 +1,17 @@
+{
+  "name": "stayhub-prototype",
+  "version": "1.0.0",
+  "description": "StayHub - Hệ thống Quản lý Vận hành Chuỗi Nhà Trọ & Căn Hộ Cho Thuê",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "stayhub",
+    "prototype",
+    "apartment-management"
+  ],
+  "author": "",
+  "license": "ISC"
+}

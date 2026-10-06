@@ -177,9 +177,10 @@
             </td>
             <td class="p-3.5">${badge}</td>
             <td class="p-3.5 text-right">
-              <button onclick="showToast('Hợp đồng số ${ct.code} đã ký điện tử an toàn');" class="text-teal-700 font-semibold hover:underline">
-                Xem &rarr;
-              </button>
+              <div class="inline-flex items-center gap-2 justify-end">
+                <button onclick="showToast('Hợp đồng số ' + ct.code + ' đã ký điện tử an toàn');" class="text-teal-700 font-semibold hover:underline">Xem &rarr;</button>
+                <a href="checkout.html" class="px-2 py-1 bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-700 rounded text-[11px] font-semibold transition-colors">Trả phòng</a>
+              </div>
             </td>
           </tr>
         `;
