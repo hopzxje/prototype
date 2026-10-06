@@ -661,27 +661,15 @@
       const occupiedRooms = rooms.filter(r => r.status === 'OCCUPIED');
 
       if (occupiedRooms.length > 0) {
-        // Trường hợp còn phòng đang thuê: KHÔNG CHO TẮT
-        const nameEl = document.getElementById('cannot-deactivate-bld-name');
-        const countEl = document.getElementById('cannot-deactivate-count');
-        const listEl = document.getElementById('cannot-deactivate-rooms-list');
-
-        if (nameEl) nameEl.innerText = bld.name;
-        if (countEl) countEl.innerText = `${occupiedRooms.length} / ${rooms.length}`;
-        if (listEl) {
-          listEl.innerHTML = occupiedRooms.map(r => `
-            <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200">
-              <div class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                <strong class="text-slate-900 font-bold">${r.roomNumber}</strong>
-                <span class="text-slate-400">• Tầng ${r.floor} (${r.type || 'Phòng'})</span>
-              </div>
-              <span class="text-slate-600 font-medium">Khách: <strong class="text-teal-700">${r.tenant || 'Đang thuê'}</strong></span>
-            </div>
-          `).join('');
+        // Trường hợp còn phòng đang thuê: KHÔNG CHO TẮT & KHÔNG HIỂN THỊ POPUP LÊN (theo yêu cầu)
+        showToast(`⚠️ Không thể tắt cơ sở "${bld.name}": hiện đang có ${occupiedRooms.length} phòng đang thuê!`, 'error');
+        
+        // Hiệu ứng viền cảnh báo nhẹ nhàng trên nút bấm mà không bung popup
+        const toggleBtn = document.getElementById('btn-toggle-bld-status');
+        if (toggleBtn) {
+          toggleBtn.classList.add('ring-2', 'ring-rose-400');
+          setTimeout(() => toggleBtn.classList.remove('ring-2', 'ring-rose-400'), 1500);
         }
-        openModal('cannotDeactivateModal');
-        showToast(`⚠️ Không thể tắt cơ sở: còn ${occupiedRooms.length} phòng đang thuê!`, 'error');
         return;
       }
 
