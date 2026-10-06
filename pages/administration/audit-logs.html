@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Giám sát & Nhật ký Kiểm toán</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Role Bar -->
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+      <script>initStayHubShell('audit-logs.html', 'Giám sát & Nhật ký Kiểm toán', 'Hệ thống / Audit Logs');</script>
+
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>Giám sát Hệ thống & Nhật ký Kiểm toán (Audit Logs)</span>
+              <span id="log-total-badge" class="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold border border-teal-200/60">0 Sự kiện</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Lưu vết thời gian thực toàn bộ hoạt động đăng nhập, sửa đổi dữ liệu phòng, lập hóa đơn, đối soát SePay và phân quyền</p>
+          </div>
+          <button onclick="handleExportLogs()" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-700 hover:text-teal-700 hover:border-teal-300 hover:bg-teal-50/30 rounded-xl text-xs font-bold shadow-sm transition-all">
+            <i data-lucide="download" class="w-4 h-4 text-teal-600"></i>
+            <span>Xuất Nhật Ký CSV</span>
+          </button>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+          <!-- Search box -->
+          <div class="relative flex-1 max-w-md">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <input type="text" id="log-search-input" oninput="handleLogSearch(this.value)" placeholder="Tìm kiếm theo hành động, thực thể, người dùng, IP..." class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-600 transition-all">
+          </div>
+
+          <!-- Controls: Role filter & Action filter -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Role Filter Select -->
+            <div class="flex items-center gap-1.5 text-xs text-slate-600">
+              <span class="font-semibold text-slate-500">Vai trò:</span>
+              <select id="log-role-filter" onchange="handleLogRoleFilter(this.value)" class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600">
+                <option value="ALL">Tất cả vai trò</option>
+                <option value="ADMIN">ADMIN</option>
+                <option value="MANAGER">MANAGER</option>
+                <option value="STAFF">STAFF</option>
+                <option value="SYSTEM">SYSTEM (Tự động)</option>
+              </select>
+            </div>
+
+            <!-- Action Filter Select -->
+            <div class="flex items-center gap-1.5 text-xs text-slate-600">
+              <span class="font-semibold text-slate-500">Loại thao tác:</span>
+              <select id="log-action-filter" onchange="handleLogActionFilter(this.value)" class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600">
+                <option value="ALL">Tất cả thao tác</option>
+                <option value="GẠCH NỢ">Gạch nợ SePay</option>
+                <option value="HÓA ĐƠN">Hóa đơn</option>
+                <option value="TÀI KHOẢN">Tài khoản & Phân quyền</option>
+                <option value="CẤU HÌNH">Cấu hình & Tham số</option>
+                <option value="HỢP ĐỒNG">Hợp đồng thuê</option>
+              </select>
+            </div>
+
+            <button onclick="resetLogFilters()" class="text-xs font-semibold text-teal-700 hover:underline px-2 py-1">
+              Đặt lại
+            </button>
+          </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">Thời Gian</th>
+                  <th class="p-3.5">Người Thực Hiện</th>
+                  <th class="p-3.5">Vai Trò</th>
+                  <th class="p-3.5">Hành Động</th>
+                  <th class="p-3.5">Thực Thể</th>
+                  <th class="p-3.5">Chi Tiết Thao Tác</th>
+                  <th class="p-3.5 font-mono">Địa Chỉ IP</th>
+                  <th class="p-3.5 text-right">Xem</th>
+                </tr>
+              </thead>
+              <tbody id="audit-logs-body" class="divide-y divide-slate-100 font-medium">
+                <!-- Dynamic render from DataStore -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div id="log-pagination" class="p-3.5 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <span id="log-page-info">Đang hiển thị 1-10 sự kiện</span>
+            <div class="flex items-center gap-1.5" id="log-page-buttons">
+              <!-- Rendered via renderPagination() -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================================================================
+       MODAL: Chi Tiết Bản Ghi Kiểm Toán
+       =================================================================== -->
+  <div id="log-detail-modal" class="modal-overlay">
+    <div class="modal-content max-w-lg w-full p-6">
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 mb-4">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="scroll-text" class="w-5 h-5 text-[#0F766E]"></i>
+          <span>Chi Tiết Nhật Ký Kiểm Toán</span>
+        </h3>
+        <button onclick="closeModal('log-detail-modal')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 text-xs">
+        <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+          <div>
+            <span class="text-slate-400 block text-[11px]">Thời gian ghi nhận:</span>
+            <span id="modal-log-time" class="font-mono font-bold text-slate-800">--</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[11px]">Địa chỉ IP client:</span>
+            <span id="modal-log-ip" class="font-mono font-bold text-slate-800">--</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <span class="text-slate-400 block text-[11px] mb-0.5">Người thực hiện:</span>
+            <span id="modal-log-user" class="font-bold text-slate-900 text-sm">--</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[11px] mb-0.5">Vai trò hệ thống:</span>
+            <span id="modal-log-role">--</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="text-slate-400 block text-[11px] mb-0.5">Hành động & Phân hệ:</span>
+          <div class="p-2.5 rounded-lg bg-teal-50 border border-teal-100 text-teal-800 font-bold" id="modal-log-action">
+            --
+          </div>
+        </div>
+
+        <div>
+          <span class="text-slate-400 block text-[11px] mb-0.5">Thực thể bị tác động:</span>
+          <span id="modal-log-entity" class="font-semibold text-slate-900 block p-2 bg-slate-50 rounded-lg border border-slate-100">--</span>
+        </div>
+
+        <div>
+          <span class="text-slate-400 block text-[11px] mb-0.5">Nội dung chi tiết thao tác:</span>
+          <p id="modal-log-detail" class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 leading-relaxed font-normal">
+            --
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-4 mt-4 border-t border-slate-100 flex justify-end">
+        <button onclick="closeModal('log-detail-modal')" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-xs transition-colors">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script data-stayhub-page="audit-logs.html">
+    let currentLogs = [];
+    let filteredLogs = [];
+    let currentLogSearch = '';
+    let currentLogRole = 'ALL';
+    let currentLogAction = 'ALL';
+    let currentLogPage = 1;
+    const LOGS_PER_PAGE = 10;
+
+    function renderAuditLogsTable() {
+      const tbody = document.getElementById('audit-logs-body');
+      if (!tbody) return;
+
+      currentLogs = DataStore.getAuditLogs() || [];
+      if (document.getElementById('log-total-badge')) {
+        document.getElementById('log-total-badge').innerText = `${currentLogs.length} Sự kiện`;
+      }
+
+      // Apply filtering
+      filteredLogs = currentLogs.filter(log => {
+        const matchesRole = currentLogRole === 'ALL' || log.role === currentLogRole;
+        const matchesAction = currentLogAction === 'ALL' || (log.action && log.action.includes(currentLogAction));
+        
+        const s = currentLogSearch.toLowerCase();
+        const matchesSearch = !s ||
+          (log.action && log.action.toLowerCase().includes(s)) ||
+          (log.entity && log.entity.toLowerCase().includes(s)) ||
+          (log.detail && log.detail.toLowerCase().includes(s)) ||
+          (log.user && log.user.toLowerCase().includes(s)) ||
+          (log.ip && log.ip.includes(s));
+
+        return matchesRole && matchesAction && matchesSearch;
+      });
+
+      if (filteredLogs.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="p-8 text-center text-slate-400">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <i data-lucide="file-question" class="w-8 h-8 text-slate-300"></i>
+                <p class="font-medium text-xs">Không tìm thấy nhật ký kiểm toán phù hợp bộ lọc.</p>
+                <button onclick="resetLogFilters()" class="mt-1 text-xs text-[#0F766E] font-semibold hover:underline">Đặt lại bộ lọc</button>
+              </div>
+            </td>
+          </tr>
+        `;
+        renderPagination(0, 0);
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      // Pagination slice
+      const totalPages = Math.ceil(filteredLogs.length / LOGS_PER_PAGE);
+      if (currentLogPage > totalPages) currentLogPage = 1;
+      const startIndex = (currentLogPage - 1) * LOGS_PER_PAGE;
+      const endIndex = Math.min(startIndex + LOGS_PER_PAGE, filteredLogs.length);
+      const pageLogs = filteredLogs.slice(startIndex, endIndex);
+
+      tbody.innerHTML = pageLogs.map((log, idx) => {
+        let roleBadge = 'badge-neutral';
+        if (log.role === 'ADMIN') roleBadge = 'badge-warning';
+        else if (log.role === 'MANAGER') roleBadge = 'badge-info';
+        else if (log.role === 'RESIDENT') roleBadge = 'badge-success';
+        else if (log.role === 'SYSTEM') roleBadge = 'badge-success';
+
+        let actionClass = 'text-teal-700';
+        if (log.action.includes('TẠO') || log.action.includes('THÊM')) actionClass = 'text-emerald-700 font-bold';
+        else if (log.action.includes('GẠCH NỢ')) actionClass = 'text-emerald-600 font-bold';
+        else if (log.action.includes('KHÓA')) actionClass = 'text-rose-600 font-bold';
+        else if (log.action.includes('CẤP')) actionClass = 'text-amber-700 font-bold';
+        else if (log.action.includes('BẢO TRÌ')) actionClass = 'text-blue-600 font-bold';
+
+        const globalIdx = startIndex + idx;
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3.5 font-mono text-slate-600 whitespace-nowrap">${log.time}</td>
+            <td class="p-3.5 font-bold text-slate-900">${log.user}</td>
+            <td class="p-3.5"><span class="badge ${roleBadge}">${log.role}</span></td>
+            <td class="p-3.5 ${actionClass}">${log.action}</td>
+            <td class="p-3.5 font-medium text-slate-800">${log.entity}</td>
+            <td class="p-3.5 text-slate-600 max-w-xs truncate" title="${log.detail}">${log.detail}</td>
+            <td class="p-3.5 font-mono text-slate-600">${log.ip}</td>
+            <td class="p-3.5 text-right">
+              <button onclick="viewLogDetail(${globalIdx})" class="p-1.5 rounded-lg text-slate-400 hover:text-teal-700 hover:bg-teal-50 transition-colors" title="Xem chi tiết thao tác">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      renderPagination(startIndex + 1, endIndex, filteredLogs.length, totalPages);
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderPagination(start, end, total = 0, totalPages = 1) {
+      const infoEl = document.getElementById('log-page-info');
+      const btnsEl = document.getElementById('log-page-buttons');
+      if (!infoEl || !btnsEl) return;
+
+      if (total === 0) {
+        infoEl.innerText = '0 sự kiện';
+        btnsEl.innerHTML = '';
+        return;
+      }
+
+      infoEl.innerText = `Hiển thị ${start} - ${end} trên tổng số ${total} sự kiện`;
+
+      let btnsHtml = `
+        <button onclick="changeLogPage(${currentLogPage - 1})" ${currentLogPage === 1 ? 'disabled class="px-2.5 py-1 rounded border border-slate-200 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 rounded border border-slate-200 text-slate-600 hover:bg-slate-100"'} >
+          Trước
+        </button>
+      `;
+
+      for (let p = 1; p <= totalPages; p++) {
+        if (totalPages <= 7 || p === 1 || p === totalPages || Math.abs(p - currentLogPage) <= 1) {
+          btnsHtml += `
+            <button onclick="changeLogPage(${p})" class="px-2.5 py-1 rounded border ${p === currentLogPage ? 'bg-[#0F766E] text-white border-[#0F766E] font-bold' : 'border-slate-200 text-slate-600 hover:bg-slate-100'}">
+              ${p}
+            </button>
+          `;
+        } else if (p === 2 && currentLogPage > 3) {
+          btnsHtml += `<span class="px-1 text-slate-400">...</span>`;
+        } else if (p === totalPages - 1 && currentLogPage < totalPages - 2) {
+          btnsHtml += `<span class="px-1 text-slate-400">...</span>`;
+        }
+      }
+
+      btnsHtml += `
+        <button onclick="changeLogPage(${currentLogPage + 1})" ${currentLogPage === totalPages ? 'disabled class="px-2.5 py-1 rounded border border-slate-200 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 rounded border border-slate-200 text-slate-600 hover:bg-slate-100"'}>
+          Sau
+        </button>
+      `;
+
+      btnsEl.innerHTML = btnsHtml;
+    }
+
+    function changeLogPage(page) {
+      const totalPages = Math.ceil(filteredLogs.length / LOGS_PER_PAGE);
+      if (page < 1 || page > totalPages) return;
+      currentLogPage = page;
+      renderAuditLogsTable();
+    }
+
+    function handleLogSearch(term) {
+      currentLogSearch = term.trim();
+      currentLogPage = 1;
+      renderAuditLogsTable();
+    }
+
+    function handleLogRoleFilter(role) {
+      currentLogRole = role;
+      currentLogPage = 1;
+      renderAuditLogsTable();
+    }
+
+    function handleLogActionFilter(action) {
+      currentLogAction = action;
+      currentLogPage = 1;
+      renderAuditLogsTable();
+    }
+
+    function resetLogFilters() {
+      currentLogSearch = '';
+      currentLogRole = 'ALL';
+      currentLogAction = 'ALL';
+      currentLogPage = 1;
+      const sInput = document.getElementById('log-search-input');
+      const rSel = document.getElementById('log-role-filter');
+      const aSel = document.getElementById('log-action-filter');
+      if (sInput) sInput.value = '';
+      if (rSel) rSel.value = 'ALL';
+      if (aSel) aSel.value = 'ALL';
+      renderAuditLogsTable();
+    }
+
+    function viewLogDetail(index) {
+      const log = filteredLogs[index];
+      if (!log) return;
+
+      document.getElementById('modal-log-time').innerText = log.time || '--';
+      document.getElementById('modal-log-ip').innerText = log.ip || '--';
+      document.getElementById('modal-log-user').innerText = log.user || '--';
+
+      let roleBadge = 'badge-neutral';
+      if (log.role === 'ADMIN') roleBadge = 'badge-warning';
+      else if (log.role === 'MANAGER') roleBadge = 'badge-info';
+      else if (log.role === 'RESIDENT') roleBadge = 'badge-success';
+      else if (log.role === 'SYSTEM') roleBadge = 'badge-success';
+      document.getElementById('modal-log-role').innerHTML = `<span class="badge ${roleBadge}">${log.role}</span>`;
+
+      document.getElementById('modal-log-action').innerText = log.action || '--';
+      document.getElementById('modal-log-entity').innerText = log.entity || '--';
+      document.getElementById('modal-log-detail').innerText = log.detail || '--';
+
+      openModal('log-detail-modal');
+    }
+
+    function handleExportLogs() {
+      exportAuditLogsCSV(filteredLogs);
+    }
+
+    registerPage('audit-logs.html', () => {
+      renderSidebar('audit-logs.html');
+      renderTopbar('Giám sát & Nhật ký Kiểm toán', 'Hệ thống / Audit Logs');
+      renderAuditLogsTable();
+    });
+  </script>
+</body>
+</html>

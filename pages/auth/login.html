@@ -6,7 +6,7 @@
   <title>StayHub - Đăng nhập Hệ thống</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body class="bg-slate-900 min-h-screen flex items-center justify-center p-4 font-sans text-slate-100">
 
@@ -90,13 +90,13 @@
 
   </div>
 
-  <script src="js/data.js"></script>
+  <script src="../../js/data.js"></script>
   <script>
     lucide.createIcons();
 
     function loginAs(role) {
       DataStore.setRole(role);
-      window.location.href = 'index.html';
+      window.location.href = '../../index.html';
     }
   </script>
 </body>

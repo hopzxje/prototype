@@ -6,7 +6,9 @@
   <title>StayHub - Quản lý Sửa chữa & Báo hỏng</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
@@ -17,6 +19,7 @@
 
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      <script>initStayHubShell('maintenance.html', 'Quản lý Sửa chữa & Báo hỏng', 'Vận hành / Bảo trì');</script>
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
@@ -160,10 +163,7 @@
       </form>
     </div>
   </div>
-
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
-  <script>
+  <script data-stayhub-page="maintenance.html">
     function moveTicket(targetCol) {
       showToast(`Đã chuyển trạng thái yêu cầu sang: ${targetCol === 'IN_PROGRESS' ? 'Đang xử lý' : 'Đã hoàn thành'}`);
     }
@@ -172,13 +172,107 @@
       e.preventDefault();
       const title = document.getElementById('ticket-title').value.trim();
       const room = document.getElementById('ticket-room').value.trim();
+      const desc = document.getElementById('ticket-desc').value.trim();
+      const priority = document.getElementById('ticket-priority').value;
+      const currentBldId = DataStore.getCurrentBuilding();
+      const currentBld = DataStore.getBuildings().find(b => b.id === currentBldId);
+
+      const allTickets = DataStore.getMaintenance();
+      allTickets.unshift({
+        id: 'mnt-' + Date.now(),
+        buildingId: currentBldId,
+        code: 'REQ-2026-' + Math.floor(100 + Math.random() * 900),
+        room: room,
+        building: currentBld ? currentBld.name : 'StayHub Central',
+        title: title,
+        description: desc || 'Yêu cầu kiểm tra thiết bị trong phòng',
+        priority: priority,
+        status: 'PENDING',
+        requester: (DataStore.getUser() && DataStore.getUser().fullName) || 'Cư dân',
+        assignee: 'Chưa phân công',
+        createdAt: 'Vừa xong'
+      });
+      DataStore.saveMaintenance(allTickets);
+
       closeModal('createMaintenanceModal');
       showToast(`Đã ghi nhận yêu cầu sửa chữa "${title}" cho phòng ${room}!`);
+      renderMaintenanceBoard();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function renderMaintenanceBoard() {
+      const currentBldId = DataStore.getCurrentBuilding();
+      const currentBld = DataStore.getBuildings().find(b => b.id === currentBldId);
+      const bldNamePart = currentBld ? currentBld.name.split(' - ')[0] : 'StayHub Central';
+      const allTickets = DataStore.getMaintenance();
+      const filtered = allTickets.filter(t => !t.buildingId || t.buildingId === currentBldId || (t.building && t.building.includes(bldNamePart)));
+
+      const pending = filtered.filter(t => t.status === 'PENDING');
+      const inProgress = filtered.filter(t => t.status === 'IN_PROGRESS');
+      const resolved = filtered.filter(t => t.status === 'RESOLVED');
+
+      const colPending = document.getElementById('col-pending');
+      if (colPending) {
+        colPending.innerHTML = pending.length === 0 ? '<div class="p-6 text-center text-xs text-slate-400">Không có yêu cầu chờ tiếp nhận</div>' : pending.map(t => `
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover-lift">
+            <div class="flex items-center justify-between">
+              <span class="badge badge-warning text-[10px]">${t.room} • ${t.priority || 'Bình thường'}</span>
+              <span class="text-[11px] text-slate-400">${t.createdAt || 'Mới đây'}</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm mt-2">${t.title}</h4>
+            <p class="text-xs text-slate-500 mt-1">${t.description}</p>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium">Bởi: ${t.requester || 'Cư dân'}</span>
+              <button onclick="moveTicket('IN_PROGRESS')" class="px-2.5 py-1 bg-teal-50 text-teal-700 font-semibold rounded hover:bg-teal-100">Tiếp nhận &rarr;</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const colProgress = document.getElementById('col-progress');
+      if (colProgress) {
+        colProgress.innerHTML = inProgress.length === 0 ? '<div class="p-6 text-center text-xs text-slate-400">Không có yêu cầu đang xử lý</div>' : inProgress.map(t => `
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover-lift">
+            <div class="flex items-center justify-between">
+              <span class="badge badge-danger text-[10px]">${t.room} • ${t.priority === 'HIGH' ? 'Khẩn cấp' : 'Đang sửa'}</span>
+              <span class="text-[11px] text-slate-400">${t.createdAt || 'Hôm qua'}</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm mt-2">${t.title}</h4>
+            <p class="text-xs text-slate-500 mt-1">${t.description}</p>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-teal-700 font-semibold">🔧 ${t.assignee || 'Kỹ thuật'}</span>
+              <button onclick="moveTicket('RESOLVED')" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold rounded hover:bg-emerald-100">Xong &rarr;</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const colResolved = document.getElementById('col-resolved');
+      if (colResolved) {
+        colResolved.innerHTML = resolved.length === 0 ? '<div class="p-6 text-center text-xs text-slate-400">Chưa có yêu cầu hoàn thành</div>' : resolved.map(t => `
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover-lift opacity-90">
+            <div class="flex items-center justify-between">
+              <span class="badge badge-success text-[10px]">${t.room} • Đã nghiệm thu</span>
+              <span class="text-[11px] text-slate-400">${t.createdAt || '28/09'}</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm mt-2">${t.title}</h4>
+            <p class="text-xs text-slate-500 mt-1">${t.description}</p>
+            <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-slate-400">
+              Hoàn tất bởi: ${t.assignee || 'Phạm Tuấn Anh'}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      lucide.createIcons();
+    }
+
+    registerPage('maintenance.html', () => {
       renderSidebar('maintenance.html');
       renderTopbar('Quản lý Sửa chữa & Báo hỏng', 'Vận hành / Bảo trì');
+      renderMaintenanceBoard();
+      window.onFilterBuilding = function() {
+        renderMaintenanceBoard();
+      };
     });
   </script>
 </body>

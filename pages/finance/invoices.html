@@ -6,7 +6,9 @@
   <title>StayHub - Quản lý Hóa đơn & Thu phí</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
@@ -20,6 +22,7 @@
     <!-- Main Content -->
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      <script>initStayHubShell('invoices.html', 'Quản lý Hóa đơn & Thu tiền phòng', 'Tài chính / Hóa đơn');</script>
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
@@ -214,10 +217,7 @@
       </div>
     </div>
   </div>
-
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
-  <script>
+  <script data-stayhub-page="invoices.html">
     let activeInvoiceId = null;
 
     function renderInvoicesTable() {
@@ -226,10 +226,12 @@
       const invoices = DataStore.getInvoices();
       const tbody = document.getElementById('invoices-tbody');
 
+      const currentBldId = DataStore.getCurrentBuilding();
       let filtered = invoices.filter(inv => {
+        const matchBuilding = !inv.buildingId || inv.buildingId === currentBldId;
         const matchSearch = inv.room.toLowerCase().includes(search) || inv.tenant.toLowerCase().includes(search) || inv.code.toLowerCase().includes(search);
         const matchStatus = statusFilter === 'ALL' || inv.status === statusFilter;
-        return matchSearch && matchStatus;
+        return matchBuilding && matchSearch && matchStatus;
       });
 
       tbody.innerHTML = filtered.map(inv => {
@@ -342,10 +344,13 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    registerPage('invoices.html', () => {
       renderSidebar('invoices.html');
       renderTopbar('Quản lý Hóa đơn & Thu tiền phòng', 'Tài chính / Hóa đơn');
       renderInvoicesTable();
+      window.onFilterBuilding = function() {
+        renderInvoicesTable();
+      };
     });
   </script>
 </body>

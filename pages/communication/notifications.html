@@ -6,7 +6,9 @@
   <title>StayHub - Thông báo & Zalo ZNS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
@@ -17,6 +19,7 @@
 
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      <script>initStayHubShell('notifications.html', 'Thông báo & Zalo ZNS', 'Truyền thông / Thông báo');</script>
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
@@ -133,10 +136,7 @@
       </form>
     </div>
   </div>
-
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
-  <script>
+  <script data-stayhub-page="notifications.html">
     function handleSendNotif(e) {
       e.preventDefault();
       const title = document.getElementById('notif-title').value.trim();
@@ -144,7 +144,7 @@
       showToast(`Đã phát thông báo "${title}" thành công tới cư dân!`);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    registerPage('notifications.html', () => {
       renderSidebar('notifications.html');
       renderTopbar('Thông báo & Zalo ZNS', 'Truyền thông / Thông báo');
     });

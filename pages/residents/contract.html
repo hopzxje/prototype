@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Hợp đồng thuê của tôi</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/resident-contract.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+      <div id="resident-contract-view" class="resident-contract-shell"></div>
+    </main>
+  </div>
+
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    function formatContractDate(value) {
+      const parts = String(value || '').split('-');
+      return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : value;
+    }
+
+    function renderResidentContract() {
+      const view = document.getElementById('resident-contract-view');
+      const user = DataStore.getUser();
+      const contract = DataStore.getContracts().find(item => item.room === user.room && item.tenant === user.fullName);
+
+      if (!contract) {
+        view.innerHTML = `
+          <section class="resident-contract-card p-6">
+            <h1 class="text-xl font-bold text-slate-900">Chưa có hợp đồng thuê</h1>
+            <p class="text-sm text-slate-500 mt-2">Thông tin hợp đồng của căn hộ sẽ được hiển thị tại đây.</p>
+          </section>
+        `;
+        return;
+      }
+
+      view.innerHTML = `
+        <section class="resident-contract-summary">
+          <div>
+            <small>Hợp đồng hiện tại</small>
+            <h2>${contract.building}</h2>
+            <p>Căn hộ ${contract.room} · Người đứng tên ${contract.tenant}</p>
+            <span class="resident-contract-code"><i data-lucide="file-signature" class="w-3.5 h-3.5"></i>${contract.code}</span>
+          </div>
+          <span class="resident-contract-status"><i data-lucide="circle-check" class="w-4 h-4"></i> Đang hiệu lực</span>
+        </section>
+
+        <div class="resident-contract-grid">
+          <section class="resident-contract-card">
+            <div class="resident-contract-card-head"><div><span class="resident-contract-card-label">Thời hạn</span><h3>Thời gian thuê</h3></div><i data-lucide="calendar-days"></i></div>
+            <div class="resident-contract-details">
+              <div class="resident-contract-row"><span>Ngày bắt đầu</span><strong>${formatContractDate(contract.startDate)}</strong></div>
+              <div class="resident-contract-row"><span>Ngày kết thúc</span><strong>${formatContractDate(contract.endDate)}</strong></div>
+              <div class="resident-contract-row"><span>Trạng thái</span><strong class="is-accent">Đang hiệu lực</strong></div>
+            </div>
+          </section>
+
+          <section class="resident-contract-card">
+            <div class="resident-contract-card-head"><div><span class="resident-contract-card-label">Tài chính</span><h3>Khoản thuê & đặt cọc</h3></div><i data-lucide="wallet-cards"></i></div>
+            <div class="resident-contract-details">
+              <div class="resident-contract-row"><span>Tiền thuê mỗi tháng</span><strong>${formatVND(contract.rent)}</strong></div>
+              <div class="resident-contract-row"><span>Tiền đặt cọc</span><strong>${formatVND(contract.deposit)}</strong></div>
+              <div class="resident-contract-row"><span>Chu kỳ thanh toán</span><strong>Hàng tháng</strong></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="resident-contract-note"><strong>Lưu ý:</strong> Nếu cần thay đổi thông tin hoặc trao đổi về hợp đồng, bạn gửi yêu cầu trực tiếp đến ban quản lý qua mục “Yêu cầu của tôi”.</div>
+      `;
+
+      lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSidebar('resident-contract.html');
+      renderTopbar('Hợp đồng thuê của tôi', 'Cư dân / Hợp đồng');
+      renderResidentContract();
+    });
+  </script>
+</body>
+</html>
