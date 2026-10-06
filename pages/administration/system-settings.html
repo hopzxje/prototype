@@ -4,100 +4,347 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StayHub - Cấu hình Hệ thống</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
+  <!-- Role Bar -->
   <div id="demo-role-bar"></div>
 
   <div class="flex-1 flex overflow-hidden">
-    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
 
+    <!-- Main Content -->
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      <script>initStayHubShell('system-settings.html', 'Cấu hình Hệ thống', 'Hệ thống / Cài đặt');</script>
 
-      <div class="p-6 max-w-4xl w-full mx-auto space-y-6">
+      <div class="p-6 max-w-6xl w-full mx-auto space-y-6">
 
-        <div class="flex items-center justify-between">
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <h2 class="text-xl font-bold text-slate-900">Cấu hình Hệ thống & Biểu phí Tiện ích</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Thiết lập các thông số vận hành mặc định, định mức giá điện nước và thông tin ngân hàng</p>
+            <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Cấu hình Hệ thống</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Cài đặt nhận diện thương hiệu, cổng thanh toán VietQR SePay, Zalo ZNS, chính sách bảo mật và sao lưu dữ liệu toàn chuỗi</p>
           </div>
-          <button onclick="showToast('Đã lưu cấu hình hệ thống thành công!')" class="flex items-center gap-2 px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
-            <i data-lucide="save" class="w-4 h-4"></i>
-            <span>Lưu Cấu Hình</span>
-          </button>
+
+          <!-- Compact & Clean Tabs Switcher -->
+          <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto max-w-full shrink-0" id="settings-tabs">
+            <button onclick="switchTab('general')" id="tab-btn-general" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm whitespace-nowrap">
+              Chung & Thương hiệu
+            </button>
+            <button onclick="switchTab('session')" id="tab-btn-session" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 whitespace-nowrap">
+              An toàn & Phiên
+            </button>
+            <button onclick="switchTab('sepay')" id="tab-btn-sepay" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 whitespace-nowrap">
+              Cổng SePay & Ngân hàng
+            </button>
+            <button onclick="switchTab('zalo')" id="tab-btn-zalo" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 whitespace-nowrap">
+              Zalo ZNS
+            </button>
+            <button onclick="switchTab('backup')" id="tab-btn-backup" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 whitespace-nowrap">
+              Sao lưu & Khôi phục
+            </button>
+          </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6 text-xs">
-          
-          <div>
-            <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
-              <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i>
-              Biểu Phí Điện & Nước Mặc Định
-            </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- ===================================================================
+             TAB 1: CHUNG & THƯƠNG HIỆU
+             =================================================================== -->
+        <div id="tab-pane-general" class="space-y-6">
+          <form id="brandSettingsForm" onsubmit="handleSaveBrandSettings(event)" class="space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
               <div>
-                <label class="block font-semibold text-slate-700 mb-1">Đơn giá Điện (₫ / kWh)</label>
-                <input type="number" value="3500" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-900">
+                <h3 class="font-bold text-slate-900 text-sm">Cấu hình Thương hiệu & Thông tin Liên hệ</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Thông tin này hiển thị trên hóa đơn tiền phòng, thông báo Zalo, hợp đồng thuê và cổng dịch vụ cư dân</p>
               </div>
-              <div>
-                <label class="block font-semibold text-slate-700 mb-1">Đơn giá Nước (₫ / m³)</label>
-                <input type="number" value="25000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-900">
-              </div>
-              <div>
-                <label class="block font-semibold text-slate-700 mb-1">Phí Dịch vụ Tòa nhà (₫ / phòng)</label>
-                <input type="number" value="150000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-900">
-              </div>
-            </div>
-          </div>
 
-          <hr class="border-slate-200">
+              <div class="space-y-4 text-xs">
+                <!-- Row 1: Tên Thương hiệu & Slogan -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Tên Thương hiệu Chuỗi:</label>
+                    <input type="text" id="cfg-brandName" value="StayHub" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Khẩu hiệu / Slogan:</label>
+                    <input type="text" id="cfg-slogan" value="Quản lý Không gian sống & Căn hộ Dịch vụ Hiện đại" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                  </div>
+                </div>
 
-          
-          <div>
-            <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
-              <i data-lucide="landmark" class="w-4 h-4 text-teal-600"></i>
-              Thông Tin Tài Khoản Nhận Thanh Toán VietQR
-            </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label class="block font-semibold text-slate-700 mb-1">Ngân hàng</label>
-                <input type="text" value="MB Bank (Quân Đội)" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5">
-              </div>
-              <div>
-                <label class="block font-semibold text-slate-700 mb-1">Số tài khoản</label>
-                <input type="text" value="0912345678" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-mono font-bold">
-              </div>
-              <div>
-                <label class="block font-semibold text-slate-700 mb-1">Tên chủ tài khoản</label>
-                <input type="text" value="STAYHUB LIVING CO LTD" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold">
-              </div>
-            </div>
-          </div>
+                <!-- Row 2: Tên Công ty / Pháp nhân quản lý -->
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1.5">Tên Công ty / Pháp nhân quản lý:</label>
+                  <input type="text" id="cfg-companyName" value="Hệ thống Căn hộ Dịch vụ StayHub Việt Nam" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
 
-          <hr class="border-slate-200">
+                <!-- Row 3: Hotline CSKH & Email Hỗ trợ -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Hotline CSKH:</label>
+                    <input type="text" id="cfg-hotline" value="1900 8899" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Email Hỗ trợ:</label>
+                    <input type="email" id="cfg-email" value="hotro@stayhub.vn" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                  </div>
+                </div>
 
-          
-          <div>
-            <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
-              <i data-lucide="message-square" class="w-4 h-4 text-blue-500"></i>
-              Cấu Hình Kết Nối Zalo OA (ZNS)
-            </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block font-semibold text-slate-700 mb-1">Zalo OA App ID</label>
-                <input type="text" value="381920391823901" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-mono">
-              </div>
-              <div>
-                <label class="block font-semibold text-slate-700 mb-1">Trạng thái kết nối</label>
-                <div class="p-2.5 bg-emerald-50 text-emerald-800 font-semibold rounded-lg border border-emerald-200 flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  Đã xác thực Official Account
+                <!-- Row 4: Địa chỉ Trụ sở chính -->
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1.5">Địa chỉ Trụ sở chính:</label>
+                  <input type="text" id="cfg-headquarters" value="Tòa nhà StayHub Innovation, Quận 1, TP. Hồ Chí Minh" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
+
+                <!-- Row 5: Đơn vị Tiền tệ & Múi giờ Hệ thống -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Đơn vị Tiền tệ:</label>
+                    <input type="text" id="cfg-currency" value="VND" readonly class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-700 font-medium cursor-not-allowed">
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Múi giờ Hệ thống:</label>
+                    <input type="text" id="cfg-timezone" value="Asia/Ho_Chi_Minh" readonly class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-700 font-medium cursor-not-allowed">
+                  </div>
                 </div>
               </div>
             </div>
+
+            <div class="flex items-center justify-end">
+              <button type="submit" class="flex items-center gap-2 px-6 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold shadow-sm transition-colors">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>Lưu Cấu Hình Thương Hiệu</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ===================================================================
+             TAB 2: CHÍNH SÁCH AN TOÀN & PHIÊN LÀM VIỆC
+             =================================================================== -->
+        <div id="tab-pane-session" class="hidden space-y-6">
+          <form id="sessionPolicyForm" onsubmit="handleSaveSessionPolicy(event)" class="space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm">Chính sách An toàn & Phiên làm việc</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Quy định thời gian hết hạn phiên đăng nhập, số lần thử sai và chính sách lưu vết nhật ký</p>
+              </div>
+
+              <div class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Thời hạn Phiên làm việc (phút):</label>
+                    <input type="number" id="cfg-sessionTimeout" value="60" min="5" max="1440" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                    <p class="text-[11px] text-slate-400 mt-1">Tự động đăng xuất khi không hoạt động</p>
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Giới hạn Đăng nhập sai:</label>
+                    <input type="number" id="cfg-maxLoginAttempts" value="5" min="3" max="20" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                    <p class="text-[11px] text-slate-400 mt-1">Khóa tạm thời tài khoản sau số lần thử sai</p>
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5">Thời gian Lưu trữ nhật ký (ngày):</label>
+                    <input type="number" id="cfg-logRetention" value="365" min="30" max="1825" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                    <p class="text-[11px] text-slate-400 mt-1">Lưu vết phục vụ thanh tra</p>
+                  </div>
+                </div>
+
+                <!-- Checkbox: Bật Chế độ Bảo trì Hệ thống Toàn diện -->
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3 mt-4">
+                  <input type="checkbox" id="cfg-maintenanceMode" class="mt-0.5 rounded border-slate-300 text-teal-700 focus:ring-teal-500 cursor-pointer">
+                  <div>
+                    <label for="cfg-maintenanceMode" class="font-bold text-slate-900 text-xs cursor-pointer">Bật Chế độ Bảo trì Hệ thống Toàn diện (Maintenance Mode)</label>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Khi bật, chỉ có tài khoản ADMIN mới có thể đăng nhập. Các vai trò Quản lý, Nhân viên và Cư dân sẽ thấy thông báo bảo trì nâng cấp.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end">
+              <button type="submit" class="flex items-center gap-2 px-6 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold shadow-sm transition-colors">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>Lưu Chính Sách An Toàn</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ===================================================================
+             TAB 3: CỔNG SEPAY & BIỂU PHÍ
+             =================================================================== -->
+        <div id="tab-pane-sepay" class="hidden space-y-6">
+          <form id="sepaySettingsForm" onsubmit="handleSaveSepayConfig(event)" class="space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 text-xs">
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm">Cấu Hình Cổng Thanh Toán VietQR SePay & Tài Khoản Thụ Hưởng</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Tự động gạch nợ hóa đơn tiền phòng khi cư dân quét mã VietQR chuyển khoản ngân hàng</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Ngân hàng thụ hưởng</label>
+                  <input type="text" id="cfg-bankName" value="MB Bank (Quân Đội)" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-semibold focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Số tài khoản ngân hàng</label>
+                  <input type="text" id="cfg-bankAccount" value="0912345678" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-mono font-bold focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Tên chủ tài khoản</label>
+                  <input type="text" id="cfg-bankOwner" value="STAYHUB LIVING CO LTD" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-bold focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="flex items-center justify-end">
+              <button type="submit" class="flex items-center gap-2 px-6 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold shadow-sm transition-colors">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>Cập Nhật Tài Khoản Ngân Hàng</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ===================================================================
+             TAB 4: ZALO ZNS
+             =================================================================== -->
+        <div id="tab-pane-zalo" class="hidden space-y-6">
+          <form id="zaloSettingsForm" onsubmit="handleSaveZaloConfig(event)" class="space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 text-xs">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h3 class="font-bold text-slate-900 text-sm">Cấu Hình Kết Nối Zalo Official Account (ZNS)</h3>
+                  <p class="text-xs text-slate-500 mt-0.5">Tự động gửi thông báo phát hành hóa đơn, xác nhận chuyển khoản thành công và cảnh báo vận hành tới Zalo cư dân</p>
+                </div>
+                <div class="p-2 px-3 bg-emerald-50 text-emerald-800 font-semibold rounded-xl border border-emerald-200 flex items-center gap-2 text-xs shrink-0">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-live"></span>
+                  <span>Đã xác thực OA • Online 52ms</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Zalo OA App ID</label>
+                  <input type="text" id="cfg-zaloAppId" value="381920391823901" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs font-mono font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Secret Key / Token Xác Thực</label>
+                  <input type="password" id="cfg-zaloSecretKey" value="zalo_sec_892109841029381" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs font-mono font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Template ID: Thông Báo Hóa Đơn</label>
+                  <input type="text" id="cfg-zaloTemplateBill" value="TMP_STAYHUB_BILL_NOTICE" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs font-mono font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Template ID: Xác Nhận Thanh Toán</label>
+                  <input type="text" id="cfg-zaloTemplatePay" value="TMP_STAYHUB_PAYMENT_SUCCESS" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs font-mono font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+                </div>
+              </div>
+
+              <div class="p-3.5 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between">
+                <div>
+                  <span class="font-bold text-slate-900 block">Kiểm tra kết nối gửi mẫu ZNS</span>
+                  <span class="text-[11px] text-slate-500">Gửi gói tin ping kiểm tra kết nối API tới hạ tầng Zalo Cloud Solutions</span>
+                </div>
+                <button type="button" onclick="handleTestZaloPing()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                  <i data-lucide="send" class="w-3.5 h-3.5 text-teal-400"></i>
+                  <span>Gửi Thử Tin Ping</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end">
+              <button type="submit" class="flex items-center gap-2 px-6 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold shadow-sm transition-colors">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>Lưu Cấu Hình Zalo ZNS</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ===================================================================
+             TAB 5: SAO LƯU & KHÔI PHỤC DỮ LIỆU
+             =================================================================== -->
+        <div id="tab-pane-backup" class="hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+            <!-- Card 1: Xuất bản sao lưu -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-teal-50 text-[#0F766E] flex items-center justify-center mb-3 border border-teal-100">
+                  <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-bold text-slate-900 text-sm">Sao Lưu Dữ Liệu Toàn Chuỗi</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Xuất toàn bộ cơ sở dữ liệu hiện tại (Phòng 3 cơ sở, Hợp đồng, Hóa đơn, Cư dân, Tài khoản RBAC, Logs và Cấu hình) ra file JSON chuẩn để lưu trữ an toàn hoặc chuyển đổi máy chủ.
+                </p>
+                <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1 text-[11px] text-slate-600">
+                  <div class="flex justify-between">
+                    <span>Định dạng tệp:</span>
+                    <strong class="font-mono text-slate-800">JSON UTF-8</strong>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Dung lượng ước tính:</span>
+                    <strong class="text-slate-800">~2.4 MB</strong>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Thời điểm hiện tại:</span>
+                    <span class="font-mono text-teal-700" id="backup-current-time"></span>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" onclick="handleExportBackupJSON()" class="w-full flex items-center justify-center gap-2 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl font-bold shadow-sm transition-all">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Tải Bản Sao Lưu JSON Về Máy</span>
+              </button>
+            </div>
+
+            <!-- Card 2: Khôi phục dữ liệu -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-3 border border-amber-100">
+                  <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-bold text-slate-900 text-sm">Khôi Phục từ File Sao Lưu</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Chọn file sao lưu JSON trước đó để nạp lại toàn bộ dữ liệu hệ thống. Thao tác này sẽ cập nhật lại dữ liệu phòng, hợp đồng và hóa đơn tương ứng trong file.
+                </p>
+                <div class="mt-4">
+                  <label class="block font-semibold text-slate-700 mb-1.5">Chọn file sao lưu (.json):</label>
+                  <input type="file" id="import-backup-file" accept=".json" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-700 focus:outline-none file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <button type="button" onclick="handleImportBackupJSON()" class="w-full flex items-center justify-center gap-2 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-all">
+                  <i data-lucide="refresh-cw" class="w-4 h-4 text-amber-400"></i>
+                  <span>Bắt Đầu Khôi Phục Dữ Liệu</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danger Zone: Reset toàn bộ demo -->
+          <div class="bg-rose-50/60 p-5 rounded-2xl border border-rose-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+            <div>
+              <h4 class="font-bold text-rose-900 flex items-center gap-2">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600"></i>
+                <span>Vùng Nguy Hiểm: Đặt Lại Dữ Liệu Mẫu Ban Đầu</span>
+              </h4>
+              <p class="text-rose-700/80 mt-0.5">Xóa toàn bộ các chỉnh sửa trong LocalStorage và tải lại toàn bộ 36 phòng, 8 người dùng và cấu hình gốc.</p>
+            </div>
+            <button onclick="resetDemoData()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl transition-colors shrink-0">
+              Đặt Lại Toàn Bộ Demo
+            </button>
           </div>
         </div>
 
@@ -105,12 +352,180 @@
     </main>
   </div>
 
-  <script src="../../js/data.js"></script>
-  <script src="../../js/app.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
+  <script data-stayhub-page="system-settings.html">
+    function switchTab(tabKey) {
+      const tabs = ['general', 'session', 'sepay', 'zalo', 'backup'];
+      tabs.forEach(k => {
+        const pane = document.getElementById(`tab-pane-${k}`);
+        const btn = document.getElementById(`tab-btn-${k}`);
+        if (k === tabKey) {
+          if (pane) pane.classList.remove('hidden');
+          if (btn) btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm whitespace-nowrap';
+        } else {
+          if (pane) pane.classList.add('hidden');
+          if (btn) btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 whitespace-nowrap';
+        }
+      });
+      if (tabKey === 'backup') {
+        const timeEl = document.getElementById('backup-current-time');
+        if (timeEl) timeEl.innerText = new Date().toLocaleString('vi-VN');
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function loadSystemConfigInputs() {
+      const cfg = DataStore.getSystemConfig();
+      if (document.getElementById('cfg-brandName')) document.getElementById('cfg-brandName').value = cfg.brandName || 'StayHub';
+      if (document.getElementById('cfg-slogan')) document.getElementById('cfg-slogan').value = cfg.slogan || 'Quản lý Không gian sống & Căn hộ Dịch vụ Hiện đại';
+      if (document.getElementById('cfg-companyName')) document.getElementById('cfg-companyName').value = cfg.companyName || 'Hệ thống Căn hộ Dịch vụ StayHub Việt Nam';
+      if (document.getElementById('cfg-hotline')) document.getElementById('cfg-hotline').value = cfg.hotline || '1900 8899';
+      if (document.getElementById('cfg-email')) document.getElementById('cfg-email').value = cfg.email || 'hotro@stayhub.vn';
+      if (document.getElementById('cfg-headquarters')) document.getElementById('cfg-headquarters').value = cfg.headquarters || 'Tòa nhà StayHub Innovation, Quận 1, TP. Hồ Chí Minh';
+      if (document.getElementById('cfg-currency')) document.getElementById('cfg-currency').value = cfg.currency || 'VND';
+      if (document.getElementById('cfg-timezone')) document.getElementById('cfg-timezone').value = cfg.timezone || 'Asia/Ho_Chi_Minh';
+      
+      if (document.getElementById('cfg-sessionTimeout')) document.getElementById('cfg-sessionTimeout').value = cfg.sessionTimeout || 60;
+      if (document.getElementById('cfg-maxLoginAttempts')) document.getElementById('cfg-maxLoginAttempts').value = cfg.maxLoginAttempts || 5;
+      if (document.getElementById('cfg-logRetention')) document.getElementById('cfg-logRetention').value = cfg.logRetention || 365;
+      if (document.getElementById('cfg-maintenanceMode')) document.getElementById('cfg-maintenanceMode').checked = !!cfg.maintenanceMode;
+
+      if (document.getElementById('cfg-bankName')) document.getElementById('cfg-bankName').value = cfg.bankName || 'MB Bank (Quân Đội)';
+      if (document.getElementById('cfg-bankAccount')) document.getElementById('cfg-bankAccount').value = cfg.bankAccount || '0912345678';
+      if (document.getElementById('cfg-bankOwner')) document.getElementById('cfg-bankOwner').value = cfg.bankOwner || 'STAYHUB LIVING CO LTD';
+
+      if (document.getElementById('cfg-zaloAppId')) document.getElementById('cfg-zaloAppId').value = cfg.zaloAppId || '381920391823901';
+      if (document.getElementById('cfg-zaloSecretKey')) document.getElementById('cfg-zaloSecretKey').value = cfg.zaloSecretKey || 'zalo_sec_892109841029381';
+      if (document.getElementById('cfg-zaloTemplateBill')) document.getElementById('cfg-zaloTemplateBill').value = cfg.zaloTemplateBill || 'TMP_STAYHUB_BILL_NOTICE';
+      if (document.getElementById('cfg-zaloTemplatePay')) document.getElementById('cfg-zaloTemplatePay').value = cfg.zaloTemplatePay || 'TMP_STAYHUB_PAYMENT_SUCCESS';
+    }
+
+    function handleSaveBrandSettings(e) {
+      e.preventDefault();
+      const cfg = DataStore.getSystemConfig();
+      cfg.brandName = document.getElementById('cfg-brandName').value.trim();
+      cfg.slogan = document.getElementById('cfg-slogan').value.trim();
+      cfg.companyName = document.getElementById('cfg-companyName').value.trim();
+      cfg.hotline = document.getElementById('cfg-hotline').value.trim();
+      cfg.email = document.getElementById('cfg-email').value.trim();
+      cfg.headquarters = document.getElementById('cfg-headquarters').value.trim();
+
+      DataStore.saveSystemConfig(cfg);
+      DataStore.addAuditLog('CẬP NHẬT CẤU HÌNH', 'Thương hiệu & Thông tin', 'Thay đổi thông tin nhận diện thương hiệu và trụ sở chuỗi');
+      showToast('Đã lưu cấu hình thương hiệu thành công!');
+    }
+
+    function handleSaveSessionPolicy(e) {
+      e.preventDefault();
+      const cfg = DataStore.getSystemConfig();
+      cfg.sessionTimeout = parseInt(document.getElementById('cfg-sessionTimeout').value) || 60;
+      cfg.maxLoginAttempts = parseInt(document.getElementById('cfg-maxLoginAttempts').value) || 5;
+      cfg.logRetention = parseInt(document.getElementById('cfg-logRetention').value) || 365;
+      cfg.maintenanceMode = document.getElementById('cfg-maintenanceMode').checked;
+
+      DataStore.saveSystemConfig(cfg);
+      DataStore.addAuditLog('CẬP NHẬT CHÍNH SÁCH', 'An toàn & Phiên làm việc', `Thời hạn phiên: ${cfg.sessionTimeout}p, Khóa sai: ${cfg.maxLoginAttempts} lần, Bảo trì: ${cfg.maintenanceMode ? 'BẬT' : 'TẮT'}`);
+      showToast('Đã lưu chính sách an toàn & phiên làm việc thành công!');
+    }
+
+    function handleSaveSepayConfig(e) {
+      if (e) e.preventDefault();
+      const cfg = DataStore.getSystemConfig();
+      cfg.bankName = document.getElementById('cfg-bankName').value.trim();
+      cfg.bankAccount = document.getElementById('cfg-bankAccount').value.trim();
+      cfg.bankOwner = document.getElementById('cfg-bankOwner').value.trim();
+
+      DataStore.saveSystemConfig(cfg);
+      DataStore.addAuditLog('CẬP NHẬT CẤU HÌNH', 'Cổng thanh toán VietQR', `Cập nhật tài khoản thụ hưởng ${cfg.bankName} - ${cfg.bankAccount}`);
+      showToast('Đã cập nhật tài khoản ngân hàng thụ hưởng thành công!');
+    }
+
+    function handleSaveZaloConfig(e) {
+      if (e) e.preventDefault();
+      const cfg = DataStore.getSystemConfig();
+      cfg.zaloAppId = document.getElementById('cfg-zaloAppId').value.trim();
+      cfg.zaloSecretKey = document.getElementById('cfg-zaloSecretKey').value.trim();
+      cfg.zaloTemplateBill = document.getElementById('cfg-zaloTemplateBill').value.trim();
+      cfg.zaloTemplatePay = document.getElementById('cfg-zaloTemplatePay').value.trim();
+
+      DataStore.saveSystemConfig(cfg);
+      DataStore.addAuditLog('CẬP NHẬT CẤU HÌNH', 'Zalo ZNS Official Account', `Cập nhật Zalo App ID [${cfg.zaloAppId}] và Template IDs`);
+      showToast('Đã lưu cấu hình kết nối Zalo ZNS thành công!');
+    }
+
+    function handleTestZaloPing() {
+      showToast('Đang gửi gói tin ping tới Zalo Cloud Solutions...');
+      setTimeout(() => {
+        showToast('Kết nối Zalo ZNS thành công! Độ trễ phản hồi: 52ms (HTTP 200 OK)');
+      }, 500);
+    }
+
+    function handleExportBackupJSON() {
+      const backupData = {
+        version: '2.6.4',
+        timestamp: new Date().toISOString(),
+        author: DataStore.getUser().fullName || 'Admin',
+        systemConfig: DataStore.getSystemConfig(),
+        users: DataStore.getUsers(),
+        buildings: DataStore.getBuildings(),
+        rooms: DataStore.getRooms(),
+        contracts: DataStore.getContracts(),
+        invoices: DataStore.getInvoices(),
+        auditLogs: DataStore.getAuditLogs()
+      };
+
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      downloadAnchor.setAttribute('href', dataStr);
+      downloadAnchor.setAttribute('download', `stayhub_backup_full_${dateStr}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      document.body.removeChild(downloadAnchor);
+
+      DataStore.addAuditLog('SAO_LƯU_HỆ_THỐNG', 'Toàn bộ Cơ sở dữ liệu', 'Tải bản sao lưu JSON toàn chuỗi StayHub');
+      showToast('Đã tạo và tải bản sao lưu dữ liệu toàn chuỗi thành công!');
+    }
+
+    function handleImportBackupJSON() {
+      const fileInput = document.getElementById('import-backup-file');
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        showToast('Vui lòng chọn file sao lưu .json để khôi phục', 'error');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (!imported.systemConfig && !imported.buildings) {
+            showToast('Tệp không đúng định dạng sao lưu của StayHub', 'error');
+            return;
+          }
+
+          if (imported.systemConfig) DataStore.saveSystemConfig(imported.systemConfig);
+          if (imported.users) DataStore.saveUsers(imported.users);
+          if (imported.buildings) DataStore.saveBuildings(imported.buildings);
+          if (imported.rooms) DataStore.saveRooms(imported.rooms);
+          if (imported.contracts) DataStore.saveContracts(imported.contracts);
+          if (imported.invoices) DataStore.saveInvoices(imported.invoices);
+          if (imported.auditLogs) DataStore.saveAuditLogs(imported.auditLogs);
+
+          DataStore.addAuditLog('KHÔI_PHỤC_HỆ_THỐNG', 'Toàn bộ Cơ sở dữ liệu', `Khôi phục dữ liệu từ file [${file.name}]`);
+          showToast('Đã khôi phục dữ liệu thành công! Đang tải lại trang...');
+          setTimeout(() => window.location.reload(), 1000);
+        } catch (err) {
+          showToast('Lỗi khi đọc tệp JSON: ' + err.message, 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    registerPage('system-settings.html', () => {
       renderSidebar('system-settings.html');
       renderTopbar('Cấu hình Hệ thống', 'Hệ thống / Cài đặt');
+      loadSystemConfigInputs();
+      switchTab('general');
     });
   </script>
 </body>

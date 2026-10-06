@@ -4,39 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StayHub - Quản lý Hóa đơn & Thu phí</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
-  
+  <!-- Demo Role Bar -->
   <div id="demo-role-bar"></div>
 
   <div class="flex-1 flex overflow-hidden">
-    
-    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
 
-    
+    <!-- Main Content -->
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      <script>initStayHubShell('invoices.html', 'Quản lý Hóa đơn & Thu tiền phòng', 'Tài chính / Hóa đơn');</script>
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
-        
+        <!-- Top Actions Bar -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h2 class="text-xl font-bold text-slate-900">Quản lý Hóa đơn & Thu tiền phòng</h2>
             <p class="text-xs text-slate-500 mt-0.5">Đối soát thu phí định kỳ, xuất hóa đơn điện tử và tạo mã QR VietQR thanh toán tức thì</p>
           </div>
           <div class="flex items-center gap-3">
-            <button onclick="showToast('Chức năng lập hóa đơn hàng loạt kích hoạt thành công')" class="flex items-center gap-2 px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+            <button onclick="showToast('Chức năng lập hóa đơn hàng loạt kích hoạt thành công')" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
               <i data-lucide="file-plus" class="w-4 h-4"></i>
               <span>Lập Hóa Đơn Kỳ Mới</span>
             </button>
           </div>
         </div>
 
-        
+        <!-- Metric summaries -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
@@ -72,14 +76,14 @@
           </div>
         </div>
 
-        
+        <!-- Invoices Table Container -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2">
               <i data-lucide="receipt" class="w-5 h-5 text-teal-600"></i>
               <h3 class="font-bold text-slate-900 text-sm">Danh Sách Hóa Đơn Kỳ Này</h3>
             </div>
-            
+            <!-- Search & Filters -->
             <div class="flex items-center gap-3">
               <input type="text" id="inv-search" oninput="renderInvoicesTable()" placeholder="Tìm số phòng hoặc tên..." class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none w-48">
               <select id="inv-status-filter" onchange="renderInvoicesTable()" class="text-xs font-medium bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5">
@@ -106,7 +110,7 @@
                 </tr>
               </thead>
               <tbody id="invoices-tbody" class="divide-y divide-slate-100 font-medium">
-                
+                <!-- Rendered by JS -->
               </tbody>
             </table>
           </div>
@@ -116,7 +120,7 @@
     </main>
   </div>
 
-  
+  <!-- Modal: Hóa đơn điện tử & VietQR SePay -->
   <div id="invoiceDetailModal" class="modal-backdrop">
     <div class="modal-content max-w-2xl p-6 print-card">
       <div class="flex items-center justify-between border-b border-slate-200 pb-4 no-print">
@@ -137,9 +141,9 @@
         </div>
       </div>
 
-      
+      <!-- Printable invoice sheet -->
       <div class="py-4 space-y-4">
-        
+        <!-- Header Info -->
         <div class="flex justify-between items-start text-xs">
           <div>
             <h4 class="font-extrabold text-base text-slate-900">HỆ THỐNG CĂN HỘ STAYHUB</h4>
@@ -163,7 +167,7 @@
           </div>
         </div>
 
-        
+        <!-- Items breakdown table -->
         <table class="w-full text-xs text-left border border-slate-200 rounded-lg overflow-hidden">
           <thead class="bg-slate-100 text-slate-700 font-semibold">
             <tr>
@@ -175,7 +179,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100" id="inv-breakdown-body">
-            
+            <!-- Rendered by JS -->
           </tbody>
           <tfoot class="bg-slate-50 font-bold text-slate-900">
             <tr>
@@ -185,10 +189,10 @@
           </tfoot>
         </table>
 
-        
+        <!-- VietQR Box -->
         <div class="p-4 bg-teal-50 border border-teal-200 rounded-xl flex flex-col sm:flex-row items-center gap-4">
           <div class="w-32 h-32 bg-white p-2 border border-slate-200 rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-            
+            <!-- Simulated VietQR with QuickChart or placeholder SVG -->
             <img id="inv-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=STAYHUB-PAYMENT" class="w-full h-full object-contain" alt="VietQR">
           </div>
           <div class="text-xs space-y-1 text-slate-700">
@@ -206,17 +210,14 @@
 
       </div>
 
-      
+      <!-- Action buttons -->
       <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-end gap-3 no-print">
         <button onclick="closeModal('invoiceDetailModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 font-medium">Đóng</button>
         <button id="btn-mark-paid" onclick="markCurrentInvoicePaid()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold">Xác Nhận Đã Thanh Toán</button>
       </div>
     </div>
   </div>
-
-  <script src="../../js/data.js"></script>
-  <script src="../../js/app.js"></script>
-  <script>
+  <script data-stayhub-page="invoices.html">
     let activeInvoiceId = null;
 
     function renderInvoicesTable() {
@@ -225,10 +226,12 @@
       const invoices = DataStore.getInvoices();
       const tbody = document.getElementById('invoices-tbody');
 
+      const currentBldId = DataStore.getCurrentBuilding();
       let filtered = invoices.filter(inv => {
+        const matchBuilding = !inv.buildingId || inv.buildingId === currentBldId;
         const matchSearch = inv.room.toLowerCase().includes(search) || inv.tenant.toLowerCase().includes(search) || inv.code.toLowerCase().includes(search);
         const matchStatus = statusFilter === 'ALL' || inv.status === statusFilter;
-        return matchSearch && matchStatus;
+        return matchBuilding && matchSearch && matchStatus;
       });
 
       tbody.innerHTML = filtered.map(inv => {
@@ -341,10 +344,13 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    registerPage('invoices.html', () => {
       renderSidebar('invoices.html');
       renderTopbar('Quản lý Hóa đơn & Thu tiền phòng', 'Tài chính / Hóa đơn');
       renderInvoicesTable();
+      window.onFilterBuilding = function() {
+        renderInvoicesTable();
+      };
     });
   </script>
 </body>

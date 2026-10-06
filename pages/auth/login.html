@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StayHub - Đăng nhập Hệ thống</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
@@ -11,7 +12,7 @@
 
   <div class="max-w-md w-full space-y-6">
 
-    
+    <!-- Brand Header -->
     <div class="text-center space-y-2">
       <div class="inline-flex w-12 h-12 rounded-xl bg-teal-600 items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-teal-500/30">
         S
@@ -20,14 +21,14 @@
       <p class="text-xs text-slate-400">Hệ Thống Quản Lý Chuỗi Nhà Trọ & Căn Hộ Cho Thuê Hiện Đại</p>
     </div>
 
-    
+    <!-- Login Card -->
     <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 shadow-2xl backdrop-blur-md space-y-5">
       <div>
         <h2 class="text-base font-bold text-white">Trải nghiệm Nhanh với 4 Vai Trò</h2>
         <p class="text-xs text-slate-400 mt-0.5">Chọn một vai trò bên dưới để đăng nhập ngay mà không cần mật khẩu:</p>
       </div>
 
-      
+      <!-- Quick Role Selection Grid -->
       <div class="space-y-2.5">
         <button onclick="loginAs('MANAGER')" class="w-full flex items-center justify-between p-3 rounded-xl bg-slate-700/70 hover:bg-teal-700/80 border border-slate-600/60 hover:border-teal-500 transition-all text-left group">
           <div class="flex items-center gap-3">
@@ -95,7 +96,7 @@
 
     function loginAs(role) {
       DataStore.setRole(role);
-      window.location.href = role === 'RESIDENT' ? '../residents/profile.html' : '../../index.html';
+      window.location.href = '../../index.html';
     }
   </script>
 </body>
