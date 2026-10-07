@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lập Bảng Quyết toán Hợp đồng</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/data.js"></script>
+  <script src="../js/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Top Demo Role Switcher Bar -->
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+      <script>
+        initStayHubShell('prepare-settlement.html', 'Lập Bảng Quyết toán', 'Tài chính / Quyết toán / Lập bảng tính');
+      </script>
+
+      <div class="p-6 max-w-5xl w-full mx-auto space-y-6">
+
+        <!-- Navigation Bar -->
+        <div class="flex items-center justify-between">
+          <a href="settlements.html" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Quay lại danh sách quyết toán</span>
+          </a>
+        </div>
+
+        <!-- Contract Selector & Trigger Context -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">1. Thông tin Hợp đồng & Hồ sơ Trả phòng</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Dữ liệu được liên kết trực tiếp từ Biên bản kiểm tra phòng (Checkout Inspection)</p>
+            </div>
+            <div>
+              <select id="select-contract" onchange="loadSettlementData(this.value)" 
+                class="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#0F766E]">
+                <option value="STL-2026-001">HD-2025-001 - P201 (Lê Văn An)</option>
+                <option value="STL-2026-002">HD-2025-002 - P101 (Nguyễn Văn Hùng)</option>
+                <option value="STL-2026-003">HD-2025-003 - P102 (Trần Thị Thu Thảo)</option>
+                <option value="STL-2026-004">HD-2025-004 - P301 (Vũ Đức Nam)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <span class="text-xs text-slate-400 block font-medium">Mã Hợp đồng</span>
+              <span id="txt-contract-code" class="font-bold text-slate-800 text-base">HD-2025-001</span>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <span class="text-xs text-slate-400 block font-medium">Căn hộ & Khách thuê</span>
+              <span id="txt-tenant-info" class="font-bold text-slate-800 text-base">P201 • Lê Văn An</span>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <span class="text-xs text-slate-400 block font-medium">Biên bản Checkout</span>
+              <span id="txt-checkout-ref" class="font-bold text-teal-700 text-base">CKO-2026-001</span>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <span class="text-xs text-slate-400 block font-medium">Tiền đặt cọc</span>
+              <span id="txt-deposit-amount" class="font-bold text-emerald-600 text-base">8.500.000 ₫</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settlement Calculation Breakdown -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-6">
+          <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">2. Bảng Tính Khấu Trừ & Chi Phí Phát Sinh</h2>
+
+          <!-- A. Unpaid invoices -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="receipt" class="w-4 h-4 text-slate-500"></i>
+                <span>A. Hóa đơn nợ đọng kỳ trước</span>
+              </h3>
+              <span id="txt-unpaid-invoices" class="font-bold text-rose-600 text-sm">1.505.000 ₫</span>
+            </div>
+            <div id="unpaid-invoices-list" class="bg-slate-50 rounded-xl p-3 text-xs text-slate-600 space-y-1 border border-slate-100">
+              <!-- populated -->
+            </div>
+          </div>
+
+          <!-- B. Utilities Settlement -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i>
+                <span>B. Điện - Nước chốt tại biên bản trả phòng</span>
+              </h3>
+              <span id="txt-utilities-total" class="font-bold text-slate-800 text-sm">327.000 ₫</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 space-y-2">
+                <div class="flex justify-between font-bold text-slate-700">
+                  <span>Điện sinh hoạt</span>
+                  <span id="txt-elec-total">252.000 ₫</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                  <div>
+                    <label class="text-slate-400 block">Số cũ</label>
+                    <input type="number" id="input-elec-old" oninput="recalculate()" class="w-full p-1.5 bg-white border border-slate-200 rounded text-slate-800">
+                  </div>
+                  <div>
+                    <label class="text-slate-400 block">Số mới</label>
+                    <input type="number" id="input-elec-new" oninput="recalculate()" class="w-full p-1.5 bg-white border border-slate-200 rounded text-slate-800">
+                  </div>
+                  <div>
+                    <label class="text-slate-400 block">Đơn giá (₫/kWh)</label>
+                    <input type="number" id="input-elec-rate" oninput="recalculate()" value="3500" class="w-full p-1.5 bg-white border border-slate-200 rounded text-slate-800">
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 space-y-2">
+                <div class="flex justify-between font-bold text-slate-700">
+                  <span>Nước sinh hoạt</span>
+                  <span id="txt-water-total">75.000 ₫</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                  <div>
+                    <label class="text-slate-400 block">Số cũ</label>
+                    <input type="number" id="input-water-old" oninput="recalculate()" class="w-full p-1.5 bg-white border border-slate-200 rounded text-slate-800">
+                  </div>
+                  <div>
+                    <label class="text-slate-400 block">Số mới</label>
+                    <input type="number" id="input-water-new" oninput="recalculate()" class="w-full p-1.5 bg-white border border-slate-200 rounded text-slate-800">
+                  </div>
+                  <div>
+                    <label class="text-slate-400 block">Đơn giá (₫/m³)</label>
+                    <input type="number" id="input-water-rate" oninput="recalculate()" value="25000" class="w-full p-1.5 bg-white border border-slate-200 rounded text-slate-800">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- C. Damage & Cleaning Deductions -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="wrench" class="w-4 h-4 text-rose-500"></i>
+                <span>C. Bồi thường hư hại & Phí vệ sinh căn hộ</span>
+              </h3>
+              <span id="txt-damages-total" class="font-bold text-slate-800 text-sm">700.000 ₫</span>
+            </div>
+
+            <!-- Pending quote checkbox -->
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 flex items-start gap-3">
+              <input type="checkbox" id="check-pending-quote" onchange="togglePendingQuote(this.checked)" class="mt-0.5 w-4 h-4 text-[#0F766E] rounded">
+              <div class="text-xs">
+                <label for="check-pending-quote" class="font-bold text-amber-900 cursor-pointer">
+                  Tạm hoãn quyết toán - Chờ báo giá đơn vị bên ngoài (Pending Assessment)
+                </label>
+                <p class="text-amber-700 mt-0.5">
+                  Tích chọn khi có hư hỏng tài sản lớn (ví dụ vỡ kính, hỏng thiết bị đặc biệt) chưa có hóa đơn báo giá chính xác. Trạng thái hợp đồng sẽ được giữ ở mức Tạm hoãn cho tới khi cập nhật đủ chi phí.
+                </p>
+              </div>
+            </div>
+
+            <div id="damages-list" class="space-y-2">
+              <!-- populated -->
+            </div>
+
+            <button type="button" onclick="addDamageItem()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-dashed border-slate-300 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:border-slate-400 transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Thêm mục chi phí / bồi thường</span>
+            </button>
+          </div>
+
+          <!-- Final Net Balance Summary Card -->
+          <div class="bg-slate-900 text-white rounded-2xl p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div>
+                <span class="text-xs text-slate-400 uppercase tracking-wider block font-semibold">Kết quả Quyết toán</span>
+                <span id="txt-summary-title" class="text-xl font-bold text-white mt-1 block">Hoàn trả tiền cọc cho Cư dân</span>
+              </div>
+              <div class="text-right">
+                <span class="text-xs text-slate-400 block font-medium">Số dư ròng (Net Balance)</span>
+                <span id="txt-net-balance" class="text-3xl font-extrabold text-emerald-400">+5.968.000 ₫</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs text-slate-300">
+              <div>
+                <span class="text-slate-400 block">Tiền cọc giữ:</span>
+                <span id="sum-deposit" class="font-bold text-white text-sm">8.500.000 ₫</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Hóa đơn nợ:</span>
+                <span id="sum-unpaid" class="font-bold text-rose-400 text-sm">1.505.000 ₫</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Điện nước cuối:</span>
+                <span id="sum-utils" class="font-bold text-white text-sm">327.000 ₫</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Bồi thường / Phí:</span>
+                <span id="sum-damages" class="font-bold text-white text-sm">700.000 ₫</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Actions -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
+            <div class="text-xs text-slate-500">
+              Sau khi lưu, bảng tính sẽ sẵn sàng gửi cho Cư dân xem và xác nhận trực tiếp.
+            </div>
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+              <button type="button" onclick="saveDraft()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-semibold transition-colors">
+                Lưu nháp
+              </button>
+              <button type="button" onclick="publishSettlement()" class="w-full sm:w-auto px-5 py-2.5 bg-[#0F766E] hover:bg-teal-700 text-white rounded-xl text-sm font-semibold shadow-sm transition-all flex items-center justify-center gap-2">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span>Phát hành & Gửi cho Cư dân</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let currentSettlement = null;
+
+    function getParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function loadSettlementData(id) {
+      currentSettlement = DataStore.getSettlementById(id) || DataStore.getSettlements()[0];
+      if (!currentSettlement) return;
+
+      document.getElementById('select-contract').value = currentSettlement.id;
+      document.getElementById('txt-contract-code').textContent = currentSettlement.contractCode;
+      document.getElementById('txt-tenant-info').textContent = `${currentSettlement.room} • ${currentSettlement.tenant}`;
+      document.getElementById('txt-checkout-ref').textContent = currentSettlement.checkoutRecordId;
+      document.getElementById('txt-deposit-amount').textContent = formatVND(currentSettlement.deposit);
+
+      // Unpaid invoices
+      document.getElementById('txt-unpaid-invoices').textContent = formatVND(currentSettlement.unpaidInvoices);
+      const invContainer = document.getElementById('unpaid-invoices-list');
+      if (currentSettlement.unpaidInvoicesList?.length) {
+        invContainer.innerHTML = currentSettlement.unpaidInvoicesList.map(inv => `
+          <div class="flex justify-between items-center py-1 border-b border-slate-200/50 last:border-0">
+            <span><strong>${inv.code}</strong>: ${inv.description}</span>
+            <span class="font-semibold text-rose-600">${formatVND(inv.amount)}</span>
+          </div>
+        `).join('');
+      } else {
+        invContainer.innerHTML = '<span class="text-slate-400 italic">Không có hóa đơn nợ đọng</span>';
+      }
+
+      // Utilities
+      document.getElementById('input-elec-old').value = currentSettlement.electricity.old;
+      document.getElementById('input-elec-new').value = currentSettlement.electricity.new;
+      document.getElementById('input-elec-rate').value = currentSettlement.electricity.rate;
+      document.getElementById('input-water-old').value = currentSettlement.water.old;
+      document.getElementById('input-water-new').value = currentSettlement.water.new;
+      document.getElementById('input-water-rate').value = currentSettlement.water.rate;
+
+      // Pending quote
+      document.getElementById('check-pending-quote').checked = !!currentSettlement.hasPendingQuote;
+
+      renderDamages();
+      recalculate();
+    }
+
+    function renderDamages() {
+      const container = document.getElementById('damages-list');
+      container.innerHTML = (currentSettlement.damages || []).map((dmg, idx) => `
+        <div class="flex items-center gap-3 p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-xs">
+          <input type="text" value="${dmg.description}" onchange="updateDamage(${idx}, 'description', this.value)" 
+            placeholder="Nội dung hư hại / dịch vụ" class="flex-1 p-1.5 bg-white border border-slate-200 rounded text-slate-800">
+          <div class="w-36 flex items-center gap-1">
+            <input type="number" value="${dmg.amount}" oninput="updateDamage(${idx}, 'amount', Number(this.value)); recalculate()" 
+              placeholder="Số tiền" class="w-full p-1.5 bg-white border border-slate-200 rounded text-right font-semibold text-slate-800">
+            <span>₫</span>
+          </div>
+          <button type="button" onclick="removeDamage(${idx})" class="text-slate-400 hover:text-rose-600 p-1">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function addDamageItem() {
+      currentSettlement.damages = currentSettlement.damages || [];
+      currentSettlement.damages.push({
+        id: 'dmg-' + Date.now(),
+        description: 'Phí dịch vụ phát sinh mới',
+        amount: 200000,
+        note: ''
+      });
+      renderDamages();
+      recalculate();
+    }
+
+    function removeDamage(idx) {
+      currentSettlement.damages.splice(idx, 1);
+      renderDamages();
+      recalculate();
+    }
+
+    function updateDamage(idx, key, val) {
+      currentSettlement.damages[idx][key] = val;
+    }
+
+    function togglePendingQuote(checked) {
+      currentSettlement.hasPendingQuote = checked;
+      recalculate();
+    }
+
+    function recalculate() {
+      const elecOld = Number(document.getElementById('input-elec-old').value) || 0;
+      const elecNew = Number(document.getElementById('input-elec-new').value) || 0;
+      const elecRate = Number(document.getElementById('input-elec-rate').value) || 3500;
+      const elecUnits = Math.max(0, elecNew - elecOld);
+      const elecTotal = elecUnits * elecRate;
+      document.getElementById('txt-elec-total').textContent = `${formatVND(elecTotal)} (${elecUnits} kWh)`;
+
+      const waterOld = Number(document.getElementById('input-water-old').value) || 0;
+      const waterNew = Number(document.getElementById('input-water-new').value) || 0;
+      const waterRate = Number(document.getElementById('input-water-rate').value) || 25000;
+      const waterUnits = Math.max(0, waterNew - waterOld);
+      const waterTotal = waterUnits * waterRate;
+      document.getElementById('txt-water-total').textContent = `${formatVND(waterTotal)} (${waterUnits} m³)`;
+
+      const utilsTotal = elecTotal + waterTotal;
+      document.getElementById('txt-utilities-total').textContent = formatVND(utilsTotal);
+
+      const damagesTotal = (currentSettlement.damages || []).reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+      document.getElementById('txt-damages-total').textContent = formatVND(damagesTotal);
+
+      const unpaid = Number(currentSettlement.unpaidInvoices) || 0;
+      const deposit = Number(currentSettlement.deposit) || 0;
+      const totalDue = unpaid + utilsTotal + damagesTotal;
+      const net = deposit - totalDue;
+
+      const isPending = document.getElementById('check-pending-quote').checked;
+
+      document.getElementById('sum-deposit').textContent = formatVND(deposit);
+      document.getElementById('sum-unpaid').textContent = formatVND(unpaid);
+      document.getElementById('sum-utils').textContent = formatVND(utilsTotal);
+      document.getElementById('sum-damages').textContent = formatVND(damagesTotal);
+
+      const netEl = document.getElementById('txt-net-balance');
+      const titleEl = document.getElementById('txt-summary-title');
+
+      if (isPending) {
+        titleEl.textContent = 'Tạm hoãn quyết toán (Đang chờ báo giá)';
+        netEl.textContent = 'Chưa xác định';
+        netEl.className = 'text-3xl font-extrabold text-amber-400';
+      } else if (net > 0) {
+        titleEl.textContent = 'Hoàn trả tiền cọc cho Cư dân';
+        netEl.textContent = `+${formatVND(net)}`;
+        netEl.className = 'text-3xl font-extrabold text-emerald-400';
+      } else if (net < 0) {
+        titleEl.textContent = 'Truy thu - Cư dân cần nộp thêm tiền';
+        netEl.textContent = `${formatVND(net)}`;
+        netEl.className = 'text-3xl font-extrabold text-rose-400';
+      } else {
+        titleEl.textContent = 'Cấn trừ vừa đủ tiền cọc';
+        netEl.textContent = '0 ₫ (Khớp cọc)';
+        netEl.className = 'text-3xl font-extrabold text-sky-400';
+      }
+    }
+
+    function saveDraft() {
+      showToast('Đã lưu nháp bảng quyết toán thành công');
+    }
+
+    function publishSettlement() {
+      showToast('Đã phát hành Bảng quyết toán & gửi thông báo cho Cư dân');
+      setTimeout(() => {
+        window.location.href = `settlement-details.html?id=${currentSettlement.id}`;
+      }, 700);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const id = getParam('id') || 'STL-2026-001';
+      loadSettlementData(id);
+    });
+  </script>
+</body>
+</html>

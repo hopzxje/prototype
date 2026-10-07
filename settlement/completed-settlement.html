@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biên Bản Quyết Toán Hoàn Tất</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/data.js"></script>
+  <script src="../js/app.js"></script>
+  <style>
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 24px;
+        background: white !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Top Demo Role Switcher Bar -->
+  <div id="demo-role-bar" class="no-print"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="no-print w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar" class="no-print"></header>
+      <script>
+        initStayHubShell('completed-settlement.html', 'Biên Bản Quyết Toán Hoàn Tất', 'Tài chính / Quyết toán / Hoàn tất');
+      </script>
+
+      <div class="p-6 max-w-5xl w-full mx-auto space-y-6">
+
+        <!-- Top Navigation Action Bar -->
+        <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <a href="settlements.html" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Quay lại danh sách quyết toán</span>
+          </a>
+          <div class="flex items-center gap-3">
+            <button onclick="window.print()" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold shadow-sm transition-all">
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>In Biên bản A4 (PDF)</span>
+            </button>
+            <button id="btn-close-contract" onclick="finishClosing()" class="inline-flex items-center gap-2 px-5 py-2 bg-[#0F766E] hover:bg-teal-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>Đóng hợp đồng tài chính</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Success Status Notice -->
+        <div class="no-print bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+            <i data-lucide="check-check" class="w-5 h-5"></i>
+          </div>
+          <div class="text-xs text-emerald-950 space-y-1">
+            <h3 class="font-bold text-sm text-emerald-900">Quyết Toán Tài Chính Đã Hoàn Tất Thành Công</h3>
+            <p class="text-slate-600">
+              Mọi nghĩa vụ tiền cọc, công nợ nợ đọng, khấu trừ điện nước và bồi thường thiệt hại đã được giải quyết trọn vẹn. Hợp đồng chuyển sang trạng thái <strong>Đã thanh lý & Đóng tài chính</strong> (Khóa hoàn toàn mọi phát sinh hóa đơn mới).
+            </p>
+          </div>
+        </div>
+
+        <!-- Printable Statement Paper (Standard A4 Format) -->
+        <div id="print-area" class="bg-white rounded-2xl p-8 sm:p-12 border border-slate-200/80 shadow-sm space-y-8 text-slate-800 font-sans">
+
+          <!-- Header Document -->
+          <div class="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-6 gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-[#0F766E] text-white flex items-center justify-center font-bold text-lg">S</span>
+                <span class="font-bold text-xl text-slate-900 tracking-tight">StayHub Living Management</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Hệ thống Quản lý Vận hành & Căn hộ Dịch vụ</p>
+              <p class="text-xs text-slate-500">Hotline: 1900 8899 • Email: hotro@stayhub.vn</p>
+            </div>
+            <div class="text-right">
+              <h2 class="text-xl font-extrabold uppercase tracking-wide text-slate-900">Biên Bản Quyết Toán</h2>
+              <h3 class="text-xs font-semibold text-slate-500 mt-0.5">VÀ THANH LÝ HỢP ĐỒNG THUÊ</h3>
+              <p class="text-xs font-mono text-slate-600 mt-2">Mã BB: <strong id="doc-settlement-id">STL-2026-001</strong></p>
+              <p class="text-xs text-slate-500">Ngày lập: <span id="doc-date">04/10/2026</span></p>
+            </div>
+          </div>
+
+          <!-- Parties Meta Info -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <div class="space-y-1.5">
+              <span class="font-bold text-slate-900 block uppercase text-[11px] text-teal-800">Bên Cho Thuê (Bên A)</span>
+              <div><strong>Đại diện:</strong> Công ty Cổ phần StayHub Việt Nam</div>
+              <div><strong>Quản lý cơ sở:</strong> Trần Minh Đức</div>
+              <div><strong>Tòa nhà:</strong> StayHub Central - Ba Đình, Hà Nội</div>
+            </div>
+            <div class="space-y-1.5">
+              <span class="font-bold text-slate-900 block uppercase text-[11px] text-teal-800">Bên Thuê (Bên B)</span>
+              <div><strong>Họ và tên:</strong> <span id="doc-tenant">Lê Văn An</span></div>
+              <div><strong>Căn hộ thuê:</strong> <span id="doc-room" class="font-bold">P201</span></div>
+              <div><strong>Hợp đồng số:</strong> <span id="doc-contract-code" class="font-mono font-bold">HD-2025-001</span></div>
+              <div><strong>Biên bản trả phòng:</strong> <span id="doc-checkout-id" class="font-mono">CKO-2026-001</span></div>
+            </div>
+          </div>
+
+          <!-- Financial Statement Table -->
+          <div class="space-y-3">
+            <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wide">Chi Tiết Quyết Toán Tài Chính</h4>
+            <table class="w-full text-xs text-left border-collapse border border-slate-200">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase text-[11px]">
+                <tr>
+                  <th class="border border-slate-200 p-2.5 text-center w-12">STT</th>
+                  <th class="border border-slate-200 p-2.5">Khoản mục quyết toán</th>
+                  <th class="border border-slate-200 p-2.5 text-right w-36">Cộng (+)</th>
+                  <th class="border border-slate-200 p-2.5 text-right w-36">Trừ (-)</th>
+                </tr>
+              </thead>
+              <tbody id="doc-tbody" class="text-slate-800">
+                <!-- populated -->
+              </tbody>
+              <tfoot class="bg-slate-50 font-bold text-sm">
+                <tr>
+                  <td colspan="2" class="border border-slate-200 p-3 text-right">Tổng cộng chênh lệch ròng (Net):</td>
+                  <td colspan="2" id="doc-net-total" class="border border-slate-200 p-3 text-right text-emerald-700 text-base font-extrabold">
+                    +5.968.000 ₫
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <!-- Settlement Summary Sentence -->
+          <div class="p-4 bg-teal-50/50 rounded-xl border border-teal-100 text-xs text-teal-950 space-y-1">
+            <strong>Kết luận thanh toán:</strong>
+            <p id="doc-conclusion">
+              Bên A đã hoàn trả đầy đủ cho Bên B số tiền <strong>5.968.000 ₫</strong> qua tài khoản Vietcombank số 0011002345678 ngày 04/10/2026. Hai bên đã hoàn thành đầy đủ nghĩa vụ tài chính và cùng đồng thuận thanh lý hợp đồng.
+            </p>
+          </div>
+
+          <!-- Signatures Section -->
+          <div class="grid grid-cols-2 gap-8 text-center text-xs pt-8">
+            <div class="space-y-16">
+              <div>
+                <span class="font-bold block uppercase text-slate-900">Đại Diện Bên Cho Thuê</span>
+                <span class="text-slate-400 italic">(Ký và ghi rõ họ tên)</span>
+              </div>
+              <div class="font-bold text-slate-800">Trần Minh Đức</div>
+            </div>
+            <div class="space-y-16">
+              <div>
+                <span class="font-bold block uppercase text-slate-900">Đại Diện Bên Thuê</span>
+                <span class="text-slate-400 italic">(Ký và ghi rõ họ tên)</span>
+              </div>
+              <div id="doc-signature-name" class="font-bold text-slate-800">Lê Văn An</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Audit Trail Timeline Card -->
+        <div class="no-print bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <i data-lucide="history" class="w-4 h-4 text-teal-600"></i>
+              <span>Nhật Ký Kiểm Toán Toàn Vẹn (Audit Trail)</span>
+            </h3>
+            <span class="text-xs text-slate-400">Lưu vết thời gian thực</span>
+          </div>
+
+          <div id="audit-logs-container" class="space-y-3 text-xs pl-2 border-l-2 border-teal-200">
+            <!-- populated -->
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let currentSettlement = null;
+
+    function getParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function loadDocument() {
+      const id = getParam('id') || 'STL-2026-001';
+      currentSettlement = DataStore.getSettlementById(id) || DataStore.getSettlements()[0];
+      if (!currentSettlement) return;
+
+      document.getElementById('doc-settlement-id').textContent = currentSettlement.id;
+      document.getElementById('doc-tenant').textContent = currentSettlement.tenant;
+      document.getElementById('doc-room').textContent = currentSettlement.room;
+      document.getElementById('doc-contract-code').textContent = currentSettlement.contractCode;
+      document.getElementById('doc-checkout-id').textContent = currentSettlement.checkoutRecordId;
+      document.getElementById('doc-signature-name').textContent = currentSettlement.tenant;
+
+      const tbody = document.getElementById('doc-tbody');
+      tbody.innerHTML = `
+        <tr>
+          <td class="border border-slate-200 p-2.5 text-center">1</td>
+          <td class="border border-slate-200 p-2.5 font-semibold">Tiền đặt cọc hợp đồng ban đầu</td>
+          <td class="border border-slate-200 p-2.5 text-right font-bold text-emerald-700">${formatVND(currentSettlement.deposit)}</td>
+          <td class="border border-slate-200 p-2.5 text-right text-slate-300">-</td>
+        </tr>
+        <tr>
+          <td class="border border-slate-200 p-2.5 text-center">2</td>
+          <td class="border border-slate-200 p-2.5">Hóa đơn nợ đọng kỳ trước</td>
+          <td class="border border-slate-200 p-2.5 text-right text-slate-300">-</td>
+          <td class="border border-slate-200 p-2.5 text-right font-semibold text-rose-600">${formatVND(currentSettlement.unpaidInvoices)}</td>
+        </tr>
+        <tr>
+          <td class="border border-slate-200 p-2.5 text-center">3</td>
+          <td class="border border-slate-200 p-2.5">Tiền điện kỳ cuối (${currentSettlement.electricity.units} kWh)</td>
+          <td class="border border-slate-200 p-2.5 text-right text-slate-300">-</td>
+          <td class="border border-slate-200 p-2.5 text-right font-semibold text-rose-600">${formatVND(currentSettlement.electricity.total)}</td>
+        </tr>
+        <tr>
+          <td class="border border-slate-200 p-2.5 text-center">4</td>
+          <td class="border border-slate-200 p-2.5">Tiền nước kỳ cuối (${currentSettlement.water.units} m³)</td>
+          <td class="border border-slate-200 p-2.5 text-right text-slate-300">-</td>
+          <td class="border border-slate-200 p-2.5 text-right font-semibold text-rose-600">${formatVND(currentSettlement.water.total)}</td>
+        </tr>
+        ${(currentSettlement.damages || []).map((dmg, idx) => `
+          <tr>
+            <td class="border border-slate-200 p-2.5 text-center">${5 + idx}</td>
+            <td class="border border-slate-200 p-2.5">${dmg.description}</td>
+            <td class="border border-slate-200 p-2.5 text-right text-slate-300">-</td>
+            <td class="border border-slate-200 p-2.5 text-right font-semibold text-rose-600">${formatVND(dmg.amount)}</td>
+          </tr>
+        `).join('')}
+      `;
+
+      const netEl = document.getElementById('doc-net-total');
+      const conclusionEl = document.getElementById('doc-conclusion');
+
+      if (currentSettlement.type === 'REFUND_DUE') {
+        netEl.textContent = `+${formatVND(currentSettlement.netBalance)} (Hoàn cọc)`;
+        netEl.className = 'border border-slate-200 p-3 text-right text-emerald-700 text-base font-extrabold';
+        conclusionEl.innerHTML = `Bên A đã hoàn trả đầy đủ cho Bên B số tiền <strong>${formatVND(currentSettlement.netBalance)}</strong> qua tài khoản ngân hàng. Hai bên không còn khiếu nại hay tranh chấp tài chính.`;
+      } else if (currentSettlement.type === 'REPAYMENT_REQUIRED') {
+        netEl.textContent = `${formatVND(currentSettlement.netBalance)} (Đã nộp đủ)`;
+        netEl.className = 'border border-slate-200 p-3 text-right text-rose-700 text-base font-extrabold';
+        conclusionEl.innerHTML = `Bên B đã thanh toán đầy đủ cho Bên A số tiền chênh lệch ngoài cọc <strong>${formatVND(Math.abs(currentSettlement.netBalance))}</strong>. Hai bên đã hoàn thành đầy đủ nghĩa vụ tài chính.`;
+      } else {
+        netEl.textContent = '0 ₫ (Cấn trừ vừa đủ)';
+        netEl.className = 'border border-slate-200 p-3 text-right text-sky-700 text-base font-extrabold';
+        conclusionEl.innerHTML = `Tiền cọc ${formatVND(currentSettlement.deposit)} đã được cấn trừ vừa khớp với toàn bộ công nợ. Hai bên không phát sinh nghĩa vụ tài chính bổ sung.`;
+      }
+
+      // Render audit logs
+      const auditContainer = document.getElementById('audit-logs-container');
+      auditContainer.innerHTML = (currentSettlement.auditLogs || []).map(log => `
+        <div class="relative pl-4 py-1">
+          <div class="absolute -left-[5px] top-2 w-2 h-2 rounded-full bg-teal-600"></div>
+          <div class="flex items-center gap-2">
+            <span class="font-mono text-slate-400 text-[11px]">${log.time}</span>
+            <span class="font-bold text-slate-800">${log.actor}</span>
+          </div>
+          <p class="text-slate-600 mt-0.5">${log.action}</p>
+        </div>
+      `).join('');
+
+      if (currentSettlement.status === 'COMPLETED') {
+        document.getElementById('btn-close-contract').textContent = 'Đã đóng hợp đồng';
+        document.getElementById('btn-close-contract').disabled = true;
+        document.getElementById('btn-close-contract').className = 'inline-flex items-center gap-2 px-5 py-2 bg-slate-400 text-white rounded-xl text-xs font-bold shadow-sm cursor-not-allowed';
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function finishClosing() {
+      if (confirm(`Bạn có chắc chắn muốn đóng tài chính và thanh lý hợp đồng ${currentSettlement.contractCode}? Sau khi đóng, hợp đồng sẽ không phát sinh thêm bất kỳ hóa đơn nào.`)) {
+        DataStore.closeSettlementContract(currentSettlement.id);
+        showToast(`Đã đóng tài chính và thanh lý hợp đồng ${currentSettlement.contractCode} thành công!`);
+        setTimeout(() => {
+          loadDocument();
+        }, 500);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDocument();
+    });
+  </script>
+</body>
+</html>

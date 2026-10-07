@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết Bảng Quyết toán</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/data.js"></script>
+  <script src="../js/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Top Demo Role Switcher Bar -->
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+      <script>
+        initStayHubShell('settlement-details.html', 'Chi tiết Bảng Quyết toán', 'Tài chính / Quyết toán hợp đồng / Chi tiết');
+      </script>
+
+      <div class="p-6 max-w-5xl w-full mx-auto space-y-6">
+
+        <!-- Header Back Navigation -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <a href="settlements.html" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Quay lại danh sách quyết toán</span>
+          </a>
+          <div class="flex items-center gap-2" id="contract-selector-wrapper">
+            <span class="text-xs text-slate-500">Xem hợp đồng:</span>
+            <select id="select-settlement" onchange="switchSettlement(this.value)" 
+              class="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#0F766E]">
+              <option value="STL-2026-001">HD-2025-001 - P201</option>
+              <option value="STL-2026-002">HD-2025-002 - P101</option>
+              <option value="STL-2026-003">HD-2025-003 - P102</option>
+              <option value="STL-2026-004">HD-2025-004 - P301</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Summary Banner / Card -->
+        <div id="status-banner" class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Detailed Breakdown Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          <!-- Left 2 Cols: Itemized Statement -->
+          <div class="lg:col-span-2 space-y-6">
+
+            <!-- Itemized Table Card -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+              <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="font-bold text-slate-900 text-base">Bảng Kê Chi Tiết Khoản Mục</h3>
+                <span class="text-xs text-slate-500">Đơn vị: VNĐ</span>
+              </div>
+
+              <div class="p-5 space-y-5 text-sm">
+
+                <!-- 1. Deposit hold -->
+                <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-4 flex justify-between items-center">
+                  <div>
+                    <span class="font-bold text-emerald-950 block">1. Tiền đặt cọc ban đầu (Deposit)</span>
+                    <span class="text-xs text-emerald-700">Đã nộp khi ký hợp đồng thuê</span>
+                  </div>
+                  <span id="txt-val-deposit" class="font-extrabold text-emerald-700 text-lg">+8.500.000 ₫</span>
+                </div>
+
+                <!-- 2. Unpaid invoices -->
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center text-slate-800 font-bold border-b border-slate-100 pb-2">
+                    <span>2. Hóa đơn tiền phòng / dịch vụ nợ đọng</span>
+                    <span id="txt-val-unpaid" class="text-rose-600">-1.505.000 ₫</span>
+                  </div>
+                  <div id="list-unpaid-invoices" class="space-y-1.5 pl-2 text-xs text-slate-600">
+                    <!-- populated -->
+                  </div>
+                </div>
+
+                <!-- 3. Utilities final -->
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center text-slate-800 font-bold border-b border-slate-100 pb-2">
+                    <span>3. Điện & Nước kỳ cuối (Chốt tại biên bản checkout)</span>
+                    <span id="txt-val-utils" class="text-rose-600">-327.000 ₫</span>
+                  </div>
+                  <div id="list-utilities" class="space-y-1.5 pl-2 text-xs text-slate-600">
+                    <!-- populated -->
+                  </div>
+                </div>
+
+                <!-- 4. Damage & cleaning -->
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center text-slate-800 font-bold border-b border-slate-100 pb-2">
+                    <span>4. Bồi thường hư hỏng & Phí dọn vệ sinh</span>
+                    <span id="txt-val-damages" class="text-rose-600">-700.000 ₫</span>
+                  </div>
+                  <div id="list-damages" class="space-y-1.5 pl-2 text-xs text-slate-600">
+                    <!-- populated -->
+                  </div>
+                </div>
+
+                <!-- Total Net Line -->
+                <div class="pt-4 border-t-2 border-slate-200 flex justify-between items-center">
+                  <div>
+                    <span class="text-base font-bold text-slate-900 block">Số dư ròng thực tế (Net Settlement)</span>
+                    <span class="text-xs text-slate-500">Net = Tiền cọc - (Nợ hóa đơn + Điện nước + Hư hại)</span>
+                  </div>
+                  <span id="txt-val-net" class="text-2xl font-extrabold text-emerald-600">+5.968.000 ₫</span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Evidence Photos -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-3">
+              <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <i data-lucide="camera" class="w-4 h-4 text-slate-500"></i>
+                <span>Hình ảnh Hiện trạng Nghiệm thu Trả phòng</span>
+              </h4>
+              <p class="text-xs text-slate-500">Được chụp và đính kèm vào biên bản kiểm tra phòng ngày trả phòng</p>
+              
+              <div id="evidence-photos" class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
+                <div class="relative rounded-xl overflow-hidden border border-slate-200 aspect-video group">
+                  <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500" class="w-full h-full object-cover">
+                  <span class="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">Vệ sinh bếp dơ</span>
+                </div>
+                <div class="relative rounded-xl overflow-hidden border border-slate-200 aspect-video group">
+                  <img src="https://images.unsplash.com/photo-1558002038-1055907df827?w=500" class="w-full h-full object-cover">
+                  <span class="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">Khóa cửa ban công hỏng</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Col: Contract Details & Resident Confirmation Status -->
+          <div class="space-y-6">
+
+            <!-- Contract Meta Card -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-3.5 text-xs">
+              <h4 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-2.5">Thông tin Hợp đồng</h4>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Mã hợp đồng:</span>
+                <span id="side-contract-code" class="font-bold text-slate-800">HD-2025-001</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Căn hộ:</span>
+                <span id="side-room" class="font-bold text-slate-800">P201</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Cư dân:</span>
+                <span id="side-tenant" class="font-bold text-slate-800">Lê Văn An</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Số điện thoại:</span>
+                <span id="side-phone" class="font-semibold text-slate-800">0904445566</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Mã Checkout:</span>
+                <span id="side-checkout-id" class="font-semibold text-teal-700">CKO-2026-001</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Ngày trả phòng:</span>
+                <span id="side-checkout-date" class="font-semibold text-slate-800">02/10/2026</span>
+              </div>
+            </div>
+
+            <!-- Resident Confirmation Card -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-4">
+              <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <h4 class="font-bold text-slate-900 text-sm">Xác Nhận Của Cư Dân</h4>
+                <span id="resident-status-badge" class="text-[11px] font-semibold px-2 py-0.5 rounded-full"></span>
+              </div>
+
+              <div id="resident-action-area" class="space-y-4">
+                <!-- Dynamically populated based on role and confirmation status -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let currentSettlement = null;
+
+    function getParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function switchSettlement(id) {
+      loadSettlement(id);
+    }
+
+    function loadSettlement(id) {
+      currentSettlement = DataStore.getSettlementById(id) || DataStore.getSettlements()[0];
+      if (!currentSettlement) return;
+
+      document.getElementById('select-settlement').value = currentSettlement.id;
+      
+      // Metadata
+      document.getElementById('side-contract-code').textContent = currentSettlement.contractCode;
+      document.getElementById('side-room').textContent = currentSettlement.room;
+      document.getElementById('side-tenant').textContent = currentSettlement.tenant;
+      document.getElementById('side-phone').textContent = currentSettlement.phone;
+      document.getElementById('side-checkout-id').textContent = currentSettlement.checkoutRecordId;
+      document.getElementById('side-checkout-date').textContent = currentSettlement.checkoutDate;
+
+      // Values
+      document.getElementById('txt-val-deposit').textContent = `+${formatVND(currentSettlement.deposit)}`;
+      document.getElementById('txt-val-unpaid').textContent = `-${formatVND(currentSettlement.unpaidInvoices)}`;
+      
+      const utilsTotal = (currentSettlement.electricity.total || 0) + (currentSettlement.water.total || 0);
+      document.getElementById('txt-val-utils').textContent = `-${formatVND(utilsTotal)}`;
+
+      const damagesTotal = (currentSettlement.damages || []).reduce((s, d) => s + (Number(d.amount) || 0), 0);
+      document.getElementById('txt-val-damages').textContent = `-${formatVND(damagesTotal)}`;
+
+      // Unpaid invoices list
+      const invListEl = document.getElementById('list-unpaid-invoices');
+      if (currentSettlement.unpaidInvoicesList?.length) {
+        invListEl.innerHTML = currentSettlement.unpaidInvoicesList.map(inv => `
+          <div class="flex justify-between py-0.5">
+            <span>• ${inv.description}</span>
+            <span class="font-semibold">${formatVND(inv.amount)}</span>
+          </div>
+        `).join('');
+      } else {
+        invListEl.innerHTML = '<span class="text-slate-400 italic">Không có hóa đơn nợ</span>';
+      }
+
+      // Utilities list
+      document.getElementById('list-utilities').innerHTML = `
+        <div class="flex justify-between py-0.5">
+          <span>• Điện: ${currentSettlement.electricity.old} ➔ ${currentSettlement.electricity.new} (${currentSettlement.electricity.units} kWh)</span>
+          <span class="font-semibold">${formatVND(currentSettlement.electricity.total)}</span>
+        </div>
+        <div class="flex justify-between py-0.5">
+          <span>• Nước: ${currentSettlement.water.old} ➔ ${currentSettlement.water.new} (${currentSettlement.water.units} m³)</span>
+          <span class="font-semibold">${formatVND(currentSettlement.water.total)}</span>
+        </div>
+      `;
+
+      // Damages list
+      document.getElementById('list-damages').innerHTML = (currentSettlement.damages || []).map(dmg => `
+        <div class="flex justify-between py-0.5">
+          <span>• ${dmg.description} ${dmg.pendingQuote ? '<span class="text-amber-600 font-bold">(Chờ báo giá)</span>' : ''}</span>
+          <span class="font-semibold">${dmg.pendingQuote ? 'Đang cập nhật' : formatVND(dmg.amount)}</span>
+        </div>
+      `).join('');
+
+      renderBannerAndActions();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderBannerAndActions() {
+      const banner = document.getElementById('status-banner');
+      const actionArea = document.getElementById('resident-action-area');
+      const netValEl = document.getElementById('txt-val-net');
+      const badgeEl = document.getElementById('resident-status-badge');
+
+      const role = DataStore.getRole();
+      const isResident = role === 'RESIDENT';
+
+      // Check if resident has agreed (via session storage or state)
+      const sessionAgreed = sessionStorage.getItem(`stayhub_agreed_${currentSettlement.id}`);
+      const isAgreed = sessionAgreed === 'true' || currentSettlement.residentApproval?.agreedByUser === true;
+
+      // Update Net text
+      if (currentSettlement.type === 'REFUND_DUE') {
+        netValEl.textContent = `+${formatVND(currentSettlement.netBalance)}`;
+        netValEl.className = 'text-2xl font-extrabold text-emerald-600';
+      } else if (currentSettlement.type === 'REPAYMENT_REQUIRED') {
+        netValEl.textContent = `${formatVND(currentSettlement.netBalance)}`;
+        netValEl.className = 'text-2xl font-extrabold text-rose-600';
+      } else if (currentSettlement.type === 'EXACT_BALANCE') {
+        netValEl.textContent = '0 ₫ (Khớp cọc)';
+        netValEl.className = 'text-2xl font-extrabold text-sky-600';
+      } else {
+        netValEl.textContent = 'Chưa xác định';
+        netValEl.className = 'text-2xl font-extrabold text-amber-500';
+      }
+
+      // Render Top Banner
+      if (currentSettlement.type === 'REFUND_DUE') {
+        banner.innerHTML = `
+          <div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>Cần Hoàn Trả Tiền Cọc Cho Cư Dân
+            </span>
+            <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Số tiền hoàn lại: +${formatVND(currentSettlement.netBalance)}</h2>
+            <p class="text-xs text-slate-500 mt-1">Tiền cọc ${formatVND(currentSettlement.deposit)} lớn hơn tổng chi phí khấu trừ ${formatVND(currentSettlement.totalDue)}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="process-refund.html?id=${currentSettlement.id}" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2">
+              <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
+              <span>${isResident ? 'Theo dõi nhận hoàn tiền' : 'Tiến hành hoàn tiền'}</span>
+            </a>
+          </div>
+        `;
+      } else if (currentSettlement.type === 'REPAYMENT_REQUIRED') {
+        banner.innerHTML = `
+          <div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 mb-2">
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>Cư Dân Cần Nộp Thêm Tiền Ngoài Cọc
+            </span>
+            <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Số tiền cần truy thu: ${formatVND(Math.abs(currentSettlement.netBalance))}</h2>
+            <p class="text-xs text-slate-500 mt-1">Tổng chi phí phát sinh (${formatVND(currentSettlement.totalDue)}) vượt quá số tiền cọc hiện giữ (${formatVND(currentSettlement.deposit)})</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="additional-payment.html?id=${currentSettlement.id}" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2">
+              <i data-lucide="qr-code" class="w-4 h-4"></i>
+              <span>${isResident ? 'Tiến hành thanh toán ngay' : 'Thu tiền từ cư dân'}</span>
+            </a>
+          </div>
+        `;
+      } else if (currentSettlement.type === 'EXACT_BALANCE') {
+        banner.innerHTML = `
+          <div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-800 mb-2">
+              <span class="w-2 h-2 rounded-full bg-sky-500"></span>Cấn Trừ Vừa Đủ Tiền Cọc
+            </span>
+            <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Chênh lệch tài chính: 0 ₫</h2>
+            <p class="text-xs text-slate-500 mt-1">Tiền cọc ${formatVND(currentSettlement.deposit)} vừa khớp đúng chi phí công nợ ${formatVND(currentSettlement.totalDue)}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="completed-settlement.html?id=${currentSettlement.id}" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>Hoàn tất & Đóng HĐ</span>
+            </a>
+          </div>
+        `;
+      } else if (currentSettlement.type === 'PENDING_ASSESSMENT') {
+        banner.innerHTML = `
+          <div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 mb-2">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>Tạm Hoãn Quyết Toán (Pending Assessment)
+            </span>
+            <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Đang chờ báo giá hư hỏng từ bên thứ ba</h2>
+            <p class="text-xs text-slate-500 mt-1">Căn hộ có hạng mục vỡ kính lan can ban công cần thợ chuyên dụng khảo sát và báo giá</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="prepare-settlement.html?id=${currentSettlement.id}" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2">
+              <i data-lucide="edit-3" class="w-4 h-4"></i>
+              <span>Cập nhật báo giá</span>
+            </a>
+          </div>
+        `;
+      }
+
+      // =================================================================
+      // RENDER CARD "XÁC NHẬN CỦA CƯ DÂN"
+      // =================================================================
+
+      // TRƯỜNG HỢP 1: Ở MÀN HÌNH CƯ DÂN (RESIDENT) VÀ CHƯA ĐỒNG Ý
+      // Cư dân sẽ thấy các lựa chọn phản hồi: Gửi khiếu nại hoặc Đồng ý
+      if (isResident && !isAgreed && currentSettlement.type !== 'PENDING_ASSESSMENT') {
+        badgeEl.textContent = 'Chờ bạn phản hồi';
+        badgeEl.className = 'text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800';
+
+        actionArea.innerHTML = `
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-3">
+            <div class="flex items-center gap-2 text-slate-800 font-semibold">
+              <i data-lucide="help-circle" class="w-4 h-4 text-teal-600"></i>
+              <span>Vui lòng kiểm tra bảng kê và gửi xác nhận:</span>
+            </div>
+
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">Ghi chú phản hồi của bạn:</label>
+              <textarea id="input-resident-note" rows="2" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-xs focus:outline-none focus:border-[#0F766E]" placeholder="Nhập ý kiến của bạn...">Đã kiểm tra số điện nước và đồng ý phương án khấu trừ cọc.</textarea>
+            </div>
+
+            <div class="space-y-2 pt-1">
+              <button type="button" onclick="residentSubmitAgree()" class="w-full py-2.5 px-4 bg-[#0F766E] hover:bg-teal-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-1.5">
+                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                <span>Đồng ý với quyết toán</span>
+              </button>
+              
+              <a href="settlement-dispute.html?id=${currentSettlement.id}" class="w-full py-2.5 px-4 border border-amber-300 text-amber-800 hover:bg-amber-50 rounded-xl text-xs font-semibold text-center block transition-colors flex items-center justify-center gap-1.5">
+                <i data-lucide="message-square" class="w-3.5 h-3.5 text-amber-600"></i>
+                <span>Gửi khiếu nại chi phí</span>
+              </a>
+            </div>
+          </div>
+        `;
+      } 
+      // TRƯỜNG HỢP 2: CƯ DÂN ĐÃ BẤM ĐỒNG Ý (HOẶC XEM Ở VAI TRÒ QUẢN LÝ ĐÃ CÓ XÁC NHẬN)
+      // Hiện chính xác hộp xanh như Ảnh 3!
+      else if (isAgreed || currentSettlement.residentApproval?.status === 'ACCEPTED') {
+        badgeEl.textContent = 'Đã xác nhận';
+        badgeEl.className = 'text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800';
+
+        const agreedTime = currentSettlement.residentApproval?.agreedAt || '2026-10-03 10:30';
+        const agreedNote = currentSettlement.residentApproval?.note || 'Đã kiểm tra số điện nước và đồng ý phương án khấu trừ cọc.';
+
+        let nextActionBtn = '';
+        if (isResident) {
+          if (currentSettlement.type === 'REFUND_DUE') {
+            nextActionBtn = `
+              <a href="process-refund.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
+                Theo dõi nhận hoàn tiền
+              </a>
+              <button onclick="resetResidentApproval()" class="w-full text-center text-[11px] text-slate-400 hover:text-slate-600 underline pt-1 block">
+                Thử lại lựa chọn phản hồi (Demo)
+              </button>
+            `;
+          } else if (currentSettlement.type === 'REPAYMENT_REQUIRED') {
+            nextActionBtn = `
+              <a href="additional-payment.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
+                Tiến hành thanh toán ngay
+              </a>
+              <button onclick="resetResidentApproval()" class="w-full text-center text-[11px] text-slate-400 hover:text-slate-600 underline pt-1 block">
+                Thử lại lựa chọn phản hồi (Demo)
+              </button>
+            `;
+          }
+        } else {
+          // Quản lý hoặc Kỹ thuật
+          if (currentSettlement.type === 'REFUND_DUE') {
+            nextActionBtn = `
+              <a href="process-refund.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-[#0F766E] hover:bg-teal-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
+                Thực hiện lệnh hoàn tiền cọc
+              </a>
+            `;
+          } else if (currentSettlement.type === 'REPAYMENT_REQUIRED') {
+            nextActionBtn = `
+              <a href="additional-payment.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
+                Thu tiền từ cư dân
+              </a>
+            `;
+          } else if (currentSettlement.type === 'EXACT_BALANCE') {
+            nextActionBtn = `
+              <a href="completed-settlement.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
+                Đóng hợp đồng tài chính
+              </a>
+            `;
+          }
+        }
+
+        actionArea.innerHTML = `
+          <!-- KHUNG XANH ĐÃ ĐỒNG Ý CHUẨN NHƯ ẢNH 3 -->
+          <div class="bg-emerald-50/90 p-4 rounded-xl border border-emerald-200 text-xs space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-emerald-950 flex items-center gap-1.5">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
+                <span>Cư dân đã đồng ý với bảng tính</span>
+              </span>
+              <span class="text-[11px] text-emerald-700 font-mono">${agreedTime}</span>
+            </div>
+            <div class="text-slate-700 bg-white p-3 rounded-lg border border-emerald-100 space-y-1">
+              <div><span class="text-slate-400">Người xác nhận:</span> <strong class="text-slate-800">${currentSettlement.tenant}</strong></div>
+              <div><span class="text-slate-400">Ý kiến phản hồi:</span> <span class="italic text-slate-600">"${agreedNote}"</span></div>
+            </div>
+          </div>
+
+          ${nextActionBtn}
+        `;
+      } 
+      // TRƯỜNG HỢP 3: HỢP ĐỒNG ĐANG CHỜ ĐỊNH GIÁ (STL-2026-004)
+      else {
+        badgeEl.textContent = 'Tạm hoãn';
+        badgeEl.className = 'text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800';
+
+        actionArea.innerHTML = `
+          <div class="bg-amber-50/90 p-4 rounded-xl border border-amber-200 text-xs space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-amber-950 flex items-center gap-1.5">
+                <i data-lucide="clock" class="w-4 h-4 text-amber-600"></i>
+                <span>Chưa phát hành cho cư dân</span>
+              </span>
+              <span class="text-[11px] text-amber-700 font-semibold">Tạm hoãn</span>
+            </div>
+            <div class="text-slate-700 bg-white p-3 rounded-lg border border-amber-100 space-y-1">
+              <div><span class="text-slate-400">Trạng thái:</span> <strong class="text-slate-800">Chờ định giá hư hại</strong></div>
+              <p class="text-slate-600 italic">Bảng tính đang tạm hoãn, chưa gửi cho cư dân xác nhận.</p>
+            </div>
+          </div>
+          <a href="prepare-settlement.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
+            Cập nhật chi phí báo giá
+          </a>
+        `;
+      }
+    }
+
+    // Hành động Cư dân bấm "Đồng ý với quyết toán"
+    function residentSubmitAgree() {
+      const noteInput = document.getElementById('input-resident-note');
+      const note = noteInput ? noteInput.value.trim() : 'Đã kiểm tra số điện nước và đồng ý phương án khấu trừ cọc.';
+      const nowStr = new Date().toISOString().replace('T', ' ').slice(0, 16);
+
+      currentSettlement.residentApproval = {
+        status: 'ACCEPTED',
+        agreedByUser: true,
+        agreedAt: nowStr,
+        note: note
+      };
+
+      sessionStorage.setItem(`stayhub_agreed_${currentSettlement.id}`, 'true');
+      DataStore.saveSettlement(currentSettlement);
+
+      showToast('Bạn đã xác nhận đồng ý với bảng tính quyết toán thành công!');
+      
+      // Render lại lập tức để hiện ra khung xanh như ảnh 3!
+      renderBannerAndActions();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Đặt lại trạng thái để người dùng test lại thao tác phản hồi của cư dân
+    function resetResidentApproval() {
+      sessionStorage.removeItem(`stayhub_agreed_${currentSettlement.id}`);
+      if (currentSettlement.residentApproval) {
+        currentSettlement.residentApproval.agreedByUser = false;
+      }
+      DataStore.saveSettlement(currentSettlement);
+      showToast('Đã đặt lại trạng thái để bạn thử lại phản hồi cư dân!');
+      renderBannerAndActions();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const id = getParam('id') || 'STL-2026-001';
+      loadSettlement(id);
+    });
+  </script>
+</body>
+</html>
