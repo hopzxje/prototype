@@ -198,7 +198,10 @@ function updateCheckoutContractNotice() {
 
 function getResidentRequest() {
   const requests = DataStore.getCheckoutRequests();
-  return requests.find(r => r.room === 'P201' || r.id === 'req-01') || requests[0];
+  const user = DataStore.getUser();
+  if (user.role !== 'RESIDENT') return null;
+  return requests.find(r => r.residentId ? r.residentId === user.id
+    : r.room === user.room && r.building === user.building && r.tenant === user.fullName) || null;
 }
 
 function getReqActualStep(req) {
@@ -208,7 +211,7 @@ function getReqActualStep(req) {
   if (req.status === 'PENDING_APPROVAL' || req.status === 'DISPUTED' || req.status === 'WAITING_RESIDENT_SIGN') {
     return req.isSigned ? 4 : 3;
   }
-  if (req.status === 'REFUND_PENDING') return 4;
+  if (['REFUND_PENDING', 'REFUND_TRANSFERRED'].includes(req.status)) return 4;
   if (req.status === 'CLOSED') return 4;
   return 2;
 }
@@ -274,7 +277,7 @@ function renderResidentStepper() {
     { num: 1, title: '1. Gửi Yêu Cầu', sub: req?.requestDate ? `Đã gửi ${req.requestDate.slice(5).replace('-', '/')}` : 'Đã gửi 05/10' },
     { num: 2, title: '2. Hẹn Khảo Sát', sub: `${req?.expectedDate ? req.expectedDate.slice(5).replace('-', '/') : '20/10'} • ${req?.timeslot || '14:30'}` },
     { num: 3, title: '3. Duyệt Quyết Toán', sub: req?.isSigned ? '✓ Đã ký biên bản' : (req?.status === 'DISPUTED' ? 'Đang khiếu nại' : 'Chốt điện nước & cọc') },
-    { num: 4, title: req && getCheckoutCase(req).isEarlyCheckout ? '4. Quyết Toán Cọc' : '4. Hoàn Cọc', sub: req?.depositSettlementStatus === 'FORFEITED' ? (getCheckoutCase(req).refundAmount > 0 ? 'Giữ cọc · hoàn thuê dư' : 'Cọc đã giữ lại') : req && getCheckoutCase(req).isEarlyCheckout ? (getCheckoutCase(req).refundAmount > 0 ? 'Hoàn tiền thuê dư' : 'Không hoàn do trả trước hạn') : req?.status === 'CLOSED' ? '✓ Đã hoàn tất' : 'Cọc chờ duyệt hoàn' }
+    { num: 4, title: req && getCheckoutCase(req).isEarlyCheckout ? '4. Quyết Toán Cọc' : '4. Hoàn Cọc', sub: req?.status === 'REFUND_TRANSFERRED' ? 'Chờ xác nhận đã nhận tiền' : req?.depositSettlementStatus === 'FORFEITED' ? (getCheckoutCase(req).refundAmount > 0 ? 'Giữ cọc · hoàn thuê dư' : 'Cọc đã giữ lại') : req && getCheckoutCase(req).isEarlyCheckout ? (getCheckoutCase(req).refundAmount > 0 ? 'Hoàn tiền thuê dư' : 'Không hoàn do trả trước hạn') : req?.status === 'CLOSED' ? '✓ Đã hoàn tất' : 'Cọc chờ duyệt hoàn' }
   ];
 
   grid.innerHTML = steps.map(s => {
@@ -696,6 +699,7 @@ function renderResidentStepContent() {
 
   } else if (currentResidentStep === 4) {
     const isClosed = (req.status === 'CLOSED');
+    const awaitingReceipt = req.status === 'REFUND_TRANSFERRED';
     const isForfeited = req.depositSettlementStatus === 'FORFEITED';
     const noRefund = checkoutCase.isEarlyCheckout && checkoutCase.refundAmount <= 0;
 
@@ -710,7 +714,7 @@ function renderResidentStepContent() {
             <h3 class="text-lg font-bold text-slate-900">${checkoutCase.isEarlyCheckout ? (noRefund ? 'Khoản cọc không được hoàn do trả phòng trước hạn' : 'Hoàn tiền thuê trả trước chưa sử dụng; tiền cọc không hoàn') : 'Ủy Nhiệm Chi Hoàn Trả Tiền Cọc Cho Cư Dân'}</h3>
           </div>
           <div>
-            ${isForfeited
+            ${awaitingReceipt ? '<span class="text-blue-800 font-bold text-xs">ĐÃ CHUYỂN TIỀN · CHỜ CƯ DÂN XÁC NHẬN</span>' : isForfeited
               ? (isClosed
                 ? `<span class="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300">${req.prepaidRentSettlementStatus === 'PAID' ? 'ĐÃ HOÀN TIỀN THUÊ DƯ · CỌC GIỮ LẠI' : 'ĐÃ TẤT TOÁN · CỌC GIỮ LẠI'}</span>`
                 : '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">CỌC GIỮ LẠI · CHỜ HOÀN TIỀN THUÊ DƯ</span>')
@@ -726,8 +730,8 @@ function renderResidentStepContent() {
           ${checkoutCase.isEarlyCheckout ? `<div class="max-w-3xl mx-auto p-4 rounded-xl border bg-amber-50 border-amber-200 text-amber-900 text-xs"><strong>Hạn hợp đồng: ${contractEndDateLabel}.</strong> Tiền cọc không được hoàn. Tiền thuê trả trước chưa sử dụng: ${formatVND(checkoutCase.rentAdvance.grossUnusedRent)}; đối trừ chi phí còn nợ ${formatVND(checkoutCase.rentAdvance.chargesOffset)}; còn được hoàn ${formatVND(checkoutCase.rentAdvance.refundAmount)}.</div>` : `<div class="max-w-3xl mx-auto p-4 rounded-xl border ${checkoutCase.contractExpiredAtRequest ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-slate-50 border-slate-200 text-slate-700'} text-xs">
             <strong>Hạn hợp đồng: ${contractEndDateLabel}.</strong>
             ${checkoutCase.contractExpiredAtRequest
-              ? `Hợp đồng đã hết hạn; khoản cọc ${formatVND(refundAmount)} vẫn chờ đối soát và quản lý duyệt hoàn.`
-              : 'Khoản cọc được hoàn sau khi quyết toán và xác nhận lệnh chuyển tiền.'}
+              ? `Hợp đồng đã hết hạn; khoản hoàn sau quyết toán là ${formatVND(refundAmount)}. Hồ sơ hoàn tất khi cư dân xác nhận đã nhận tiền.`
+              : 'Sau khi quản lý chuyển tiền, cư dân xác nhận đã nhận đủ khoản hoàn để hoàn tất quyết toán.'}
           </div>`}
           <div class="max-w-3xl mx-auto bg-gradient-to-b from-slate-50 to-white p-6 rounded-2xl border-2 border-slate-300 shadow-md space-y-6 relative overflow-hidden ${noRefund ? 'hidden' : ''}">
             ${isClosed ? `
@@ -736,7 +740,7 @@ function renderResidentStepContent() {
               </div>
             ` : `
               <div class="absolute right-6 top-6 transform rotate-6 border-2 border-amber-500 text-amber-600 px-3 py-1 rounded-lg text-xs font-bold tracking-wider uppercase opacity-80 pointer-events-none">
-                CHỜ DUYỆT LỆNH CHI
+                ${awaitingReceipt ? 'ĐÃ CHUYỂN TIỀN' : 'CHỜ DUYỆT LỆNH CHI'}
               </div>
             `}
 
@@ -784,20 +788,15 @@ function renderResidentStepContent() {
               </div>
             </div>
 
-            <div class="p-3 bg-slate-50 rounded-lg text-slate-600 text-xs space-y-1">
+            <div class="p-4 bg-slate-50 rounded-lg text-slate-700 text-sm space-y-3">
               ${isClosed ? `
-                <div class="text-emerald-800 font-semibold flex items-center gap-1.5">
-                  <span>✓</span> Giao dịch chuyển tiền đã được khớp lệnh thành công qua Napas 24/7 lúc 16:15 ngày 20/10/2026.
-                </div>
-                <p class="text-[11px] text-slate-500">Tiền đã được ghi có vào tài khoản MB Bank của quý khách. Cảm ơn quý khách đã gắn bó cùng StayHub Central!</p>
-              ` : `
-                <div class="text-amber-800 font-semibold flex items-center justify-between">
-                  <span>⏳ Lệnh chi đang chờ Quản lý duyệt giải ngân trên hệ thống ngân hàng.</span>
-                  <button type="button" onclick="demoManagerApproveRefund()" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-[11px] font-bold shadow-xs">
-                    Duyệt ngay (Demo)
-                  </button>
-                </div>
-              `}
+                <p class="text-emerald-800 font-semibold">✓ ${req.refundReceivedAt ? 'Bạn đã xác nhận nhận đủ khoản hoàn lúc ' + new Date(req.refundReceivedAt).toLocaleString('vi-VN') : 'Hồ sơ đã hoàn tất.'}</p>
+              ` : awaitingReceipt ? `
+                <p>Quản lý đã xác nhận chuyển <strong>${formatVND(refundAmount)}</strong> vào tài khoản nhận khoản hoàn. Vui lòng kiểm tra tài khoản và chỉ xác nhận khi đã nhận đủ tiền.</p>
+                <button type="button" onclick="confirmResidentRefundReceived()" class="px-5 py-3 bg-teal-700 hover:bg-teal-800 text-white rounded-lg font-bold">
+                  ${checkoutCase.isEarlyCheckout ? 'Xác nhận đã nhận tiền thuê dư' : 'Xác nhận đã nhận tiền cọc'}
+                </button>
+              ` : '<p>Đang chờ quản lý xác nhận chuyển khoản hoàn. Bạn có thể xác nhận nhận tiền sau khi quản lý đã chuyển.</p>'}
             </div>
           </div>
 
@@ -852,6 +851,7 @@ function renderManagementView() {
           <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Lệnh chi cọc chờ duyệt</p>
           <h3 class="text-2xl font-extrabold text-emerald-600 mt-2">${String(refundCount).padStart(2, '0')} lệnh chi</h3>
           <p class="text-xs text-slate-500 mt-1">Cư dân đã ký · Chờ duyệt hoàn cọc</p>
+          <p class="text-xs text-blue-700 mt-1">${requests.filter(r => r.status === 'REFUND_TRANSFERRED').length} hồ sơ đã chuyển tiền · Chờ cư dân xác nhận</p>
         </div>
 
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover-lift">
@@ -920,6 +920,7 @@ function renderManagementView() {
       <option value="PENDING_APPROVAL">Chờ duyệt quyết toán (PENDING_APPROVAL)</option>
       <option value="DISPUTED">Khiếu nại cần thẩm định (DISPUTED)</option>
       <option value="REFUND_PENDING">Chờ duyệt lệnh chi (REFUND_PENDING)</option>
+      <option value="REFUND_TRANSFERRED">Đã chuyển tiền · Chờ cư dân xác nhận</option>
       <option value="CLOSED">Đã hoàn tất (CLOSED)</option>
     `;
   } else {
@@ -935,6 +936,7 @@ function renderManagementView() {
       <option value="SCHEDULED">Đã hẹn lịch (SCHEDULED)</option>
       <option value="PENDING_APPROVAL">Đã nghiệm thu (PENDING_APPROVAL)</option>
       <option value="REFUND_PENDING">Cọc chờ duyệt hoàn (REFUND_PENDING)</option>
+      <option value="REFUND_TRANSFERRED">Đã chuyển tiền · Chờ cư dân xác nhận</option>
       <option value="CLOSED">Đã hoàn tất (CLOSED)</option>
     `;
   }
@@ -1044,7 +1046,7 @@ function renderCheckoutTable() {
     if (isManager) {
       if (currentManagerTab === 'INSPECTED') {
         // QUẢN LÝ CHỈ QUẢN LÝ CÁC HỒ SƠ ĐÃ NGHIỆM THU
-        matchScope = (r.status === 'PENDING_APPROVAL' || r.status === 'DISPUTED' || r.status === 'REFUND_PENDING' || r.status === 'CLOSED');
+        matchScope = (r.status === 'PENDING_APPROVAL' || r.status === 'DISPUTED' || r.status === 'REFUND_PENDING' || r.status === 'REFUND_TRANSFERRED' || r.status === 'CLOSED');
       } else {
         // Tab giám sát Staff đang khảo sát (chưa nghiệm thu)
         matchScope = (r.status === 'SUBMITTED' || r.status === 'SCHEDULED');
@@ -1092,6 +1094,9 @@ function renderCheckoutTable() {
             </button>
           </div>
         `;
+      } else if (r.status === 'REFUND_TRANSFERRED') {
+        statusBadge = '<span class="badge bg-blue-100 text-blue-800">Chờ cư dân xác nhận đã nhận tiền</span>';
+        actionButtons = '<span class="text-xs text-slate-500">Đã chuyển khoản hoàn</span>';
       } else if (r.status === 'REFUND_PENDING') {
         statusBadge = getCheckoutCase(r).isEarlyCheckout
           ? '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900">Cọc không hoàn · chờ hoàn tiền thuê dư</span>'
@@ -1191,6 +1196,9 @@ function renderCheckoutTable() {
       } else if (r.status === 'WAITING_RESIDENT_SIGN') {
         statusBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Chờ cư dân ký biên bản</span>';
         actionButtons = '<span class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-xs font-semibold">Quản lý đã duyệt quyết toán</span>';
+      } else if (r.status === 'REFUND_TRANSFERRED') {
+        statusBadge = '<span class="badge bg-blue-100 text-blue-800">Chờ cư dân xác nhận đã nhận tiền</span>';
+        actionButtons = '<span class="text-xs text-slate-500">Đã chuyển khoản hoàn</span>';
       } else if (r.status === 'REFUND_PENDING') {
         statusBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Cư dân đã đồng ý biên bản</span>';
         actionButtons = `
@@ -1572,8 +1580,13 @@ function openManagerRefundModal(reqId) {
 }
 
 function confirmManagerRefund() {
+  if (!['MANAGER', 'ADMIN'].includes(DataStore.getRole())) return;
   const requests = DataStore.getCheckoutRequests();
-  const target = requests.find(r => r.id === activeRefundId) || requests[0];
+  const target = requests.find(r => r.id === activeRefundId);
+  if (!target || target.status !== 'REFUND_PENDING' || !target.isSigned) {
+    showToast('Hồ sơ chưa sẵn sàng chuyển hoàn hoặc đã chuyển tiền.', 'error');
+    return;
+  }
   if (target) {
     const caseInfo = getCheckoutCase(target);
     if (caseInfo.refundAmount <= 0) {
@@ -1585,13 +1598,14 @@ function confirmManagerRefund() {
     target.prepaidRentSettlement = caseInfo.rentAdvance;
     target.refundAmount = caseInfo.refundAmount;
     target.refundAmountIsTotal = true;
-    target.status = 'CLOSED';
-    target.depositSettlementStatus = caseInfo.isEarlyCheckout ? 'FORFEITED' : 'PAID';
+    target.status = 'REFUND_TRANSFERRED';
+    target.refundTransferredAt = new Date().toISOString();
+    target.depositSettlementStatus = caseInfo.isEarlyCheckout ? 'FORFEITED' : 'TRANSFERRED';
     if (caseInfo.rentAdvance.refundAmount > 0) {
-      target.prepaidRentSettlementStatus = 'PAID';
-      target.rentRefundPaidAt = new Date().toISOString();
+      target.prepaidRentSettlementStatus = 'TRANSFERRED';
+      target.rentRefundTransferredAt = new Date().toISOString();
     }
-    if (!caseInfo.isEarlyCheckout) target.depositPaidAt = new Date().toISOString();
+    if (!caseInfo.isEarlyCheckout) target.depositTransferredAt = new Date().toISOString();
     const contracts = DataStore.getContracts();
     const contract = contracts.find(c => c.code === target.contractCode)
       || contracts.find(c => c.room === target.room && c.tenant === target.tenant);
@@ -1601,9 +1615,7 @@ function confirmManagerRefund() {
       DataStore.saveContracts(contracts);
     }
     DataStore.saveCheckoutRequests(requests);
-    showToast(caseInfo.isEarlyCheckout
-      ? 'Đã chuyển hoàn tiền thuê trả trước chưa sử dụng. Tiền cọc được giữ lại theo điều kiện hợp đồng.'
-      : 'Đã duyệt lệnh chi UNC hoàn cọc thành công! Hợp đồng đã TERMINATED, phòng ' + target.room + ' chuyển sang AVAILABLE.');
+    showToast('Đã ghi nhận chuyển khoản hoàn. Hồ sơ chờ cư dân xác nhận đã nhận tiền.');
   }
   closeModal('managerRefundModal');
   renderManagementView();
@@ -1658,34 +1670,29 @@ function submitResidentDispute() {
   closeModal('residentDisputeModal');
   selectResidentStep(3);
 }
-function demoManagerApproveRefund() {
+function confirmResidentRefundReceived() {
+  if (DataStore.getRole() !== 'RESIDENT') return;
+  const residentRequest = getResidentRequest();
   const requests = DataStore.getCheckoutRequests();
-  const target = requests.find(r => r.room === 'P201' || r.id === 'req-01') || requests[0];
-  if (target) {
-    const settlement = getCheckoutCase(target);
-    const isEarlyCheckout = settlement.isEarlyCheckout;
-    target.status = 'CLOSED';
-    target.depositSettlementStatus = isEarlyCheckout ? 'FORFEITED' : 'PAID';
-    target.depositRefundAmount = settlement.depositRefundAmount;
-    target.prepaidRentSettlement = settlement.rentAdvance;
-    target.refundAmount = settlement.refundAmount;
-    target.refundAmountIsTotal = true;
-    if (isEarlyCheckout) {
-      target.depositForfeitedAt = new Date().toISOString();
-      target.prepaidRentSettlementStatus = settlement.refundAmount > 0 ? 'PAID' : 'NOT_APPLICABLE';
-      if (settlement.refundAmount > 0) target.rentRefundPaidAt = new Date().toISOString();
-    }
-    else {
-      target.depositPaidAt = new Date().toISOString();
-      if (settlement.rentAdvance.refundAmount > 0) target.prepaidRentSettlementStatus = 'PAID';
-    }
-    DataStore.saveCheckoutRequests(requests);
-    showToast(isEarlyCheckout
-      ? settlement.refundAmount > 0
-        ? 'Đã hoàn tiền thuê trả trước chưa sử dụng; tiền cọc được giữ lại do trả phòng trước hạn.'
-        : 'Đã tất toán: cọc được giữ lại do trả phòng trước hạn, không phát sinh khoản hoàn.'
-      : 'Quản lý Trần Minh Đức đã duyệt giải ngân UNC 7.700.000 ₫ thành công!');
+  const target = requests.find(r => r.id === residentRequest?.id);
+  if (!target || target.status !== 'REFUND_TRANSFERRED' || !target.refundTransferredAt || !target.isSigned || Number(target.refundAmount) <= 0) {
+    showToast('Chưa có khoản hoàn đang chờ xác nhận.', 'error');
+    return;
   }
+  const now = new Date().toISOString();
+  target.status = 'CLOSED';
+  target.refundReceivedAt = now;
+  target.refundReceivedBy = DataStore.getUser().id;
+  if (target.depositSettlementStatus === 'TRANSFERRED') {
+    target.depositSettlementStatus = 'PAID';
+    target.depositPaidAt = now;
+  }
+  if (target.prepaidRentSettlementStatus === 'TRANSFERRED') {
+    target.prepaidRentSettlementStatus = 'PAID';
+    target.rentRefundPaidAt = now;
+  }
+  DataStore.saveCheckoutRequests(requests);
+  showToast('Đã xác nhận nhận đủ khoản hoàn. Hồ sơ quyết toán đã hoàn tất.');
   selectResidentStep(4);
 }
 
