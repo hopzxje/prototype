@@ -26,15 +26,13 @@
         <!-- Top Header & Actions -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800 uppercase tracking-wider">Nghiệp Vụ 7</span>
-              <h2 class="text-xl font-bold text-slate-900">Visitor Registration & Approval</h2>
-            </div>
+            <h2 class="text-xl font-bold text-slate-900">Quản lý Khách đến thăm</h2>
+            <p class="text-xs text-slate-500 mt-1">Tiếp nhận đăng ký từ Cư dân, xét duyệt quyền ra vào và giám sát khách lưu trú tại cơ sở.</p>
           </div>
           <div class="flex items-center gap-2">
             <button onclick="resetVisitorDemoData()" class="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors">
               <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-              <span>Reset Dữ Liệu Mẫu</span>
+              <span>Reset Dữ Liệu</span>
             </button>
             <button onclick="openModal('addVisitorModal')" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
               <i data-lucide="user-plus" class="w-4 h-4"></i>
@@ -43,89 +41,49 @@
           </div>
         </div>
 
-        <!-- ========================================================================= -->
-        <!-- INTERACTIVE FLOW RUNNER (Trình diễn trực quan từng bước theo Swimlane 7)  -->
-        <!-- ========================================================================= -->
-        <div class="bg-gradient-to-r from-teal-900 via-teal-800 to-slate-900 text-white rounded-2xl p-5 shadow-lg border border-teal-700/50">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-teal-700/60">
+        <!-- 4 Metric Cards for Staff & Manager -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <h3 class="font-bold text-sm tracking-wide uppercase text-teal-200">Trình diễn Luồng 7: Đăng Ký & Phê Duyệt Khách Thăm</h3>
-              </div>
+              <p class="text-xs font-semibold text-slate-500 uppercase">Chờ Staff duyệt</p>
+              <h3 class="text-2xl font-extrabold text-amber-600 mt-1" id="metric-pending-count">0</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Đơn mới gửi từ cư dân</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button id="btn-auto-demo" onclick="runAutoVisitorTour()" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-sm transition-all">
-                <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                <span>Chạy Tự Động Toàn Luồng</span>
-              </button>
+            <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
+              <i data-lucide="clock" class="w-5 h-5"></i>
             </div>
           </div>
 
-          <!-- Step Indicators Bar -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-4 text-xs">
-            <!-- Step 1 -->
-            <div id="flow-step-1" onclick="jumpToStep(1)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-3 rounded-xl border border-white/10 transition-all">
-              <div class="flex items-center justify-between text-teal-300 font-semibold text-[11px]">
-                <span>BƯỚC 1: RESIDENT</span>
-                <span class="step-num w-5 h-5 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">1</span>
-              </div>
-              <p class="font-bold text-white mt-1">Đăng ký khách mới</p>
-              <p class="text-[11px] text-slate-300 mt-0.5">Cư dân tạo đơn, hệ thống lưu PENDING</p>
-              <button onclick="event.stopPropagation(); simulateResidentRegistration()" class="mt-2 text-[10px] bg-teal-500/30 hover:bg-teal-500/50 text-teal-200 px-2 py-0.5 rounded font-medium">Tạo đơn mẫu P201 &rarr;</button>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase">Chờ Manager duyệt</p>
+              <h3 class="text-2xl font-extrabold text-purple-600 mt-1" id="metric-manager-count">0</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Ca đặc biệt / ở qua đêm</p>
             </div>
-
-            <!-- Step 2 -->
-            <div id="flow-step-2" onclick="jumpToStep(2)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-3 rounded-xl border border-white/10 transition-all">
-              <div class="flex items-center justify-between text-teal-300 font-semibold text-[11px]">
-                <span>BƯỚC 2: STAFF</span>
-                <span class="step-num w-5 h-5 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">2</span>
-              </div>
-              <p class="font-bold text-white mt-1">Tiếp nhận & Xét duyệt</p>
-              <p class="text-[11px] text-slate-300 mt-0.5">Duyệt ngay HOẶC Chuyển Quản lý</p>
-              <div class="mt-2 flex gap-1">
-                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">Duyệt nhanh</span>
-                <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">Chuyển Manager</span>
-              </div>
+            <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
+              <i data-lucide="user-check" class="w-5 h-5"></i>
             </div>
+          </div>
 
-            <!-- Step 3 -->
-            <div id="flow-step-3" onclick="jumpToStep(3)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-3 rounded-xl border border-white/10 transition-all">
-              <div class="flex items-center justify-between text-teal-300 font-semibold text-[11px]">
-                <span>BƯỚC 3: MANAGER</span>
-                <span class="step-num w-5 h-5 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">3</span>
-              </div>
-              <p class="font-bold text-white mt-1">Quản lý Phê duyệt</p>
-              <p class="text-[11px] text-slate-300 mt-0.5">Xem xét ca đặc biệt: Duyệt / Từ chối</p>
-              <div class="mt-2 flex gap-1">
-                <span class="text-[9px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded">Chấp thuận</span>
-                <span class="text-[9px] bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded">Từ chối + Lý do</span>
-              </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase">Đã duyệt (Chờ đón)</p>
+              <h3 class="text-2xl font-extrabold text-blue-600 mt-1" id="metric-approved-count">0</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Sẵn sàng đến check-in</p>
             </div>
-
-            <!-- Step 4 -->
-            <div id="flow-step-4" onclick="jumpToStep(4)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-3 rounded-xl border border-white/10 transition-all">
-              <div class="flex items-center justify-between text-teal-300 font-semibold text-[11px]">
-                <span>BƯỚC 4: SYSTEM</span>
-                <span class="step-num w-5 h-5 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">4</span>
-              </div>
-              <p class="font-bold text-white mt-1">Bắn thông báo Cư dân</p>
-              <p class="text-[11px] text-slate-300 mt-0.5">Gửi Zalo OA / In-App kết quả duyệt</p>
-              <button onclick="event.stopPropagation(); showSampleNotificationModal()" class="mt-2 text-[10px] bg-teal-500/30 hover:bg-teal-500/50 text-teal-200 px-2 py-0.5 rounded font-medium">Xem tin Zalo mẫu &rarr;</button>
+            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+              <i data-lucide="calendar-check" class="w-5 h-5"></i>
             </div>
+          </div>
 
-            <!-- Step 5 -->
-            <div id="flow-step-5" onclick="jumpToStep(5)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-3 rounded-xl border border-white/10 transition-all">
-              <div class="flex items-center justify-between text-teal-300 font-semibold text-[11px]">
-                <span>BƯỚC 5: CHECK-IN/OUT</span>
-                <span class="step-num w-5 h-5 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">5</span>
-              </div>
-              <p class="font-bold text-white mt-1">Vào & Rời tòa nhà</p>
-              <p class="text-[11px] text-slate-300 mt-0.5">Ghi nhận Check-in → Check-out</p>
-              <div class="mt-2 flex gap-1">
-                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">Check-in</span>
-                <span class="text-[9px] bg-slate-500/20 text-slate-300 px-1.5 py-0.5 rounded">Check-out (End)</span>
-              </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase">Đang trong tòa nhà</p>
+              <h3 class="text-2xl font-extrabold text-emerald-600 mt-1" id="metric-in-building-count">0</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Đã qua cổng an ninh</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <i data-lucide="building" class="w-5 h-5"></i>
             </div>
           </div>
         </div>
@@ -353,12 +311,25 @@
       const managerCount = visitors.filter(v => v.status === 'FORWARDED_MANAGER').length;
       const approvedCount = visitors.filter(v => v.status === 'APPROVED').length;
       const inBuildingCount = visitors.filter(v => v.status === 'IN_BUILDING').length;
-      document.getElementById('visitor-stats-summary').innerHTML = `
-        <span class="text-amber-600 font-bold">${pendingCount} chờ Staff</span> • 
-        <span class="text-purple-600 font-bold">${managerCount} chờ Manager</span> • 
-        <span class="text-emerald-600 font-bold">${approvedCount} đã duyệt</span> • 
-        <span class="text-teal-700 font-bold">${inBuildingCount} trong tòa nhà</span>
-      `;
+
+      const elPending = document.getElementById('metric-pending-count');
+      const elManager = document.getElementById('metric-manager-count');
+      const elApproved = document.getElementById('metric-approved-count');
+      const elInBuilding = document.getElementById('metric-in-building-count');
+      if (elPending) elPending.innerText = pendingCount;
+      if (elManager) elManager.innerText = managerCount;
+      if (elApproved) elApproved.innerText = approvedCount;
+      if (elInBuilding) elInBuilding.innerText = inBuildingCount;
+
+      const elSummary = document.getElementById('visitor-stats-summary');
+      if (elSummary) {
+        elSummary.innerHTML = `
+          <span class="text-amber-600 font-bold">${pendingCount} chờ Staff</span> • 
+          <span class="text-purple-600 font-bold">${managerCount} chờ Manager</span> • 
+          <span class="text-emerald-600 font-bold">${approvedCount} đã duyệt</span> • 
+          <span class="text-teal-700 font-bold">${inBuildingCount} trong tòa nhà</span>
+        `;
+      }
 
       if (filtered.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">Không có khách thăm nào trong danh mục này.</td></tr>`;

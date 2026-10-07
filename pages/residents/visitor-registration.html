@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StayHub - Khách thăm của tôi</title>
+  <title>StayHub - Đăng Ký Khách Thăm Của Tôi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
@@ -11,53 +12,182 @@
   <div id="demo-role-bar"></div>
 
   <div class="flex-1 flex overflow-hidden">
-    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      
       <div class="p-6 max-w-6xl w-full mx-auto space-y-6">
+
+        <!-- Header & Action -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p class="text-xs font-semibold text-teal-700 uppercase tracking-wider">Cư dân / Khách thăm</p>
-            <h2 class="text-2xl font-extrabold text-slate-900 mt-1">Khách thăm của tôi</h2>
-            <p class="text-sm text-slate-500 mt-1">Đăng ký và theo dõi khách đến căn hộ <strong data-resident-room>P201</strong>.</p>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Khách thăm của tôi</h2>
+            <p class="text-xs text-slate-500 mt-1">Đăng ký thông tin đón khách ghé căn hộ <strong class="text-teal-700 font-bold" data-resident-room>P201</strong> và quản lý thẻ ra vào an ninh.</p>
           </div>
-          <button type="button" onclick="openModal('residentVisitorModal')" class="flex items-center justify-center gap-2 px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white rounded-lg text-sm font-semibold">
-            <i data-lucide="user-plus" class="w-4 h-4"></i>
-            Đăng ký khách mới
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openModal('residentVisitorModal')" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-xs font-bold shadow-sm transition-all">
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>Đăng Ký Khách Mới</span>
+            </button>
+          </div>
         </div>
 
+        <!-- 4 Resident Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase">Đã duyệt (Chờ đón)</p>
+              <h3 class="text-2xl font-extrabold text-teal-700 mt-1" id="res-approved-count">0</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Sẵn sàng đến check-in</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-700 flex items-center justify-center">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase">Đang chờ xét duyệt</p>
+              <h3 class="text-2xl font-extrabold text-amber-600 mt-1" id="res-pending-count">0</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Ban Quản Lý đang xử lý</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
+              <i data-lucide="clock" class="w-5 h-5"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase">Đang có mặt tại nhà</p>
+              <h3 class="text-2xl font-extrabold text-emerald-600 mt-1" id="res-inbuilding-count">0</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Đã làm thủ tục vào cổng</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <i data-lucide="building" class="w-5 h-5"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase">Tổng lượt đăng ký</p>
+              <h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="res-total-count">0</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Lịch sử khách thăm</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table Card -->
         <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-teal-600"></i><h3 class="font-bold text-slate-900">Lịch khách thăm của tôi</h3></div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="calendar-days" class="w-5 h-5 text-teal-600"></i>
+              <h3 class="font-bold text-slate-900 text-sm">Danh Sách Khách Thăm Căn Hộ P201</h3>
+            </div>
             <span class="text-xs text-slate-500" data-visitor-count>0 lượt đăng ký</span>
           </div>
+
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs text-slate-600">
-              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider">
-                <tr><th class="p-3.5">Khách thăm</th><th class="p-3.5">CCCD</th><th class="p-3.5">Thời gian dự kiến</th><th class="p-3.5">Mục đích</th><th class="p-3.5">Trạng thái</th></tr>
+              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">Khách thăm</th>
+                  <th class="p-3.5">Số CCCD</th>
+                  <th class="p-3.5">Thời gian dự kiến</th>
+                  <th class="p-3.5">Mục đích / Ghi chú</th>
+                  <th class="p-3.5">Trạng thái BQL</th>
+                  <th class="p-3.5 text-right">Thao tác</th>
+                </tr>
               </thead>
-              <tbody id="resident-visitors-tbody" class="divide-y divide-slate-100"></tbody>
+              <tbody id="resident-visitors-tbody" class="divide-y divide-slate-100 font-medium"></tbody>
             </table>
           </div>
         </section>
+
       </div>
     </main>
   </div>
 
+  <!-- MODAL: Resident Register Visitor -->
   <div id="residentVisitorModal" class="modal-backdrop">
-    <div class="modal-content p-6">
+    <div class="modal-content p-6 max-w-lg">
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-        <div><h3 class="text-lg font-bold text-slate-900">Đăng ký khách đến thăm</h3><p class="text-xs text-slate-500 mt-1">Thông tin sẽ được gửi tới ban quản lý để tiếp nhận.</p></div>
-        <button type="button" onclick="closeModal('residentVisitorModal')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Đăng ký khách đến thăm</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Thông tin sẽ được gửi ngay đến Ban Quản Lý StayHub để phê duyệt.</p>
+        </div>
+        <button type="button" onclick="closeModal('residentVisitorModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
-      <form id="residentVisitorForm" class="mt-4 space-y-4 text-xs">
-        <div><label class="block font-semibold text-slate-700 mb-1">Họ tên khách <span class="text-red-500">*</span></label><input id="resident-visitor-name" required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5" placeholder="Nguyễn Văn X"></div>
-        <div><label class="block font-semibold text-slate-700 mb-1">Số CCCD <span class="text-red-500">*</span></label><input id="resident-visitor-cccd" required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5" placeholder="00120..."></div>
-        <div><label class="block font-semibold text-slate-700 mb-1">Thời gian dự kiến</label><input id="resident-visitor-time" value="20:00 hôm nay" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5"></div>
-        <div><label class="block font-semibold text-slate-700 mb-1">Mục đích đến thăm</label><input id="resident-visitor-note" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5" placeholder="Bạn bè ghé thăm..."></div>
-        <div class="flex justify-end gap-3 pt-3 border-t border-slate-200"><button type="button" onclick="closeModal('residentVisitorModal')" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium">Hủy</button><button type="submit" class="px-4 py-2 bg-[#166534] text-white rounded-lg font-semibold">Gửi đăng ký</button></div>
+
+      <!-- Quick sample helpers -->
+      <div class="bg-teal-50 border border-teal-100 rounded-lg p-2.5 mt-3 flex items-center justify-between text-xs">
+        <span class="text-teal-900 font-semibold">Điền nhanh mẫu:</span>
+        <div class="flex gap-2">
+          <button type="button" onclick="fillSampleGuest('regular')" class="px-2 py-1 bg-white hover:bg-teal-100 text-teal-800 rounded border border-teal-200 font-medium text-[11px]">Đơn thường</button>
+          <button type="button" onclick="fillSampleGuest('overnight')" class="px-2 py-1 bg-white hover:bg-teal-100 text-teal-800 rounded border border-teal-200 font-medium text-[11px]">Ở qua đêm</button>
+        </div>
+      </div>
+
+      <form id="residentVisitorForm" class="mt-4 space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Họ tên khách thăm <span class="text-red-500">*</span></label>
+          <input id="resident-visitor-name" required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-600" placeholder="Nguyễn Văn A">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Số CCCD <span class="text-red-500">*</span></label>
+            <input id="resident-visitor-cccd" required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs font-mono focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-600" placeholder="00120...">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Số điện thoại</label>
+            <input id="resident-visitor-phone" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-600" placeholder="0901234567" value="0912345678">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Thời gian dự kiến đến <span class="text-red-500">*</span></label>
+          <input id="resident-visitor-time" required value="20:00 tối nay" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-600">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Mục đích đến thăm / Ghi chú</label>
+          <input id="resident-visitor-note" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-600" placeholder="Bạn bè ghé thăm ăn tối...">
+        </div>
+        <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-200">
+          <button type="button" onclick="closeModal('residentVisitorModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold text-xs">Hủy</button>
+          <button type="submit" class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold text-xs shadow-sm">Gửi Đăng Ký Tới BQL</button>
+        </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Visitor Pass QR Code -->
+  <div id="visitorPassModal" class="modal-backdrop">
+    <div class="modal-content max-w-sm p-6 text-center">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="font-bold text-slate-900 text-sm">Thẻ Ra Vào Tòa Nhà (Visitor Pass)</h3>
+        <button type="button" onclick="closeModal('visitorPassModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="my-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+        <div class="bg-white p-3 rounded-xl inline-block shadow-xs border border-slate-200">
+          <img id="pass-qr-img" src="" alt="Visitor QR" class="w-40 h-40 mx-auto">
+        </div>
+        <div>
+          <h4 class="font-black text-slate-900 text-base" id="pass-guest-name">—</h4>
+          <p class="text-xs text-slate-500 font-mono mt-0.5">CCCD: <span id="pass-guest-cccd">—</span></p>
+        </div>
+        <div class="bg-white p-2.5 rounded-lg border border-slate-200 text-[11px] text-slate-600 text-left space-y-1">
+          <p><strong>Căn hộ đón:</strong> P201 (Lê Văn An)</p>
+          <p><strong>Dự kiến:</strong> <span id="pass-time">—</span></p>
+          <p><strong>Trạng thái:</strong> <span class="badge badge-success text-[10px]">Đã duyệt hợp lệ</span></p>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-400">Xuất trình mã này tại quầy Lễ tân / Bảo vệ sảnh A để vào thang máy.</p>
+      <button onclick="closeModal('visitorPassModal')" class="mt-4 w-full py-2 bg-slate-800 text-white font-bold text-xs rounded-lg">Đóng</button>
     </div>
   </div>
 
@@ -67,13 +197,13 @@
     function residentVisitorBadge(visitor) {
       const status = visitor.status;
       if (status === 'FORWARDED_MANAGER') {
-        return `<span class="badge bg-purple-100 text-purple-800 border border-purple-200 font-bold">Chờ Quản lý duyệt</span>`;
+        return `<span class="badge bg-purple-100 text-purple-800 border border-purple-200 font-bold">Chờ Manager duyệt</span>`;
       }
       if (status === 'REJECTED') {
-        return `<span class="badge badge-danger cursor-pointer" onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định ra vào tòa nhà'}')">✕ Bị từ chối (Xem lý do)</span>`;
+        return `<span class="badge badge-danger cursor-pointer" onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định ra vào tòa nhà'}\\nNgười duyệt: ${visitor.reviewedBy || 'BQL'}')">✕ Bị từ chối (Xem lý do)</span>`;
       }
       const labels = {
-        PENDING: ['Chờ Staff duyệt', 'badge-warning'],
+        PENDING: ['⏳ Chờ Staff duyệt', 'badge-warning'],
         APPROVED: ['✓ Đã duyệt (Chờ đón)', 'badge-info'],
         IN_BUILDING: ['Đang trong tòa nhà', 'badge-success'],
         DEPARTED: ['Đã rời đi (Hoàn tất)', 'badge-neutral']
@@ -84,47 +214,105 @@
 
     function renderResidentVisitors() {
       const user = DataStore.getUser();
-      const visitors = DataStore.getVisitors().filter(visitor => visitor.hostRoom === user.room && visitor.hostTenant === user.fullName);
+      const visitors = DataStore.getVisitors().filter(visitor => visitor.hostRoom === (user.room || 'P201'));
       const body = document.getElementById('resident-visitors-tbody');
       const count = document.querySelector('[data-visitor-count]');
       if (count) count.textContent = `${visitors.length} lượt đăng ký`;
+
+      // Calculate stats
+      const approved = visitors.filter(v => v.status === 'APPROVED').length;
+      const pending = visitors.filter(v => v.status === 'PENDING' || v.status === 'FORWARDED_MANAGER').length;
+      const inBuilding = visitors.filter(v => v.status === 'IN_BUILDING').length;
+
+      document.getElementById('res-approved-count').innerText = approved;
+      document.getElementById('res-pending-count').innerText = pending;
+      document.getElementById('res-inbuilding-count').innerText = inBuilding;
+      document.getElementById('res-total-count').innerText = visitors.length;
+
       body.innerHTML = visitors.length ? visitors.map(visitor => `
-        <tr class="hover:bg-slate-50">
+        <tr class="hover:bg-slate-50 transition-colors">
           <td class="p-3.5 font-bold text-slate-900">${visitor.guestName}</td>
           <td class="p-3.5 font-mono text-slate-500">${visitor.cccd}</td>
           <td class="p-3.5">${visitor.timeExpected}</td>
           <td class="p-3.5 text-slate-500">${visitor.note || '—'}</td>
           <td class="p-3.5">${residentVisitorBadge(visitor)}</td>
+          <td class="p-3.5 text-right">
+            ${visitor.status === 'APPROVED' ? `
+              <button onclick="openPassModal('${visitor.id}')" class="px-2.5 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded text-[11px] font-bold shadow-xs">
+                Mã QR Thẻ Khách
+              </button>
+            ` : visitor.status === 'REJECTED' ? `
+              <button onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định'}\\nNgười duyệt: ${visitor.reviewedBy || 'BQL'}')" class="text-red-600 text-[11px] font-semibold hover:underline">
+                Xem lý do
+              </button>
+            ` : `
+              <span class="text-slate-400 text-[11px]">Đang xử lý</span>
+            `}
+          </td>
         </tr>
-      `).join('') : '<tr><td colspan="5" class="p-6 text-center text-slate-500">Chưa có khách thăm được đăng ký.</td></tr>';
+      `).join('') : '<tr><td colspan="6" class="p-8 text-center text-slate-400">Chưa có khách thăm nào được đăng ký cho căn hộ này.</td></tr>';
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function openPassModal(id) {
+      const v = DataStore.getVisitors().find(x => x.id === id);
+      if (!v) return;
+      document.getElementById('pass-guest-name').innerText = v.guestName;
+      document.getElementById('pass-guest-cccd').innerText = v.cccd;
+      document.getElementById('pass-time').innerText = v.timeExpected;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=STAYHUB-PASS-${v.id}-${v.cccd}`;
+      document.getElementById('pass-qr-img').src = qrUrl;
+      openModal('visitorPassModal');
+    }
+
+    function fillSampleGuest(type) {
+      if (type === 'regular') {
+        document.getElementById('resident-visitor-name').value = 'Đặng Văn Lâm';
+        document.getElementById('resident-visitor-cccd').value = '001201004455';
+        document.getElementById('resident-visitor-time').value = '19:30 tối nay';
+        document.getElementById('resident-visitor-note').value = 'Bạn ghé ăn tối (Đơn thường)';
+      } else {
+        document.getElementById('resident-visitor-name').value = 'Trần Đình Trọng';
+        document.getElementById('resident-visitor-cccd').value = '034200009911';
+        document.getElementById('resident-visitor-time').value = '21:00 tối nay đến sáng mai';
+        document.getElementById('resident-visitor-note').value = 'Bạn ở lại qua đêm thứ 7 (Đơn đặc biệt cần Manager duyệt)';
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       const user = DataStore.getUser();
-      document.querySelector('[data-resident-room]').textContent = user.room || '—';
-      renderSidebar('resident-visitors.html');
-      renderTopbar('Khách thăm của tôi', 'Cư dân / Đăng ký khách thăm');
+      const roomEl = document.querySelector('[data-resident-room]');
+      if (roomEl) roomEl.textContent = user.room || 'P201';
+
+      initStayHubShell('resident-visitors.html', 'Đăng ký khách thăm', 'Cư dân / Khách thăm');
       renderResidentVisitors();
+
       document.getElementById('residentVisitorForm').addEventListener('submit', (event) => {
         event.preventDefault();
         const visitors = DataStore.getVisitors();
-        visitors.unshift({
-          id: `vis-${Date.now()}`,
+        const newVisitor = {
+          id: `vis-${Date.now().toString().slice(-4)}`,
           guestName: document.getElementById('resident-visitor-name').value.trim(),
           cccd: document.getElementById('resident-visitor-cccd').value.trim(),
-          hostRoom: user.room,
-          hostTenant: user.fullName,
+          phone: document.getElementById('resident-visitor-phone').value.trim() || '0901234567',
+          hostRoom: user.room || 'P201',
+          hostTenant: user.fullName || 'Lê Văn An',
           timeExpected: document.getElementById('resident-visitor-time').value.trim(),
           note: document.getElementById('resident-visitor-note').value.trim(),
           status: 'PENDING'
-        });
+        };
+        visitors.unshift(newVisitor);
         DataStore.saveVisitors(visitors);
+        DataStore.addAuditLog('DANG_KY_KHACH_THAM', newVisitor.guestName, `Cư dân ${user.fullName} (${user.room || 'P201'}) gửi đăng ký khách thăm`);
+
         event.currentTarget.reset();
         closeModal('residentVisitorModal');
-        showToast('Đã gửi đăng ký khách thăm đến ban quản lý');
+        showToast('Đã gửi đơn đăng ký khách thăm tới Ban Quản Lý thành công!');
         renderResidentVisitors();
       });
-      lucide.createIcons();
+
+      if (window.lucide) lucide.createIcons();
     });
   </script>
 </body>

@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StayHub - Hóa đơn của tôi</title>
+  <title>StayHub - Hóa Đơn & Tiền Phòng Của Tôi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
@@ -11,132 +12,271 @@
   <div id="demo-role-bar"></div>
 
   <div class="flex-1 flex overflow-hidden">
-    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      
       <div class="p-6 max-w-5xl w-full mx-auto space-y-6">
+
+        <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <p class="text-xs font-semibold text-teal-700 uppercase tracking-wider">Cư dân / Hóa đơn</p>
-            <h2 class="text-2xl font-extrabold text-slate-900 mt-1">Hóa đơn & tiền phòng</h2>
-            <p class="text-sm text-slate-500 mt-1">Theo dõi các khoản thu của căn hộ <strong data-resident-room>P201</strong>.</p>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Hóa đơn & Tiền phòng</h2>
+            <p class="text-xs text-slate-500 mt-1">Theo dõi, kiểm tra chi tiết bóc tách và thanh toán phí hàng tháng cho căn hộ <strong class="text-teal-700 font-bold" data-resident-room>P201</strong>.</p>
           </div>
-          <button type="button" onclick="window.print()" class="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50">
-            <i data-lucide="printer" class="w-4 h-4"></i>
-            In hóa đơn
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="window.print()" class="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-50 transition-colors">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              In hóa đơn
+            </button>
+          </div>
         </div>
 
         <!-- Zalo OA Notification Banner -->
-        <div id="zalo-notif-banner" class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between gap-3 text-xs">
+        <div id="zalo-notif-banner" class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center shrink-0">Z</div>
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm text-base">Z</div>
             <div>
-              <p class="font-bold text-blue-900">Thông báo từ Zalo OA StayHub:</p>
-              <p class="text-blue-700 mt-0.5">Hóa đơn kỳ thu phí mới nhất đã được gửi tới số điện thoại Zalo của bạn. Vui lòng kiểm tra chi tiết bóc tách bên dưới.</p>
+              <p class="font-bold text-blue-900 text-sm">Thông báo từ Zalo OA StayHub:</p>
+              <p class="text-blue-700 mt-0.5">Ban Quản Lý đã phát hành hóa đơn kỳ thu phí mới nhất. Bạn có thể quét mã VietQR bên dưới để thanh toán tự động.</p>
             </div>
           </div>
-          <span class="badge badge-info text-[11px] shrink-0">Đã đồng bộ Zalo ZNS</span>
+          <span class="badge badge-info text-[11px] shrink-0 self-start sm:self-center">Đã đồng bộ Zalo ZNS</span>
         </div>
 
-        <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <!-- Latest Invoice Featured Card -->
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <p class="text-xs text-slate-500">Kỳ thu gần nhất</p>
-              <h3 class="text-xl font-extrabold text-slate-900 mt-1" data-invoice-month>Tháng 10/2026</h3>
-              <p class="text-xs text-slate-500 mt-1">Mã hóa đơn: <strong class="font-mono" data-invoice-code>INV-2026-10-P201</strong></p>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Hóa đơn kỳ hiện hành</span>
+              <h3 class="text-xl font-extrabold text-slate-900 mt-0.5" data-invoice-month>Tháng 10/2026</h3>
+              <p class="text-xs text-slate-500 mt-1">Mã tra cứu: <strong class="font-mono text-teal-700" data-invoice-code>INV-2026-10-P201</strong></p>
             </div>
-            <span class="badge badge-success" data-invoice-status>Đã thanh toán</span>
+            <div class="flex items-center gap-3">
+              <span class="badge badge-success text-xs px-3 py-1 font-bold" data-invoice-status>Đã thanh toán</span>
+              <button id="btn-pay-now" onclick="openPaymentModal()" class="px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-1.5">
+                <i data-lucide="qr-code" class="w-4 h-4"></i>
+                <span>Thanh Toán VietQR</span>
+              </button>
+            </div>
           </div>
-          <div class="p-5">
-            <div class="flex items-end justify-between gap-4">
+
+          <div class="p-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-slate-100">
               <div>
-                <p class="text-xs text-slate-500">Tổng tiền thanh toán</p>
-                <p class="text-3xl font-extrabold text-slate-900 mt-1" data-invoice-total>9.445.000 ₫</p>
+                <p class="text-xs font-semibold text-slate-400 uppercase">Tổng số tiền cần thanh toán</p>
+                <p class="text-3xl font-black text-slate-900 mt-1" data-invoice-total>9.445.000 ₫</p>
               </div>
-              <p class="text-xs text-slate-500 text-right" data-invoice-payment>Thanh toán qua VietQR<br>01/10/2026</p>
+              <div class="text-xs text-slate-500 sm:text-right" data-invoice-payment>
+                Thanh toán qua VietQR SePay<br>01/10/2026
+              </div>
             </div>
+
+            <!-- Breakdown Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-6">
-              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-100"><p class="text-xs text-slate-500">1. Tiền phòng</p><p class="font-bold text-slate-900 mt-1" data-invoice-rent>8.500.000 ₫</p></div>
-              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-100"><p class="text-xs text-slate-500">2. Tiền điện sinh hoạt</p><p class="font-bold text-slate-900 mt-1" data-invoice-elec>595.000 ₫</p></div>
-              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-100"><p class="text-xs text-slate-500">3. Tiền nước sinh hoạt</p><p class="font-bold text-slate-900 mt-1" data-invoice-water>200.000 ₫</p></div>
-              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-100"><p class="text-xs text-slate-500">4. Phí DV & Phụ phí</p><p class="font-bold text-teal-700 mt-1" data-invoice-service>150.000 ₫</p></div>
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                <div class="flex items-center gap-2 text-slate-400 text-xs font-medium">
+                  <i data-lucide="home" class="w-3.5 h-3.5 text-teal-600"></i>
+                  <span>1. Tiền thuê phòng</span>
+                </div>
+                <p class="text-lg font-black text-slate-900 mt-1" data-invoice-rent>8.500.000 ₫</p>
+                <p class="text-[11px] text-slate-400">Theo hợp đồng thuê</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                <div class="flex items-center gap-2 text-slate-400 text-xs font-medium">
+                  <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i>
+                  <span>2. Tiền điện sinh hoạt</span>
+                </div>
+                <p class="text-lg font-black text-slate-900 mt-1" data-invoice-elec>595.000 ₫</p>
+                <p class="text-[11px] text-slate-400">170 kWh × 3.500 ₫</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                <div class="flex items-center gap-2 text-slate-400 text-xs font-medium">
+                  <i data-lucide="droplet" class="w-3.5 h-3.5 text-blue-500"></i>
+                  <span>3. Tiền nước sinh hoạt</span>
+                </div>
+                <p class="text-lg font-black text-slate-900 mt-1" data-invoice-water>200.000 ₫</p>
+                <p class="text-[11px] text-slate-400">8 m³ × 25.000 ₫</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                <div class="flex items-center gap-2 text-slate-400 text-xs font-medium">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-600"></i>
+                  <span>4. Phí DV & Phụ phí</span>
+                </div>
+                <p class="text-lg font-black text-slate-900 mt-1" data-invoice-service>150.000 ₫</p>
+                <p class="text-[11px] text-slate-400">Quản lý & Giữ xe</p>
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-200 flex items-center gap-2">
-            <i data-lucide="history" class="w-5 h-5 text-teal-600"></i>
-            <h3 class="font-bold text-slate-900">Lịch sử hóa đơn của tôi</h3>
+        <!-- Invoice History Section -->
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="history" class="w-5 h-5 text-teal-600"></i>
+              <h3 class="font-bold text-slate-900 text-sm">Lịch Sử Hóa Đơn Căn Hộ P201</h3>
+            </div>
+            <span class="text-xs text-slate-400">Lưu trữ toàn bộ các kỳ thu</span>
           </div>
+
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs text-slate-600">
-              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider">
-                <tr><th class="p-3.5">Kỳ thu</th><th class="p-3.5">Mã hóa đơn</th><th class="p-3.5">Tổng tiền</th><th class="p-3.5">Trạng thái</th></tr>
+              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">Kỳ thu</th>
+                  <th class="p-3.5">Mã hóa đơn</th>
+                  <th class="p-3.5">Tiền phòng</th>
+                  <th class="p-3.5">Điện / Nước</th>
+                  <th class="p-3.5">Tổng tiền</th>
+                  <th class="p-3.5">Trạng thái</th>
+                  <th class="p-3.5 text-right">Biên lai</th>
+                </tr>
               </thead>
-              <tbody id="resident-invoice-history" class="divide-y divide-slate-100"></tbody>
+              <tbody id="resident-invoice-history" class="divide-y divide-slate-100 font-medium"></tbody>
             </table>
           </div>
         </section>
+
       </div>
     </main>
+  </div>
+
+  <!-- MODAL: VietQR Payment Simulation -->
+  <div id="paymentModal" class="modal-backdrop">
+    <div class="modal-content max-w-md p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
+            <i data-lucide="qr-code" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm">Thanh Toán VietQR Tự Động (SePay)</h3>
+            <p class="text-[11px] text-slate-500">Quét mã bằng bất kỳ ứng dụng ngân hàng nào</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('paymentModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 text-center">
+        <div class="inline-block p-3 bg-white border border-slate-200 rounded-2xl shadow-sm">
+          <img id="resident-qr-img" src="" alt="VietQR" class="w-48 h-48 mx-auto rounded-lg">
+        </div>
+        <h4 class="text-2xl font-black text-slate-900 mt-3" id="resident-qr-amount">9.445.000 ₫</h4>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mt-3 text-xs text-left space-y-1">
+          <p><span class="text-slate-400">Ngân hàng:</span> <strong class="text-slate-900">MB Bank (Quân Đội)</strong></p>
+          <p><span class="text-slate-400">Số tài khoản:</span> <strong class="font-mono text-teal-800">0988776655</strong></p>
+          <p><span class="text-slate-400">Chủ tài khoản:</span> <strong class="text-slate-900">STAYHUB LIVING MANAGEMENT</strong></p>
+          <p><span class="text-slate-400">Nội dung CK:</span> <strong class="font-mono text-teal-700 font-bold" id="resident-qr-memo">STAYHUB INV202610P201</strong></p>
+        </div>
+      </div>
+
+      <div class="mt-5 pt-3 border-t border-slate-200 flex gap-2">
+        <button type="button" onclick="closeModal('paymentModal')" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl">Đóng</button>
+        <button type="button" onclick="simulatePaymentSuccess()" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm">Giả Lập Đã Chuyển Tiền</button>
+      </div>
+    </div>
   </div>
 
   <script src="../../js/data.js"></script>
   <script src="../../js/app.js"></script>
   <script>
+    let currentResidentInvoice = null;
+
     function renderResidentInvoices() {
       const user = DataStore.getUser();
-      const invoices = DataStore.getInvoices().filter(invoice => invoice.room === user.room && invoice.tenant === user.fullName);
+      const invoices = DataStore.getInvoices().filter(invoice => invoice.room === (user.room || 'P201'));
       const latest = invoices[0] || {};
+      currentResidentInvoice = latest;
+
       const setText = (selector, value) => {
         const element = document.querySelector(selector);
         if (element) element.textContent = value || '—';
       };
 
-      setText('[data-resident-room]', user.room);
+      setText('[data-resident-room]', user.room || 'P201');
       setText('[data-invoice-month]', latest.month ? `Tháng ${latest.month}` : 'Chưa có hóa đơn');
-      setText('[data-invoice-code]', latest.code);
+      setText('[data-invoice-code]', latest.code || 'INV-P201');
       setText('[data-invoice-total]', formatVND(latest.total));
       setText('[data-invoice-rent]', formatVND(latest.rent));
       setText('[data-invoice-elec]', formatVND(latest.elecTotal || 0));
       setText('[data-invoice-water]', formatVND(latest.waterTotal || 0));
       setText('[data-invoice-service]', formatVND((latest.serviceFee || 0) + (latest.extraFee || 0)));
-      setText('[data-invoice-payment]', latest.paymentDate ? `Thanh toán qua ${latest.method || 'hệ thống'}\n${latest.paymentDate}` : 'Chưa thanh toán (Chờ quét VietQR)');
+      setText('[data-invoice-payment]', latest.paymentDate ? `Thanh toán qua ${latest.method || 'VietQR SePay'}<br>${latest.paymentDate}` : 'Chưa thanh toán (Chờ quét VietQR)');
 
-      const status = document.querySelector('[data-invoice-status]');
-      if (status) {
+      const statusEl = document.querySelector('[data-invoice-status]');
+      const btnPay = document.getElementById('btn-pay-now');
+
+      if (statusEl) {
         if (latest.status === 'PAID') {
-          status.className = 'badge badge-success';
-          status.textContent = '✓ Đã thanh toán';
+          statusEl.className = 'badge badge-success text-xs px-3 py-1 font-bold';
+          statusEl.textContent = '✓ Đã thanh toán';
+          if (btnPay) btnPay.style.display = 'none';
         } else if (latest.status === 'DRAFT') {
-          status.className = 'badge bg-purple-100 text-purple-800';
-          status.textContent = 'Bản nháp (Đang duyệt)';
+          statusEl.className = 'badge bg-purple-100 text-purple-800 text-xs px-3 py-1 font-bold';
+          statusEl.textContent = 'Bản nháp (Đang duyệt)';
+          if (btnPay) btnPay.style.display = 'none';
         } else {
-          status.className = 'badge badge-warning';
-          status.textContent = '⏳ Chờ thanh toán';
+          statusEl.className = 'badge badge-warning text-xs px-3 py-1 font-bold';
+          statusEl.textContent = '⏳ Chờ thanh toán';
+          if (btnPay) btnPay.style.display = 'inline-flex';
         }
       }
 
       const history = document.getElementById('resident-invoice-history');
-      history.innerHTML = invoices.length ? invoices.map(invoice => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-3.5 font-semibold text-slate-900">${invoice.month}</td>
-          <td class="p-3.5 font-mono text-teal-700">${invoice.code}</td>
-          <td class="p-3.5 font-bold text-slate-900">${formatVND(invoice.total)}</td>
+      history.innerHTML = invoices.length ? invoices.map(inv => `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="p-3.5 font-bold text-slate-900">${inv.month}</td>
+          <td class="p-3.5 font-mono text-teal-700">${inv.code}</td>
+          <td class="p-3.5">${formatVND(inv.rent)}</td>
+          <td class="p-3.5 text-slate-500">${formatVND((inv.elecTotal || 0) + (inv.waterTotal || 0))}</td>
+          <td class="p-3.5 font-black text-slate-900">${formatVND(inv.total)}</td>
           <td class="p-3.5">
-            ${invoice.status === 'PAID' ? '<span class="badge badge-success">✓ Đã thanh toán</span>' : '<span class="badge badge-warning">⏳ Chờ thanh toán</span>'}
+            ${inv.status === 'PAID' ? '<span class="badge badge-success text-[11px]">✓ Đã thanh toán</span>' : '<span class="badge badge-warning text-[11px]">⏳ Chờ thanh toán</span>'}
+          </td>
+          <td class="p-3.5 text-right">
+            <button onclick="window.print()" class="text-teal-700 hover:underline text-xs font-semibold">In biên lai</button>
           </td>
         </tr>
-      `).join('') : '<tr><td colspan="4" class="p-6 text-center text-slate-500">Chưa có hóa đơn của căn hộ này.</td></tr>';
+      `).join('') : '<tr><td colspan="7" class="p-8 text-center text-slate-400">Chưa có hóa đơn nào của căn hộ này.</td></tr>';
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function openPaymentModal() {
+      if (!currentResidentInvoice) return;
+      document.getElementById('resident-qr-amount').innerText = formatVND(currentResidentInvoice.total);
+      document.getElementById('resident-qr-memo').innerText = `STAYHUB ${currentResidentInvoice.code}`;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=STAYHUB-${currentResidentInvoice.code}-${currentResidentInvoice.total}`;
+      document.getElementById('resident-qr-img').src = qrUrl;
+      openModal('paymentModal');
+    }
+
+    function simulatePaymentSuccess() {
+      if (!currentResidentInvoice) return;
+      const invoices = DataStore.getInvoices();
+      const target = invoices.find(i => i.id === currentResidentInvoice.id || i.code === currentResidentInvoice.code);
+      if (target) {
+        target.status = 'PAID';
+        target.paymentDate = new Date().toLocaleDateString('vi-VN');
+        target.method = 'VietQR SePay';
+        DataStore.saveInvoices(invoices);
+        DataStore.addAuditLog('THANH_TOAN_HOA_DON', target.code, `Cư dân P201 thanh toán ${formatVND(target.total)} qua cổng VietQR`);
+        closeModal('paymentModal');
+        showToast('Webhook SePay: Đã ghi nhận thanh toán thành công!', 'success');
+        renderResidentInvoices();
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      renderSidebar('resident-invoices.html');
-      renderTopbar('Hóa đơn & Tiền phòng', 'Cư dân / Hóa đơn của tôi');
+      initStayHubShell('resident-invoices.html', 'Hóa đơn & Tiền phòng', 'Cư dân / Hóa đơn của tôi');
       renderResidentInvoices();
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     });
   </script>
 </body>
