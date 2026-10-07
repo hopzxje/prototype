@@ -5,6 +5,7 @@
 // Route mapping for multi-folder structure
 const PAGE_PATHS = {
   'index.html': 'index.html',
+  'checkout.html': 'pages/operations/checkout.html',
   'login.html': 'pages/auth/login.html',
   'buildings.html': 'pages/property/buildings.html',
   'assets.html': 'pages/property/assets.html',
@@ -36,6 +37,14 @@ const PAGE_PATHS = {
   'completed-settlement.html': 'settlement/completed-settlement.html'
 };
 
+const ROLE_PAGE_ACCESS = {
+  ADMIN: new Set(['checkout.html', 'index.html', 'users.html', 'audit-logs.html', 'system-settings.html', 'sepay.html', 'reports.html', 'login.html']),
+  MANAGER: new Set(['checkout.html', 'index.html', 'buildings.html', 'contracts.html', 'invoices.html', 'utilities.html', 'residents.html', 'maintenance.html', 'visitors.html', 'assets.html', 'sepay.html', 'notifications.html', 'reports.html', 'handover.html', 'login.html']),
+  STAFF: new Set(['checkout.html', 'invoices.html', 'index.html', 'buildings.html', 'utilities.html', 'maintenance.html', 'visitors.html', 'assets.html', 'handover.html', 'login.html']),
+  RESIDENT: new Set(['checkout.html', 'index.html', 'resident-invoices.html', 'resident-contract.html', 'requests.html', 'resident-visitors.html', 'profile.html', 'account.html', 'handover.html', 'login.html'])
+};
+
+const APP_ROOT = window.location.pathname.includes('/pages/') ? '../../' : './';
 function getAppRoot() {
   if (window.location.pathname.includes('/pages/')) return '../../';
   if (window.location.pathname.includes('/settlement/')) return '../';
@@ -307,6 +316,9 @@ function renderSidebar(activePage = 'index.html') {
       { href: 'handover.html', icon: 'key', label: 'Bàn giao Căn hộ' }
     ];
   }
+
+  navItems.push({ href: 'checkout.html', icon: 'log-out', label: 'Trả căn hộ & bàn giao' });
+  if (role === 'STAFF') navItems.push({ href: 'invoices.html', icon: 'receipt', label: 'Hóa đơn & Thu phí' });
 
   sidebar.innerHTML = `
     <!-- Brand -->

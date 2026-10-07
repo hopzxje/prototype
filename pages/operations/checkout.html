@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Quản lý Trả căn hộ & Bàn giao (Check-out)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Prototype Styles -->
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Top Demo Role Switcher Bar -->
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <!-- Topbar -->
+      <header id="app-topbar"></header>
+
+      <!-- Page Body -->
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <!-- ========================================== -->
+        <!-- VIEW 1: DÀNH CHO CƯ DÂN (RESIDENT)         -->
+        <!-- ========================================== -->
+        <div id="view-resident" class="hidden space-y-6">
+          <!-- Resident Apartment Banner -->
+          <div class="bg-gradient-to-r from-teal-700 to-teal-900 rounded-2xl p-6 text-white shadow-md">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs font-semibold uppercase mb-2">Căn hộ P201 • Tầng 2 • StayHub Central</span>
+                <h2 class="text-2xl font-bold">Thủ tục Trả phòng & Quyết toán cọc</h2>
+                <p class="text-teal-100 text-sm mt-1">Hợp đồng HD-2026-001 • Tiền cọc đang giữ: <strong class="text-white font-mono">8.500.000 ₫</strong>. Báo trước tối thiểu 15 ngày theo điều khoản hợp đồng.</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <button onclick="openCreateCheckoutModal()" class="px-4 py-2 bg-white text-teal-800 rounded-lg text-sm font-bold shadow hover:bg-teal-50 transition-colors flex items-center gap-2">
+                  <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                  <span>Đăng Ký Trả Phòng Mới</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Stepper & Navigation for Resident -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                  <i data-lucide="git-commit" class="w-4 h-4 text-teal-600"></i>
+                  <span>Tiến độ Hồ sơ Trả phòng (Phiếu REQ-OUT-2026-0045 • Căn P201)</span>
+                </h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Bấm vào bất kỳ bước nào dưới đây để xem chi tiết tiến trình bàn giao và quyết toán cọc</p>
+              </div>
+              <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-lg text-xs font-semibold text-slate-600">
+                <span class="text-[11px] text-slate-400 px-1 hidden md:inline">Chọn bước:</span>
+                <button type="button" onclick="selectResidentStep(1)" class="res-step-pill px-2.5 py-1 rounded text-xs transition-all" id="pill-step-1">1. Đơn</button>
+                <button type="button" onclick="selectResidentStep(2)" class="res-step-pill px-2.5 py-1 rounded text-xs transition-all" id="pill-step-2">2. Lịch hẹn</button>
+                <button type="button" onclick="selectResidentStep(3)" class="res-step-pill px-2.5 py-1 rounded text-xs transition-all" id="pill-step-3">3. Quyết toán</button>
+                <button type="button" onclick="selectResidentStep(4)" class="res-step-pill px-2.5 py-1 rounded text-xs transition-all" id="pill-step-4">4. Hoàn cọc</button>
+              </div>
+            </div>
+
+            <!-- Stepper Items (clickable) -->
+    <div id="resident-stepper-grid" class="grid grid-cols-1 sm:grid-cols-4 gap-3"></div>
+          </div>
+
+          <!-- Dynamic Active Step Content Area -->
+          <div id="resident-step-content-container"></div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- VIEW 2: DÀNH CHO QUẢN LÝ HOẶC NHÂN VIÊN VẬN HÀNH         -->
+        <!-- ======================================================== -->
+        <div id="view-management" class="space-y-6">
+
+          <!-- Top Stats Cards (Rendered dynamically based on Manager vs Staff) -->
+          <div id="mgmt-stats-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+
+          <!-- Checkout Requests Table Container -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-slate-50/50">
+              <div class="flex items-center gap-2">
+                <i data-lucide="clipboard-list" class="w-5 h-5 text-teal-600"></i>
+                <h3 id="mgmt-table-title" class="font-bold text-slate-900 text-sm">Danh Sách Hồ Sơ Trả Phòng</h3>
+              </div>
+
+              <!-- Search, Filter & Action Controls -->
+              <div class="flex items-center gap-2 flex-wrap">
+                <!-- Manager Scope Tabs (CHỈ HIỂN THỊ KHI LÀ QUẢN LÝ) -->
+                <div id="manager-scope-tabs" class="hidden inline-flex rounded-lg bg-slate-200/70 p-0.5 text-xs font-semibold">
+                  <button type="button" id="btn-tab-inspected" onclick="switchManagerTab('INSPECTED')" class="px-2.5 py-1 rounded-md bg-white text-teal-900 shadow-xs transition-all">
+                    ✓ Đã nghiệm thu (Chờ duyệt)
+                  </button>
+                  <button type="button" id="btn-tab-inspecting" onclick="switchManagerTab('INSPECTING')" class="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-all">
+                    Staff đang khảo sát
+                  </button>
+                </div>
+
+                <input type="text" id="checkout-search" oninput="renderCheckoutTable()" placeholder="Tìm số phòng, tên cư dân..." class="text-xs bg-white border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none w-44">
+
+                <select id="checkout-status-filter" onchange="renderCheckoutTable()" class="text-xs font-medium bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none">
+                  <!-- Options rendered dynamically -->
+                </select>
+
+                <!-- Nút tiếp nhận đơn mới (CHỈ DÀNH CHO STAFF TIẾP NHẬN ĐƠN MỚI) -->
+                <button id="btn-staff-new-req" onclick="openAcceptModal()" class="hidden items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors">
+                  <i data-lucide="inbox" class="w-3.5 h-3.5"></i>
+                  <span>Tiếp nhận đơn mới</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Notice for Manager when viewing Staff's inspecting queue -->
+            <div id="manager-scope-notice" class="hidden p-3 bg-amber-50 border-b border-amber-200 text-amber-900 text-xs flex items-center gap-2">
+              <i data-lucide="info" class="w-4 h-4 shrink-0 text-amber-600"></i>
+              <span><strong>Lưu ý:</strong> Đây là các đơn mới gửi hoặc đang hẹn lịch khảo sát do Nhân viên kỹ thuật phụ trách trực tiếp. Quản lý không đi nghiệm thu; chỉ tiếp nhận phê duyệt quyết toán sau khi Nhân viên đã kiểm tra hiện trường & lập xong biên bản.</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-600">
+                <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-700 uppercase font-semibold text-[11px] tracking-wider">
+                  <tr id="mgmt-table-thead-row">
+                    <!-- Headings rendered dynamically -->
+                  </tr>
+                </thead>
+                <tbody id="checkout-tbody" class="divide-y divide-slate-100 font-medium">
+                  <!-- Rendered dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Quick Action Workflow Guideline Cards -->
+          <div id="mgmt-guidelines-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 1: FORM NGHIỆM THU TẠI PHÒNG (STAFF INSPECTION)   -->
+  <!-- ======================================================== -->
+  <div id="inspectionModal" class="modal-backdrop">
+    <div class="modal-content max-w-2xl p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Nghiệm Thu Căn Hộ & Chốt Chỉ Số Điện Nước</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Phiếu <strong id="insp-modal-code" class="text-slate-800">REQ-OUT-2026-0045</strong> • Phòng <strong id="insp-modal-room" class="text-teal-700">P201</strong> • <span id="insp-modal-tenant">Lê Văn An</span></p>
+          <label class="text-xs text-slate-600 mt-2 inline-flex items-center gap-2">Ngày bàn giao thực tế:
+            <input type="date" id="inp-checkout-actual-date" onchange="calcInspectionTotals()" class="bg-white border border-slate-300 rounded px-2 py-1 text-slate-900 font-semibold">
+          </label>
+        </div>
+        <button onclick="closeModal('inspectionModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-5 text-xs max-h-[75vh] overflow-y-auto pr-1">
+
+        <!-- Section 1: Công tơ điện nước -->
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+          <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5 text-teal-800">
+            <i data-lucide="zap" class="w-4 h-4 text-teal-600"></i>
+            <span>1. Chốt chỉ số điện & nước</span>
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Điện -->
+            <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-slate-800">Điện sinh hoạt</span>
+                <span class="text-[10px] text-slate-400">3.000 ₫ / kWh</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[11px] text-slate-500">Chỉ số cũ</label>
+                  <input type="number" id="inp-elec-prev" value="1450" readonly class="w-full bg-slate-100 border border-slate-200 rounded p-1.5 text-slate-600 font-mono">
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-500">Chỉ số mới</label>
+                  <input type="number" id="inp-elec-curr" value="1580" oninput="calcInspectionTotals()" class="w-full bg-white border border-teal-500 rounded p-1.5 font-bold font-mono text-teal-800 focus:outline-none">
+                </div>
+              </div>
+              <p class="text-[11px] text-slate-600">Tiêu thụ: <strong id="lbl-elec-diff" class="font-mono text-slate-900">130 kWh</strong> • Thành tiền: <strong id="lbl-elec-cost" class="font-mono text-teal-700">390.000 ₫</strong></p>
+            </div>
+
+            <!-- Nước -->
+            <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-slate-800">Nước sinh hoạt</span>
+                <span class="text-[10px] text-slate-400">12.000 ₫ / m³</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[11px] text-slate-500">Chỉ số cũ</label>
+                  <input type="number" id="inp-water-prev" value="60" readonly class="w-full bg-slate-100 border border-slate-200 rounded p-1.5 text-slate-600 font-mono">
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-500">Chỉ số mới</label>
+                  <input type="number" id="inp-water-curr" value="65" oninput="calcInspectionTotals()" class="w-full bg-white border border-teal-500 rounded p-1.5 font-bold font-mono text-teal-800 focus:outline-none">
+                </div>
+              </div>
+              <p class="text-[11px] text-slate-600">Tiêu thụ: <strong id="lbl-water-diff" class="font-mono text-slate-900">5 m³</strong> • Thành tiền: <strong id="lbl-water-cost" class="font-mono text-teal-700">60.000 ₫</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Kiểm kê tài sản -->
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5 text-teal-800">
+              <i data-lucide="boxes" class="w-4 h-4 text-teal-600"></i>
+              <span>2. Kiểm kê phụ lục tài sản bàn giao</span>
+            </h4>
+            <span class="text-[11px] text-slate-500">Đối chiếu danh mục nhận lúc vào</span>
+          </div>
+
+          <div class="space-y-2" id="asset-checklist">
+            <div class="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center justify-between gap-3">
+              <div>
+                <p class="font-bold text-slate-800">1. Điều hòa Daikin Inverter</p>
+                <span class="text-[10px] text-slate-400">Lúc nhận: Nguyên vẹn, chạy tốt</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <select class="bg-slate-50 border border-slate-200 rounded p-1 text-[11px]">
+                  <option selected>Bình thường</option>
+                  <option>Hư hỏng nhẹ</option>
+                  <option>Hỏng nặng</option>
+                </select>
+                <span class="text-slate-500 font-mono">0 ₫</span>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center justify-between gap-3">
+              <div>
+                <p class="font-bold text-slate-800">2. Tủ lạnh Toshiba 180L</p>
+                <span class="text-[10px] text-slate-400">Lúc nhận: Nguyên vẹn, hoạt động êm</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <select class="bg-slate-50 border border-slate-200 rounded p-1 text-[11px]">
+                  <option selected>Bình thường</option>
+                  <option>Hư hỏng nhẹ</option>
+                </select>
+                <span class="text-slate-500 font-mono">0 ₫</span>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-amber-50/70 rounded-lg border border-amber-300 flex items-center justify-between gap-3">
+              <div>
+                <p class="font-bold text-slate-900">3. Rèm cửa chống nắng</p>
+                <span class="text-[10px] text-amber-700">Hiện trạng: Rách mép vải 10cm do sơ suất</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <select class="bg-white border border-amber-400 rounded p-1 text-[11px] text-amber-900 font-semibold">
+                  <option>Bình thường</option>
+                  <option selected>Hư hỏng nhẹ</option>
+                </select>
+                <input type="number" id="inp-damage-curtain" value="350000" oninput="calcInspectionTotals()" class="w-24 bg-white border border-amber-400 rounded p-1 text-right font-bold font-mono text-red-600 focus:outline-none">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Vệ sinh & Quyết toán tự động -->
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+          <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5 text-teal-800">
+            <i data-lucide="calculator" class="w-4 h-4 text-teal-600"></i>
+            <span>3. Vệ sinh & Quyết toán cọc tự động</span>
+          </h4>
+          <label class="flex items-center gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200">
+            <input type="checkbox" id="chk-cleaning" onchange="calcInspectionTotals()" class="rounded text-teal-600 focus:ring-teal-500 w-4 h-4">
+            <span class="text-slate-700 font-medium">Phòng bẩn, chưa dọn dẹp vệ sinh (Phụ thu: 300.000 ₫)</span>
+          </label>
+
+          <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+            <div>
+              <p class="text-xs text-emerald-800 font-semibold">TỔNG TIỀN DỰ KIẾN HOÀN</p>
+              <span id="lbl-rent-advance-refund" class="text-[11px] text-emerald-600 block">Tiền thuê trả trước chưa sử dụng sẽ được quyết toán riêng.</span>
+            </div>
+            <div class="text-right">
+              <span id="lbl-final-refund" class="text-2xl font-black text-emerald-700 font-mono">7.700.000 ₫</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="mt-5 pt-3 border-t border-slate-200 flex items-center justify-end gap-2.5">
+        <button type="button" onclick="closeModal('inspectionModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Đóng</button>
+        <button type="button" onclick="submitInspectionReport()" class="px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold shadow-sm flex items-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>Hoàn tất & Trình Quản lý duyệt</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- ======================================================== -->
+  <!-- MODAL: TIẾP NHẬN ĐƠN & PHÂN CÔNG KHẢO SÁT (ACCEPT REQUEST)-->
+  <!-- ======================================================== -->
+  <div id="acceptRequestModal" class="modal-backdrop">
+    <div class="modal-content max-w-xl p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="inbox" class="w-5 h-5 text-amber-600"></i>
+            <span>Tiếp Nhận Đơn Check-out & Phân Công Lịch Hẹn</span>
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">Xác nhận thời gian khảo sát với cư dân và phân công nhân viên kỹ thuật</p>
+        </div>
+        <button onclick="closeModal('acceptRequestModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs">
+        <!-- Thông tin đơn từ cư dân -->
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <span class="font-bold text-slate-800 text-sm" id="acc-modal-code">REQ-OUT-2026-0048</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800" id="acc-modal-badge">SUBMITTED (Mới tiếp nhận)</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-slate-700">
+            <div>
+              <span class="text-slate-400 block text-[11px]">Căn hộ:</span>
+              <strong id="acc-modal-room" class="text-slate-900 font-bold text-sm">P104</strong> <span class="text-slate-400">• StayHub Central</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[11px]">Cư dân gửi đơn:</span>
+              <strong id="acc-modal-tenant" class="text-slate-900">Hoàng Kim Long</strong> (<span id="acc-modal-phone">0903334455</span>)
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[11px]">Ngày gửi đơn:</span>
+              <span id="acc-modal-reqdate" class="font-semibold text-slate-900">06/10/2026</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[11px]">Ngày cư dân đề xuất:</span>
+              <strong id="acc-modal-expdate" class="text-teal-700 font-bold text-sm">22/10/2026</strong> (Khung 09:00 – 10:30)
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-200">
+            <span class="text-slate-400 text-[11px]">Lý do trả phòng: </span>
+            <span id="acc-modal-notes" class="text-slate-700 italic">Chuyển công tác vào TP.HCM.</span>
+          </div>
+        </div>
+
+        <!-- Form xác nhận với cư dân -->
+        <div class="p-4 bg-teal-50/50 rounded-xl border border-teal-200 space-y-3">
+          <h4 class="font-bold text-teal-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="check-circle" class="w-4 h-4 text-teal-600"></i>
+            <span>Thông tin tiếp nhận & xếp lịch</span>
+          </h4>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Khung giờ thống nhất <span class="text-red-500">*</span></label>
+              <select id="acc-slot" class="w-full bg-white border border-teal-500 rounded-lg p-2 font-bold text-teal-900 focus:outline-none">
+                <option value="09:30" selected>09:30 (Khung sáng 09:00–10:30)</option>
+                <option value="14:30">14:30 (Khung chiều 14:00–15:30)</option>
+                <option value="16:30">16:30 (Khung chiều muộn 16:00–17:30)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Kỹ thuật viên phụ trách <span class="text-red-500">*</span></label>
+              <select id="acc-staff" class="w-full bg-white border border-slate-200 rounded-lg p-2 font-medium text-slate-800">
+                <option value="Phạm Tuấn Anh" selected>Phạm Tuấn Anh (Kỹ thuật tòa nhà)</option>
+                <option value="Trần Minh Đức">Trần Minh Đức (Quản lý cơ sở)</option>
+                <option value="Nguyễn Văn Nam">Nguyễn Văn Nam (Kỹ thuật viên)</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-teal-300">
+            <input type="checkbox" id="chk-acc-contacted" checked class="rounded text-teal-600 focus:ring-teal-500 w-4 h-4">
+            <span class="text-slate-800 font-medium text-[11px]">Đã liên hệ với cư dân qua điện thoại & cư dân đã đồng ý lịch hẹn khảo sát.</span>
+          </label>
+        </div>
+
+        <p class="text-[11px] text-slate-500 italic">
+          * Sau khi xác nhận, phiếu sẽ chuyển sang trạng thái <strong>SCHEDULED</strong>. Hệ thống gửi thông báo SMS/App hướng dẫn cư dân chuẩn bị cho buổi nghiệm thu.
+        </p>
+
+        <!-- Actions -->
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('acceptRequestModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Hủy</button>
+          <button type="button" onclick="confirmAcceptRequest()" class="px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold shadow-sm flex items-center gap-1.5">
+            <i data-lucide="calendar-check" class="w-4 h-4"></i>
+            <span>Xác nhận tiếp nhận & Xếp lịch (SCHEDULED)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- ======================================================== -->
+  <!-- MODAL 3: ĐĂNG KÝ TRẢ PHÒNG (RESIDENT REQUEST)            -->
+  <!-- ======================================================== -->
+  <div id="createCheckoutModal" class="modal-backdrop">
+    <div class="modal-content max-w-lg p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="text-base font-bold text-slate-900">Đăng Ký Trả Phòng (Check-out)</h3>
+        <button onclick="closeModal('createCheckoutModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateCheckoutRequest(event)" class="mt-4 space-y-4 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Căn hộ</label>
+            <input type="text" id="req-room" value="P201" readonly class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2 font-bold font-mono text-teal-800">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Người thuê</label>
+            <input type="text" id="req-tenant" value="Lê Văn An" readonly class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2 font-medium text-slate-700">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1" for="req-contract-end-date">Hạn hợp đồng</label>
+          <input type="date" id="req-contract-end-date" readonly class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2 text-slate-700">
+          <p id="req-contract-code" class="text-[10px] text-slate-500 mt-1"></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Ngày dự kiến dọn ra <span class="text-red-500">*</span></label>
+            <input type="date" id="req-date" required onchange="updateCheckoutContractNotice()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2">
+            <span class="text-[10px] text-slate-400 mt-0.5 block">Quy định: báo trước ≥ 15 ngày</span>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Khung giờ bàn giao</label>
+            <select id="req-slot" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2">
+              <option value="14:30">14:00 – 15:30 (Khuyên dùng)</option>
+              <option value="09:30">09:00 – 10:30</option>
+              <option value="16:30">16:00 – 17:30</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="req-contract-notice" class="hidden p-3 rounded-lg border text-xs leading-relaxed" role="status" aria-live="polite"></div>
+
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <p class="font-bold text-slate-800">Tài khoản nhận khoản hoàn:</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="req-bank" placeholder="Ngân hàng (MB, VCB,...)" value="MB Bank" required class="bg-white border border-slate-200 rounded p-1.5">
+            <input type="text" id="req-account" placeholder="Số tài khoản" value="0904445566" required class="bg-white border border-slate-200 rounded p-1.5 font-mono">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Lý do chuyển đi</label>
+          <textarea id="req-notes" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2" placeholder="Hết hạn hợp đồng, chuyển công tác..."></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('createCheckoutModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 font-medium">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-[#0F766E] text-white rounded-lg font-bold shadow-sm">Gửi Yêu Cầu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+    <!-- ======================================================== -->
+  <!-- MODAL 4: XÁC NHẬN BIÊN BẢN (RESIDENT CONFIRM)           -->
+  <!-- ======================================================== -->
+  <div id="residentSignModal" class="modal-backdrop">
+    <div class="modal-content max-w-lg p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Xác Nhận Biên Bản Nghiệm Thu & Quyết Toán</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Cư dân kiểm tra đối soát và xác nhận đồng ý bàn giao căn hộ</p>
+        </div>
+        <button onclick="closeModal('residentSignModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs">
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+          <p class="text-slate-600">Căn hộ: <strong class="text-slate-900">P201 • StayHub Central</strong></p>
+          <p class="text-slate-600">Cư dân: <strong class="text-slate-900">Lê Văn An</strong></p>
+          <p class="text-slate-600">Số tiền cọc thực nhận hoàn trả: <strong class="text-emerald-700 font-mono text-base">7.700.000 ₫</strong></p>
+          <span class="text-[11px] text-slate-500 block">Đã khấu trừ: Điện (390.000 ₫) + Nước (60.000 ₫) + Rèm cửa (350.000 ₫)</span>
+        </div>
+
+        <div class="p-4 bg-teal-50 border border-teal-200 rounded-xl space-y-2">
+          <h4 class="font-bold text-teal-900 flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-teal-600"></i>
+            <span>Cam kết bàn giao căn hộ</span>
+          </h4>
+          <p class="text-slate-700">Cư dân xác nhận đã kiểm tra các khoản đối soát và đồng ý với biên bản thanh lý.</p>
+        </div>
+
+        <label class="flex items-start gap-2 cursor-pointer bg-white p-3 rounded-lg border border-slate-200">
+          <input type="checkbox" id="chk-sign-agree" checked class="mt-0.5 rounded text-teal-600 focus:ring-teal-500 w-4 h-4">
+          <span class="text-slate-700 font-medium text-[11px]">Tôi xác nhận đã kiểm tra đối soát các chỉ số điện, nước, tài sản bàn giao và hoàn toàn đồng ý với biên bản quyết toán này.</span>
+        </label>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('residentSignModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Đóng</button>
+          <button type="button" onclick="confirmResidentSign()" class="px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold shadow-sm flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Xác nhận biên bản nghiệm thu</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 5: KHIẾU NẠI ĐỀN BÙ (RESIDENT DISPUTE)             -->
+  <!-- ======================================================== -->
+  <div id="residentDisputeModal" class="modal-backdrop">
+    <div class="modal-content max-w-md p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="text-base font-bold text-slate-900">Gửi Khiếu Nại Bồi Hoàn Tài Sản</h3>
+        <button onclick="closeModal('residentDisputeModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs">
+        <p class="text-slate-600">Nếu quý khách không đồng ý với khoản đền bù nào trong biên bản dự thảo, vui lòng cung cấp lý do giải trình:</p>
+
+        <div class="space-y-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Hạng mục khiếu nại</label>
+            <select id="disp-item" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2">
+              <option value="curtain">Rèm cửa chống nắng (350.000 ₫)</option>
+              <option value="meter">Chỉ số điện/nước công tơ</option>
+              <option value="cleaning">Phí vệ sinh căn hộ</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Giải trình chi tiết</label>
+            <textarea id="disp-reason" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2" placeholder="Rèm cửa đã bị sờn rách nhẹ từ lúc nhận phòng, có ảnh biên bản bàn giao đầu kỳ..."></textarea>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('residentDisputeModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600">Hủy</button>
+          <button type="button" onclick="submitResidentDispute()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold shadow-sm">Gửi Quản lý xem xét</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <!-- ======================================================== -->
+  <!-- MODAL: QUẢN LÝ XÁC NHẬN QUYẾT TOÁN (MANAGER APPROVAL)    -->
+  <!-- ======================================================== -->
+  <div id="managerApprovalModal" class="modal-backdrop">
+    <div class="modal-content max-w-xl p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">
+            Xác Nhận Biên Bản Nghiệm Thu & Quyết Toán Cọc
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">Quản lý kiểm tra đối soát biên bản do Kỹ thuật viên lập trước khi chuyển Cư dân</p>
+        </div>
+        <button onclick="closeModal('managerApprovalModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs">
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900 text-sm" id="mgr-appr-code">Phiếu: REQ-OUT-2026-0045</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Kỹ thuật đã nghiệm thu xong</span>
+          </div>
+          <p class="text-slate-600">Căn hộ: <strong id="mgr-appr-room" class="text-slate-900">P201 • StayHub Central</strong> | Cư dân: <strong id="mgr-appr-tenant" class="text-slate-900">Lê Văn An</strong></p>
+          <p class="text-slate-600">Kỹ thuật viên thực hiện: <strong id="mgr-appr-staff" class="text-slate-800">Phạm Tuấn Anh</strong> (<span id="mgr-appr-time">Lúc 14:30 ngày 20/10/2026</span>)</p>
+          <div id="mgr-appr-contract-notice" class="hidden rounded-lg border p-3 text-xs"></div>
+        </div>
+
+        <!-- Bảng số liệu thẩm định -->
+        <div class="p-4 bg-white rounded-xl border border-slate-200 space-y-2.5">
+          <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-wider text-teal-800">Bảng kê chi phí do Kỹ thuật gửi lên</h4>
+          <div class="space-y-1.5 divide-y divide-slate-100">
+            <div class="flex justify-between py-1 text-slate-700">
+              <span>Tiền đặt cọc ban đầu theo HĐ:</span>
+              <strong id="mgr-appr-deposit" class="font-mono text-slate-900">8.500.000 ₫</strong>
+            </div>
+            <div class="flex justify-between py-1 text-slate-700">
+              <span id="mgr-appr-deposit-settlement-label">Tiền cọc dự kiến hoàn:</span>
+              <strong id="mgr-appr-deposit-settlement" class="font-mono text-slate-900">8.500.000 ₫</strong>
+            </div>
+            <div class="flex justify-between py-1 text-slate-700">
+              <span>Tiền thuê trả trước chưa sử dụng:</span>
+              <span class="text-right"><strong id="mgr-appr-rent-advance" class="font-mono text-blue-700">0 ₫</strong><small id="mgr-appr-rent-periods" class="block text-[10px] text-slate-400"></small></span>
+            </div>
+            <div class="flex justify-between py-1 text-slate-700">
+              <span id="mgr-appr-elec-label">Điện tiêu thụ (1450 &rarr; 1580 kWh):</span>
+              <span id="mgr-appr-elec" class="font-mono text-red-600 font-semibold">-390.000 ₫</span>
+            </div>
+            <div class="flex justify-between py-1 text-slate-700">
+              <span id="mgr-appr-water-label">Nước tiêu thụ (60 &rarr; 65 m³):</span>
+              <span id="mgr-appr-water" class="font-mono text-red-600 font-semibold">-60.000 ₫</span>
+            </div>
+            <div class="flex justify-between py-1 text-slate-700">
+              <span id="mgr-appr-damage-label">Thiệt hại tài sản (Rèm cửa rách mép):</span>
+              <span id="mgr-appr-damage" class="font-mono text-red-600 font-semibold">-350.000 ₫</span>
+            </div>
+            <div class="flex justify-between py-1 text-slate-700">
+              <span>Vệ sinh căn hộ:</span>
+              <span id="mgr-appr-cleaning" class="font-mono text-slate-500">0 ₫ (Sạch sẽ)</span>
+            </div>
+            <div class="flex justify-between pt-2 text-sm font-bold text-teal-900">
+              <span id="mgr-appr-refund-label">SỐ TIỀN CỌC XÁC NHẬN HOÀN:</span>
+              <strong id="mgr-appr-refund" class="font-mono text-xl text-teal-700">7.700.000 ₫</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Khung lý do từ chối (Chỉ hiện khi Quản lý ấn "Không") -->
+        <div id="manager-approval-reject-box" class="hidden p-4 bg-rose-50 border border-rose-200 rounded-xl space-y-2.5">
+          <h5 class="font-bold text-rose-900 text-xs">
+            Lý do không xác nhận / Yêu cầu Kỹ thuật kiểm tra lại:
+          </h5>
+          <textarea id="manager-reject-reason" rows="3" class="w-full bg-white border border-rose-300 rounded-lg p-2.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500" placeholder="Nhập lý do cụ thể (Ví dụ: Chỉ số điện nước chưa khớp với ảnh công tơ, mức đền bù rèm cửa cần thẩm định lại với cư dân...)"></textarea>
+          <div class="flex justify-end gap-2">
+            <button type="button" onclick="hideManagerRejectBox()" class="px-3 py-1.5 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-100 text-xs">Quay lại</button>
+            <button type="button" onclick="submitManagerRejection()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shadow-sm">Gửi phản hồi yêu cầu kiểm tra</button>
+          </div>
+        </div>
+
+        <!-- Thanh nút lựa chọn chính: Chỉ "Xác nhận" và "Không" -->
+        <div id="manager-approval-actions" class="pt-3 border-t border-slate-200 flex items-center justify-end gap-3">
+          <button type="button" onclick="showManagerRejectBox()" class="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition-colors">
+            Không
+          </button>
+          <button type="button" onclick="confirmManagerApproval()" class="px-5 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-xs font-bold shadow-sm transition-colors">
+            Xác nhận duyệt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: QUẢN LÝ THẨM ĐỊNH KHIẾU NẠI (MANAGER DISPUTE)     -->
+  <!-- ======================================================== -->
+  <div id="managerDisputeModal" class="modal-backdrop">
+    <div class="modal-content max-w-xl p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">
+            Thẩm Định & Giải Quyết Khiếu Nại Check-out
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">Quản lý đối chiếu bằng chứng hiện trường do Kỹ thuật lập và phản hồi của cư dân</p>
+        </div>
+        <button onclick="closeModal('managerDisputeModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs">
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900 text-sm" id="disp-mgr-code">REQ-OUT-2026-0050</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">DISPUTED (Đang khiếu nại)</span>
+          </div>
+          <p class="text-slate-700">Căn hộ: <strong id="disp-mgr-room" class="text-slate-900">P503</strong> | Cư dân: <strong id="disp-mgr-tenant" class="text-slate-900">Đỗ Mạnh Quân</strong> (<span id="disp-mgr-phone">0901112233</span>)</p>
+          <p class="text-slate-600">Kỹ thuật viên lập biên bản: <strong id="disp-mgr-staff" class="text-slate-800">Phạm Tuấn Anh</strong></p>
+        </div>
+
+        <!-- Đối chiếu 2 bên -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Bên Kỹ thuật -->
+          <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+            <div class="font-bold text-blue-900 text-xs">
+              Biên bản Kỹ thuật đã lập
+            </div>
+            <p class="text-slate-700">Hạng mục: <strong id="disp-mgr-item" class="text-slate-900">Cửa kính ban công</strong></p>
+            <p class="text-slate-700">Đề xuất bồi thường: <strong id="disp-mgr-cost" class="font-mono text-red-600 font-bold">1.200.000 ₫</strong></p>
+            <p class="text-slate-500 text-[11px] italic" id="disp-mgr-staff-notes">Ảnh hiện trạng ghi nhận vết nứt kính góc dưới ban công lúc trả phòng.</p>
+          </div>
+
+          <!-- Bên Cư dân -->
+          <div class="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
+            <div class="font-bold text-amber-900 text-xs">
+              Giải trình của Cư dân
+            </div>
+            <p class="text-slate-700 text-[11px] leading-relaxed" id="disp-mgr-reason">
+              "Vết nứt kính góc ban công đã có từ thời điểm bàn giao nhà ban đầu tháng 10/2025; đã có ảnh chụp đối chiếu trong phụ lục bàn giao đầu vào."
+            </p>
+            <span class="text-[10px] text-amber-800 font-semibold block">Đính kèm: 02 ảnh bàn giao đầu vào</span>
+          </div>
+        </div>
+
+        <!-- Quyết định của Quản lý -->
+        <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-3">
+          <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider text-teal-800">
+            Phán Quyết Của Quản Lý (Trần Minh Đức)
+          </h4>
+          <p class="text-slate-600 text-[11px]">Chọn một quyết định giải quyết khiếu nại để cập nhật lại dự thảo quyết toán:</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <label class="p-3 border border-emerald-300 rounded-lg bg-emerald-50/40 hover:bg-emerald-50 cursor-pointer block">
+              <input type="radio" name="disp-mgr-decision" value="accept" checked class="text-emerald-600 focus:ring-emerald-500">
+              <span class="block font-bold text-emerald-900 mt-1">Chấp nhận khiếu nại</span>
+              <span class="text-[10px] text-emerald-700 block mt-0.5">Miễn trừ bồi thường (0 ₫). Biên bản đầu vào có ghi nhận.</span>
+            </label>
+
+            <label class="p-3 border border-blue-300 rounded-lg bg-blue-50/40 hover:bg-blue-50 cursor-pointer block">
+              <input type="radio" name="disp-mgr-decision" value="reduce" class="text-blue-600 focus:ring-blue-500">
+              <span class="block font-bold text-blue-900 mt-1">Hỗ trợ 50%</span>
+              <span class="text-[10px] text-blue-700 block mt-0.5">Hai bên chia sẻ chi phí: Giảm còn 600.000 ₫.</span>
+            </label>
+
+            <label class="p-3 border border-rose-300 rounded-lg bg-rose-50/40 hover:bg-rose-50 cursor-pointer block">
+              <input type="radio" name="disp-mgr-decision" value="reject" class="text-rose-600 focus:ring-rose-500">
+              <span class="block font-bold text-rose-900 mt-1">Bác bỏ khiếu nại</span>
+              <span class="text-[10px] text-rose-700 block mt-0.5">Giữ nguyên theo biên bản kỹ thuật đã lập.</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('managerDisputeModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Đóng</button>
+          <button type="button" onclick="submitManagerDisputeResolution()" class="px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold shadow-sm">
+            Ban hành phán quyết & Chuyển bước
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: QUẢN LÝ XÁC NHẬN LỆNH CHI HOÀN CỌC (MANAGER REFUND)-->
+  <!-- ======================================================== -->
+  <div id="managerRefundModal" class="modal-backdrop">
+    <div class="modal-content max-w-lg p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <h3 id="mgr-ref-title" class="text-base font-bold text-slate-900">Xác Nhận Khoản Hoàn Qua Ngân Hàng</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Sau khi chuyển tiền, hồ sơ chờ cư dân xác nhận đã nhận đủ khoản hoàn.</p>
+        </div>
+        <button onclick="closeModal('managerRefundModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs">
+        <div class="p-4 bg-emerald-50/60 rounded-xl border border-emerald-200 space-y-2">
+          <div class="flex justify-between items-center">
+            <span id="mgr-ref-doc-label" class="font-bold text-emerald-900 text-sm">Ủy Nhiệm Chi (UNC) Ngân Hàng</span>
+            <span id="mgr-ref-unc" class="text-xs font-mono font-bold text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-200">UNC-202610-0049</span>
+          </div>
+          <p class="text-slate-700">Căn hộ: <strong id="mgr-ref-room">P402 • StayHub Central</strong></p>
+          <p class="text-slate-700">Ngân hàng thụ hưởng: <strong id="mgr-ref-bank">Techcombank</strong></p>
+          <p class="text-slate-700">Số tài khoản: <strong id="mgr-ref-account" class="font-mono text-slate-900">1903332211</strong></p>
+          <p class="text-slate-700">Người thụ hưởng: <strong id="mgr-ref-name">TRAN THU TRANG</strong></p>
+          <p class="text-slate-700"><span id="mgr-ref-amount-label">Số tiền hoàn chi:</span> <strong id="mgr-ref-amount" class="font-mono text-emerald-700 text-lg">9.200.000 ₫</strong></p>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5 text-slate-600 text-[11px]">
+          <p class="font-bold text-slate-800">Điều kiện nghiệm thu & pháp lý đã thỏa mãn:</p>
+          <p class="text-emerald-700 font-semibold">• Cư dân đã xác nhận biên bản thanh lý</p>
+          <p class="text-emerald-700 font-semibold">• Quyền truy cập căn hộ đã được vô hiệu hóa</p>
+        </div>
+
+        <!-- Khung lý do chưa chi hoàn cọc (Chỉ hiện khi ấn "Không") -->
+        <div id="refund-reject-box" class="hidden p-4 bg-rose-50 border border-rose-200 rounded-xl space-y-2.5">
+          <h5 class="font-bold text-rose-900 text-xs">
+            Lý do chưa xác nhận chi tiền:
+          </h5>
+          <textarea id="refund-reject-reason" rows="3" class="w-full bg-white border border-rose-300 rounded-lg p-2.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500" placeholder="Nhập lý do (Ví dụ: Thông tin tài khoản ngân hàng chưa khớp tên hợp đồng, cư dân chưa hoàn tất bàn giao thẻ xe...)"></textarea>
+          <div class="flex justify-end gap-2">
+            <button type="button" onclick="hideRefundRejectBox()" class="px-3 py-1.5 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-100 text-xs">Quay lại</button>
+            <button type="button" onclick="submitRefundRejection()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shadow-sm">Gửi phản hồi từ chối</button>
+          </div>
+        </div>
+
+        <!-- Thanh nút lựa chọn chính: Chỉ "Xác nhận" và "Không" -->
+        <div id="refund-actions" class="pt-3 border-t border-slate-200 flex items-center justify-end gap-3">
+          <button type="button" onclick="showRefundRejectBox()" class="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition-colors">
+            Không
+          </button>
+          <button type="button" onclick="confirmManagerRefund()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors">
+            Xác nhận đã chuyển tiền
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
+  <script src="../../js/operations/checkout.js"></script>
+</body>
+</html>
