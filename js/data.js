@@ -92,7 +92,8 @@ const INITIAL_CONTRACTS = [
   { id: 'ct-001', code: 'HD-2025-001', room: 'P201', building: 'StayHub Central - Ba Đình', tenant: 'Lê Văn An', phone: '0904445566', cccd: '001201004567', startDate: '2025-01-01', endDate: '2026-12-31', rent: 8500000, deposit: 8500000, status: 'ACTIVE' },
   { id: 'ct-002', code: 'HD-2025-002', room: 'P101', building: 'StayHub Central - Ba Đình', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', cccd: '001200001234', startDate: '2025-02-01', endDate: '2026-02-01', rent: 6500000, deposit: 6500000, status: 'EXPIRING_SOON' },
   { id: 'ct-003', code: 'HD-2025-003', room: 'P102', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', cccd: '001202008899', startDate: '2025-03-01', endDate: '2026-03-01', rent: 7500000, deposit: 7500000, status: 'ACTIVE' },
-  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Ba Đình', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON' }
+  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Ba Đình', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON' },
+  { id: 'ct-005', code: 'HD-2025-112', room: 'P402', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thu Trang', phone: '0908889900', startDate: '2025-01-01', endDate: '2026-09-30', rent: 10000000, deposit: 10000000, status: 'EXPIRED' }
 ];
 
 const INITIAL_INVOICES = [
@@ -316,12 +317,16 @@ const INITIAL_SEPAY_TXS = [
 const INITIAL_CHECKOUT_REQUESTS = [
   {
     id: 'req-01',
+    contractCode: 'HD-2025-001',
+    contractEndDate: '2026-12-31',
+    contractStatusAtRequest: 'ACTIVE',
+    isEarlyCheckout: true,
+    depositSettlementStatus: 'PENDING_SETTLEMENT',
     code: 'REQ-OUT-2026-0045',
     room: 'P201',
     building: 'StayHub Central - Ba Đình',
     tenant: 'Lê Văn An',
     phone: '0904445566',
-    contractCode: 'HD-2026-001',
     deposit: 8500000,
     requestDate: '2026-10-05',
     expectedDate: '2026-10-20',
@@ -339,12 +344,11 @@ const INITIAL_CHECKOUT_REQUESTS = [
       { item: 'Rèm cửa chống nắng', issue: 'Hư hỏng nhẹ (rách mép)', cost: 350000 }
     ],
     cleaningFee: 0,
-    notes: 'Kỹ thuật viên Phạm Tuấn Anh đã kiểm tra phòng lúc 14:30 ngày 20/10. Đã chốt số điện nước, lập biên bản hư hại rèm cửa và gửi dự thảo quyết toán hoàn cọc 7.700.000 ₫ trình Quản lý phê duyệt.',
+    notes: 'Kỹ thuật viên Phạm Tuấn Anh đã kiểm tra phòng lúc 14:30 ngày 20/10. Đã chốt số điện nước, lập biên bản hư hại rèm cửa; yêu cầu trả phòng trước hạn nên tiền cọc không được hoàn, chờ Quản lý xem xét.',
     bankAccount: { bank: 'MB Bank', accountNumber: '0904445566', accountName: 'LE VAN AN' },
-    refundAmount: 7700000,
+    refundAmount: 0,
     isSigned: false,
     disputeReason: null,
-    isKeyReturned: false
   },
   {
     id: 'req-04',
@@ -354,11 +358,15 @@ const INITIAL_CHECKOUT_REQUESTS = [
     tenant: 'Trần Thu Trang',
     phone: '0908889900',
     contractCode: 'HD-2025-112',
+    contractEndDate: '2026-09-30',
+    contractStatusAtRequest: 'EXPIRED',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'REFUND_PENDING',
     deposit: 10000000,
     requestDate: '2026-10-01',
     expectedDate: '2026-10-18',
     timeslot: '10:00',
-    status: 'REFUND_PENDING', // Staff đã nghiệm thu, cư dân đã ký, Staff đã thu đủ chìa khóa -> Chờ Quản lý duyệt lệnh chi UNC hoàn cọc
+    status: 'REFUND_PENDING', // Cư dân đã ký, chờ Quản lý duyệt lệnh chi UNC hoàn cọc
     assignedStaff: 'Phạm Tuấn Anh',
     manager: 'Trần Minh Đức',
     meterElectricPrev: 1800,
@@ -371,12 +379,11 @@ const INITIAL_CHECKOUT_REQUESTS = [
       { item: 'Sơn tường phòng ngủ', issue: 'Vết ố bẩn khó tẩy', cost: 290000 }
     ],
     cleaningFee: 0,
-    notes: 'Staff đã nghiệm thu, cư dân đã ký biên bản thanh lý và Staff đã thu đủ 02 chìa khóa cơ, 02 thẻ từ, khóa mã phòng. Chờ Quản lý phê duyệt lệnh chi hoàn cọc 9.200.000 ₫.',
+    notes: 'Staff đã nghiệm thu, cư dân đã ký biên bản thanh lý. Chờ Quản lý phê duyệt lệnh chi hoàn cọc 9.200.000 ₫.',
     bankAccount: { bank: 'Techcombank', accountNumber: '1903332211', accountName: 'TRAN THU TRANG' },
     refundAmount: 9200000,
     isSigned: true,
     disputeReason: null,
-    isKeyReturned: true
   },
   {
     id: 'req-05',
@@ -408,7 +415,6 @@ const INITIAL_CHECKOUT_REQUESTS = [
     refundAmount: 7404000,
     isSigned: false,
     disputeReason: 'Vết nứt kính góc ban công đã có từ thời điểm bàn giao nhà ban đầu tháng 10/2025; đã có ảnh chụp đối chiếu.',
-    isKeyReturned: false
   },
   {
     id: 'req-02',
@@ -438,10 +444,13 @@ const INITIAL_CHECKOUT_REQUESTS = [
     refundAmount: 6800000,
     isSigned: false,
     disputeReason: null,
-    isKeyReturned: false
   },
   {
     id: 'req-03',
+    contractEndDate: '2026-10-01',
+    contractStatusAtRequest: 'EXPIRED',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'PAID',
     code: 'REQ-OUT-2026-0042',
     room: 'P301',
     building: 'StayHub Central - Ba Đình',
@@ -468,7 +477,6 @@ const INITIAL_CHECKOUT_REQUESTS = [
     refundAmount: 8990000,
     isSigned: true,
     disputeReason: null,
-    isKeyReturned: true
   }
 ];
 
