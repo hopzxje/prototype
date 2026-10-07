@@ -27,6 +27,18 @@
           </button>
         </div>
 
+        <!-- Zalo OA Notification Banner -->
+        <div id="zalo-notif-banner" class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center shrink-0">Z</div>
+            <div>
+              <p class="font-bold text-blue-900">Thông báo từ Zalo OA StayHub:</p>
+              <p class="text-blue-700 mt-0.5">Hóa đơn kỳ thu phí mới nhất đã được gửi tới số điện thoại Zalo của bạn. Vui lòng kiểm tra chi tiết bóc tách bên dưới.</p>
+            </div>
+          </div>
+          <span class="badge badge-info text-[11px] shrink-0">Đã đồng bộ Zalo ZNS</span>
+        </div>
+
         <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
@@ -39,15 +51,16 @@
           <div class="p-5">
             <div class="flex items-end justify-between gap-4">
               <div>
-                <p class="text-xs text-slate-500">Tổng tiền</p>
+                <p class="text-xs text-slate-500">Tổng tiền thanh toán</p>
                 <p class="text-3xl font-extrabold text-slate-900 mt-1" data-invoice-total>9.445.000 ₫</p>
               </div>
               <p class="text-xs text-slate-500 text-right" data-invoice-payment>Thanh toán qua VietQR<br>01/10/2026</p>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
-              <div class="p-4 rounded-lg bg-slate-50"><p class="text-xs text-slate-500">Tiền phòng</p><p class="font-bold text-slate-900 mt-1" data-invoice-rent>8.500.000 ₫</p></div>
-              <div class="p-4 rounded-lg bg-slate-50"><p class="text-xs text-slate-500">Điện & nước</p><p class="font-bold text-slate-900 mt-1" data-invoice-utilities>795.000 ₫</p></div>
-              <div class="p-4 rounded-lg bg-slate-50"><p class="text-xs text-slate-500">Phí dịch vụ</p><p class="font-bold text-slate-900 mt-1" data-invoice-service>150.000 ₫</p></div>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-6">
+              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-100"><p class="text-xs text-slate-500">1. Tiền phòng</p><p class="font-bold text-slate-900 mt-1" data-invoice-rent>8.500.000 ₫</p></div>
+              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-100"><p class="text-xs text-slate-500">2. Tiền điện sinh hoạt</p><p class="font-bold text-slate-900 mt-1" data-invoice-elec>595.000 ₫</p></div>
+              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-100"><p class="text-xs text-slate-500">3. Tiền nước sinh hoạt</p><p class="font-bold text-slate-900 mt-1" data-invoice-water>200.000 ₫</p></div>
+              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-100"><p class="text-xs text-slate-500">4. Phí DV & Phụ phí</p><p class="font-bold text-teal-700 mt-1" data-invoice-service>150.000 ₫</p></div>
             </div>
           </div>
         </section>
@@ -87,12 +100,24 @@
       setText('[data-invoice-code]', latest.code);
       setText('[data-invoice-total]', formatVND(latest.total));
       setText('[data-invoice-rent]', formatVND(latest.rent));
-      setText('[data-invoice-utilities]', formatVND((latest.elecTotal || 0) + (latest.waterTotal || 0)));
-      setText('[data-invoice-service]', formatVND(latest.serviceFee));
-      setText('[data-invoice-payment]', latest.paymentDate ? `Thanh toán qua ${latest.method || 'hệ thống'}\n${latest.paymentDate}` : 'Chưa thanh toán');
+      setText('[data-invoice-elec]', formatVND(latest.elecTotal || 0));
+      setText('[data-invoice-water]', formatVND(latest.waterTotal || 0));
+      setText('[data-invoice-service]', formatVND((latest.serviceFee || 0) + (latest.extraFee || 0)));
+      setText('[data-invoice-payment]', latest.paymentDate ? `Thanh toán qua ${latest.method || 'hệ thống'}\n${latest.paymentDate}` : 'Chưa thanh toán (Chờ quét VietQR)');
 
       const status = document.querySelector('[data-invoice-status]');
-      if (status) status.textContent = latest.status === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán';
+      if (status) {
+        if (latest.status === 'PAID') {
+          status.className = 'badge badge-success';
+          status.textContent = '✓ Đã thanh toán';
+        } else if (latest.status === 'DRAFT') {
+          status.className = 'badge bg-purple-100 text-purple-800';
+          status.textContent = 'Bản nháp (Đang duyệt)';
+        } else {
+          status.className = 'badge badge-warning';
+          status.textContent = '⏳ Chờ thanh toán';
+        }
+      }
 
       const history = document.getElementById('resident-invoice-history');
       history.innerHTML = invoices.length ? invoices.map(invoice => `
@@ -100,7 +125,9 @@
           <td class="p-3.5 font-semibold text-slate-900">${invoice.month}</td>
           <td class="p-3.5 font-mono text-teal-700">${invoice.code}</td>
           <td class="p-3.5 font-bold text-slate-900">${formatVND(invoice.total)}</td>
-          <td class="p-3.5"><span class="badge ${invoice.status === 'PAID' ? 'badge-success' : 'badge-warning'}">${invoice.status === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}</span></td>
+          <td class="p-3.5">
+            ${invoice.status === 'PAID' ? '<span class="badge badge-success">✓ Đã thanh toán</span>' : '<span class="badge badge-warning">⏳ Chờ thanh toán</span>'}
+          </td>
         </tr>
       `).join('') : '<tr><td colspan="4" class="p-6 text-center text-slate-500">Chưa có hóa đơn của căn hộ này.</td></tr>';
     }

@@ -20,7 +20,9 @@ const STORAGE_KEYS = {
   SYSTEM_CONFIG: 'stayhub_system_config',
   CURRENT_BUILDING: 'stayhub_current_building',
   USERS: 'stayhub_users',
-  HANDOVER: 'stayhub_handover'
+  HANDOVER: 'stayhub_handover',
+  NOTIFICATIONS: 'stayhub_notifications',
+  DRAFT_INVOICES: 'stayhub_draft_invoices'
 };
 
 const DEFAULT_USERS = {
@@ -420,9 +422,45 @@ const INITIAL_MAINTENANCE = [
 ];
 
 const INITIAL_VISITORS = [
-  { id: 'vis-01', guestName: 'Nguyễn Thu Huyền', cccd: '001198003421', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-02 18:30', status: 'APPROVED', note: 'Bạn đại học ghé ăn tối' },
-  { id: 'vis-02', guestName: 'Phạm Quốc Bảo', cccd: '034200008765', hostRoom: 'P102', hostTenant: 'Trần Thị Thu Thảo', timeExpected: '2026-10-02 14:00', status: 'IN_BUILDING', note: 'Giao tài liệu công ty' },
-  { id: 'vis-03', guestName: 'Vũ Minh Khôi', cccd: '001201007744', hostRoom: 'P301', hostTenant: 'Vũ Đức Nam', timeExpected: '2026-10-02 20:00', status: 'PENDING', note: 'Em trai đến thăm cuối tuần' }
+  { id: 'vis-01', guestName: 'Nguyễn Thu Huyền', cccd: '001198003421', phone: '0988112233', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-02 18:30', status: 'APPROVED', note: 'Bạn đại học ghé ăn tối', reviewedBy: 'Phạm Tuấn Anh (Staff)' },
+  { id: 'vis-02', guestName: 'Phạm Quốc Bảo', cccd: '034200008765', phone: '0977223344', hostRoom: 'P102', hostTenant: 'Trần Thị Thu Thảo', timeExpected: '2026-10-02 14:00', status: 'IN_BUILDING', note: 'Giao tài liệu công ty', reviewedBy: 'Phạm Tuấn Anh (Staff)', checkInTime: '2026-10-02 14:05' },
+  { id: 'vis-03', guestName: 'Vũ Minh Khôi', cccd: '001201007744', phone: '0966334455', hostRoom: 'P301', hostTenant: 'Vũ Đức Nam', timeExpected: '2026-10-02 20:00', status: 'PENDING', note: 'Em trai đến thăm cuối tuần' },
+  { id: 'vis-04', guestName: 'Hoàng Văn Bách', cccd: '001200009988', phone: '0912334455', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-03 22:30', status: 'FORWARDED_MANAGER', note: 'Khách ở lại qua đêm - Chờ Quản lý phê duyệt', reviewedBy: 'Phạm Tuấn Anh (Staff chuyển Manager)' },
+  { id: 'vis-05', guestName: 'Trịnh Thanh Tùng', cccd: '034200005522', phone: '0933445566', hostRoom: 'P101', hostTenant: 'Nguyễn Văn Hùng', timeExpected: '2026-10-01 23:45', status: 'REJECTED', note: 'Tụ tập sau 23h', reviewedBy: 'Trần Minh Đức (Manager)', rejectReason: 'Quá giờ giới nghiêm tòa nhà theo điều 5 nội quy' },
+  { id: 'vis-06', guestName: 'Đỗ Thùy Linh', cccd: '001199002233', phone: '0988776655', hostRoom: 'P204', hostTenant: 'Đỗ Thùy Trang', timeExpected: '2026-10-01 10:00', status: 'DEPARTED', note: 'Chị gái sang chơi nấu cơm', reviewedBy: 'Phạm Tuấn Anh (Staff)', checkInTime: '2026-10-01 10:15', checkOutTime: '2026-10-01 16:30' }
+];
+
+const INITIAL_NOTIFICATIONS = [
+  {
+    id: 'ntf-01',
+    title: 'Phát hành thông báo tiền phòng & điện nước tháng 10/2026',
+    category: 'INVOICE',
+    content: 'Hóa đơn kỳ thu phí tháng 10/2026 đã sẵn sàng. Quý cư dân vui lòng kiểm tra và quét mã VietQR để thanh toán trước ngày 05/10/2026.',
+    scope: 'Cư dân đang thuê',
+    channel: 'BOTH',
+    time: '01/10/2026 08:00',
+    read: false
+  },
+  {
+    id: 'ntf-02',
+    title: 'Thông báo duyệt khách đến thăm căn hộ P201',
+    category: 'VISITOR',
+    content: 'Ban quản lý đã phê duyệt đăng ký khách thăm: Nguyễn Thu Huyền (CCCD: 001198003421). Thời gian dự kiến: 18:30 ngày 02/10/2026.',
+    scope: 'Lê Văn An (P201)',
+    channel: 'BOTH',
+    time: '02/10/2026 10:00',
+    read: true
+  },
+  {
+    id: 'ntf-03',
+    title: 'Thông báo bảo dưỡng định kỳ hệ thống thang máy',
+    category: 'MAINTENANCE',
+    content: 'Ban quản lý sẽ tiến hành bảo dưỡng toàn bộ hệ thống kỹ thuật từ 13:30 - 15:30 chiều Thứ Bảy. Thang máy sẽ tạm ngưng trong khoảng 30 phút.',
+    scope: 'Toàn bộ cư dân',
+    channel: 'APP',
+    time: '01/10/2026 09:00',
+    read: true
+  }
 ];
 
 const INITIAL_SEPAY_TXS = [
@@ -561,7 +599,9 @@ const DataStore = {
     }
     if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
       localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(INITIAL_USERS));
-    localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(INITIAL_HANDOVER));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS)) {
+      localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
     }
     if (!localStorage.getItem(STORAGE_KEYS.HANDOVER)) {
       localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(INITIAL_HANDOVER));
@@ -714,11 +754,158 @@ const DataStore = {
   },
 
   getVisitors() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITORS) || '[]');
+    const raw = localStorage.getItem(STORAGE_KEYS.VISITORS);
+    if (!raw) return INITIAL_VISITORS;
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) && parsed.length >= 4 ? parsed : INITIAL_VISITORS;
+    } catch (e) {
+      return INITIAL_VISITORS;
+    }
   },
 
   saveVisitors(vis) {
     localStorage.setItem(STORAGE_KEYS.VISITORS, JSON.stringify(vis));
+  },
+
+  approveVisitorByStaff(id) {
+    const list = this.getVisitors();
+    const item = list.find(v => v.id === id);
+    if (item) {
+      item.status = 'APPROVED';
+      item.reviewedBy = 'Phạm Tuấn Anh (Staff Duyệt)';
+      item.reviewedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      this.saveVisitors(list);
+      this.addAuditLog('DUYET_KHACH_THAM_STAFF', `Khách ${item.guestName}`, `Nhân viên vận hành duyệt cho khách thăm phòng ${item.hostRoom}`);
+      this.addNotification({
+        title: `Yêu cầu khách thăm đã được duyệt (${item.guestName})`,
+        category: 'VISITOR',
+        content: `Nhân viên đã duyệt đăng ký khách thăm ${item.guestName} đến căn hộ ${item.hostRoom}. Khách có thể vào tòa nhà theo giờ hẹn.`,
+        scope: `${item.hostTenant} (${item.hostRoom})`,
+        channel: 'BOTH'
+      });
+    }
+    return item;
+  },
+
+  forwardVisitorToManager(id, note = 'Cần Quản lý phê duyệt (ở qua đêm / trường hợp đặc biệt)') {
+    const list = this.getVisitors();
+    const item = list.find(v => v.id === id);
+    if (item) {
+      item.status = 'FORWARDED_MANAGER';
+      item.forwardNote = note;
+      item.reviewedBy = 'Phạm Tuấn Anh (Staff chuyển Manager)';
+      item.forwardedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      this.saveVisitors(list);
+      this.addAuditLog('CHUYEN_DUYET_KHACH_MANAGER', `Khách ${item.guestName}`, `Nhân viên chuyển hồ sơ khách thăm phòng ${item.hostRoom} lên Quản lý cơ sở`);
+    }
+    return item;
+  },
+
+  approveVisitorByManager(id) {
+    const list = this.getVisitors();
+    const item = list.find(v => v.id === id);
+    if (item) {
+      item.status = 'APPROVED';
+      item.reviewedBy = 'Trần Minh Đức (Manager Duyệt)';
+      item.reviewedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      this.saveVisitors(list);
+      this.addAuditLog('DUYET_KHACH_THAM_MANAGER', `Khách ${item.guestName}`, `Quản lý phê duyệt hồ sơ khách thăm đặc biệt phòng ${item.hostRoom}`);
+      this.addNotification({
+        title: `Quản lý đã duyệt khách thăm đặc biệt (${item.guestName})`,
+        category: 'VISITOR',
+        content: `Quản lý tòa nhà đã phê duyệt đăng ký khách thăm đặc biệt: ${item.guestName} tại căn hộ ${item.hostRoom}.`,
+        scope: `${item.hostTenant} (${item.hostRoom})`,
+        channel: 'BOTH'
+      });
+    }
+    return item;
+  },
+
+  rejectVisitor(id, reason, reviewerName = 'Quản lý / Nhân viên') {
+    const list = this.getVisitors();
+    const item = list.find(v => v.id === id);
+    if (item) {
+      item.status = 'REJECTED';
+      item.rejectReason = reason || 'Không đáp ứng quy định ra vào tòa nhà';
+      item.reviewedBy = reviewerName;
+      item.rejectedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      this.saveVisitors(list);
+      this.addAuditLog('TU_CHOI_KHACH_THAM', `Khách ${item.guestName}`, `Từ chối cho phép khách thăm phòng ${item.hostRoom}. Lý do: ${item.rejectReason}`);
+      this.addNotification({
+        title: `Yêu cầu khách thăm bị từ chối (${item.guestName})`,
+        category: 'VISITOR',
+        content: `Đăng ký khách thăm ${item.guestName} phòng ${item.hostRoom} đã bị từ chối. Lý do: ${item.rejectReason}.`,
+        scope: `${item.hostTenant} (${item.hostRoom})`,
+        channel: 'BOTH'
+      });
+    }
+    return item;
+  },
+
+  checkinVisitor(id) {
+    const list = this.getVisitors();
+    const item = list.find(v => v.id === id);
+    if (item) {
+      item.status = 'IN_BUILDING';
+      item.checkInTime = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      this.saveVisitors(list);
+      this.addAuditLog('CHECKIN_KHACH_THAM', `Khách ${item.guestName}`, `Ghi nhận khách vào tòa nhà, lên phòng ${item.hostRoom} lúc ${item.checkInTime}`);
+    }
+    return item;
+  },
+
+  checkoutVisitor(id) {
+    const list = this.getVisitors();
+    const item = list.find(v => v.id === id);
+    if (item) {
+      item.status = 'DEPARTED';
+      item.checkOutTime = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      this.saveVisitors(list);
+      this.addAuditLog('CHECKOUT_KHACH_THAM', `Khách ${item.guestName}`, `Ghi nhận khách rời tòa nhà lúc ${item.checkOutTime}`);
+    }
+    return item;
+  },
+
+  getNotifications() {
+    const raw = localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS);
+    if (!raw) return INITIAL_NOTIFICATIONS;
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : INITIAL_NOTIFICATIONS;
+    } catch (e) {
+      return INITIAL_NOTIFICATIONS;
+    }
+  },
+
+  saveNotifications(notifs) {
+    localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(notifs));
+  },
+
+  addNotification(notifData) {
+    const notifs = this.getNotifications();
+    const newNotif = {
+      id: 'ntf-' + Date.now(),
+      title: notifData.title || 'Thông báo mới',
+      category: notifData.category || 'GENERAL',
+      content: notifData.content || '',
+      scope: notifData.scope || 'Toàn bộ cư dân',
+      channel: notifData.channel || 'BOTH',
+      time: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      read: false
+    };
+    notifs.unshift(newNotif);
+    this.saveNotifications(notifs);
+    return newNotif;
+  },
+
+  getDraftInvoices() {
+    const raw = localStorage.getItem(STORAGE_KEYS.DRAFT_INVOICES);
+    return raw ? JSON.parse(raw) : [];
+  },
+
+  saveDraftInvoices(drafts) {
+    localStorage.setItem(STORAGE_KEYS.DRAFT_INVOICES, JSON.stringify(drafts));
   },
 
   getSepayTxs() {

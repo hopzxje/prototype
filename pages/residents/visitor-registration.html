@@ -64,8 +64,20 @@
   <script src="../../js/data.js"></script>
   <script src="../../js/app.js"></script>
   <script>
-    function residentVisitorBadge(status) {
-      const labels = { PENDING: ['Chờ duyệt', 'badge-warning'], APPROVED: ['Đã duyệt', 'badge-info'], IN_BUILDING: ['Đang trong tòa nhà', 'badge-success'], DEPARTED: ['Đã rời đi', 'badge-neutral'] };
+    function residentVisitorBadge(visitor) {
+      const status = visitor.status;
+      if (status === 'FORWARDED_MANAGER') {
+        return `<span class="badge bg-purple-100 text-purple-800 border border-purple-200 font-bold">Chờ Quản lý duyệt</span>`;
+      }
+      if (status === 'REJECTED') {
+        return `<span class="badge badge-danger cursor-pointer" onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định ra vào tòa nhà'}')">✕ Bị từ chối (Xem lý do)</span>`;
+      }
+      const labels = {
+        PENDING: ['Chờ Staff duyệt', 'badge-warning'],
+        APPROVED: ['✓ Đã duyệt (Chờ đón)', 'badge-info'],
+        IN_BUILDING: ['Đang trong tòa nhà', 'badge-success'],
+        DEPARTED: ['Đã rời đi (Hoàn tất)', 'badge-neutral']
+      };
       const item = labels[status] || ['Chờ duyệt', 'badge-warning'];
       return `<span class="badge ${item[1]}">${item[0]}</span>`;
     }
@@ -82,7 +94,7 @@
           <td class="p-3.5 font-mono text-slate-500">${visitor.cccd}</td>
           <td class="p-3.5">${visitor.timeExpected}</td>
           <td class="p-3.5 text-slate-500">${visitor.note || '—'}</td>
-          <td class="p-3.5">${residentVisitorBadge(visitor.status)}</td>
+          <td class="p-3.5">${residentVisitorBadge(visitor)}</td>
         </tr>
       `).join('') : '<tr><td colspan="5" class="p-6 text-center text-slate-500">Chưa có khách thăm được đăng ký.</td></tr>';
     }

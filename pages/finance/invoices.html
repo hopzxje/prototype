@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StayHub - Quản lý Hóa đơn & Thu phí</title>
+  <title>StayHub - Quản lý Hóa đơn & Thu phí (Luồng 2.8)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
@@ -29,24 +29,115 @@
         <!-- Top Actions Bar -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h2 class="text-xl font-bold text-slate-900">Quản lý Hóa đơn & Thu tiền phòng</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Đối soát thu phí định kỳ, xuất hóa đơn điện tử và tạo mã QR VietQR thanh toán tức thì</p>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800 uppercase tracking-wider">Nghiệp Vụ 2.8</span>
+              <h2 class="text-xl font-bold text-slate-900">Cyclic Billing and Invoicing</h2>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">Staff tạo hóa đơn $\rightarrow$ Kiểm tra chỉ số $\rightarrow$ Nhập phụ phí $\rightarrow$ Lưu Draft $\rightarrow$ Manager Review $\rightarrow$ Phát hành qua Zalo OA $\rightarrow$ Cư dân nhận hóa đơn</p>
           </div>
-          <div class="flex items-center gap-3">
-            <button onclick="showToast('Chức năng lập hóa đơn hàng loạt kích hoạt thành công')" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+          <div class="flex items-center gap-2">
+            <button onclick="resetInvoiceDemoData()" class="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+              <span>Reset Dữ Liệu</span>
+            </button>
+            <button onclick="openCyclicBillingWizard(1)" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
               <i data-lucide="file-plus" class="w-4 h-4"></i>
               <span>Lập Hóa Đơn Kỳ Mới</span>
             </button>
           </div>
         </div>
 
-        <!-- Metric summaries -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- ========================================================================= -->
+        <!-- INTERACTIVE FLOW RUNNER (Trình diễn trực quan từng bước theo Swimlane 2.8) -->
+        <!-- ========================================================================= -->
+        <div class="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 text-white rounded-2xl p-5 shadow-lg border border-teal-700/50">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-teal-800/60">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <h3 class="font-bold text-sm tracking-wide uppercase text-teal-200">Trình diễn Luồng 2.8: Lập & Phát Hành Hóa Đơn Định Kỳ</h3>
+              </div>
+              <p class="text-xs text-slate-300 mt-0.5">Khớp 100% sơ đồ Activity Swimlane (Staff $\rightarrow$ System $\rightarrow$ Manager $\rightarrow$ Resident)</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-auto-invoice-demo" onclick="runAutoBillingTour()" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-sm transition-all">
+                <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                <span>Chạy Tự Động Toàn Luồng</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step Indicators Bar -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5 mt-4 text-xs">
+            <!-- Step 1 -->
+            <div onclick="openCyclicBillingWizard(1)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-2.5 rounded-xl border border-white/10 transition-all">
+              <div class="flex items-center justify-between text-teal-300 font-semibold text-[10px]">
+                <span>BƯỚC 1: STAFF</span>
+                <span class="w-4 h-4 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">1</span>
+              </div>
+              <p class="font-bold text-white mt-1">Chọn Kỳ & Cơ sở</p>
+              <p class="text-[10px] text-slate-300 mt-0.5">Kỳ thu & tòa nhà quản lý</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div onclick="openCyclicBillingWizard(2)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-2.5 rounded-xl border border-white/10 transition-all">
+              <div class="flex items-center justify-between text-teal-300 font-semibold text-[10px]">
+                <span>BƯỚC 2: SYSTEM</span>
+                <span class="w-4 h-4 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">2</span>
+              </div>
+              <p class="font-bold text-white mt-1">Kiểm tra Dữ liệu</p>
+              <p class="text-[10px] text-slate-300 mt-0.5">Data sufficient? (Điện/Nước)</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div onclick="openCyclicBillingWizard(3)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-2.5 rounded-xl border border-white/10 transition-all">
+              <div class="flex items-center justify-between text-teal-300 font-semibold text-[10px]">
+                <span>BƯỚC 3: STAFF</span>
+                <span class="w-4 h-4 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">3</span>
+              </div>
+              <p class="font-bold text-white mt-1">Nhập Phụ Phí</p>
+              <p class="text-[10px] text-slate-300 mt-0.5">Tiền xe, dọn phòng, phát sinh</p>
+            </div>
+
+            <!-- Step 4 -->
+            <div onclick="openCyclicBillingWizard(4)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-2.5 rounded-xl border border-white/10 transition-all">
+              <div class="flex items-center justify-between text-teal-300 font-semibold text-[10px]">
+                <span>BƯỚC 4: SYSTEM</span>
+                <span class="w-4 h-4 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">4</span>
+              </div>
+              <p class="font-bold text-white mt-1">Tính & Lưu Nháp</p>
+              <p class="text-[10px] text-slate-300 mt-0.5">Lưu hóa đơn DRAFT + Log</p>
+            </div>
+
+            <!-- Step 5 -->
+            <div onclick="openCyclicBillingWizard(5)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-2.5 rounded-xl border border-white/10 transition-all">
+              <div class="flex items-center justify-between text-teal-300 font-semibold text-[10px]">
+                <span>BƯỚC 5: MANAGER</span>
+                <span class="w-4 h-4 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">5</span>
+              </div>
+              <p class="font-bold text-white mt-1">Quản lý Review</p>
+              <p class="text-[10px] text-slate-300 mt-0.5">Xem nháp, ghi chú feedback</p>
+            </div>
+
+            <!-- Step 6 -->
+            <div onclick="openCyclicBillingWizard(6)" class="cursor-pointer bg-white/10 hover:bg-white/15 p-2.5 rounded-xl border border-white/10 transition-all">
+              <div class="flex items-center justify-between text-teal-300 font-semibold text-[10px]">
+                <span>BƯỚC 6: PUBLISH</span>
+                <span class="w-4 h-4 rounded-full bg-teal-500/30 flex items-center justify-center text-white text-[10px]">6</span>
+              </div>
+              <p class="font-bold text-white mt-1">Phát Hành & Zalo OA</p>
+              <p class="text-[10px] text-slate-300 mt-0.5">Bắn tin Zalo ZNS tới Cư dân</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric summaries (Dynamic) -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4" id="invoices-metrics-cards">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
               <p class="text-xs font-semibold text-slate-500 uppercase">Tổng tiền đã thu</p>
-              <h3 class="text-xl font-extrabold text-emerald-600 mt-1">17.855.000 ₫</h3>
-              <p class="text-xs text-slate-400 mt-0.5">2 hóa đơn đã thanh toán</p>
+              <h3 class="text-xl font-extrabold text-emerald-600 mt-1" id="metric-paid-amount">0 ₫</h3>
+              <p class="text-xs text-slate-400 mt-0.5" id="metric-paid-count">0 hóa đơn đã thanh toán</p>
             </div>
             <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <i data-lucide="check-circle" class="w-5 h-5"></i>
@@ -55,9 +146,9 @@
 
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
-              <p class="text-xs font-semibold text-slate-500 uppercase">Tiền phòng chờ thu</p>
-              <h3 class="text-xl font-extrabold text-amber-600 mt-1">18.002.500 ₫</h3>
-              <p class="text-xs text-slate-400 mt-0.5">2 hóa đơn chưa thanh toán</p>
+              <p class="text-xs font-semibold text-slate-500 uppercase">Chờ cư dân nộp</p>
+              <h3 class="text-xl font-extrabold text-amber-600 mt-1" id="metric-unpaid-amount">0 ₫</h3>
+              <p class="text-xs text-slate-400 mt-0.5" id="metric-unpaid-count">0 hóa đơn chờ thanh toán</p>
             </div>
             <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
               <i data-lucide="clock" class="w-5 h-5"></i>
@@ -66,9 +157,20 @@
 
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
-              <p class="text-xs font-semibold text-slate-500 uppercase">Kỳ thu tiền</p>
-              <h3 class="text-xl font-extrabold text-slate-900 mt-1">Tháng 10/2026</h3>
-              <p class="text-xs text-slate-400 mt-0.5">Hạn thanh toán: 05/10/2026</p>
+              <p class="text-xs font-semibold text-slate-500 uppercase">Bản nháp chờ duyệt</p>
+              <h3 class="text-xl font-extrabold text-purple-600 mt-1" id="metric-draft-amount">0 ₫</h3>
+              <p class="text-xs text-slate-400 mt-0.5" id="metric-draft-count">0 hóa đơn DRAFT</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
+              <i data-lucide="file-edit" class="w-5 h-5"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase">Kỳ thu hiện hành</p>
+              <h3 class="text-xl font-extrabold text-slate-900 mt-1" id="metric-current-month">Tháng 10/2026</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Hạn nộp: 05 hàng tháng</p>
             </div>
             <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center">
               <i data-lucide="calendar" class="w-5 h-5"></i>
@@ -81,15 +183,16 @@
           <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2">
               <i data-lucide="receipt" class="w-5 h-5 text-teal-600"></i>
-              <h3 class="font-bold text-slate-900 text-sm">Danh Sách Hóa Đơn Kỳ Này</h3>
+              <h3 class="font-bold text-slate-900 text-sm">Danh Sách Hóa Đơn Toàn Hệ Thống</h3>
             </div>
             <!-- Search & Filters -->
             <div class="flex items-center gap-3">
-              <input type="text" id="inv-search" oninput="renderInvoicesTable()" placeholder="Tìm số phòng hoặc tên..." class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none w-48">
+              <input type="text" id="inv-search" oninput="renderInvoicesTable()" placeholder="Tìm số phòng, tên, mã..." class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none w-48">
               <select id="inv-status-filter" onchange="renderInvoicesTable()" class="text-xs font-medium bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5">
                 <option value="ALL">Tất cả trạng thái</option>
-                <option value="PAID">Đã thanh toán</option>
-                <option value="UNPAID">Chưa thanh toán</option>
+                <option value="PAID">Đã thanh toán (Paid)</option>
+                <option value="UNPAID">Chờ thu (Published / Unpaid)</option>
+                <option value="DRAFT">Bản nháp (Draft - Chờ duyệt)</option>
               </select>
             </div>
           </div>
@@ -99,11 +202,12 @@
               <thead class="bg-slate-50/75 border-b border-slate-200 text-slate-700 uppercase font-semibold text-[11px] tracking-wider">
                 <tr>
                   <th class="p-3.5">Mã Hóa Đơn</th>
-                  <th class="p-3.5">Phòng / Khách</th>
+                  <th class="p-3.5">Kỳ Thu</th>
+                  <th class="p-3.5">Phòng / Khách Thuê</th>
                   <th class="p-3.5">Tiền Phòng</th>
                   <th class="p-3.5">Điện (kWh)</th>
                   <th class="p-3.5">Nước (m³)</th>
-                  <th class="p-3.5">Dịch Vụ</th>
+                  <th class="p-3.5">Phí DV & Phụ Phí</th>
                   <th class="p-3.5">Tổng Cộng</th>
                   <th class="p-3.5">Trạng Thái</th>
                   <th class="p-3.5 text-right">Thao Tác</th>
@@ -120,7 +224,318 @@
     </main>
   </div>
 
-  <!-- Modal: Hóa đơn điện tử & VietQR SePay -->
+  <!-- ========================================================================= -->
+  <!-- MODAL: WIZARD LẬP HÓA ĐƠN ĐỊNH KỲ (CYCLIC BILLING WIZARD - SWIMLANE 2.8)   -->
+  <!-- ========================================================================= -->
+  <div id="cyclicBillingWizardModal" class="modal-backdrop">
+    <div class="modal-content max-w-4xl p-6">
+      
+      <!-- Wizard Header & Steps Progress -->
+      <div class="border-b border-slate-200 pb-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
+              <i data-lucide="calculator" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">Quy Trình Lập Hóa Đơn Định Kỳ (Luồng 2.8)</h3>
+              <p class="text-xs text-slate-500">Chạy theo sơ đồ tuần tự: Staff $\rightarrow$ System $\rightarrow$ Manager $\rightarrow$ Resident</p>
+            </div>
+          </div>
+          <button onclick="closeModal('cyclicBillingWizardModal')" class="text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Wizard Nav Steps -->
+        <div class="flex items-center justify-between mt-4 max-w-2xl mx-auto text-xs">
+          <div class="wizard-step flex flex-col items-center" id="wz-indicator-1">
+            <span class="w-7 h-7 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-sm">1</span>
+            <span class="text-[11px] font-semibold text-slate-700 mt-1">Chọn Kỳ & Cơ Sở</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+          <div class="wizard-step flex flex-col items-center" id="wz-indicator-2">
+            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">2</span>
+            <span class="text-[11px] font-semibold text-slate-500 mt-1">Kiểm Tra Dữ Liệu</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+          <div class="wizard-step flex flex-col items-center" id="wz-indicator-3">
+            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">3</span>
+            <span class="text-[11px] font-semibold text-slate-500 mt-1">Nhập Phụ Phí</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+          <div class="wizard-step flex flex-col items-center" id="wz-indicator-4">
+            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">4</span>
+            <span class="text-[11px] font-semibold text-slate-500 mt-1">Lưu Bản Nháp</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+          <div class="wizard-step flex flex-col items-center" id="wz-indicator-5">
+            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">5</span>
+            <span class="text-[11px] font-semibold text-slate-500 mt-1">Quản Lý Review</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+          <div class="wizard-step flex flex-col items-center" id="wz-indicator-6">
+            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">6</span>
+            <span class="text-[11px] font-semibold text-slate-500 mt-1">Phát Hành Zalo OA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WIZARD STEP CONTENTS -->
+      <div class="py-5 text-xs" id="wizard-content-container">
+
+        <!-- STEP 1: Staff selects billing period and building -->
+        <div id="wz-step-1" class="space-y-4">
+          <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl text-teal-900 text-xs flex items-start gap-2.5">
+            <i data-lucide="info" class="w-4 h-4 text-teal-700 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="font-bold">Hành động của Nhân viên (Staff):</strong> Chọn tòa nhà và kỳ lập hóa đơn để hệ thống tải hợp đồng hiệu lực & số điện nước tiêu thụ.
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Chọn Tòa nhà / Cơ sở vận hành <span class="text-red-500">*</span></label>
+              <select id="wz-building-select" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs font-medium">
+                <option value="bld-1">StayHub Central - Quận 1 (12 phòng)</option>
+                <option value="bld-2">StayHub Riverside - Tây Hồ (12 phòng)</option>
+                <option value="bld-3">StayHub Eco - Cầu Giấy (12 phòng)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Chọn Kỳ thu tiền (Billing Period) <span class="text-red-500">*</span></label>
+              <select id="wz-month-select" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs font-bold text-teal-800">
+                <option value="11/2026">Tháng 11/2026 (Kỳ tiếp theo)</option>
+                <option value="10/2026">Tháng 10/2026 (Kỳ hiện tại)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+            <h4 class="font-bold text-slate-900 text-xs">Quy định chu kỳ thu phí:</h4>
+            <ul class="list-disc pl-5 space-y-1 text-slate-600 text-[11px]">
+              <li>Hạn nộp định kỳ: Trước ngày <strong>05</strong> của tháng thanh toán.</li>
+              <li>Tự động tổng hợp: <strong>Tiền thuê phòng + Tiền điện + Tiền nước + Phí quản lý/dịch vụ + Phụ phí gửi xe</strong>.</li>
+              <li>Chỉ các căn hộ đang có trạng thái hợp đồng <strong>ACTIVE</strong> mới được sinh hóa đơn.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- STEP 2: System checks data sufficiency (Data sufficient?) -->
+        <div id="wz-step-2" class="space-y-4 hidden">
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs flex items-start gap-2.5">
+            <i data-lucide="cpu" class="w-4 h-4 text-blue-700 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="font-bold">Hệ thống xử lý (System Logic):</strong> Đang tải danh sách phòng đang thuê và kiểm tra tính đầy đủ của chỉ số điện/nước.
+            </div>
+          </div>
+
+          <!-- Simulate Decision Branch -->
+          <div class="border border-slate-200 rounded-xl p-4 bg-white space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <span class="font-bold text-slate-800">Kết quả kiểm tra dữ liệu đầu vào:</span>
+              <span id="wz-data-check-badge" class="badge badge-success">✓ Dữ liệu đầy đủ (Sufficient)</span>
+            </div>
+
+            <div id="wz-data-check-details" class="space-y-2 text-xs text-slate-600">
+              <div class="flex items-center justify-between p-2 rounded bg-slate-50">
+                <span>Số phòng đang có hợp đồng ACTIVE:</span>
+                <strong class="text-slate-900">4 / 4 phòng hợp lệ</strong>
+              </div>
+              <div class="flex items-center justify-between p-2 rounded bg-slate-50">
+                <span>Chỉ số công tơ Điện & Nước:</span>
+                <strong class="text-emerald-700" id="wz-meter-check-text">Đã ghi nhận đủ 100%</strong>
+              </div>
+            </div>
+
+            <!-- Testing toggle buttons for Demo purpose -->
+            <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs mt-3">
+              <span class="font-bold block mb-1.5">Trình diễn nhánh rẽ của Sơ đồ:</span>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" onclick="testDataCheckBranch(false)" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-[11px]">
+                  Mô phỏng: TH Thiếu dữ liệu (Nhánh No $\rightarrow$ Error Missing Data)
+                </button>
+                <button type="button" onclick="testDataCheckBranch(true)" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-[11px]">
+                  Mô phỏng: TH Đủ dữ liệu (Nhánh Yes $\rightarrow$ Hiện Form Tính Tiền)
+                </button>
+              </div>
+            </div>
+
+            <!-- Error container if missing data -->
+            <div id="wz-missing-data-error" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-xs space-y-1">
+              <div class="flex items-center gap-1.5 font-bold">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+                <span>Lỗi thiếu dữ liệu (Error: Missing Data)</span>
+              </div>
+              <p>Phòng <strong>P203</strong> và <strong>P204</strong> chưa được nhân viên ghi nhận chỉ số điện nước kỳ này. Hệ thống không thể tiếp tục lập hóa đơn khi chưa đủ dữ liệu!</p>
+              <button onclick="testDataCheckBranch(true)" class="mt-2 text-xs font-bold text-red-700 underline">Bấm để cập nhật nhanh chỉ số mẫu $\rightarrow$</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Display cost calculation form & enter additional charges -->
+        <div id="wz-step-3" class="space-y-4 hidden">
+          <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl text-teal-900 text-xs flex items-start gap-2.5">
+            <i data-lucide="edit-3" class="w-4 h-4 text-teal-700 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="font-bold">Hành động của Nhân viên (Staff):</strong> Kiểm tra số điện nước từng phòng và nhập phụ phí phát sinh (tiền gửi xe, thẻ từ, phí dọn dẹp thêm...).
+            </div>
+          </div>
+
+          <div class="border border-slate-200 rounded-xl overflow-hidden bg-white">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-600">
+                <thead class="bg-slate-100 text-slate-700 font-semibold uppercase text-[11px]">
+                  <tr>
+                    <th class="p-3">Phòng / Cư Dân</th>
+                    <th class="p-3">Tiền Thuê</th>
+                    <th class="p-3">Điện Tiêu Thụ</th>
+                    <th class="p-3">Nước Tiêu Thụ</th>
+                    <th class="p-3">Phí Dịch Vụ</th>
+                    <th class="p-3 w-36">Phụ Phí (Gửi xe...)</th>
+                    <th class="p-3 text-right">Tổng Tạm Tính</th>
+                  </tr>
+                </thead>
+                <tbody id="wz-cost-calc-tbody" class="divide-y divide-slate-100 font-medium">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: Invoice preview & Save Draft -->
+        <div id="wz-step-4" class="space-y-4 hidden">
+          <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl text-purple-900 text-xs flex items-start gap-2.5">
+            <i data-lucide="eye" class="w-4 h-4 text-purple-700 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="font-bold">Xem trước & Kiểm tra (Display Invoice Preview):</strong> Nhân viên kiểm tra danh sách lần cuối. Nếu cần sửa có thể quay lại. Khi đúng $\rightarrow$ Bấm <strong>"Save Draft"</strong>.
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+              <span class="text-slate-500 text-[11px] block">Tổng số hóa đơn dự kiến:</span>
+              <strong class="text-slate-900 text-base" id="wz-prev-count">4 hóa đơn</strong>
+            </div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+              <span class="text-slate-500 text-[11px] block">Tổng phụ phí phát sinh:</span>
+              <strong class="text-teal-700 text-base" id="wz-prev-extra">450.000 ₫</strong>
+            </div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+              <span class="text-slate-500 text-[11px] block">Tổng doanh thu kỳ:</span>
+              <strong class="text-emerald-700 text-base font-extrabold" id="wz-prev-total">35.850.000 ₫</strong>
+            </div>
+          </div>
+
+          <div class="border border-slate-200 rounded-xl overflow-hidden bg-white max-h-56 overflow-y-auto">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-50 text-slate-700 font-semibold sticky top-0">
+                <tr>
+                  <th class="p-2.5">Phòng</th>
+                  <th class="p-2.5">Cư Dân</th>
+                  <th class="p-2.5">Tiền Phòng</th>
+                  <th class="p-2.5">Điện</th>
+                  <th class="p-2.5">Nước</th>
+                  <th class="p-2.5">Phụ Phí</th>
+                  <th class="p-2.5 text-right">Tổng Tiền</th>
+                </tr>
+              </thead>
+              <tbody id="wz-preview-tbody" class="divide-y divide-slate-100">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- STEP 5: Send to Manager for Review & Add Notes -->
+        <div id="wz-step-5" class="space-y-4 hidden">
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs flex items-start gap-2.5">
+            <i data-lucide="user-check" class="w-4 h-4 text-amber-700 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="font-bold">Góc nhìn Quản Lý (Manager Review):</strong> Quản lý cơ sở kiểm tra danh sách hóa đơn nháp (status = DRAFT) và bổ sung phản hồi/ghi chú trước khi phát hành.
+            </div>
+          </div>
+
+          <div class="border border-slate-200 rounded-xl p-4 bg-white space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <div>
+                <h4 class="font-bold text-slate-900 text-xs">Danh sách hóa đơn nháp kỳ <span id="wz-manager-review-period">11/2026</span></h4>
+                <p class="text-[11px] text-slate-500">Trạng thái hiện tại: <span class="badge bg-purple-100 text-purple-800">DRAFT (Đã lưu nháp)</span></p>
+              </div>
+              <span class="text-xs text-emerald-700 font-bold">✓ Đã đối soát chỉ số công tơ</span>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Ghi chú / Phản hồi của Quản lý cơ sở (Add notes / feedback):</label>
+              <textarea id="wz-manager-notes" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:outline-teal-600">Đã kiểm tra khớp chỉ số đồng hồ điện nước và giá thuê theo hợp đồng. Đồng ý cho phép nhân viên phát hành toàn bộ hóa đơn.</textarea>
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-lg text-[11px] text-slate-600 flex items-center justify-between">
+              <span>Người thẩm định: <strong>Trần Minh Đức (Quản lý Cơ sở)</strong></span>
+              <span>Thời gian: <strong id="wz-review-time">Hôm nay</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 6: Publish Invoices & Send Zalo OA Notification -->
+        <div id="wz-step-6" class="space-y-4 hidden">
+          <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs flex items-start gap-2.5">
+            <i data-lucide="send" class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="font-bold">Phát hành Hóa đơn (Publish Invoices):</strong> Cập nhật trạng thái thành <span class="font-bold underline text-emerald-800">PUBLISHED</span>, bắn tin nhắn qua <strong>Zalo OA</strong> tới điện thoại cư dân và ghi Activity Log.
+            </div>
+          </div>
+
+          <!-- Simulation Zalo Message for Resident -->
+          <div class="border border-teal-200 bg-teal-50/50 rounded-2xl p-4 max-w-md mx-auto space-y-3">
+            <div class="flex items-center justify-between border-b border-teal-200 pb-2">
+              <span class="font-bold text-teal-900 text-xs flex items-center gap-1.5">
+                <i data-lucide="message-circle" class="w-4 h-4 text-blue-600"></i>
+                Mô phỏng tin Zalo OA gửi đến Cư Dân
+              </span>
+              <span class="badge badge-success text-[10px]">Tự động gửi</span>
+            </div>
+
+            <div class="bg-white p-3.5 rounded-xl border border-teal-100 shadow-xs space-y-2 text-xs">
+              <p class="font-bold text-slate-900 text-sm">THÔNG BÁO TIỀN PHÒNG & ĐIỆN NƯỚC KỲ <span id="zalo-msg-month">11/2026</span></p>
+              <p class="text-slate-600">Kính gửi Cư dân: <strong id="zalo-msg-tenant">Lê Văn An</strong> (Căn hộ <strong id="zalo-msg-room">P201</strong>)</p>
+              <div class="p-2.5 bg-slate-50 rounded-lg space-y-1 text-[11px]">
+                <div class="flex justify-between"><span>Tiền phòng:</span><strong id="zalo-msg-rent">8.500.000 ₫</strong></div>
+                <div class="flex justify-between"><span>Tiền điện:</span><strong id="zalo-msg-elec">595.000 ₫</strong></div>
+                <div class="flex justify-between"><span>Tiền nước:</span><strong id="zalo-msg-water">200.000 ₫</strong></div>
+                <div class="flex justify-between"><span>Phí DV & Phụ phí:</span><strong id="zalo-msg-extra">250.000 ₫</strong></div>
+                <div class="flex justify-between pt-1 border-t border-slate-200 text-teal-800 font-extrabold text-xs">
+                  <span>TỔNG THANH TOÁN:</span>
+                  <span id="zalo-msg-total">9.545.000 ₫</span>
+                </div>
+              </div>
+              <p class="text-[10px] text-slate-400 italic">Quý cư dân vui lòng thanh toán trước ngày 05 qua VietQR ngân hàng.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- WIZARD FOOTER NAVIGATION BUTTONS -->
+      <div class="border-t border-slate-200 pt-4 flex items-center justify-between">
+        <button id="wz-btn-prev" onclick="moveWizardStep(-1)" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-xs">
+          &larr; Quay lại
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeModal('cyclicBillingWizardModal')" class="px-3 py-2 text-slate-500 hover:text-slate-700 text-xs">Đóng</button>
+          <button id="wz-btn-next" onclick="moveWizardStep(1)" class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold text-xs shadow-sm flex items-center gap-1.5">
+            <span>Tiếp tục</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal: Hóa đơn điện tử & VietQR SePay (Original modal preserved) -->
   <div id="invoiceDetailModal" class="modal-backdrop">
     <div class="modal-content max-w-2xl p-6 print-card">
       <div class="flex items-center justify-between border-b border-slate-200 pb-4 no-print">
@@ -143,7 +558,6 @@
 
       <!-- Printable invoice sheet -->
       <div class="py-4 space-y-4">
-        <!-- Header Info -->
         <div class="flex justify-between items-start text-xs">
           <div>
             <h4 class="font-extrabold text-base text-slate-900">HỆ THỐNG CĂN HỘ STAYHUB</h4>
@@ -192,7 +606,6 @@
         <!-- VietQR Box -->
         <div class="p-4 bg-teal-50 border border-teal-200 rounded-xl flex flex-col sm:flex-row items-center gap-4">
           <div class="w-32 h-32 bg-white p-2 border border-slate-200 rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-            <!-- Simulated VietQR with QuickChart or placeholder SVG -->
             <img id="inv-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=STAYHUB-PAYMENT" class="w-full h-full object-contain" alt="VietQR">
           </div>
           <div class="text-xs space-y-1 text-slate-700">
@@ -217,8 +630,12 @@
       </div>
     </div>
   </div>
+
   <script data-stayhub-page="invoices.html">
     let activeInvoiceId = null;
+    let wizardCurrentStep = 1;
+    let wizardDataSufficient = true;
+    let draftCalculationRows = [];
 
     function renderInvoicesTable() {
       const search = document.getElementById('inv-search').value.toLowerCase();
@@ -229,30 +646,66 @@
       const currentBldId = DataStore.getCurrentBuilding();
       let filtered = invoices.filter(inv => {
         const matchBuilding = !inv.buildingId || inv.buildingId === currentBldId;
-        const matchSearch = inv.room.toLowerCase().includes(search) || inv.tenant.toLowerCase().includes(search) || inv.code.toLowerCase().includes(search);
-        const matchStatus = statusFilter === 'ALL' || inv.status === statusFilter;
+        const matchSearch = (inv.room || '').toLowerCase().includes(search) || 
+                            (inv.tenant || '').toLowerCase().includes(search) || 
+                            (inv.code || '').toLowerCase().includes(search);
+        let matchStatus = true;
+        if (statusFilter === 'PAID') matchStatus = inv.status === 'PAID';
+        else if (statusFilter === 'UNPAID') matchStatus = inv.status === 'UNPAID' || inv.status === 'PUBLISHED';
+        else if (statusFilter === 'DRAFT') matchStatus = inv.status === 'DRAFT';
         return matchBuilding && matchSearch && matchStatus;
       });
 
+      // Update metrics
+      let totalPaid = 0, countPaid = 0;
+      let totalUnpaid = 0, countUnpaid = 0;
+      let totalDraft = 0, countDraft = 0;
+
+      invoices.forEach(i => {
+        if (i.status === 'PAID') { totalPaid += (i.total || 0); countPaid++; }
+        else if (i.status === 'DRAFT') { totalDraft += (i.total || 0); countDraft++; }
+        else { totalUnpaid += (i.total || 0); countUnpaid++; }
+      });
+
+      document.getElementById('metric-paid-amount').innerText = formatVND(totalPaid);
+      document.getElementById('metric-paid-count').innerText = `${countPaid} hóa đơn đã thanh toán`;
+      document.getElementById('metric-unpaid-amount').innerText = formatVND(totalUnpaid);
+      document.getElementById('metric-unpaid-count').innerText = `${countUnpaid} hóa đơn chờ thanh toán`;
+      document.getElementById('metric-draft-amount').innerText = formatVND(totalDraft);
+      document.getElementById('metric-draft-count').innerText = `${countDraft} hóa đơn DRAFT`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="p-8 text-center text-slate-400">Không tìm thấy hóa đơn nào phù hợp.</td></tr>`;
+        lucide.createIcons();
+        return;
+      }
+
       tbody.innerHTML = filtered.map(inv => {
         const isPaid = inv.status === 'PAID';
+        const isDraft = inv.status === 'DRAFT';
+
+        let badge = '';
+        if (isPaid) badge = '<span class="badge badge-success">✓ Đã thanh toán</span>';
+        else if (isDraft) badge = '<span class="badge bg-purple-100 text-purple-800 border border-purple-200">Bản nháp (Draft)</span>';
+        else badge = '<span class="badge badge-warning">⏳ Chờ thu (Published)</span>';
+
         return `
           <tr class="hover:bg-slate-50/80 transition-colors">
             <td class="p-3.5 font-mono text-slate-900 font-semibold">${inv.code}</td>
+            <td class="p-3.5 text-slate-600">${inv.month || '10/2026'}</td>
             <td class="p-3.5">
               <span class="font-bold text-slate-900">${inv.room}</span> - ${inv.tenant}
-              <span class="block text-[11px] text-slate-400">${inv.phone}</span>
+              <span class="block text-[11px] text-slate-400">${inv.phone || '090...'}</span>
             </td>
             <td class="p-3.5 font-semibold">${formatVND(inv.rent)}</td>
-            <td class="p-3.5">${inv.elecUnits} kWh <span class="text-slate-400">(${formatVND(inv.elecTotal)})</span></td>
-            <td class="p-3.5">${inv.waterUnits} m³ <span class="text-slate-400">(${formatVND(inv.waterTotal)})</span></td>
-            <td class="p-3.5">${formatVND(inv.serviceFee)}</td>
-            <td class="p-3.5 font-extrabold text-teal-700">${formatVND(inv.total)}</td>
+            <td class="p-3.5">${inv.elecUnits || 0} kWh <span class="text-slate-400">(${formatVND(inv.elecTotal || 0)})</span></td>
+            <td class="p-3.5">${inv.waterUnits || 0} m³ <span class="text-slate-400">(${formatVND(inv.waterTotal || 0)})</span></td>
             <td class="p-3.5">
-              ${isPaid 
-                ? '<span class="badge badge-success">✓ Đã thanh toán</span>' 
-                : '<span class="badge badge-warning">⏳ Chờ thu</span>'}
+              <span>${formatVND(inv.serviceFee || 0)}</span>
+              ${inv.extraFee ? `<span class="block text-[10px] text-teal-600 font-bold">+ ${formatVND(inv.extraFee)} phụ phí</span>` : ''}
             </td>
+            <td class="p-3.5 font-extrabold text-teal-700">${formatVND(inv.total)}</td>
+            <td class="p-3.5">${badge}</td>
             <td class="p-3.5 text-right">
               <button onclick="viewInvoiceModal('${inv.id}')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-700 rounded-lg text-xs font-semibold transition-colors">
                 Xem & QR &rarr;
@@ -265,13 +718,346 @@
       lucide.createIcons();
     }
 
+    // =========================================================================
+    // CYCLIC BILLING WIZARD LOGIC (LUỒNG 2.8)
+    // =========================================================================
+
+    function openCyclicBillingWizard(step = 1) {
+      prepareCalculationData();
+      wizardCurrentStep = step;
+      updateWizardUI();
+      openModal('cyclicBillingWizardModal');
+    }
+
+    function updateWizardUI() {
+      // Hide all step containers
+      for (let i = 1; i <= 6; i++) {
+        const el = document.getElementById(`wz-step-${i}`);
+        if (el) el.classList.add('hidden');
+        const indicator = document.getElementById(`wz-indicator-${i}`);
+        if (indicator) {
+          const circle = indicator.querySelector('span');
+          if (i === wizardCurrentStep) {
+            circle.className = 'w-7 h-7 rounded-full bg-teal-700 text-white font-bold flex items-center justify-center text-xs shadow-md ring-2 ring-teal-400';
+          } else if (i < wizardCurrentStep) {
+            circle.className = 'w-7 h-7 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs';
+          } else {
+            circle.className = 'w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs';
+          }
+        }
+      }
+
+      // Show current step container
+      const currentEl = document.getElementById(`wz-step-${wizardCurrentStep}`);
+      if (currentEl) currentEl.classList.remove('hidden');
+
+      // Adjust next / prev buttons
+      const prevBtn = document.getElementById('wz-btn-prev');
+      const nextBtn = document.getElementById('wz-btn-next');
+
+      if (wizardCurrentStep === 1) {
+        prevBtn.style.visibility = 'hidden';
+      } else {
+        prevBtn.style.visibility = 'visible';
+      }
+
+      if (wizardCurrentStep === 4) {
+        nextBtn.innerHTML = `<span>Lưu Bản Nháp (Save Draft)</span> <i data-lucide="save" class="w-3.5 h-3.5"></i>`;
+      } else if (wizardCurrentStep === 5) {
+        nextBtn.innerHTML = `<span>Quản Lý Phê Duyệt & Tiếp Tục</span> <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>`;
+      } else if (wizardCurrentStep === 6) {
+        nextBtn.innerHTML = `<span>Phát Hành & Gửi Zalo OA</span> <i data-lucide="send" class="w-3.5 h-3.5"></i>`;
+      } else {
+        nextBtn.innerHTML = `<span>Tiếp tục</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>`;
+      }
+
+      lucide.createIcons();
+    }
+
+    function moveWizardStep(delta) {
+      const nextStep = wizardCurrentStep + delta;
+
+      // Validation on step 2: Data sufficient check
+      if (wizardCurrentStep === 2 && delta > 0 && !wizardDataSufficient) {
+        alert('Cảnh báo: Dữ liệu chỉ số điện nước chưa đầy đủ. Bạn không thể tiếp tục cho đến khi bổ sung đủ dữ liệu!');
+        return;
+      }
+
+      // Action on Step 4 -> 5: Save Draft
+      if (wizardCurrentStep === 4 && delta > 0) {
+        saveDraftInvoices();
+      }
+
+      // Action on Step 5 -> 6: Manager notes saved
+      if (wizardCurrentStep === 5 && delta > 0) {
+        const notes = document.getElementById('wz-manager-notes').value.trim();
+        DataStore.addAuditLog('QUAN_LY_DUYET_HOA_DON_NHAP', `Hóa đơn kỳ ${document.getElementById('wz-month-select').value}`, `Quản lý xác nhận duyệt: "${notes}"`);
+      }
+
+      // Action on Step 6: Publish invoices
+      if (wizardCurrentStep === 6 && delta > 0) {
+        publishInvoicesNow();
+        return;
+      }
+
+      if (nextStep >= 1 && nextStep <= 6) {
+        wizardCurrentStep = nextStep;
+        updateWizardUI();
+      }
+    }
+
+    function testDataCheckBranch(isSufficient) {
+      wizardDataSufficient = isSufficient;
+      const badge = document.getElementById('wz-data-check-badge');
+      const text = document.getElementById('wz-meter-check-text');
+      const errBox = document.getElementById('wz-missing-data-error');
+
+      if (isSufficient) {
+        badge.className = 'badge badge-success';
+        badge.innerText = '✓ Dữ liệu đầy đủ (Sufficient)';
+        text.innerText = 'Đã ghi nhận đủ 100% các phòng';
+        text.className = 'text-emerald-700 font-bold';
+        errBox.classList.add('hidden');
+        showToast('Hệ thống xác nhận dữ liệu đã đủ. Có thể chuyển sang Form tính tiền!');
+      } else {
+        badge.className = 'badge badge-danger';
+        badge.innerText = '✕ Thiếu dữ liệu (Missing Data)';
+        text.innerText = 'Thiếu 2 phòng P203, P204';
+        text.className = 'text-red-600 font-bold';
+        errBox.classList.remove('hidden');
+        showToast('Phát hiện thiếu chỉ số! Hệ thống chặn chuyển bước.', 'error');
+      }
+    }
+
+    function prepareCalculationData() {
+      const month = document.getElementById('wz-month-select') ? document.getElementById('wz-month-select').value : '11/2026';
+      draftCalculationRows = [
+        { room: 'P201', tenant: 'Lê Văn An', phone: '0904445566', rent: 8500000, elecUnits: 170, elecRate: 3500, elecTotal: 595000, waterUnits: 8, waterRate: 25000, waterTotal: 200000, serviceFee: 150000, extraFee: 100000 },
+        { room: 'P101', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', rent: 6500000, elecUnits: 135, elecRate: 3500, elecTotal: 472500, waterUnits: 6, waterRate: 25000, waterTotal: 150000, serviceFee: 150000, extraFee: 120000 },
+        { room: 'P102', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', rent: 7500000, elecUnits: 160, elecRate: 3500, elecTotal: 560000, waterUnits: 8, waterRate: 25000, waterTotal: 200000, serviceFee: 150000, extraFee: 100000 },
+        { room: 'P301', tenant: 'Vũ Đức Nam', phone: '0907778899', rent: 9500000, elecUnits: 230, elecRate: 3500, elecTotal: 805000, waterUnits: 11, waterRate: 25000, waterTotal: 275000, serviceFee: 150000, extraFee: 130000 }
+      ];
+
+      renderCostCalculationTable();
+      renderInvoicePreviewTable();
+    }
+
+    function renderCostCalculationTable() {
+      const tbody = document.getElementById('wz-cost-calc-tbody');
+      if (!tbody) return;
+
+      tbody.innerHTML = draftCalculationRows.map((row, idx) => {
+        const subtotal = row.rent + row.elecTotal + row.waterTotal + row.serviceFee + row.extraFee;
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3">
+              <span class="font-bold text-teal-800">${row.room}</span> - ${row.tenant}
+            </td>
+            <td class="p-3 font-semibold">${formatVND(row.rent)}</td>
+            <td class="p-3">${row.elecUnits} kWh <span class="text-slate-400">(${formatVND(row.elecTotal)})</span></td>
+            <td class="p-3">${row.waterUnits} m³ <span class="text-slate-400">(${formatVND(row.waterTotal)})</span></td>
+            <td class="p-3">${formatVND(row.serviceFee)}</td>
+            <td class="p-3">
+              <input type="number" step="10000" value="${row.extraFee}" oninput="updateExtraFee(${idx}, this.value)" class="w-28 bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs font-bold text-slate-800 focus:outline-teal-600">
+            </td>
+            <td class="p-3 text-right font-extrabold text-teal-700" id="wz-subtotal-${idx}">
+              ${formatVND(subtotal)}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateExtraFee(idx, val) {
+      const num = parseInt(val) || 0;
+      draftCalculationRows[idx].extraFee = num;
+      const row = draftCalculationRows[idx];
+      const subtotal = row.rent + row.elecTotal + row.waterTotal + row.serviceFee + row.extraFee;
+      const el = document.getElementById(`wz-subtotal-${idx}`);
+      if (el) el.innerText = formatVND(subtotal);
+      renderInvoicePreviewTable();
+    }
+
+    function renderInvoicePreviewTable() {
+      const tbody = document.getElementById('wz-preview-tbody');
+      if (!tbody) return;
+
+      let totalExtra = 0;
+      let grandTotal = 0;
+
+      tbody.innerHTML = draftCalculationRows.map(row => {
+        const subtotal = row.rent + row.elecTotal + row.waterTotal + row.serviceFee + row.extraFee;
+        totalExtra += row.extraFee;
+        grandTotal += subtotal;
+
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2.5 font-bold text-teal-800">${row.room}</td>
+            <td class="p-2.5">${row.tenant}</td>
+            <td class="p-2.5">${formatVND(row.rent)}</td>
+            <td class="p-2.5">${formatVND(row.elecTotal)}</td>
+            <td class="p-2.5">${formatVND(row.waterTotal)}</td>
+            <td class="p-2.5 font-semibold text-teal-700">${formatVND(row.serviceFee + row.extraFee)}</td>
+            <td class="p-2.5 text-right font-bold text-slate-900">${formatVND(subtotal)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('wz-prev-count').innerText = `${draftCalculationRows.length} hóa đơn`;
+      document.getElementById('wz-prev-extra').innerText = formatVND(totalExtra);
+      document.getElementById('wz-prev-total').innerText = formatVND(grandTotal);
+
+      // Also sync Zalo preview for P201
+      const p201 = draftCalculationRows.find(r => r.room === 'P201') || draftCalculationRows[0];
+      if (p201) {
+        const month = document.getElementById('wz-month-select').value;
+        document.getElementById('zalo-msg-month').innerText = month;
+        document.getElementById('zalo-msg-tenant').innerText = p201.tenant;
+        document.getElementById('zalo-msg-room').innerText = p201.room;
+        document.getElementById('zalo-msg-rent').innerText = formatVND(p201.rent);
+        document.getElementById('zalo-msg-elec').innerText = formatVND(p201.elecTotal);
+        document.getElementById('zalo-msg-water').innerText = formatVND(p201.waterTotal);
+        document.getElementById('zalo-msg-extra').innerText = formatVND(p201.serviceFee + p201.extraFee);
+        document.getElementById('zalo-msg-total').innerText = formatVND(p201.rent + p201.elecTotal + p201.waterTotal + p201.serviceFee + p201.extraFee);
+      }
+    }
+
+    function saveDraftInvoices() {
+      const month = document.getElementById('wz-month-select').value;
+      const invoices = DataStore.getInvoices();
+
+      // Upsert draft records
+      draftCalculationRows.forEach(row => {
+        const code = `INV-2026-${month.replace('/', '-')}-${row.room}`;
+        const total = row.rent + row.elecTotal + row.waterTotal + row.serviceFee + row.extraFee;
+        const existingIdx = invoices.findIndex(i => i.code === code);
+        const item = {
+          id: 'inv-' + Date.now().toString().slice(-4) + '-' + row.room,
+          buildingId: 'bld-1',
+          code,
+          month,
+          room: row.room,
+          building: 'StayHub Central - Quận 1',
+          tenant: row.tenant,
+          phone: row.phone,
+          rent: row.rent,
+          elecOld: 1400,
+          elecNew: 1400 + row.elecUnits,
+          elecUnits: row.elecUnits,
+          elecRate: row.elecRate,
+          elecTotal: row.elecTotal,
+          waterOld: 90,
+          waterNew: 90 + row.waterUnits,
+          waterUnits: row.waterUnits,
+          waterRate: row.waterRate,
+          waterTotal: row.waterTotal,
+          serviceFee: row.serviceFee,
+          extraFee: row.extraFee,
+          total,
+          status: 'DRAFT',
+          paymentDate: null,
+          method: null
+        };
+
+        if (existingIdx !== -1) {
+          invoices[existingIdx] = item;
+        } else {
+          invoices.unshift(item);
+        }
+      });
+
+      DataStore.saveInvoices(invoices);
+      DataStore.addAuditLog('LUU_HOA_DON_NHAP', `Kỳ ${month}`, `Nhân viên lưu nháp ${draftCalculationRows.length} hóa đơn trạng thái DRAFT chuyển Quản lý duyệt`);
+      showToast(`Đã lưu ${draftCalculationRows.length} hóa đơn trạng thái DRAFT! Chuyển Manager review.`);
+      renderInvoicesTable();
+    }
+
+    function publishInvoicesNow() {
+      const month = document.getElementById('wz-month-select').value;
+      const invoices = DataStore.getInvoices();
+
+      // Convert all DRAFT for this month to UNPAID / PUBLISHED
+      let publishedCount = 0;
+      invoices.forEach(inv => {
+        if (inv.month === month && (inv.status === 'DRAFT' || !inv.status)) {
+          inv.status = 'UNPAID';
+          publishedCount++;
+        }
+      });
+
+      DataStore.saveInvoices(invoices);
+      DataStore.addAuditLog('PHAT_HANH_HOA_DON_ZALO', `Kỳ ${month}`, `Phát hành thành công ${publishedCount} hóa đơn và gửi thông báo qua Zalo OA`);
+      
+      DataStore.addNotification({
+        title: `Phát hành thông báo tiền phòng & điện nước tháng ${month}`,
+        category: 'INVOICE',
+        content: `Hóa đơn kỳ thu phí tháng ${month} đã sẵn sàng. Quý cư dân vui lòng kiểm tra và quét mã VietQR để thanh toán trước ngày 05/${month}.`,
+        scope: 'Cư dân đang thuê',
+        channel: 'BOTH'
+      });
+
+      closeModal('cyclicBillingWizardModal');
+      showToast(`Đã phát hành thành công ${publishedCount} hóa đơn qua Zalo OA!`, 'success');
+      renderInvoicesTable();
+
+      setTimeout(() => {
+        if (confirm(`Đã phát hành hóa đơn kỳ ${month} thành công qua Zalo OA!\n\nBạn có muốn chuyển sang Giao diện Cư Dân (Resident View) để kiểm tra hóa đơn và bóc tách chi tiết không?`)) {
+          window.location.href = appPath('resident-invoices.html');
+        }
+      }, 500);
+    }
+
+    function resetInvoiceDemoData() {
+      DataStore.saveInvoices(INITIAL_INVOICES);
+      showToast('Đã khôi phục dữ liệu hóa đơn ban đầu!');
+      renderInvoicesTable();
+    }
+
+    // Auto Walkthrough Runner for Flow 2.8
+    function runAutoBillingTour() {
+      const btn = document.getElementById('btn-auto-invoice-demo');
+      btn.innerHTML = `<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> <span>Đang chạy Demo...</span>`;
+      lucide.createIcons();
+
+      // Step 1: Open Wizard
+      openCyclicBillingWizard(1);
+
+      setTimeout(() => {
+        // Step 2: System check
+        moveWizardStep(1);
+
+        setTimeout(() => {
+          // Step 3: Enter costs & extra fees
+          moveWizardStep(1);
+
+          setTimeout(() => {
+            // Step 4: Preview & Save draft
+            moveWizardStep(1);
+
+            setTimeout(() => {
+              // Step 5: Manager review
+              moveWizardStep(1);
+
+              setTimeout(() => {
+                // Step 6: Publish & Zalo OA
+                moveWizardStep(1);
+                btn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i> <span>Chạy Tự Động Toàn Luồng</span>`;
+                lucide.createIcons();
+              }, 2000);
+            }, 2000);
+          }, 2000);
+        }, 2000);
+      }, 1500);
+    }
+
+    // Invoice Detail & QR Modal
     function viewInvoiceModal(invId) {
       activeInvoiceId = invId;
       const inv = DataStore.getInvoices().find(i => i.id === invId);
       if (!inv) return;
 
       document.getElementById('modal-inv-code').innerText = inv.code;
-      document.getElementById('inv-bld-name').innerText = inv.building;
+      document.getElementById('inv-bld-name').innerText = inv.building || 'StayHub Central';
       document.getElementById('inv-tenant-name').innerText = inv.tenant;
       document.getElementById('inv-room-number').innerText = `Phòng ${inv.room}`;
       document.getElementById('inv-grand-total').innerText = formatVND(inv.total);
@@ -281,12 +1067,17 @@
       document.getElementById('inv-qr-code').src = qrUrl;
 
       const isPaid = inv.status === 'PAID';
+      const isDraft = inv.status === 'DRAFT';
       const statusTag = document.getElementById('inv-status-tag');
       const btnMarkPaid = document.getElementById('btn-mark-paid');
 
       if (isPaid) {
         statusTag.className = 'badge badge-success text-xs';
         statusTag.innerText = 'ĐÃ THANH TOÁN';
+        btnMarkPaid.style.display = 'none';
+      } else if (isDraft) {
+        statusTag.className = 'badge bg-purple-100 text-purple-800 text-xs';
+        statusTag.innerText = 'BẢN NHÁP (DRAFT)';
         btnMarkPaid.style.display = 'none';
       } else {
         statusTag.className = 'badge badge-warning text-xs';
@@ -295,9 +1086,9 @@
       }
 
       // Breakdown rows
-      document.getElementById('inv-breakdown-body').innerHTML = `
+      let rowsHtml = `
         <tr>
-          <td class="p-2.5 font-medium">Tiền thuê phòng (${inv.month})</td>
+          <td class="p-2.5 font-medium">Tiền thuê phòng (${inv.month || '10/2026'})</td>
           <td class="p-2.5 text-center text-slate-400">-</td>
           <td class="p-2.5 text-center">1 tháng</td>
           <td class="p-2.5 text-right">${formatVND(inv.rent)}</td>
@@ -305,27 +1096,40 @@
         </tr>
         <tr>
           <td class="p-2.5 font-medium">Điện sinh hoạt</td>
-          <td class="p-2.5 text-center text-slate-500">${inv.elecOld} &rarr; ${inv.elecNew}</td>
-          <td class="p-2.5 text-center">${inv.elecUnits} kWh</td>
-          <td class="p-2.5 text-right">${formatVND(inv.elecRate)}</td>
-          <td class="p-2.5 text-right font-bold text-slate-900">${formatVND(inv.elecTotal)}</td>
+          <td class="p-2.5 text-center text-slate-500">${inv.elecOld || 0} &rarr; ${inv.elecNew || 0}</td>
+          <td class="p-2.5 text-center">${inv.elecUnits || 0} kWh</td>
+          <td class="p-2.5 text-right">${formatVND(inv.elecRate || 3500)}</td>
+          <td class="p-2.5 text-right font-bold text-slate-900">${formatVND(inv.elecTotal || 0)}</td>
         </tr>
         <tr>
           <td class="p-2.5 font-medium">Nước sinh hoạt</td>
-          <td class="p-2.5 text-center text-slate-500">${inv.waterOld} &rarr; ${inv.waterNew}</td>
-          <td class="p-2.5 text-center">${inv.waterUnits} m³</td>
-          <td class="p-2.5 text-right">${formatVND(inv.waterRate)}</td>
-          <td class="p-2.5 text-right font-bold text-slate-900">${formatVND(inv.waterTotal)}</td>
+          <td class="p-2.5 text-center text-slate-500">${inv.waterOld || 0} &rarr; ${inv.waterNew || 0}</td>
+          <td class="p-2.5 text-center">${inv.waterUnits || 0} m³</td>
+          <td class="p-2.5 text-right">${formatVND(inv.waterRate || 25000)}</td>
+          <td class="p-2.5 text-right font-bold text-slate-900">${formatVND(inv.waterTotal || 0)}</td>
         </tr>
         <tr>
           <td class="p-2.5 font-medium">Phí dịch vụ & Quản lý tòa nhà</td>
           <td class="p-2.5 text-center text-slate-400">-</td>
           <td class="p-2.5 text-center">1 phòng</td>
-          <td class="p-2.5 text-right">${formatVND(inv.serviceFee)}</td>
-          <td class="p-2.5 text-right font-bold text-slate-900">${formatVND(inv.serviceFee)}</td>
+          <td class="p-2.5 text-right">${formatVND(inv.serviceFee || 150000)}</td>
+          <td class="p-2.5 text-right font-bold text-slate-900">${formatVND(inv.serviceFee || 150000)}</td>
         </tr>
       `;
 
+      if (inv.extraFee) {
+        rowsHtml += `
+          <tr>
+            <td class="p-2.5 font-medium text-teal-700">Phụ phí phát sinh (Gửi xe, phí tiện ích...)</td>
+            <td class="p-2.5 text-center text-slate-400">-</td>
+            <td class="p-2.5 text-center">1 kỳ</td>
+            <td class="p-2.5 text-right">${formatVND(inv.extraFee)}</td>
+            <td class="p-2.5 text-right font-bold text-teal-700">${formatVND(inv.extraFee)}</td>
+          </tr>
+        `;
+      }
+
+      document.getElementById('inv-breakdown-body').innerHTML = rowsHtml;
       openModal('invoiceDetailModal');
     }
 
@@ -338,6 +1142,7 @@
         target.paymentDate = new Date().toISOString().replace('T', ' ').substring(0, 16);
         target.method = 'Thanh toán trực tiếp';
         DataStore.saveInvoices(invoices);
+        DataStore.addAuditLog('XAC_NHAN_THANH_TOAN', `Hóa đơn ${target.code}`, `Gạch nợ thủ công số tiền ${formatVND(target.total)} cho phòng ${target.room}`);
         showToast(`Đã gạch nợ thành công hóa đơn ${target.code}!`);
         closeModal('invoiceDetailModal');
         renderInvoicesTable();
