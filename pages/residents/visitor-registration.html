@@ -36,7 +36,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
-              <p class="text-[11px] font-semibold text-slate-400 uppercase">Đã duyệt (Chờ đón)</p>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase">Đã duyệt</p>
               <h3 class="text-2xl font-extrabold text-teal-700 mt-1" id="res-approved-count">0</h3>
               <p class="text-[11px] text-slate-400 mt-0.5">Sẵn sàng đến check-in</p>
             </div>
@@ -231,7 +231,7 @@
         return `<span class="badge badge-warning">⏳ Chờ Staff duyệt</span>`;
       }
       const labels = {
-        APPROVED: ['✓ Đã duyệt (Chờ đón)', 'badge-info'],
+        APPROVED: ['✓ Đã duyệt', 'badge-info'],
         IN_BUILDING: ['Đang trong tòa nhà', 'badge-success'],
         DEPARTED: ['Đã rời đi (Hoàn tất)', 'badge-neutral']
       };
