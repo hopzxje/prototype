@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quyết toán Hợp đồng</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/data.js"></script>
+  <script src="../js/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Top Demo Role Switcher Bar -->
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+      <script>
+        initStayHubShell('settlements.html', 'Quyết toán hợp đồng', 'Tài chính / Quyết toán hợp đồng');
+      </script>
+
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <!-- ========================================== -->
+        <!-- VIEW CHO QUẢN LÝ & NHÂN VIÊN (MANAGER / STAFF) -->
+        <!-- ========================================== -->
+        <div id="manager-view" class="space-y-6">
+          <!-- Top Header Action -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Quyết toán hợp đồng</h1>
+              <p class="text-sm text-slate-500 mt-1">Xử lý khấu trừ cọc, đối soát công nợ cuối kỳ và thanh lý tài chính sau khi nghiệm thu trả phòng</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <a href="prepare-settlement.html" class="inline-flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-teal-700 text-white rounded-xl text-sm font-semibold shadow-sm transition-all">
+                <i data-lucide="calculator" class="w-4 h-4"></i>
+                <span>Lập bảng quyết toán mới</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Metric KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 uppercase">Cần hoàn trả cọc</span>
+                <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                  <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="text-2xl font-bold text-slate-900">1 hợp đồng</div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 uppercase">Cần cư dân nộp thêm</span>
+                <span class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
+                  <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="text-2xl font-bold text-slate-900">1 hợp đồng</div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 uppercase">Cấn trừ vừa đủ (0 ₫)</span>
+                <span class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                  <i data-lucide="check-check" class="w-4 h-4"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="text-2xl font-bold text-slate-900">1 hợp đồng</div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 uppercase">Chờ báo giá hư hại</span>
+                <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                  <i data-lucide="clock" class="w-4 h-4"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="text-2xl font-bold text-slate-900">1 hợp đồng</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter & Search Bar -->
+          <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3 w-full md:w-auto">
+              <div class="relative flex-1 md:w-80">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="search-input" placeholder="Tìm theo mã HĐ, tên cư dân, số phòng..." 
+                  oninput="renderManagerTable()"
+                  class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#0F766E] transition-all">
+              </div>
+              <select id="filter-status" onchange="renderManagerTable()"
+                class="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-[#0F766E]">
+                <option value="ALL">Tất cả trạng thái</option>
+                <option value="REFUND_DUE">Cần hoàn trả cọc</option>
+                <option value="REPAYMENT_REQUIRED">Cần nộp thêm tiền</option>
+                <option value="EXACT_BALANCE">Cấn trừ vừa đủ</option>
+                <option value="PENDING_ASSESSMENT">Chờ định giá hư hại</option>
+                <option value="COMPLETED">Đã hoàn tất đóng HĐ</option>
+              </select>
+            </div>
+
+            <div class="text-xs text-slate-500">
+              Hiển thị <span id="settlement-count" class="font-bold text-slate-800">4</span> hợp đồng quyết toán
+            </div>
+          </div>
+
+          <!-- Settlement Table Card -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-slate-50/80 text-xs text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                  <tr>
+                    <th class="py-3.5 px-4 font-semibold">Hợp đồng & Căn hộ</th>
+                    <th class="py-3.5 px-4 font-semibold">Khách thuê</th>
+                    <th class="py-3.5 px-4 font-semibold text-right">Tiền cọc</th>
+                    <th class="py-3.5 px-4 font-semibold text-right">Tổng công nợ</th>
+                    <th class="py-3.5 px-4 font-semibold text-right">Số dư ròng (Net)</th>
+                    <th class="py-3.5 px-4 font-semibold text-center">Trạng thái quyết toán</th>
+                    <th class="py-3.5 px-4 font-semibold text-center">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="manager-settlement-tbody" class="divide-y divide-slate-100 text-slate-700">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW CHO CƯ DÂN (RESIDENT PORTAL) -->
+        <!-- ========================================== -->
+        <div id="resident-view" class="space-y-6 hidden">
+          <!-- Resident Header -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-50 text-teal-800 border border-teal-200 mb-2">
+                <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span>Căn hộ của tôi: P201</span>
+              </span>
+              <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Quyết toán hợp đồng căn hộ P201</h1>
+              <p class="text-sm text-slate-500 mt-1">Thông tin chi tiết quyết toán tiền cọc và thanh lý hợp đồng thuê của bạn</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400 block font-medium">Khách thuê đứng tên</span>
+              <span class="text-base font-bold text-slate-800">Lê Văn An</span>
+              <span class="text-xs text-slate-500 block">SĐT: 0904 445 566</span>
+            </div>
+          </div>
+
+          <!-- Resident Settlement Highlight Card -->
+          <div id="resident-settlement-card" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <!-- Dynamically populated for resident only -->
+          </div>
+
+          <!-- Resident Audit Activity -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-3">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-teal-600"></i>
+              <span>Tiến độ xử lý hồ sơ quyết toán của bạn</span>
+            </h3>
+            <div id="resident-timeline" class="space-y-3 text-xs pl-2 border-l-2 border-teal-200">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function initViewByRole() {
+      const role = DataStore.getRole();
+      const managerView = document.getElementById('manager-view');
+      const residentView = document.getElementById('resident-view');
+
+      if (role === 'RESIDENT') {
+        managerView.classList.add('hidden');
+        residentView.classList.remove('hidden');
+        renderResidentSettlement();
+      } else {
+        managerView.classList.remove('hidden');
+        residentView.classList.add('hidden');
+        renderManagerTable();
+      }
+    }
+
+    // Render logic for Manager View
+    function renderManagerTable() {
+      const tbody = document.getElementById('manager-settlement-tbody');
+      const search = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+      const statusFilter = document.getElementById('filter-status')?.value || 'ALL';
+      
+      const list = DataStore.getSettlements();
+
+      const filtered = list.filter(item => {
+        const matchesSearch = !search || 
+          item.contractCode.toLowerCase().includes(search) ||
+          item.room.toLowerCase().includes(search) ||
+          item.tenant.toLowerCase().includes(search) ||
+          item.phone.includes(search);
+
+        const matchesStatus = statusFilter === 'ALL' || item.type === statusFilter || item.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+
+      document.getElementById('settlement-count').textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-12 text-center text-slate-400">
+              <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+              <p>Không tìm thấy hợp đồng quyết toán nào phù hợp</p>
+            </td>
+          </tr>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => {
+        let netBadge = '';
+        let statusBadge = '';
+        let actionBtn = '';
+
+        if (item.type === 'REFUND_DUE') {
+          netBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            +${formatVND(item.netBalance)} (Hoàn cọc)
+          </span>`;
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Chờ chuyển khoản hoàn cọc
+          </span>`;
+          actionBtn = `
+            <a href="process-refund.html?id=${item.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-colors">
+              <i data-lucide="arrow-down-left" class="w-3.5 h-3.5"></i>
+              <span>Hoàn tiền</span>
+            </a>
+          `;
+        } else if (item.type === 'REPAYMENT_REQUIRED') {
+          netBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
+            ${formatVND(item.netBalance)} (Thu thêm)
+          </span>`;
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-800">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Cư dân cần nộp thêm
+          </span>`;
+          actionBtn = `
+            <a href="additional-payment.html?id=${item.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-sm transition-colors">
+              <i data-lucide="hand-coins" class="w-3.5 h-3.5"></i>
+              <span>Thu tiền</span>
+            </a>
+          `;
+        } else if (item.type === 'EXACT_BALANCE') {
+          netBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+            0 ₫ (Cấn trừ vừa đủ)
+          </span>`;
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800">
+            <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>Sẵn sàng đóng hợp đồng
+          </span>`;
+          actionBtn = `
+            <a href="completed-settlement.html?id=${item.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold shadow-sm transition-colors">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+              <span>Đóng HĐ</span>
+            </a>
+          `;
+        } else if (item.type === 'PENDING_ASSESSMENT') {
+          netBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+            Đang chờ báo giá
+          </span>`;
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Tạm hoãn quyết toán
+          </span>`;
+          actionBtn = `
+            <a href="prepare-settlement.html?id=${item.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-sm transition-colors">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              <span>Cập nhật giá</span>
+            </a>
+          `;
+        }
+
+        if (item.status === 'COMPLETED') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Đã đóng tài chính
+          </span>`;
+          actionBtn = `
+            <a href="completed-settlement.html?id=${item.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
+              <span>Biên bản</span>
+            </a>
+          `;
+        }
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-4 px-4">
+              <div class="font-bold text-slate-900">${item.contractCode}</div>
+              <div class="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+                <span class="font-semibold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded">${item.room}</span>
+                <span>•</span>
+                <span>BB Checkout: ${item.checkoutRecordId}</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">
+              <div class="font-medium text-slate-900">${item.tenant}</div>
+              <div class="text-xs text-slate-500">${item.phone}</div>
+            </td>
+            <td class="py-4 px-4 text-right font-medium text-slate-900">
+              ${formatVND(item.deposit)}
+            </td>
+            <td class="py-4 px-4 text-right font-medium text-slate-900">
+              ${item.hasPendingQuote ? '<span class="text-amber-600 font-semibold">Chưa chốt</span>' : formatVND(item.totalDue)}
+            </td>
+            <td class="py-4 px-4 text-right">
+              ${netBadge}
+            </td>
+            <td class="py-4 px-4 text-center">
+              ${statusBadge}
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex items-center justify-center gap-2">
+                <a href="settlement-details.html?id=${item.id}" title="Xem chi tiết bảng tính" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </a>
+                ${actionBtn}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Render logic ONLY for Resident (Lê Văn An - P201)
+    function renderResidentSettlement() {
+      const container = document.getElementById('resident-settlement-card');
+      const timelineEl = document.getElementById('resident-timeline');
+      
+      // Get the resident's settlement: STL-2026-001 (P201)
+      const mySettlement = DataStore.getSettlementById('STL-2026-001');
+      if (!mySettlement) return;
+
+      container.innerHTML = `
+        <div class="p-6 bg-gradient-to-r from-teal-900 to-slate-900 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>Số dư ròng hoàn trả cư dân
+            </span>
+            <h2 class="text-3xl font-extrabold text-emerald-400 tracking-tight">+${formatVND(mySettlement.netBalance)}</h2>
+            <p class="text-xs text-slate-300 mt-1">
+              Hợp đồng: <strong>${mySettlement.contractCode}</strong> • Biên bản trả phòng ngày 02/10/2026 (${mySettlement.checkoutRecordId})
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="settlement-details.html?id=${mySettlement.id}" class="px-5 py-2.5 bg-white text-slate-900 hover:bg-slate-100 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4 text-teal-700"></i>
+              <span>Xem chi tiết bảng kê</span>
+            </a>
+            <a href="process-refund.html?id=${mySettlement.id}" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2">
+              <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
+              <span>Theo dõi nhận hoàn tiền</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="p-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs bg-slate-50 border-b border-slate-200">
+          <div>
+            <span class="text-slate-400 block font-medium">Tiền cọc ban đầu</span>
+            <span class="text-base font-bold text-slate-800">${formatVND(mySettlement.deposit)}</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block font-medium">Hóa đơn nợ đọng</span>
+            <span class="text-base font-bold text-rose-600">-${formatVND(mySettlement.unpaidInvoices)}</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block font-medium">Điện & Nước chốt</span>
+            <span class="text-base font-bold text-slate-800">-${formatVND((mySettlement.electricity.total || 0) + (mySettlement.water.total || 0))}</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block font-medium">Khấu trừ bồi thường</span>
+            <span class="text-base font-bold text-slate-800">-${formatVND((mySettlement.damages || []).reduce((s,d)=>s+d.amount, 0))}</span>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-900 text-sm">Tài khoản nhận tiền hoàn của bạn:</h4>
+            <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Đã xác nhận chính xác</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-white p-4 rounded-xl border border-slate-200">
+            <div><span class="text-slate-400 block">Ngân hàng:</span><strong class="text-slate-800">Vietcombank</strong></div>
+            <div><span class="text-slate-400 block">Số tài khoản:</span><strong class="font-mono text-teal-800 text-sm">0011002345678</strong></div>
+            <div><span class="text-slate-400 block">Chủ tài khoản:</span><strong class="text-slate-800 uppercase">LÊ VĂN AN</strong></div>
+          </div>
+        </div>
+      `;
+
+      // Timeline
+      timelineEl.innerHTML = (mySettlement.auditLogs || []).map(log => `
+        <div class="relative pl-4 py-1">
+          <div class="absolute -left-[5px] top-2 w-2 h-2 rounded-full bg-teal-600"></div>
+          <div class="flex items-center gap-2">
+            <span class="font-mono text-slate-400 text-[11px]">${log.time}</span>
+            <span class="font-bold text-slate-800">${log.actor}</span>
+          </div>
+          <p class="text-slate-600 mt-0.5">${log.action}</p>
+        </div>
+      `).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initViewByRole();
+    });
+  </script>
+</body>
+</html>

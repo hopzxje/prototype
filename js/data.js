@@ -20,7 +20,8 @@ const STORAGE_KEYS = {
   SYSTEM_CONFIG: 'stayhub_system_config',
   CURRENT_BUILDING: 'stayhub_current_building',
   USERS: 'stayhub_users',
-  HANDOVER: 'stayhub_handover'
+  HANDOVER: 'stayhub_handover',
+  SETTLEMENTS: 'stayhub_settlements'
 };
 
 const DEFAULT_USERS = {
@@ -526,6 +527,188 @@ const INITIAL_HANDOVER = {
   managerConfirmed: false
 };
 
+const INITIAL_SETTLEMENTS = [
+  {
+    id: 'STL-2026-001',
+    contractId: 'ct-001',
+    contractCode: 'HD-2025-001',
+    room: 'P201',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    checkoutRecordId: 'CKO-2026-001',
+    checkoutDate: '2026-10-02',
+    deposit: 8500000,
+    unpaidInvoices: 1505000,
+    unpaidInvoicesList: [
+      { code: 'INV-2026-09-P201', description: 'Hóa đơn dịch vụ tháng 09/2026', amount: 1505000 }
+    ],
+    electricity: { old: 1240, new: 1312, units: 72, rate: 3500, total: 252000 },
+    water: { old: 85, new: 88, units: 3, rate: 25000, total: 75000 },
+    serviceFee: 0,
+    damages: [
+      { id: 'dmg-1', description: 'Vệ sinh công nghiệp sau trả phòng', amount: 300000, note: 'Khách bàn giao căn hộ chưa dọn sạch theo hợp đồng' },
+      { id: 'dmg-2', description: 'Thay chốt khóa cửa kính ban công', amount: 400000, note: 'Khóa bị gãy lẫy cơ khí trong thời gian sử dụng' }
+    ],
+    totalDue: 2532000,
+    netBalance: 5968000,
+    type: 'REFUND_DUE',
+    status: 'READY_FOR_REFUND',
+    hasPendingQuote: false,
+    dispute: null,
+    residentApproval: {
+      status: 'ACCEPTED',
+      agreedAt: '2026-10-03 10:30',
+      note: 'Đã kiểm tra số điện nước và đồng ý phương án khấu trừ cọc.'
+    },
+    refundDetails: {
+      bankName: 'Vietcombank - CN Thăng Long',
+      bankAccount: '0011002345678',
+      accountHolder: 'LE VAN AN',
+      amount: 5968000,
+      transferStatus: 'PENDING_TRANSFER',
+      transferredAt: null,
+      transferredBy: null,
+      transferProof: null,
+      failureReason: null
+    },
+    paymentDetails: null,
+    auditLogs: [
+      { time: '2026-10-02 09:15', actor: 'Phạm Tuấn Anh (Kỹ thuật)', action: 'Chốt biên bản kiểm tra phòng CKO-2026-001 và chỉ số điện nước' },
+      { time: '2026-10-02 14:00', actor: 'Trần Minh Đức (Quản lý)', action: 'Lập bảng quyết toán và gửi cho Cư dân xem xét' },
+      { time: '2026-10-03 10:30', actor: 'Lê Văn An (Cư dân)', action: 'Cư dân đã duyệt và đồng ý với bảng tính quyết toán' }
+    ]
+  },
+  {
+    id: 'STL-2026-002',
+    contractId: 'ct-002',
+    contractCode: 'HD-2025-002',
+    room: 'P101',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Nguyễn Văn Hùng',
+    phone: '0901112233',
+    checkoutRecordId: 'CKO-2026-002',
+    checkoutDate: '2026-10-01',
+    deposit: 6500000,
+    unpaidInvoices: 13000000,
+    unpaidInvoicesList: [
+      { code: 'INV-2026-08-P101', description: 'Tiền thuê căn hộ tháng 08/2026', amount: 6500000 },
+      { code: 'INV-2026-09-P101', description: 'Tiền thuê căn hộ tháng 09/2026', amount: 6500000 }
+    ],
+    electricity: { old: 980, new: 1070, units: 90, rate: 3500, total: 315000 },
+    water: { old: 62, new: 67, units: 5, rate: 25000, total: 125000 },
+    serviceFee: 0,
+    damages: [
+      { id: 'dmg-3', description: 'Thay mặt kính bàn trà vỡ', amount: 1500000, note: 'Khách làm nứt vỡ trong thời gian thuê' },
+      { id: 'dmg-4', description: 'Sơn dặm lại tường phòng khách vẽ bẩn', amount: 1800000, note: 'Vi phạm quy định giữ gìn căn hộ' },
+      { id: 'dmg-5', description: 'Dọn dẹp rác thải tồn đọng', amount: 789000, note: 'Đơn vị dọn vệ sinh chuyên dụng xử lý' }
+    ],
+    totalDue: 17529000,
+    netBalance: -11029000,
+    type: 'REPAYMENT_REQUIRED',
+    status: 'AWAITING_PAYMENT',
+    hasPendingQuote: false,
+    dispute: null,
+    residentApproval: {
+      status: 'ACCEPTED',
+      agreedAt: '2026-10-02 16:45',
+      note: 'Tôi đã xác nhận khoản nợ và cam kết chuyển khoản thanh toán đủ số dư nợ còn lại.'
+    },
+    refundDetails: null,
+    paymentDetails: {
+      amount: 11029000,
+      paidAmount: 0,
+      remainingAmount: 11029000,
+      method: 'VIETQR',
+      status: 'UNPAID',
+      qrCodeData: 'DH HD2025002',
+      transactions: []
+    },
+    auditLogs: [
+      { time: '2026-10-01 11:00', actor: 'Phạm Tuấn Anh (Kỹ thuật)', action: 'Chốt biên bản kiểm tra phòng CKO-2026-002, ghi nhận thiệt hại tài sản' },
+      { time: '2026-10-01 15:30', actor: 'Trần Minh Đức (Quản lý)', action: 'Lập bảng quyết toán tài chính (Truy thu ngoài cọc: 11.029.000 ₫)' },
+      { time: '2026-10-02 16:45', actor: 'Nguyễn Văn Hùng (Cư dân)', action: 'Cư dân xác nhận bảng quyết toán, hệ thống tạo mã thanh toán VietQR' }
+    ]
+  },
+  {
+    id: 'STL-2026-003',
+    contractId: 'ct-003',
+    contractCode: 'HD-2025-003',
+    room: 'P102',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Trần Thị Thu Thảo',
+    phone: '0902223344',
+    checkoutRecordId: 'CKO-2026-003',
+    checkoutDate: '2026-10-03',
+    deposit: 7500000,
+    unpaidInvoices: 6500000,
+    unpaidInvoicesList: [
+      { code: 'INV-2026-09-P102', description: 'Tiền thuê căn hộ tháng cuối (chưa nộp)', amount: 6500000 }
+    ],
+    electricity: { old: 810, new: 915, units: 105, rate: 3500, total: 367500 },
+    water: { old: 54, new: 59, units: 5, rate: 25000, total: 125000 },
+    serviceFee: 7500,
+    damages: [
+      { id: 'dmg-6', description: 'Bảo dưỡng điều hòa & vệ sinh chuyên sâu', amount: 500000, note: 'Khấu trừ theo phụ lục bàn giao kết thúc hợp đồng' }
+    ],
+    totalDue: 7500000,
+    netBalance: 0,
+    type: 'EXACT_BALANCE',
+    status: 'READY_TO_CLOSE',
+    hasPendingQuote: false,
+    dispute: null,
+    residentApproval: {
+      status: 'ACCEPTED',
+      agreedAt: '2026-10-04 09:20',
+      note: 'Đồng ý cấn trừ toàn bộ tiền cọc 7.500.000 ₫ vào tiền phòng và chi phí phát sinh.'
+    },
+    refundDetails: null,
+    paymentDetails: null,
+    auditLogs: [
+      { time: '2026-10-03 10:00', actor: 'Phạm Tuấn Anh (Kỹ thuật)', action: 'Nghiệm thu căn hộ P102, bàn giao chìa khóa và thẻ từ' },
+      { time: '2026-10-03 16:00', actor: 'Trần Minh Đức (Quản lý)', action: 'Lập bảng quyết toán cấn trừ vừa đủ tiền cọc (0 ₫ chênh lệch)' },
+      { time: '2026-10-04 09:20', actor: 'Trần Thị Thu Thảo (Cư dân)', action: 'Cư dân đồng ý phương án cấn trừ cọc, sẵn sàng thanh lý hợp đồng' }
+    ]
+  },
+  {
+    id: 'STL-2026-004',
+    contractId: 'ct-004',
+    contractCode: 'HD-2025-004',
+    room: 'P301',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Vũ Đức Nam',
+    phone: '0907778899',
+    checkoutRecordId: 'CKO-2026-004',
+    checkoutDate: '2026-10-04',
+    deposit: 9500000,
+    unpaidInvoices: 0,
+    unpaidInvoicesList: [],
+    electricity: { old: 1100, new: 1220, units: 120, rate: 3500, total: 420000 },
+    water: { old: 70, new: 76, units: 6, rate: 25000, total: 150000 },
+    serviceFee: 0,
+    damages: [
+      { id: 'dmg-7', description: 'Vỡ tấm kính cường lực lan can ban công', amount: 0, pendingQuote: true, note: 'Đang liên hệ xưởng nhôm kính đo đạc và gửi báo giá chính xác' }
+    ],
+    totalDue: 570000,
+    netBalance: null,
+    type: 'PENDING_ASSESSMENT',
+    status: 'PENDING_ASSESSMENT',
+    hasPendingQuote: true,
+    dispute: null,
+    residentApproval: {
+      status: 'PENDING',
+      agreedAt: null,
+      note: ''
+    },
+    refundDetails: null,
+    paymentDetails: null,
+    auditLogs: [
+      { time: '2026-10-04 15:00', actor: 'Phạm Tuấn Anh (Kỹ thuật)', action: 'Kiểm tra phòng trả P301: Ghi nhận vỡ kính lan can, gửi yêu cầu báo giá bên ngoài' },
+      { time: '2026-10-04 16:30', actor: 'Trần Minh Đức (Quản lý)', action: 'Tạm hoãn quyết toán (Pending Assessment) chờ báo giá xưởng gia công kính' }
+    ]
+  }
+];
+
 const DataStore = {
   init() {
     if (!localStorage.getItem(STORAGE_KEYS.ROLE)) {
@@ -565,6 +748,9 @@ const DataStore = {
     }
     if (!localStorage.getItem(STORAGE_KEYS.HANDOVER)) {
       localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(INITIAL_HANDOVER));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SETTLEMENTS)) {
+      localStorage.setItem(STORAGE_KEYS.SETTLEMENTS, JSON.stringify(INITIAL_SETTLEMENTS));
     }
   },
 
@@ -849,8 +1035,107 @@ const DataStore = {
 
   saveHandover(handover) {
     localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(handover));
-  }
+  },
 
+  // =================================================================
+  // 2.11 Payment & Deposit Settlement DataStore Engine
+  // =================================================================
+  getSettlements() {
+    const raw = localStorage.getItem(STORAGE_KEYS.SETTLEMENTS);
+    if (!raw) {
+      localStorage.setItem(STORAGE_KEYS.SETTLEMENTS, JSON.stringify(INITIAL_SETTLEMENTS));
+      return INITIAL_SETTLEMENTS;
+    }
+    try {
+      const list = JSON.parse(raw);
+      return Array.isArray(list) && list.length ? list : INITIAL_SETTLEMENTS;
+    } catch (e) {
+      return INITIAL_SETTLEMENTS;
+    }
+  },
+
+  getSettlementById(id) {
+    const list = this.getSettlements();
+    return list.find(s => s.id === id || s.contractCode === id || s.contractId === id) || null;
+  },
+
+  saveSettlement(settlement) {
+    const list = this.getSettlements();
+    const idx = list.findIndex(s => s.id === settlement.id);
+    if (idx !== -1) {
+      list[idx] = settlement;
+    } else {
+      list.push(settlement);
+    }
+    localStorage.setItem(STORAGE_KEYS.SETTLEMENTS, JSON.stringify(list));
+  },
+
+  calculateSettlement(data) {
+    const deposit = Number(data.deposit) || 0;
+    const unpaidInvoices = Number(data.unpaidInvoices) || 0;
+    const elecAmount = Number(data.electricity?.total || (data.electricity?.units * (data.electricity?.rate || 3500))) || 0;
+    const waterAmount = Number(data.water?.total || (data.water?.units * (data.water?.rate || 25000))) || 0;
+    const serviceFee = Number(data.serviceFee) || 0;
+    const damageTotal = (data.damages || []).reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+    const hasPendingQuote = (data.damages || []).some(d => d.pendingQuote);
+
+    const totalDue = unpaidInvoices + elecAmount + waterAmount + serviceFee + damageTotal;
+    const netBalance = deposit - totalDue;
+
+    let type = 'EXACT_BALANCE';
+    let status = 'READY_TO_CLOSE';
+
+    if (hasPendingQuote) {
+      type = 'PENDING_ASSESSMENT';
+      status = 'PENDING_ASSESSMENT';
+    } else if (netBalance > 0) {
+      type = 'REFUND_DUE';
+      status = 'READY_FOR_REFUND';
+    } else if (netBalance < 0) {
+      type = 'REPAYMENT_REQUIRED';
+      status = 'AWAITING_PAYMENT';
+    }
+
+    return {
+      deposit,
+      unpaidInvoices,
+      utilitiesTotal: elecAmount + waterAmount,
+      serviceFee,
+      damageTotal,
+      totalDue,
+      netBalance: hasPendingQuote ? null : netBalance,
+      type,
+      status,
+      hasPendingQuote
+    };
+  },
+
+  closeSettlementContract(settlementId, note = 'Đã hoàn tất thanh lý tài chính') {
+    const s = this.getSettlementById(settlementId);
+    if (!s) return false;
+
+    s.status = 'COMPLETED';
+    s.closedAt = new Date().toISOString().replace('T', ' ').slice(0, 16);
+    s.closedBy = this.getUser().fullName;
+    s.auditLogs.push({
+      time: s.closedAt,
+      actor: `${this.getUser().fullName} (${this.getRole()})`,
+      action: `Đóng hợp đồng tài chính ${s.contractCode}. Trạng thái chuyển sang COMPLETED.`
+    });
+
+    // Update contract status in contracts store as well
+    const contracts = this.getContracts();
+    const cIdx = contracts.findIndex(c => c.code === s.contractCode || c.id === s.contractId);
+    if (cIdx !== -1) {
+      contracts[cIdx].status = 'CLOSED';
+      contracts[cIdx].closedDate = s.closedAt.slice(0, 10);
+      localStorage.setItem(STORAGE_KEYS.CONTRACTS, JSON.stringify(contracts));
+    }
+
+    this.saveSettlement(s);
+    this.addAuditLog('QUYẾT_TOÁN_HỢP_ĐỒNG', `Hợp đồng ${s.contractCode}`, `Hoàn tất quyết toán và đóng tài chính hợp đồng. ${note}`);
+    return true;
+  }
 };
 
 // Auto initialize on script load

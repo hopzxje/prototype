@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thu Tiền Quyết Toán Bổ Sung - StayHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/data.js"></script>
+  <script src="../js/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Top Demo Role Switcher Bar -->
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+
+      <div class="p-6 max-w-5xl w-full mx-auto space-y-6">
+
+        <!-- Top Navigation & Status Badge -->
+        <div class="flex items-center justify-between">
+          <a href="settlements.html" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Quay lại danh sách quyết toán</span>
+          </a>
+          <span id="page-top-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200">
+            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
+            <span id="txt-top-badge">Thu hồi công nợ ngoài cọc</span>
+          </span>
+        </div>
+
+        <!-- Settlement Summary Card -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="badge-status-type" class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-rose-100 text-rose-800">Cần thu thêm</span>
+              <h2 class="text-xl font-bold text-slate-900">HD-2025-002 • P101 (Nguyễn Văn Hùng)</h2>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              Tiền cọc giữ: 6.500.000 ₫ | Tổng chi phí nợ & hư hại: 17.529.000 ₫
+            </p>
+          </div>
+          <div class="text-right">
+            <span id="lbl-amount-header" class="text-xs text-slate-400 block font-medium">Số tiền cần thu từ cư dân</span>
+            <span id="txt-amount-due" class="text-3xl font-black text-rose-600">11.029.000 ₫</span>
+          </div>
+        </div>
+
+        <!-- Payment Method Tabs -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          
+          <!-- Tab Navigation Bar -->
+          <div class="flex border-b border-slate-200 bg-slate-50/70 p-2 gap-2">
+            <button id="tab-btn-manual" onclick="switchTab('manual')" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 bg-white text-[#0F766E] shadow-sm">
+              <i data-lucide="hand-coins" class="w-4 h-4"></i>
+              <span id="tab-title-manual">Phương thức 1: Thu tiền tại quầy (Tiền mặt / POS / Chuyển khoản)</span>
+            </button>
+            <button id="tab-btn-qr" onclick="switchTab('qr')" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-500 hover:text-slate-800">
+              <i data-lucide="qr-code" class="w-4 h-4"></i>
+              <span id="tab-title-qr">Phương thức 2: Tạo mã QR VietQR (Cư dân tự quét gạch nợ tự động)</span>
+            </button>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- TAB 1: THU TIỀN TẠI QUẦY (MANUAL / POS)   -->
+          <!-- ========================================== -->
+          <div id="tab-content-manual" class="p-6 space-y-6">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Lập Phiếu Thu Tiền Quyết Toán Bổ Sung</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Dành cho Quản lý / Kế toán ghi nhận khi cư dân thanh toán trực tiếp tại văn phòng tòa nhà</p>
+              </div>
+              <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg">
+                Mã HĐ: HD-2025-002
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Số tiền thu thực tế (₫) *</label>
+                <div class="relative">
+                  <input type="number" id="manual-amount" value="11029000" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-black text-rose-600 text-base focus:bg-white focus:outline-none focus:border-teal-600">
+                  <span class="absolute right-3 top-3 font-semibold text-slate-400">VND</span>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1 block">Mặc định số tiền công nợ còn thiếu sau khi trừ hết tiền cọc</span>
+              </div>
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Hình thức thu tiền *</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-teal-500 bg-teal-50/50 cursor-pointer text-xs font-semibold text-teal-900">
+                    <input type="radio" name="payment-method-type" value="CASH" checked class="text-teal-600">
+                    <span>Tiền mặt</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer text-xs font-semibold text-slate-700">
+                    <input type="radio" name="payment-method-type" value="POS" class="text-teal-600">
+                    <span>Quẹt thẻ POS</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer text-xs font-semibold text-slate-700">
+                    <input type="radio" name="payment-method-type" value="TRANSFER" class="text-teal-600">
+                    <span>CK tại quầy</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Mã số Phiếu thu *</label>
+                <input type="text" id="manual-receipt-no" value="PT-2026-10-0089" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-800">
+              </div>
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Ngày giờ ghi nhận thu *</label>
+                <input type="text" id="manual-receipt-time" value="2026-10-04 15:45" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800">
+              </div>
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Người nộp tiền *</label>
+                <input type="text" id="manual-payer" value="Nguyễn Văn Hùng (Căn hộ P101)" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800">
+              </div>
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Nhân viên tiếp nhận thu tiền *</label>
+                <input type="text" id="manual-staff" value="Trần Minh Đức (Quản lý Cơ sở)" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800" readonly>
+              </div>
+            </div>
+
+            <div>
+              <label class="font-bold text-slate-700 block text-xs mb-1">Nội dung / Lý do thu tiền:</label>
+              <input type="text" id="manual-reason" value="Thu tiền phát sinh vượt quá cọc sau quyết toán trả phòng P101 (HĐ HD-2025-002)" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800">
+            </div>
+
+            <div>
+              <label class="font-bold text-slate-700 block text-xs mb-1">Đính kèm ảnh chứng từ / Phiếu thu có chữ ký 2 bên (Tùy chọn):</label>
+              <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer">
+                <i data-lucide="upload-cloud" class="w-6 h-6 mx-auto text-slate-400 mb-1"></i>
+                <span class="text-xs text-slate-600 font-semibold block">Tải ảnh chụp phiếu thu hoặc kéo thả vào đây</span>
+                <span class="text-[11px] text-slate-400">File mẫu đã chọn: phieuthu_pt2026100089_p101.jpg</span>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+              <button type="button" onclick="openPrintReceiptModal()" class="px-4 py-2.5 border border-slate-200 hover:border-slate-300 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                <i data-lucide="printer" class="w-4 h-4 text-slate-500"></i>
+                <span>Xem & In Phiếu Thu</span>
+              </button>
+
+              <div class="flex items-center gap-3">
+                <a href="settlements.html" class="px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-50">
+                  Để sau
+                </a>
+                <button type="button" onclick="confirmManualPayment()" class="px-6 py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.99] text-white rounded-xl text-xs font-bold shadow-md shadow-teal-700/20 transition-all flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-4 h-4"></i>
+                  <span>Xác nhận đã thu & Hoàn tất quyết toán</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- TAB 2: MÃ QR VIETQR & GẠCH NỢ TỰ ĐỘNG     -->
+          <!-- ========================================== -->
+          <div id="tab-content-qr" class="p-6 space-y-6 hidden">
+            
+            <div class="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Mã QR Thanh Toán & Cổng Đối Soát Tự Động</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Cung cấp mã QR để cư dân quét trả tiền tại quầy hoặc gửi liên kết cho cư dân thanh toán từ xa</p>
+              </div>
+              <!-- Action tools for staff -->
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="sendPaymentRequestToResident()" class="px-3 py-1.5 bg-teal-50 border border-teal-200 hover:bg-teal-100 text-teal-800 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors">
+                  <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                  <span>Gửi mã QR đến App Cư Dân</span>
+                </button>
+                <button type="button" onclick="copyPaymentLink()" class="px-3 py-1.5 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Sao chép link</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+
+              <!-- QR Visual Box -->
+              <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 flex flex-col items-center text-center space-y-4">
+                <span class="text-xs font-bold text-slate-700">Mã VietQR Động (Tự điền số tiền & nội dung)</span>
+
+                <div class="w-56 h-56 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center relative">
+                  <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=2|99|0011002345678|11029000|DH%20HD2025002" alt="VietQR" class="w-full h-full object-contain">
+                </div>
+
+                <div class="text-xs space-y-1.5 w-full max-w-xs text-left bg-white p-3.5 rounded-xl border border-slate-200">
+                  <div class="flex justify-between"><span class="text-slate-400">Ngân hàng:</span><span class="font-bold text-slate-800">MB Bank (Quân Đội)</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Số tài khoản:</span><span class="font-bold text-slate-800">090111223388</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Chủ tài khoản:</span><span class="font-bold text-slate-800">CONG TY STAYHUB VN</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Số tiền nộp:</span><span id="qr-amount-text" class="font-bold text-rose-600">11.029.000 ₫</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Nội dung CK:</span><span class="font-mono font-bold text-teal-700 bg-teal-50 px-1 rounded">DH HD2025002</span></div>
+                </div>
+
+                <p class="text-[11px] text-slate-500">
+                  Cư dân mở bất kỳ ứng dụng ngân hàng (Mobile Banking) để quét mã. Tiền vào tài khoản sẽ được cổng SePay tự động gạch nợ sau 3-5 giây.
+                </p>
+              </div>
+
+              <!-- Webhook Simulation & Auto-reconciliation Panel -->
+              <div class="space-y-4">
+                <div class="p-4 bg-teal-50/60 rounded-xl border border-teal-200 space-y-1">
+                  <div class="flex items-center gap-2 text-teal-900 font-bold text-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>Cổng gạch nợ SePay VietQR: Đang trực tuyến</span>
+                  </div>
+                  <p class="text-[11px] text-teal-800 leading-relaxed">
+                    Hệ thống tự động lắng nghe biến động số dư. Khi cư dân thanh toán đúng số tiền và cú pháp, hợp đồng sẽ được tự động cập nhật sang trạng thái Hoàn tất.
+                  </p>
+                </div>
+
+                <div class="border-t border-slate-100 pt-3">
+                  <h4 class="text-xs font-bold text-slate-800 mb-2 flex items-center gap-1.5">
+                    <i data-lucide="cpu" class="w-3.5 h-3.5 text-teal-600"></i>
+                    <span>Bộ Mô Phỏng Giao Dịch SePay VietQR (Kiểm Thử):</span>
+                  </h4>
+
+                  <!-- Simulation Buttons -->
+                  <div class="grid grid-cols-1 gap-2 text-xs">
+                    <!-- Case 1: Full Payment -->
+                    <button onclick="simulatePayment('FULL')" class="p-3 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 rounded-xl text-left transition-all flex items-start gap-2.5">
+                      <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">1</span>
+                      <div>
+                        <strong class="text-emerald-950 block">Cư dân chuyển ĐỦ 100% (11.029.000 ₫)</strong>
+                        <span class="text-emerald-800 text-[11px]">Đúng số tiền & đúng mã ➔ Tự động gạch nợ thành công</span>
+                      </div>
+                    </button>
+
+                    <!-- Case 2: Partial Payment -->
+                    <button onclick="simulatePayment('PARTIAL')" class="p-3 bg-amber-50 hover:bg-amber-100/80 border border-amber-200 rounded-xl text-left transition-all flex items-start gap-2.5">
+                      <span class="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">2</span>
+                      <div>
+                        <strong class="text-amber-950 block">Cư dân chuyển THIẾU (Chuyển 5.000.000 ₫)</strong>
+                        <span class="text-amber-800 text-[11px]">Ghi nhận nộp một phần ➔ Cập nhật số tiền còn nợ (6.029.000 ₫)</span>
+                      </div>
+                    </button>
+
+                    <!-- Case 3: Overpayment -->
+                    <button onclick="simulatePayment('OVER')" class="p-3 bg-blue-50 hover:bg-blue-100/80 border border-blue-200 rounded-xl text-left transition-all flex items-start gap-2.5">
+                      <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">3</span>
+                      <div>
+                        <strong class="text-blue-950 block">Cư dân chuyển THỪA (Chuyển 12.000.000 ₫)</strong>
+                        <span class="text-blue-800 text-[11px]">Thừa 971.000 ₫ ➔ Ghi nhận và lập lệnh hoàn tiền chênh lệch</span>
+                      </div>
+                    </button>
+
+                    <!-- Case 4: Wrong Reference -->
+                    <button onclick="simulatePayment('WRONG_REF')" class="p-3 bg-slate-100 hover:bg-slate-200/80 border border-slate-300 rounded-xl text-left transition-all flex items-start gap-2.5">
+                      <span class="w-5 h-5 rounded-full bg-slate-600 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">4</span>
+                      <div>
+                        <strong class="text-slate-900 block">SAI CÚ PHÁP / Chưa khớp mã hợp đồng</strong>
+                        <span class="text-slate-600 text-[11px]">Tiền vào tài khoản nhưng sai nội dung ➔ Đưa vào danh sách chờ tra soát</span>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div id="simulation-status" class="hidden p-3.5 rounded-xl text-xs space-y-1 mt-3"></div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: XEM & IN PHIẾU THU TIỀN MẶT A5      -->
+  <!-- ========================================== -->
+  <div id="modal-receipt" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <i data-lucide="printer" class="w-5 h-5 text-teal-700"></i>
+          <span>Xem Trước Phiếu Thu Tiền Mặt</span>
+        </h4>
+        <button onclick="closePrintReceiptModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Receipt Content Sheet -->
+      <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl font-sans text-xs space-y-3">
+        <div class="flex justify-between items-start border-b border-slate-200 pb-3">
+          <div>
+            <h5 class="font-extrabold text-slate-900 uppercase">STAYHUB LIVING</h5>
+            <p class="text-[11px] text-slate-500">Tòa nhà: StayHub Central - Ba Đình</p>
+          </div>
+          <div class="text-right">
+            <span class="font-black text-sm text-slate-900 block uppercase">PHIẾU THU</span>
+            <span class="text-[11px] text-slate-500 font-mono">Số: PT-2026-10-0089</span>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 text-slate-700 pt-1">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Họ và tên người nộp:</span>
+            <span class="font-bold text-slate-900">Nguyễn Văn Hùng</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Căn hộ / Hợp đồng:</span>
+            <span class="font-semibold text-slate-900">P101 • HD-2025-002</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Lý do nộp:</span>
+            <span class="text-slate-900 text-right">Quyết toán chi phí phát sinh sau thanh lý HĐ</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-y border-dashed border-slate-200 my-2">
+            <span class="font-bold text-slate-700">Số tiền thu:</span>
+            <span class="text-base font-black text-teal-800">11.029.000 ₫</span>
+          </div>
+          <div class="text-[11px] italic text-slate-500 text-right">
+            (Mười một triệu không trăm hai mươi chín nghìn đồng chẵn)
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 text-center pt-4 text-[11px]">
+          <div>
+            <span class="font-bold text-slate-700 block">Người nộp tiền</span>
+            <span class="text-[10px] text-slate-400 block italic">(Ký, ghi rõ họ tên)</span>
+            <div class="h-10"></div>
+            <span class="font-semibold text-slate-800">Nguyễn Văn Hùng</span>
+          </div>
+          <div>
+            <span class="font-bold text-slate-700 block">Người lập phiếu</span>
+            <span class="text-[10px] text-slate-400 block italic">(Ký, đóng dấu)</span>
+            <div class="h-10"></div>
+            <span class="font-semibold text-slate-800" id="receipt-modal-staff">Trần Minh Đức</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+        <button onclick="closePrintReceiptModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-50">
+          Đóng
+        </button>
+        <button onclick="window.print();" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>In phiếu thu ngay</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let remaining = 11029000;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initRoleContext();
+    });
+
+    function initRoleContext() {
+      const role = DataStore.getRole();
+      const isResident = role === 'RESIDENT';
+
+      const staffName = role === 'STAFF' ? 'Phạm Tuấn Anh (Kỹ thuật)' : 'Trần Minh Đức (Quản lý)';
+      const staffInput = document.getElementById('manual-staff');
+      if (staffInput) staffInput.value = staffName;
+      const modalStaff = document.getElementById('receipt-modal-staff');
+      if (modalStaff) modalStaff.textContent = staffName.split(' (')[0];
+
+      if (isResident) {
+        initStayHubShell('additional-payment.html', 'Thanh Toán Bổ Sung Quyết Toán', 'Dành cho cư dân / Quyết toán hợp đồng / Nộp tiền bổ sung');
+        document.getElementById('txt-top-badge').textContent = 'Cần thanh toán bổ sung';
+        document.getElementById('badge-status-type').textContent = 'Cần nộp thêm';
+        document.getElementById('lbl-amount-header').textContent = 'Số tiền bạn cần thanh toán';
+        document.getElementById('tab-title-manual').textContent = 'Phương thức 1: Nộp tiền mặt trực tiếp tại văn phòng BQL';
+        document.getElementById('tab-title-qr').textContent = 'Phương thức 2: Quét mã QR chuyển khoản (Gạch nợ ngay)';
+        
+        // Default to QR for resident
+        switchTab('qr');
+      } else {
+        initStayHubShell('additional-payment.html', 'Thu Tiền Quyết Toán Bổ Sung', 'Tài chính / Quyết toán hợp đồng / Thu tiền bổ sung');
+        document.getElementById('txt-top-badge').textContent = 'Thu hồi công nợ ngoài cọc';
+        document.getElementById('badge-status-type').textContent = 'Cần thu thêm';
+        document.getElementById('lbl-amount-header').textContent = 'Số tiền cần thu từ cư dân';
+        document.getElementById('tab-title-manual').textContent = 'Phương thức 1: Thu tiền tại quầy (Tiền mặt / POS / Chuyển khoản)';
+        document.getElementById('tab-title-qr').textContent = 'Phương thức 2: Tạo mã QR VietQR (Cư dân tự quét gạch nợ tự động)';
+        
+        // Default to manual cash / POS for staff
+        switchTab('manual');
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function switchTab(tab) {
+      const qrContent = document.getElementById('tab-content-qr');
+      const manualContent = document.getElementById('tab-content-manual');
+      const qrBtn = document.getElementById('tab-btn-qr');
+      const manualBtn = document.getElementById('tab-btn-manual');
+
+      if (tab === 'qr') {
+        qrContent.classList.remove('hidden');
+        manualContent.classList.add('hidden');
+        qrBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 bg-white text-[#0F766E] shadow-sm';
+        manualBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-500 hover:text-slate-800';
+      } else {
+        qrContent.classList.add('hidden');
+        manualContent.classList.remove('hidden');
+        manualBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 bg-white text-[#0F766E] shadow-sm';
+        qrBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-500 hover:text-slate-800';
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function sendPaymentRequestToResident() {
+      showToast('✓ Đã gửi thông báo yêu cầu thanh toán kèm mã QR đến điện thoại Cư dân Nguyễn Văn Hùng!');
+    }
+
+    function copyPaymentLink() {
+      navigator.clipboard?.writeText('https://stayhub.vn/pay/HD-2025-002');
+      showToast('Đã sao chép link thanh toán: https://stayhub.vn/pay/HD-2025-002');
+    }
+
+    function openPrintReceiptModal() {
+      document.getElementById('modal-receipt').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+    function closePrintReceiptModal() {
+      document.getElementById('modal-receipt').classList.add('hidden');
+    }
+
+    function simulatePayment(type) {
+      const statusBox = document.getElementById('simulation-status');
+      statusBox.classList.remove('hidden');
+
+      if (type === 'FULL') {
+        statusBox.className = 'p-3.5 rounded-xl text-xs space-y-1 bg-emerald-50 border border-emerald-200 text-emerald-950 block animate-in fade-in';
+        statusBox.innerHTML = `
+          <strong class="flex items-center gap-1.5 text-emerald-800 font-bold">
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+            <span>Nhận giao dịch +11.029.000 ₫ (Nội dung: DH HD2025002)</span>
+          </strong>
+          <p class="text-emerald-700">Webhook SePay đã xác nhận gạch nợ thành công 100%! Hợp đồng đã hoàn tất nghĩa vụ tài chính.</p>
+        `;
+        document.getElementById('txt-amount-due').textContent = '0 ₫ (Đã thu đủ)';
+        document.getElementById('txt-amount-due').className = 'text-3xl font-black text-emerald-600';
+
+        const s = DataStore.getSettlementById('STL-2026-002');
+        if (s) {
+          s.paymentDetails.paidAmount = 11029000;
+          s.paymentDetails.remainingAmount = 0;
+          s.paymentDetails.status = 'PAID';
+          s.paymentDetails.method = 'VIETQR';
+          s.status = 'READY_TO_CLOSE';
+          DataStore.saveSettlement(s);
+        }
+
+        setTimeout(() => {
+          showToast('Tự động chuyển tiếp sang biên bản hoàn tất quyết toán...');
+          window.location.href = 'completed-settlement.html?id=STL-2026-002';
+        }, 1500);
+
+      } else if (type === 'PARTIAL') {
+        remaining -= 5000000;
+        statusBox.className = 'p-3.5 rounded-xl text-xs space-y-1 bg-amber-50 border border-amber-200 text-amber-950 block animate-in fade-in';
+        statusBox.innerHTML = `
+          <strong class="flex items-center gap-1.5 text-amber-800 font-bold">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            <span>Đã nhận thanh toán một phần: +5.000.000 ₫</span>
+          </strong>
+          <p class="text-amber-700">Còn lại: <strong>${formatVND(remaining)}</strong>. Đã cập nhật mã QR với số tiền mới để cư dân quét tiếp.</p>
+        `;
+        document.getElementById('txt-amount-due').textContent = formatVND(remaining);
+        document.getElementById('qr-amount-text').textContent = formatVND(remaining);
+        document.getElementById('manual-amount').value = remaining;
+
+      } else if (type === 'OVER') {
+        statusBox.className = 'p-3.5 rounded-xl text-xs space-y-1 bg-blue-50 border border-blue-200 text-blue-950 block animate-in fade-in';
+        statusBox.innerHTML = `
+          <strong class="flex items-center gap-1.5 text-blue-800 font-bold">
+            <i data-lucide="info" class="w-4 h-4"></i>
+            <span>Nhận giao dịch thừa: +12.000.000 ₫ (Thừa 971.000 ₫)</span>
+          </strong>
+          <p class="text-blue-700">Đã gạch nợ thành công 11.029.000 ₫. Số dư thừa 971.000 ₫ đã được tạo lệnh chuyển hoàn trả lại cho cư dân.</p>
+        `;
+        document.getElementById('txt-amount-due').textContent = '0 ₫';
+
+      } else if (type === 'WRONG_REF') {
+        statusBox.className = 'p-3.5 rounded-xl text-xs space-y-1 bg-slate-100 border border-slate-300 text-slate-900 block animate-in fade-in';
+        statusBox.innerHTML = `
+          <strong class="flex items-center gap-1.5 text-slate-800 font-bold">
+            <i data-lucide="help-circle" class="w-4 h-4"></i>
+            <span>Giao dịch không khớp nội dung mã thanh toán</span>
+          </strong>
+          <p class="text-slate-600">Tiền đã vào tài khoản công ty nhưng nội dung không có "DH HD2025002". Đã chuyển vào mục Chờ đối soát thủ công.</p>
+        `;
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function confirmManualPayment() {
+      const amount = Number(document.getElementById('manual-amount').value) || 11029000;
+      const receiptNo = document.getElementById('manual-receipt-no').value;
+      const staffActor = document.getElementById('manual-staff').value;
+
+      const s = DataStore.getSettlementById('STL-2026-002');
+      if (s) {
+        s.paymentDetails.paidAmount = amount;
+        s.paymentDetails.remainingAmount = 0;
+        s.paymentDetails.status = 'PAID';
+        s.paymentDetails.method = 'CASH';
+        s.status = 'READY_TO_CLOSE';
+
+        s.auditLogs.push({
+          time: new Date().toISOString().replace('T', ' ').slice(0, 16),
+          actor: staffActor,
+          action: `Ghi nhận thu tiền mặt ${formatVND(amount)} từ cư dân Nguyễn Văn Hùng. Phiếu thu: ${receiptNo}.`
+        });
+
+        DataStore.saveSettlement(s);
+      }
+
+      showToast('✓ Đã ghi nhận thu tiền mặt thành công! Đang chuyển sang màn hình Hoàn tất quyết toán...');
+      setTimeout(() => {
+        window.location.href = 'completed-settlement.html?id=STL-2026-002';
+      }, 700);
+    }
+  </script>
+</body>
+</html>

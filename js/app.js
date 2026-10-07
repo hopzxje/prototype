@@ -26,11 +26,20 @@ const PAGE_PATHS = {
   'reports.html': 'pages/reports/reports.html',
   'users.html': 'pages/administration/users.html',
   'system-settings.html': 'pages/administration/system-settings.html',
-  'audit-logs.html': 'pages/administration/audit-logs.html'
+  'audit-logs.html': 'pages/administration/audit-logs.html',
+  'settlements.html': 'settlement/settlements.html',
+  'prepare-settlement.html': 'settlement/prepare-settlement.html',
+  'settlement-details.html': 'settlement/settlement-details.html',
+  'settlement-dispute.html': 'settlement/settlement-dispute.html',
+  'additional-payment.html': 'settlement/additional-payment.html',
+  'process-refund.html': 'settlement/process-refund.html',
+  'completed-settlement.html': 'settlement/completed-settlement.html'
 };
 
 function getAppRoot() {
-  return window.location.pathname.includes('/pages/') ? '../../' : './';
+  if (window.location.pathname.includes('/pages/')) return '../../';
+  if (window.location.pathname.includes('/settlement/')) return '../';
+  return './';
 }
 
 function appPath(page) {
@@ -263,6 +272,7 @@ function renderSidebar(activePage = 'index.html') {
       { href: 'profile.html', icon: 'user', label: 'Hồ sơ Cư dân' },
       { href: 'resident-invoices.html', icon: 'receipt', label: 'Hóa đơn & Tiền phòng' },
       { href: 'resident-contract.html', icon: 'file-text', label: 'Hợp đồng thuê' },
+      { href: 'settlements.html', icon: 'calculator', label: 'Quyết toán hợp đồng' },
       { href: 'requests.html', icon: 'clipboard-list', label: 'Yêu cầu & Báo hỏng' },
       { href: 'resident-visitors.html', icon: 'user-check', label: 'Đăng ký Khách thăm' },
       { href: 'account.html', icon: 'settings', label: 'Tài khoản của tôi' }
@@ -275,7 +285,8 @@ function renderSidebar(activePage = 'index.html') {
       { href: 'maintenance.html', icon: 'wrench', label: 'Quản lý Sửa chữa' },
       { href: 'visitors.html', icon: 'user-check', label: 'Khách đến thăm' },
       { href: 'assets.html', icon: 'boxes', label: 'Tài sản thiết bị' },
-      { href: 'handover.html', icon: 'key', label: 'Bàn giao Căn hộ' }
+      { href: 'handover.html', icon: 'key', label: 'Bàn giao Căn hộ' },
+      { href: 'settlements.html', icon: 'calculator', label: 'Quyết toán hợp đồng' }
     ];
   } else {
     // MANAGER
@@ -283,6 +294,7 @@ function renderSidebar(activePage = 'index.html') {
       { href: 'index.html', icon: 'layout-dashboard', label: 'Tổng quan Vận hành' },
       { href: 'buildings.html', icon: 'building-2', label: 'Cơ sở & Sơ đồ phòng' },
       { href: 'contracts.html', icon: 'file-text', label: 'Hợp đồng thuê' },
+      { href: 'settlements.html', icon: 'calculator', label: 'Quyết toán hợp đồng' },
       { href: 'invoices.html', icon: 'receipt', label: 'Hóa đơn & Thu phí' },
       { href: 'utilities.html', icon: 'zap', label: 'Chỉ số Điện Nước' },
       { href: 'residents.html', icon: 'users', label: 'Cư dân & Lưu trú' },
