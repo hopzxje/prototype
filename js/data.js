@@ -422,12 +422,13 @@ const INITIAL_MAINTENANCE = [
 ];
 
 const INITIAL_VISITORS = [
-  { id: 'vis-01', guestName: 'Nguyễn Thu Huyền', cccd: '001198003421', phone: '0988112233', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-02 18:30', status: 'APPROVED', note: 'Bạn đại học ghé ăn tối', reviewedBy: 'Phạm Tuấn Anh (Staff)' },
-  { id: 'vis-02', guestName: 'Phạm Quốc Bảo', cccd: '034200008765', phone: '0977223344', hostRoom: 'P102', hostTenant: 'Trần Thị Thu Thảo', timeExpected: '2026-10-02 14:00', status: 'IN_BUILDING', note: 'Giao tài liệu công ty', reviewedBy: 'Phạm Tuấn Anh (Staff)', checkInTime: '2026-10-02 14:05' },
-  { id: 'vis-03', guestName: 'Vũ Minh Khôi', cccd: '001201007744', phone: '0966334455', hostRoom: 'P301', hostTenant: 'Vũ Đức Nam', timeExpected: '2026-10-02 20:00', status: 'PENDING', note: 'Em trai đến thăm cuối tuần' },
-  { id: 'vis-04', guestName: 'Hoàng Văn Bách', cccd: '001200009988', phone: '0912334455', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-03 22:30', status: 'FORWARDED_MANAGER', note: 'Khách ở lại qua đêm - Chờ Quản lý phê duyệt', reviewedBy: 'Phạm Tuấn Anh (Staff chuyển Manager)' },
-  { id: 'vis-05', guestName: 'Trịnh Thanh Tùng', cccd: '034200005522', phone: '0933445566', hostRoom: 'P101', hostTenant: 'Nguyễn Văn Hùng', timeExpected: '2026-10-01 23:45', status: 'REJECTED', note: 'Tụ tập sau 23h', reviewedBy: 'Trần Minh Đức (Manager)', rejectReason: 'Quá giờ giới nghiêm tòa nhà theo điều 5 nội quy' },
-  { id: 'vis-06', guestName: 'Đỗ Thùy Linh', cccd: '001199002233', phone: '0988776655', hostRoom: 'P204', hostTenant: 'Đỗ Thùy Trang', timeExpected: '2026-10-01 10:00', status: 'DEPARTED', note: 'Chị gái sang chơi nấu cơm', reviewedBy: 'Phạm Tuấn Anh (Staff)', checkInTime: '2026-10-01 10:15', checkOutTime: '2026-10-01 16:30' }
+  { id: 'vis-01', guestName: 'Nguyễn Thu Huyền', cccd: '001198003421', phone: '0988112233', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-02 18:30', status: 'APPROVED', stayType: 'DAILY', isOvernight: false, note: 'Bạn đại học ghé ăn tối (rời trước 22:00)', reviewedBy: 'Phạm Tuấn Anh (Staff Duyệt trong ngày)' },
+  { id: 'vis-02', guestName: 'Phạm Quốc Bảo', cccd: '034200008765', phone: '0977223344', hostRoom: 'P102', hostTenant: 'Trần Thị Thu Thảo', timeExpected: '2026-10-02 14:00', status: 'IN_BUILDING', stayType: 'DAILY', isOvernight: false, note: 'Giao tài liệu công ty', reviewedBy: 'Phạm Tuấn Anh (Staff Duyệt trong ngày)', checkInTime: '2026-10-02 14:05' },
+  { id: 'vis-03', guestName: 'Vũ Minh Khôi', cccd: '001201007744', phone: '0966334455', hostRoom: 'P301', hostTenant: 'Vũ Đức Nam', timeExpected: '2026-10-02 20:00', status: 'PENDING', stayType: 'DAILY', isOvernight: false, note: 'Em trai đến thăm ăn cơm tối (về trước 22:30 - Staff duyệt)' },
+  { id: 'vis-04', guestName: 'Hoàng Văn Bách', cccd: '001200009988', phone: '0912334455', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-03 22:30', status: 'FORWARDED_MANAGER', stayType: 'OVERNIGHT', isOvernight: true, note: 'Khách ở lại qua đêm - Chờ Quản lý (Manager) đồng ý phê duyệt', reviewedBy: 'Phạm Tuấn Anh (Staff tiếp nhận & chuyển Manager)' },
+  { id: 'vis-05', guestName: 'Trịnh Thanh Tùng', cccd: '034200005522', phone: '0933445566', hostRoom: 'P101', hostTenant: 'Nguyễn Văn Hùng', timeExpected: '2026-10-01 23:45', status: 'REJECTED', stayType: 'OVERNIGHT', isOvernight: true, note: 'Xin ở lại qua đêm nhưng không đủ CCCD và quá giờ giới nghiêm', reviewedBy: 'Trần Minh Đức (Manager)', rejectReason: 'Quá giờ giới nghiêm tòa nhà theo điều 5 nội quy và không đủ giấy tờ' },
+  { id: 'vis-06', guestName: 'Đỗ Thùy Linh', cccd: '001199002233', phone: '0988776655', hostRoom: 'P204', hostTenant: 'Đỗ Thùy Trang', timeExpected: '2026-10-01 10:00', status: 'DEPARTED', stayType: 'DAILY', isOvernight: false, note: 'Chị gái sang chơi nấu cơm', reviewedBy: 'Phạm Tuấn Anh (Staff Duyệt trong ngày)', checkInTime: '2026-10-01 10:15', checkOutTime: '2026-10-01 16:30' },
+  { id: 'vis-07', guestName: 'Lâm Bảo Châu', cccd: '079201005588', phone: '0918889922', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-04 21:00', status: 'PENDING', stayType: 'OVERNIGHT', isOvernight: true, note: 'Bạn ở lại qua đêm thứ Bảy - Cần Manager duyệt' }
 ];
 
 const INITIAL_NOTIFICATIONS = [
@@ -755,13 +756,25 @@ const DataStore = {
 
   getVisitors() {
     const raw = localStorage.getItem(STORAGE_KEYS.VISITORS);
-    if (!raw) return INITIAL_VISITORS;
-    try {
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) && parsed.length >= 4 ? parsed : INITIAL_VISITORS;
-    } catch (e) {
-      return INITIAL_VISITORS;
+    let list = INITIAL_VISITORS;
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length >= 4) {
+          list = parsed;
+        }
+      } catch (e) {}
     }
+    return list.map(v => {
+      const isOvernight = v.isOvernight !== undefined
+        ? Boolean(v.isOvernight)
+        : (v.stayType === 'OVERNIGHT' || (v.note && (v.note.toLowerCase().includes('qua đêm') || v.note.toLowerCase().includes('sau 23h'))));
+      return {
+        ...v,
+        stayType: isOvernight ? 'OVERNIGHT' : 'DAILY',
+        isOvernight: isOvernight
+      };
+    });
   },
 
   saveVisitors(vis) {
@@ -772,15 +785,19 @@ const DataStore = {
     const list = this.getVisitors();
     const item = list.find(v => v.id === id);
     if (item) {
+      if (item.isOvernight) {
+        // Khách ở qua đêm: Staff không duyệt thẳng được, phải chuyển tiếp Manager duyệt!
+        return this.forwardVisitorToManager(id, 'Hồ sơ lưu trú qua đêm chuyển Quản lý (Manager) phê duyệt theo quy chế');
+      }
       item.status = 'APPROVED';
-      item.reviewedBy = 'Phạm Tuấn Anh (Staff Duyệt)';
+      item.reviewedBy = 'Phạm Tuấn Anh (Staff Duyệt trong ngày)';
       item.reviewedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
       this.saveVisitors(list);
-      this.addAuditLog('DUYET_KHACH_THAM_STAFF', `Khách ${item.guestName}`, `Nhân viên vận hành duyệt cho khách thăm phòng ${item.hostRoom}`);
+      this.addAuditLog('DUYET_KHACH_THAM_STAFF', `Khách ${item.guestName}`, `Nhân viên vận hành duyệt cho khách thăm trong ngày phòng ${item.hostRoom} (Không cần qua Manager)`);
       this.addNotification({
-        title: `Yêu cầu khách thăm đã được duyệt (${item.guestName})`,
+        title: `Yêu cầu khách thăm trong ngày đã được duyệt (${item.guestName})`,
         category: 'VISITOR',
-        content: `Nhân viên đã duyệt đăng ký khách thăm ${item.guestName} đến căn hộ ${item.hostRoom}. Khách có thể vào tòa nhà theo giờ hẹn.`,
+        content: `Nhân viên vận hành đã duyệt đăng ký khách thăm trong ngày: ${item.guestName} đến căn hộ ${item.hostRoom}. Khách có thể vào tòa nhà theo giờ hẹn.`,
         scope: `${item.hostTenant} (${item.hostRoom})`,
         channel: 'BOTH'
       });
@@ -788,16 +805,23 @@ const DataStore = {
     return item;
   },
 
-  forwardVisitorToManager(id, note = 'Cần Quản lý phê duyệt (ở qua đêm / trường hợp đặc biệt)') {
+  forwardVisitorToManager(id, note = 'Khách ở qua đêm - Cần Manager phê duyệt') {
     const list = this.getVisitors();
     const item = list.find(v => v.id === id);
     if (item) {
       item.status = 'FORWARDED_MANAGER';
       item.forwardNote = note;
-      item.reviewedBy = 'Phạm Tuấn Anh (Staff chuyển Manager)';
+      item.reviewedBy = 'Phạm Tuấn Anh (Staff tiếp nhận & chuyển Manager)';
       item.forwardedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
       this.saveVisitors(list);
-      this.addAuditLog('CHUYEN_DUYET_KHACH_MANAGER', `Khách ${item.guestName}`, `Nhân viên chuyển hồ sơ khách thăm phòng ${item.hostRoom} lên Quản lý cơ sở`);
+      this.addAuditLog('CHUYEN_DUYET_KHACH_MANAGER', `Khách ${item.guestName}`, `Nhân viên tiếp nhận và chuyển hồ sơ khách lưu trú qua đêm phòng ${item.hostRoom} lên Manager phê duyệt`);
+      this.addNotification({
+        title: `Hồ sơ khách qua đêm đã chuyển Manager (${item.guestName})`,
+        category: 'VISITOR',
+        content: `Đăng ký khách lưu trú qua đêm ${item.guestName} tại căn hộ ${item.hostRoom} đã được nhân viên tiếp nhận và chuyển tiếp lên Manager phê duyệt.`,
+        scope: `${item.hostTenant} (${item.hostRoom})`,
+        channel: 'APP'
+      });
     }
     return item;
   },
@@ -807,14 +831,14 @@ const DataStore = {
     const item = list.find(v => v.id === id);
     if (item) {
       item.status = 'APPROVED';
-      item.reviewedBy = 'Trần Minh Đức (Manager Duyệt)';
+      item.reviewedBy = 'Trần Minh Đức (Manager Đồng Ý Duyệt Qua Đêm)';
       item.reviewedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
       this.saveVisitors(list);
-      this.addAuditLog('DUYET_KHACH_THAM_MANAGER', `Khách ${item.guestName}`, `Quản lý phê duyệt hồ sơ khách thăm đặc biệt phòng ${item.hostRoom}`);
+      this.addAuditLog('DUYET_KHACH_THAM_MANAGER', `Khách ${item.guestName}`, `Quản lý (Manager) đã đồng ý phê duyệt cho khách lưu trú qua đêm tại phòng ${item.hostRoom}`);
       this.addNotification({
-        title: `Quản lý đã duyệt khách thăm đặc biệt (${item.guestName})`,
+        title: `Manager đã phê duyệt khách lưu trú qua đêm (${item.guestName})`,
         category: 'VISITOR',
-        content: `Quản lý tòa nhà đã phê duyệt đăng ký khách thăm đặc biệt: ${item.guestName} tại căn hộ ${item.hostRoom}.`,
+        content: `Quản lý cơ sở (Manager) đã chính thức đồng ý phê duyệt đăng ký lưu trú qua đêm: ${item.guestName} tại căn hộ ${item.hostRoom}.`,
         scope: `${item.hostTenant} (${item.hostRoom})`,
         channel: 'BOTH'
       });

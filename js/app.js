@@ -168,6 +168,25 @@ function renderDemoRoleBar() {
 function switchRole(role) {
   DataStore.setRole(role);
   showToast(`Đã chuyển sang vai trò: ${role}`);
+
+  const curPath = window.location.pathname;
+  if (curPath.endsWith('visitors.html')) {
+    if (role === 'RESIDENT') {
+      setTimeout(() => window.location.href = appPath('resident-visitors.html'), 300);
+    } else {
+      setTimeout(() => window.location.reload(), 300);
+    }
+    return;
+  }
+  if (curPath.endsWith('visitor-registration.html') || curPath.endsWith('resident-visitors.html')) {
+    if (role === 'STAFF' || role === 'MANAGER') {
+      setTimeout(() => window.location.href = appPath('visitors.html'), 300);
+    } else {
+      setTimeout(() => window.location.reload(), 300);
+    }
+    return;
+  }
+
   const destination = role === 'RESIDENT' ? 'profile.html' : 'index.html';
   setTimeout(() => window.location.href = appPath(destination), 300);
 }

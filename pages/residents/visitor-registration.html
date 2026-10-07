@@ -94,6 +94,7 @@
               <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
                 <tr>
                   <th class="p-3.5">Khách thăm</th>
+                  <th class="p-3.5">Loại khách</th>
                   <th class="p-3.5">Số CCCD</th>
                   <th class="p-3.5">Thời gian dự kiến</th>
                   <th class="p-3.5">Mục đích / Ghi chú</th>
@@ -127,12 +128,33 @@
       <div class="bg-teal-50 border border-teal-100 rounded-lg p-2.5 mt-3 flex items-center justify-between text-xs">
         <span class="text-teal-900 font-semibold">Điền nhanh mẫu:</span>
         <div class="flex gap-2">
-          <button type="button" onclick="fillSampleGuest('regular')" class="px-2 py-1 bg-white hover:bg-teal-100 text-teal-800 rounded border border-teal-200 font-medium text-[11px]">Đơn thường</button>
-          <button type="button" onclick="fillSampleGuest('overnight')" class="px-2 py-1 bg-white hover:bg-teal-100 text-teal-800 rounded border border-teal-200 font-medium text-[11px]">Ở qua đêm</button>
+          <button type="button" onclick="fillSampleGuest('regular')" class="px-2 py-1 bg-white hover:bg-teal-100 text-teal-800 rounded border border-teal-200 font-medium text-[11px]">☀️ Trong ngày</button>
+          <button type="button" onclick="fillSampleGuest('overnight')" class="px-2 py-1 bg-white hover:bg-teal-100 text-teal-800 rounded border border-teal-200 font-medium text-[11px]">🌙 Ở qua đêm</button>
         </div>
       </div>
 
       <form id="residentVisitorForm" class="mt-4 space-y-3.5 text-xs">
+        <!-- Stay Type Selection -->
+        <div>
+          <label class="block font-bold text-slate-800 mb-1.5">Loại hình đón khách <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <label class="flex items-start gap-2 p-2.5 rounded-lg border border-amber-200 bg-amber-50/70 cursor-pointer hover:bg-amber-100/60">
+              <input type="radio" id="vis-stay-daily" name="resident-stay-type" value="DAILY" checked class="mt-0.5 text-teal-600">
+              <div>
+                <span class="font-bold text-slate-900 block text-xs">☀️ Khách trong ngày</span>
+                <span class="text-[10px] text-amber-800">Rời đi trước 23:00 (Staff duyệt nhanh)</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg border border-purple-200 bg-purple-50/70 cursor-pointer hover:bg-purple-100/60">
+              <input type="radio" id="vis-stay-overnight" name="resident-stay-type" value="OVERNIGHT" class="mt-0.5 text-purple-600">
+              <div>
+                <span class="font-bold text-purple-900 block text-xs">🌙 Khách ở qua đêm</span>
+                <span class="text-[10px] text-purple-800">Lưu trú qua đêm (Cần Manager duyệt)</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
         <div>
           <label class="block font-semibold text-slate-700 mb-1">Họ tên khách thăm <span class="text-red-500">*</span></label>
           <input id="resident-visitor-name" required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-600" placeholder="Nguyễn Văn A">
@@ -197,13 +219,18 @@
     function residentVisitorBadge(visitor) {
       const status = visitor.status;
       if (status === 'FORWARDED_MANAGER') {
-        return `<span class="badge bg-purple-100 text-purple-800 border border-purple-200 font-bold">Chờ Manager duyệt</span>`;
+        return `<span class="badge bg-purple-100 text-purple-900 border border-purple-300 font-bold">⏳ Chờ Manager duyệt</span>`;
       }
       if (status === 'REJECTED') {
         return `<span class="badge badge-danger cursor-pointer" onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định ra vào tòa nhà'}\\nNgười duyệt: ${visitor.reviewedBy || 'BQL'}')">✕ Bị từ chối (Xem lý do)</span>`;
       }
+      if (status === 'PENDING') {
+        if (visitor.isOvernight) {
+          return `<span class="badge bg-purple-50 text-purple-800 border border-purple-200 font-semibold">⏳ Chờ duyệt qua đêm</span>`;
+        }
+        return `<span class="badge badge-warning">⏳ Chờ Staff duyệt</span>`;
+      }
       const labels = {
-        PENDING: ['⏳ Chờ Staff duyệt', 'badge-warning'],
         APPROVED: ['✓ Đã duyệt (Chờ đón)', 'badge-info'],
         IN_BUILDING: ['Đang trong tòa nhà', 'badge-success'],
         DEPARTED: ['Đã rời đi (Hoàn tất)', 'badge-neutral']
@@ -229,28 +256,41 @@
       document.getElementById('res-inbuilding-count').innerText = inBuilding;
       document.getElementById('res-total-count').innerText = visitors.length;
 
-      body.innerHTML = visitors.length ? visitors.map(visitor => `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="p-3.5 font-bold text-slate-900">${visitor.guestName}</td>
-          <td class="p-3.5 font-mono text-slate-500">${visitor.cccd}</td>
-          <td class="p-3.5">${visitor.timeExpected}</td>
-          <td class="p-3.5 text-slate-500">${visitor.note || '—'}</td>
-          <td class="p-3.5">${residentVisitorBadge(visitor)}</td>
-          <td class="p-3.5 text-right">
-            ${visitor.status === 'APPROVED' ? `
-              <button onclick="openPassModal('${visitor.id}')" class="px-2.5 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded text-[11px] font-bold shadow-xs">
-                Mã QR Thẻ Khách
-              </button>
-            ` : visitor.status === 'REJECTED' ? `
-              <button onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định'}\\nNgười duyệt: ${visitor.reviewedBy || 'BQL'}')" class="text-red-600 text-[11px] font-semibold hover:underline">
-                Xem lý do
-              </button>
-            ` : `
-              <span class="text-slate-400 text-[11px]">Đang xử lý</span>
-            `}
-          </td>
-        </tr>
-      `).join('') : '<tr><td colspan="6" class="p-8 text-center text-slate-400">Chưa có khách thăm nào được đăng ký cho căn hộ này.</td></tr>';
+      body.innerHTML = visitors.length ? visitors.map(visitor => {
+        const stayBadge = visitor.isOvernight ? `
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-900 border border-purple-200">
+            <i data-lucide="moon" class="w-3 h-3 text-purple-700"></i> Ở qua đêm
+          </span>
+        ` : `
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+            <i data-lucide="sun" class="w-3 h-3 text-amber-700"></i> Trong ngày
+          </span>
+        `;
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3.5 font-bold text-slate-900">${visitor.guestName}</td>
+            <td class="p-3.5">${stayBadge}</td>
+            <td class="p-3.5 font-mono text-slate-500">${visitor.cccd}</td>
+            <td class="p-3.5">${visitor.timeExpected}</td>
+            <td class="p-3.5 text-slate-500">${visitor.note || '—'}</td>
+            <td class="p-3.5">${residentVisitorBadge(visitor)}</td>
+            <td class="p-3.5 text-right">
+              ${visitor.status === 'APPROVED' ? `
+                <button onclick="openPassModal('${visitor.id}')" class="px-2.5 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded text-[11px] font-bold shadow-xs">
+                  Mã QR Thẻ Khách
+                </button>
+              ` : visitor.status === 'REJECTED' ? `
+                <button onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định'}\\nNgười duyệt: ${visitor.reviewedBy || 'BQL'}')" class="text-red-600 text-[11px] font-semibold hover:underline">
+                  Xem lý do
+                </button>
+              ` : `
+                <span class="text-slate-400 text-[11px]">Đang xử lý</span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join('') : '<tr><td colspan="7" class="p-8 text-center text-slate-400">Chưa có khách thăm nào được đăng ký cho căn hộ này.</td></tr>';
 
       if (window.lucide) lucide.createIcons();
     }
@@ -268,15 +308,19 @@
 
     function fillSampleGuest(type) {
       if (type === 'regular') {
+        const rad = document.getElementById('vis-stay-daily');
+        if (rad) rad.checked = true;
         document.getElementById('resident-visitor-name').value = 'Đặng Văn Lâm';
         document.getElementById('resident-visitor-cccd').value = '001201004455';
-        document.getElementById('resident-visitor-time').value = '19:30 tối nay';
-        document.getElementById('resident-visitor-note').value = 'Bạn ghé ăn tối (Đơn thường)';
+        document.getElementById('resident-visitor-time').value = '19:30 tối nay (về trước 22:30)';
+        document.getElementById('resident-visitor-note').value = 'Bạn ghé ăn tối (Staff duyệt nhanh)';
       } else {
+        const rad = document.getElementById('vis-stay-overnight');
+        if (rad) rad.checked = true;
         document.getElementById('resident-visitor-name').value = 'Trần Đình Trọng';
         document.getElementById('resident-visitor-cccd').value = '034200009911';
         document.getElementById('resident-visitor-time').value = '21:00 tối nay đến sáng mai';
-        document.getElementById('resident-visitor-note').value = 'Bạn ở lại qua đêm thứ 7 (Đơn đặc biệt cần Manager duyệt)';
+        document.getElementById('resident-visitor-note').value = 'Bạn ở lại qua đêm thứ 7 (Cần Manager duyệt)';
       }
     }
 
@@ -290,6 +334,8 @@
 
       document.getElementById('residentVisitorForm').addEventListener('submit', (event) => {
         event.preventDefault();
+        const stayType = document.querySelector('input[name="resident-stay-type"]:checked')?.value || 'DAILY';
+        const isOvernight = stayType === 'OVERNIGHT';
         const visitors = DataStore.getVisitors();
         const newVisitor = {
           id: `vis-${Date.now().toString().slice(-4)}`,
@@ -300,15 +346,17 @@
           hostTenant: user.fullName || 'Lê Văn An',
           timeExpected: document.getElementById('resident-visitor-time').value.trim(),
           note: document.getElementById('resident-visitor-note').value.trim(),
+          stayType,
+          isOvernight,
           status: 'PENDING'
         };
         visitors.unshift(newVisitor);
         DataStore.saveVisitors(visitors);
-        DataStore.addAuditLog('DANG_KY_KHACH_THAM', newVisitor.guestName, `Cư dân ${user.fullName} (${user.room || 'P201'}) gửi đăng ký khách thăm`);
+        DataStore.addAuditLog('DANG_KY_KHACH_THAM', `${newVisitor.guestName} (${stayType})`, `Cư dân ${user.fullName} (${user.room || 'P201'}) gửi đăng ký khách thăm`);
 
         event.currentTarget.reset();
         closeModal('residentVisitorModal');
-        showToast('Đã gửi đơn đăng ký khách thăm tới Ban Quản Lý thành công!');
+        showToast(`Đã gửi đơn đăng ký khách thăm (${isOvernight ? 'Ở qua đêm - Chờ Manager' : 'Trong ngày - Staff duyệt'})!`);
         renderResidentVisitors();
       });
 
