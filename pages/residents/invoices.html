@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
-  <link rel="stylesheet" href="../../css/resident-invoices.css">
+  <link rel="stylesheet" href="../../css/residents/invoices.css">
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans resident-billing">
   <a class="billing-skip" href="#billing-main">Đến danh sách hóa đơn</a>
@@ -55,7 +55,7 @@
     if (DataStore.getRole() !== 'RESIDENT') DataStore.setRole('RESIDENT');
   </script>
   <script src="../../js/app.js"></script>
-  <script src="../../js/invoice-payment-state.js"></script>
-  <script src="../../js/resident-invoices.js"></script>
+  <script src="../../js/finance/invoice-payment-state.js"></script>
+  <script src="../../js/residents/invoices.js"></script>
 </body>
 </html>

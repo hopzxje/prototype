@@ -12,6 +12,7 @@ const context = vm.createContext({
 });
 vm.runInContext(read('js/data.js'),context);
 vm.runInContext(read('js/app.js'),context);
+vm.runInContext(read('js/operations/checkout.js'),context);
 const checkout = read('pages/operations/checkout.html');
 for (const match of checkout.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
   if (!/\bsrc\s*=/.test(match[1])) vm.runInContext(match[2],context);

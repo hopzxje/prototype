@@ -5,6 +5,14 @@ const url = require('url');
 
 const DEFAULT_PORT = 3001;
 const PUBLIC_DIR = __dirname;
+const LEGACY_ROUTES = {
+  '/checkout': '/pages/operations/checkout.html',
+  '/checkout.html': '/pages/operations/checkout.html',
+  '/invoices': '/pages/finance/invoices.html',
+  '/invoices.html': '/pages/finance/invoices.html',
+  '/resident-invoices': '/pages/residents/invoices.html',
+  '/resident-invoices.html': '/pages/residents/invoices.html'
+};
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -27,6 +35,12 @@ function startServer(port) {
   const server = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url);
     let pathname = decodeURIComponent(parsedUrl.pathname);
+
+    if (LEGACY_ROUTES[pathname]) {
+      res.writeHead(302, { Location: LEGACY_ROUTES[pathname] + (parsedUrl.search || '') });
+      res.end();
+      return;
+    }
 
     // Root route default to index.html
     if (pathname === '/' || pathname === '') {

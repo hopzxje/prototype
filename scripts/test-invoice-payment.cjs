@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { update } = require('../js/invoice-payment-state.js');
+const { update } = require('../js/finance/invoice-payment-state.js');
 
 const base = [
   { id: 'one', total: 100, status: 'UNPAID' },
