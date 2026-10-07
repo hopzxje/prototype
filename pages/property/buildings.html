@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Quản lý Cơ sở & Sơ đồ phòng</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    
+    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Sơ đồ Phòng & Trạng thái Vận hành</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Trực quan hóa toàn bộ số phòng theo tầng, diện tích và khách thuê thực tế</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="openModal('addRoomModal')" class="flex items-center gap-2 px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>Thêm Phòng Mới</span>
+            </button>
+          </div>
+        </div>
+
+        
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+          
+          <div class="inline-flex rounded-lg bg-slate-100 p-1 text-xs font-semibold" id="building-tabs">
+            <button onclick="filterByBuilding('ALL')" class="px-3 py-1.5 rounded-md bg-white text-slate-900 shadow-sm transition-all tab-btn" data-bld="ALL">Tất cả (36)</button>
+            <button onclick="filterByBuilding('bld-1')" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all tab-btn" data-bld="bld-1">Central Ba Đình (12)</button>
+            <button onclick="filterByBuilding('bld-2')" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all tab-btn" data-bld="bld-2">Riverside Tây Hồ (12)</button>
+            <button onclick="filterByBuilding('bld-3')" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all tab-btn" data-bld="bld-3">Eco Cầu Giấy (12)</button>
+          </div>
+
+          
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-500 font-medium">Trạng thái:</span>
+            <select id="status-filter" onchange="renderRoomsGrid()" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
+              <option value="ALL">Tất cả trạng thái</option>
+              <option value="AVAILABLE">🟢 Còn trống</option>
+              <option value="OCCUPIED">🔵 Đang thuê</option>
+              <option value="RESERVED">🟡 Đã cọc</option>
+              <option value="MAINTENANCE">🔴 Đang sửa chữa</option>
+            </select>
+          </div>
+        </div>
+
+        
+        <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  
+  <div id="roomDetailModal" class="modal-backdrop">
+    <div class="modal-content p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2">
+          <span id="detail-room-badge" class="badge badge-success text-sm">P101</span>
+          <h3 id="detail-room-title" class="text-lg font-bold text-slate-900">Chi tiết phòng P101</h3>
+        </div>
+        <button onclick="closeModal('roomDetailModal')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4">
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="p-3 bg-slate-50 rounded-lg">
+            <span class="text-xs text-slate-500 block">Giá thuê tháng:</span>
+            <strong id="detail-room-price" class="text-teal-700 text-base font-bold">6.500.000 ₫</strong>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-lg">
+            <span class="text-xs text-slate-500 block">Diện tích & Loại phòng:</span>
+            <strong id="detail-room-type" class="text-slate-900 font-bold">28 m² • Studio</strong>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-lg text-sm">
+          <span class="text-xs text-slate-500 block mb-1">Khách đang thuê:</span>
+          <div class="flex items-center justify-between">
+            <div>
+              <p id="detail-room-tenant" class="font-bold text-slate-900">Nguyễn Văn Hùng</p>
+              <p id="detail-room-phone" class="text-xs text-slate-500">0901112233</p>
+            </div>
+            <a href="../finance/contracts.html" class="text-xs font-semibold text-teal-700 hover:underline">Xem hợp đồng &rarr;</a>
+          </div>
+        </div>
+
+        
+        <div>
+          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Trang thiết bị bàn giao sẵn</h4>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+              <span>Điều hòa Daikin 1.5 HP</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+              <span>Tủ lạnh Toshiba 180L</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+              <span>Bình nóng lạnh Ariston 30L</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+              <span>Giường nệm cao su 1m6</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+        <button onclick="closeModal('roomDetailModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 font-medium">Đóng</button>
+        <button onclick="showToast('Chức năng sửa thông tin phòng mở thành công'); closeModal('roomDetailModal');" class="px-4 py-2 bg-[#166534] text-white rounded-lg text-sm font-semibold hover:bg-[#14532D]">Sửa thông tin</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="addRoomModal" class="modal-backdrop">
+    <div class="modal-content p-6">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="text-lg font-bold text-slate-900">Thêm Phòng Mới Vào Cơ Sở</h3>
+        <button onclick="closeModal('addRoomModal')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="addRoomForm" onsubmit="handleAddRoom(event)" class="mt-4 space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Cơ sở <span class="text-red-500">*</span></label>
+            <select id="new-room-bld" class="w-full text-xs font-medium bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+              <option value="bld-1">StayHub Central - Ba Đình</option>
+              <option value="bld-2">StayHub Riverside - Tây Hồ</option>
+              <option value="bld-3">StayHub Eco - Cầu Giấy</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Mã / Số phòng <span class="text-red-500">*</span></label>
+            <input type="text" id="new-room-number" placeholder="VD: P401" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-medium">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tầng</label>
+            <input type="number" id="new-room-floor" value="4" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Diện tích (m²)</label>
+            <input type="number" id="new-room-area" value="30" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Loại phòng</label>
+            <select id="new-room-type" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+              <option value="Studio">Studio</option>
+              <option value="1 Phòng ngủ">1 Phòng ngủ</option>
+              <option value="Duplex Gác xép">Duplex Gác xép</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Giá thuê hàng tháng (VNĐ) <span class="text-red-500">*</span></label>
+          <input type="number" id="new-room-price" value="7000000" step="100000" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-medium">
+        </div>
+
+        <div class="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+          <button type="button" onclick="closeModal('addRoomModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 font-medium">Hủy bỏ</button>
+          <button type="submit" class="px-4 py-2 bg-[#166534] text-white rounded-lg text-sm font-semibold hover:bg-[#14532D]">Lưu phòng mới</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    let currentSelectedBuilding = 'ALL';
+
+    function filterByBuilding(bldId) {
+      currentSelectedBuilding = bldId;
+      document.querySelectorAll('#building-tabs .tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-bld') === bldId) {
+          btn.className = 'px-3 py-1.5 rounded-md bg-white text-slate-900 shadow-sm transition-all tab-btn';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all tab-btn';
+        }
+      });
+      renderRoomsGrid();
+    }
+
+    function renderRoomsGrid() {
+      const statusFilter = document.getElementById('status-filter').value;
+      const rooms = DataStore.getRooms();
+      const container = document.getElementById('rooms-grid');
+
+      let filtered = rooms;
+      if (currentSelectedBuilding !== 'ALL') {
+        filtered = filtered.filter(r => r.buildingId === currentSelectedBuilding);
+      }
+      if (statusFilter !== 'ALL') {
+        filtered = filtered.filter(r => r.status === statusFilter);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-400">
+            <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2 stroke-1"></i>
+            <p class="text-sm">Không tìm thấy phòng nào phù hợp với bộ lọc</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = filtered.map(room => {
+        let statusBadge = '';
+        let borderClass = 'border-slate-200';
+        
+        if (room.status === 'AVAILABLE') {
+          statusBadge = '<span class="badge badge-success">🟢 Còn trống</span>';
+          borderClass = 'border-emerald-200 hover:border-emerald-400';
+        } else if (room.status === 'OCCUPIED') {
+          statusBadge = '<span class="badge badge-info">🔵 Đang thuê</span>';
+        } else if (room.status === 'MAINTENANCE') {
+          statusBadge = '<span class="badge badge-danger">🔴 Đang sửa</span>';
+          borderClass = 'border-rose-200';
+        } else if (room.status === 'RESERVED') {
+          statusBadge = '<span class="badge badge-warning">🟡 Đã cọc</span>';
+        }
+
+        return `
+          <div onclick="viewRoomDetail('${room.id}')" class="bg-white p-4 rounded-xl border ${borderClass} shadow-sm hover-lift cursor-pointer flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-base font-extrabold text-slate-900">${room.roomNumber}</span>
+                ${statusBadge}
+              </div>
+              <p class="text-xs text-slate-500 font-medium">${room.type} • Tầng ${room.floor} • ${room.area} m²</p>
+              
+              <div class="mt-3 py-2 px-2.5 bg-slate-50 rounded-lg">
+                <span class="text-xs text-slate-400 block text-[10px] uppercase font-bold tracking-wider">Tiền phòng</span>
+                <span class="text-sm font-bold text-teal-700">${formatVND(room.price)}</span><span class="text-[11px] text-slate-400">/tháng</span>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-slate-500 truncate max-w-[150px]">
+                ${room.tenant ? `👤 <strong>${room.tenant}</strong>` : '<em>Chưa có khách</em>'}
+              </span>
+              <span class="text-teal-700 font-semibold hover:underline">Chi tiết &rarr;</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function viewRoomDetail(roomId) {
+      const room = DataStore.getRooms().find(r => r.id === roomId);
+      if (!room) return;
+
+      document.getElementById('detail-room-badge').innerText = room.roomNumber;
+      document.getElementById('detail-room-title').innerText = `Chi tiết phòng ${room.roomNumber}`;
+      document.getElementById('detail-room-price').innerText = formatVND(room.price);
+      document.getElementById('detail-room-type').innerText = `${room.area} m² • ${room.type}`;
+      document.getElementById('detail-room-tenant').innerText = room.tenant || 'Chưa có người ở (Đang trống)';
+      document.getElementById('detail-room-phone').innerText = room.phone || 'Sẵn sàng cho khách mới ký hợp đồng';
+
+      openModal('roomDetailModal');
+    }
+
+    function handleAddRoom(e) {
+      e.preventDefault();
+      const bldId = document.getElementById('new-room-bld').value;
+      const roomNum = document.getElementById('new-room-number').value.trim();
+      const floor = parseInt(document.getElementById('new-room-floor').value);
+      const area = parseInt(document.getElementById('new-room-area').value);
+      const type = document.getElementById('new-room-type').value;
+      const price = parseInt(document.getElementById('new-room-price').value);
+
+      const rooms = DataStore.getRooms();
+      const newRoom = {
+        id: 'rm-' + Date.now(),
+        buildingId: bldId,
+        roomNumber: roomNum,
+        floor: floor,
+        type: type,
+        area: area,
+        price: price,
+        deposit: price,
+        status: 'AVAILABLE',
+        tenant: null,
+        phone: null
+      };
+
+      rooms.push(newRoom);
+      DataStore.saveRooms(rooms);
+      closeModal('addRoomModal');
+      showToast(`Đã thêm thành công phòng ${roomNum}!`);
+      renderRoomsGrid();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSidebar('buildings.html');
+      renderTopbar('Quản lý Cơ sở & Sơ đồ Phòng', 'Cơ sở / Danh sách phòng');
+      renderRoomsGrid();
+    });
+  </script>
+</body>
+</html>

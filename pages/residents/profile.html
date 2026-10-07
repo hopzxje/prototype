@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Căn hộ của tôi</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/resident-apartment.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans resident-apartment-detail-page">
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+
+      <div class="resident-apartment-detail-shell">
+        <div id="apartment-pending-view"></div>
+        <div id="apartment-completed-view" hidden>
+        <section class="resident-apartment-identity">
+          <div class="resident-apartment-identity-main">
+            <div class="resident-apartment-room-chip">
+              <i data-lucide="home" class="w-5 h-5"></i>
+              <strong data-apartment-room>P201</strong>
+            </div>
+            <div class="resident-apartment-identity-copy">
+              <div class="resident-apartment-identity-title">
+                <h2 data-apartment-building>StayHub Central - Ba Đình</h2>
+                <span class="resident-apartment-detail-badge" data-contract-status>Đang thuê</span>
+              </div>
+              <p data-apartment-address>95 Kim Mã, Ba Đình, Hà Nội</p>
+            </div>
+          </div>
+          <div class="resident-apartment-identity-contract">
+            <span>Hợp đồng hiện tại</span>
+            <strong data-contract-code>HD-2025-001</strong>
+            <small data-contract-period>01/01/2025 - 31/12/2026</small>
+          </div>
+        </section>
+
+        <div class="resident-apartment-detail-layout">
+          <article class="resident-apartment-detail-panel">
+            <div class="resident-apartment-detail-panel-head">
+              <div>
+                <p>Thông tin căn hộ</p>
+                <h2>Chi tiết nơi ở</h2>
+              </div>
+              <span><i data-lucide="building-2" class="w-5 h-5"></i></span>
+            </div>
+            <dl class="resident-apartment-detail-rows">
+              <div><dt>Mã căn hộ</dt><dd data-apartment-room-detail>P201</dd></div>
+              <div><dt>Tòa nhà</dt><dd data-apartment-building-detail>StayHub Central - Ba Đình</dd></div>
+              <div><dt>Địa chỉ</dt><dd data-apartment-address-detail>95 Kim Mã, Ba Đình, Hà Nội</dd></div>
+              <div><dt>Tầng</dt><dd data-apartment-floor>2</dd></div>
+              <div><dt>Loại căn hộ</dt><dd data-apartment-type>Duplex gác xép</dd></div>
+              <div><dt>Diện tích</dt><dd><span data-apartment-area>40</span> m²</dd></div>
+            </dl>
+          </article>
+
+          <article class="resident-apartment-detail-panel">
+            <div class="resident-apartment-detail-panel-head">
+              <div>
+                <p>Hợp đồng thuê</p>
+                <h2>Thông tin thỏa thuận</h2>
+              </div>
+              <span><i data-lucide="file-text" class="w-5 h-5"></i></span>
+            </div>
+            <dl class="resident-apartment-detail-rows">
+              <div><dt>Mã hợp đồng</dt><dd class="resident-apartment-mono" data-contract-code-detail>HD-2025-001</dd></div>
+              <div><dt>Ngày bắt đầu</dt><dd data-contract-start>01/01/2025</dd></div>
+              <div><dt>Ngày kết thúc</dt><dd data-contract-end>31/12/2026</dd></div>
+              <div><dt>Tiền thuê mỗi tháng</dt><dd data-contract-rent>8.500.000 ₫</dd></div>
+              <div><dt>Tiền đặt cọc</dt><dd data-contract-deposit>8.500.000 ₫</dd></div>
+              <div><dt>Trạng thái</dt><dd><span class="resident-apartment-inline-status" data-contract-status-detail>Đang hiệu lực</span></dd></div>
+            </dl>
+            <div class="resident-apartment-contract-line">
+              <div><span>Thời hạn hợp đồng</span><strong>Đang hiệu lực</strong></div>
+              <div class="resident-apartment-contract-track"><span></span></div>
+              <div class="resident-apartment-contract-dates"><span data-contract-start-detail>01/01/2025</span><span data-contract-end-detail>31/12/2026</span></div>
+            </div>
+          </article>
+
+        </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    function formatHandoverDate(value) {
+      if (!value) return '—';
+      const date = new Date(`${value}T00:00:00`);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    const formatApartmentDate = (value) => {
+      if (!value) return '—';
+      const date = new Date(`${value}T00:00:00`);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('vi-VN');
+    };
+
+    const setApartmentText = (selector, value) => {
+      const element = document.querySelector(selector);
+      if (element) element.textContent = value || '—';
+    };
+
+    function renderApartmentProfile() {
+      const user = DataStore.getUser();
+      const handover = DataStore.getHandover();
+      const pending = document.getElementById('apartment-pending-view');
+      const completed = document.getElementById('apartment-completed-view');
+      const showDetails = handover.status === 'COMPLETED';
+      completed.hidden = !showDetails;
+      pending.hidden = showDetails;
+
+      if (!showDetails) {
+        const stateCopy = {
+          NOT_SCHEDULED: ['Căn hộ đang chờ bàn giao', 'Chọn thời gian thuận tiện để đội ngũ StayHub chuẩn bị và bàn giao căn hộ cho bạn.', 'Đặt lịch check-in', 'calendar-plus-2'],
+          APPOINTMENT_PENDING: ['Đang chờ nhân viên xác nhận lịch', 'Yêu cầu check-in đã được gửi. Lịch chỉ được xác nhận sau khi nhân viên chấp nhận.', 'Xem lịch đã gửi', 'calendar-clock'],
+          SCHEDULED: ['Đã xác nhận lịch check-in', 'Nhân viên đã chấp nhận lịch. Checklist bàn giao sẽ bắt đầu tại buổi hẹn.', 'Xem lịch bàn giao', 'calendar-check-2'],
+          IN_PROGRESS: ['Đang kiểm tra căn hộ', 'Nhân viên đang ghi nhận hiện trạng, chỉ số điện nước và tài sản bàn giao.', 'Theo dõi bàn giao', 'clipboard-check'],
+          NEEDS_REPAIR: ['Hồ sơ đang được cập nhật', 'Quản lý hoặc cư dân đã yêu cầu làm rõ. Nhân viên sẽ gửi lại bộ ảnh và thông tin cho cả hai bên duyệt.', 'Xem cập nhật', 'wrench'],
+          DUAL_REVIEW: ['Hồ sơ đã gửi cho hai bên', 'Bạn và quản lý cùng xem bộ ảnh, hiện trạng và chỉ số do nhân viên gửi.', 'Duyệt hồ sơ', 'clipboard-check'],
+          BOTH_APPROVED: ['Bạn và quản lý đã đồng ý', 'Nhân viên đang ký và hoàn tất biên bản bàn giao.', 'Theo dõi bàn giao', 'file-check-2'],
+          MANAGER_FINAL_REVIEW: ['Đang chờ xác nhận biên bản cuối', 'Hai bên đã đồng ý hồ sơ. Quản lý đang xác nhận biên bản bàn giao.', 'Theo dõi trạng thái', 'hourglass']
+        }[handover.status] || ['Căn hộ đang chờ bàn giao', 'Đặt lịch để bắt đầu quy trình nhận căn hộ.', 'Đặt lịch check-in', 'calendar-plus-2'];
+        const isInitial = handover.status === 'NOT_SCHEDULED';
+        const hasAppointment = ['APPOINTMENT_PENDING', 'SCHEDULED'].includes(handover.status);
+        pending.innerHTML = `
+          <section class="apartment-onboarding-card">
+            <div class="apartment-onboarding-icon"><i data-lucide="key-round" class="w-7 h-7"></i></div>
+            <span class="apartment-onboarding-eyebrow">CĂN HỘ CỦA TÔI</span>
+            <h2>${stateCopy[0]}</h2>
+            <p>${stateCopy[1]}</p>
+            ${hasAppointment ? `<div class="apartment-appointment-summary"><i data-lucide="calendar-days" class="w-4 h-4"></i><span>${formatHandoverDate(handover.appointmentDate)} · ${handover.appointmentTime || 'Chưa chọn khung giờ'}</span></div>` : ''}
+            <div class="apartment-onboarding-actions">
+              ${isInitial
+                ? `<button type="button" class="apartment-primary-button" onclick="openCheckinScheduleModal()"><i data-lucide="${stateCopy[3]}" class="w-4 h-4"></i>${stateCopy[2]}</button>`
+                : hasAppointment
+                  ? `<button type="button" class="apartment-primary-button" onclick="openCheckinAppointmentModal()"><i data-lucide="${stateCopy[3]}" class="w-4 h-4"></i>${stateCopy[2]}</button>`
+                  : `<a class="apartment-primary-button" href="${appPath('handover.html')}"><i data-lucide="${stateCopy[3]}" class="w-4 h-4"></i>${stateCopy[2]}</a>`}
+              ${isInitial ? '<span class="apartment-onboarding-hint"><i data-lucide="shield-check" class="w-4 h-4"></i> Thông tin căn hộ sẽ hiển thị sau khi hoàn tất bàn giao</span>' : ''}
+            </div>
+          </section>
+          <section class="apartment-onboarding-steps" aria-label="Các bước nhận căn hộ">
+            <div class="${['NOT_SCHEDULED', 'APPOINTMENT_PENDING'].includes(handover.status) ? 'is-current' : ['SCHEDULED', 'IN_PROGRESS', 'NEEDS_REPAIR', 'DUAL_REVIEW', 'BOTH_APPROVED', 'MANAGER_FINAL_REVIEW', 'COMPLETED'].includes(handover.status) ? 'is-done' : ''}"><span>1</span><div><strong>Đặt lịch</strong><small>Bạn chọn ngày giờ check-in</small></div></div>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            <div class="${['SCHEDULED', 'IN_PROGRESS', 'NEEDS_REPAIR', 'DUAL_REVIEW'].includes(handover.status) ? 'is-current' : ['BOTH_APPROVED', 'MANAGER_FINAL_REVIEW', 'COMPLETED'].includes(handover.status) ? 'is-done' : ''}"><span>2</span><div><strong>Kiểm tra & hai bên duyệt</strong><small>Quản lý và cư dân cùng xác nhận</small></div></div>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            <div class="${['BOTH_APPROVED', 'MANAGER_FINAL_REVIEW'].includes(handover.status) ? 'is-current' : handover.status === 'COMPLETED' ? 'is-done' : ''}"><span>3</span><div><strong>Nhận bàn giao</strong><small>Ký biên bản và nhận chìa khóa</small></div></div>
+          </section>
+        `;
+      }
+
+      const rooms = DataStore.getRooms();
+      const buildings = DataStore.getBuildings();
+      const contracts = DataStore.getContracts();
+      const room = rooms.find(item => item.roomNumber === user.room) || {};
+      const building = buildings.find(item => item.id === room.buildingId) || buildings.find(item => item.name === user.building) || {};
+      const contract = contracts.find(item => item.room === user.room && item.tenant === user.fullName) || {};
+      const contractStart = formatApartmentDate(contract.startDate);
+      const contractEnd = formatApartmentDate(contract.endDate);
+
+      setApartmentText('[data-apartment-room]', room.roomNumber || user.room);
+      setApartmentText('[data-apartment-room-detail]', room.roomNumber || user.room);
+      setApartmentText('[data-apartment-building]', building.name || user.building);
+      setApartmentText('[data-apartment-building-detail]', building.name || user.building);
+      setApartmentText('[data-apartment-address]', building.address);
+      setApartmentText('[data-apartment-address-detail]', building.address);
+      setApartmentText('[data-apartment-floor]', room.floor);
+      setApartmentText('[data-apartment-type]', room.type);
+      setApartmentText('[data-apartment-area]', room.area);
+      setApartmentText('[data-contract-code]', contract.code);
+      setApartmentText('[data-contract-code-detail]', contract.code);
+      setApartmentText('[data-contract-start]', contractStart);
+      setApartmentText('[data-contract-start-detail]', contractStart);
+      setApartmentText('[data-contract-end]', contractEnd);
+      setApartmentText('[data-contract-end-detail]', contractEnd);
+      setApartmentText('[data-contract-period]', `${contractStart} - ${contractEnd}`);
+      setApartmentText('[data-contract-rent]', formatVND(contract.rent));
+      setApartmentText('[data-contract-deposit]', formatVND(contract.deposit));
+
+      const status = contract.status === 'ACTIVE' ? 'Đang thuê' : 'Sắp hết hạn';
+      setApartmentText('[data-contract-status]', status);
+      setApartmentText('[data-contract-status-detail]', contract.status === 'ACTIVE' ? 'Đang hiệu lực' : 'Sắp hết hạn');
+      lucide.createIcons();
+    }
+
+    function submitCheckinSchedule(event) {
+      event.preventDefault();
+      const date = document.getElementById('checkin-date').value;
+      const time = document.getElementById('checkin-time').value;
+      const note = document.getElementById('checkin-note').value.trim();
+      if (!date || !time) return;
+
+      const readiness = DataStore.getHandover().apartmentReady;
+      if (!readiness) {
+        document.getElementById('checkin-readiness-error').hidden = false;
+        return;
+      }
+
+      DataStore.saveHandover({
+        ...DataStore.getHandover(),
+        status: 'APPOINTMENT_PENDING',
+        appointmentId: `apt-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+        appointmentDate: date,
+        appointmentTime: time,
+        note,
+        appointmentAcceptedBy: '',
+        appointmentAcceptedAt: ''
+      });
+      closeModal('checkinScheduleModal');
+      renderApartmentProfile();
+      showToast('Đã gửi yêu cầu lịch check-in. Đang chờ nhân viên xác nhận.');
+    }
+
+    function openCheckinScheduleModal() {
+      const handover = DataStore.getHandover();
+      document.getElementById('checkin-date').value = handover.appointmentDate || '';
+      document.getElementById('checkin-time').value = handover.appointmentTime || '';
+      document.getElementById('checkin-note').value = handover.note || '';
+      document.getElementById('checkin-readiness-error').hidden = true;
+      openModal('checkinScheduleModal');
+    }
+
+    function openCheckinAppointmentModal() {
+      const handover = DataStore.getHandover();
+      document.getElementById('appointment-date-value').textContent = formatHandoverDate(handover.appointmentDate);
+      document.getElementById('appointment-time-value').textContent = handover.appointmentTime || 'Chưa chọn khung giờ';
+      document.getElementById('appointment-modal-description').textContent = handover.status === 'APPOINTMENT_PENDING'
+        ? 'Yêu cầu đã được gửi và đang chờ nhân viên xác nhận.'
+        : `Nhân viên đã xác nhận${handover.appointmentAcceptedBy ? ` · ${handover.appointmentAcceptedBy}` : ''}.`;
+      openModal('checkinAppointmentModal');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSidebar('profile.html');
+      renderTopbar('Căn hộ của tôi', 'Căn hộ / Hồ sơ chi tiết');
+      const dateInput = document.getElementById('checkin-date');
+      const today = new Date();
+      dateInput.min = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      renderApartmentProfile();
+      lucide.createIcons();
+    });
+  </script>
+
+  <div id="checkinScheduleModal" class="modal-backdrop">
+    <div class="modal-content apartment-schedule-modal">
+      <div class="apartment-modal-heading"><div><span>LỊCH NHẬN CĂN HỘ</span><h2>Đặt lịch check-in</h2><p>Chọn thời gian bạn có thể đến nhận bàn giao.</p></div><button type="button" onclick="closeModal('checkinScheduleModal')" aria-label="Đóng"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+      <form onsubmit="submitCheckinSchedule(event)" class="apartment-schedule-form">
+        <label>Ngày check-in<input id="checkin-date" type="date" required></label>
+        <label>Khung giờ<select id="checkin-time" required><option value="">Chọn khung giờ</option><option>09:00 - 11:00</option><option>13:30 - 15:30</option><option>16:00 - 18:00</option></select></label>
+        <label class="apartment-schedule-note">Ghi chú cho nhân viên <span>Không bắt buộc</span><textarea id="checkin-note" rows="3" placeholder="Ví dụ: Bạn cần hỗ trợ nhận thêm thẻ ra vào"></textarea></label>
+        <div class="apartment-schedule-info"><i data-lucide="info" class="w-4 h-4"></i><span>StayHub sẽ kiểm tra độ sẵn sàng của căn hộ và gửi xác nhận lịch cho bạn.</span></div>
+        <p id="checkin-readiness-error" class="apartment-readiness-error" hidden>Căn hộ hiện chưa sẵn sàng bàn giao. Bạn vui lòng chờ thông báo trước khi đặt lịch mới.</p>
+        <div class="apartment-modal-actions"><button type="button" class="apartment-secondary-button" onclick="closeModal('checkinScheduleModal')">Để sau</button><button type="submit" class="apartment-primary-button">Gửi yêu cầu</button></div>
+      </form>
+    </div>
+  </div>
+  <div id="checkinAppointmentModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="appointment-modal-title">
+    <div class="modal-content apartment-appointment-modal">
+      <div class="apartment-modal-heading">
+        <div><span>LỊCH NHẬN CĂN HỘ</span><h2 id="appointment-modal-title">Lịch check-in của bạn</h2><p id="appointment-modal-description">Yêu cầu lịch check-in.</p></div>
+        <button type="button" onclick="closeModal('checkinAppointmentModal')" aria-label="Đóng"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="apartment-appointment-details">
+        <div><i data-lucide="calendar-days" class="w-5 h-5"></i><span>Ngày check-in</span><strong id="appointment-date-value">—</strong></div>
+        <div><i data-lucide="clock-3" class="w-5 h-5"></i><span>Khung giờ</span><strong id="appointment-time-value">—</strong></div>
+      </div>
+      <div class="apartment-schedule-info"><i data-lucide="info" class="w-4 h-4"></i><span>Nhân viên sẽ chuẩn bị căn hộ và có mặt trong khung giờ đã hẹn.</span></div>
+      <div class="apartment-modal-actions">
+        <button type="button" class="apartment-secondary-button" onclick="closeModal('checkinAppointmentModal')">Đóng</button>
+        <button type="button" class="apartment-primary-button" onclick="closeModal('checkinAppointmentModal'); openCheckinScheduleModal()"><i data-lucide="calendar-clock" class="w-4 h-4"></i>Đổi ngày / giờ</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

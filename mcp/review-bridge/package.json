@@ -1,0 +1,16 @@
+{
+  "name": "stayhub-review-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "worker": "node worker.mjs",
+    "worker:once": "node worker.mjs --once"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "^2.3.0",
+    "@modelcontextprotocol/server": "latest",
+    "zod": "^4.0.0"
+  }
+}

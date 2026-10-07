@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Ghi chỉ số Điện Nước</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Ghi chỉ số Điện & Nước kỳ tháng 10/2026</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Nhập số mới, hệ thống tự động tính lượng tiêu thụ và thành tiền theo đơn giá quy định</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="calculateAndSaveAll()" class="flex items-center gap-2 px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              <span>Lưu Toàn Bộ & Tính Tiền</span>
+            </button>
+          </div>
+        </div>
+
+        
+        <div class="bg-teal-50 border border-teal-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 text-xs">
+          <div class="flex items-center gap-6">
+            <div>
+              <span class="text-slate-500 block">Đơn giá Điện sinh hoạt:</span>
+              <strong class="text-slate-900 text-sm">3.500 ₫ / kWh</strong>
+            </div>
+            <div class="border-teal-200 pl-6">
+              <span class="text-slate-500 block">Đơn giá Nước sinh hoạt:</span>
+              <strong class="text-slate-900 text-sm">25.000 ₫ / m³</strong>
+            </div>
+            <div class="border-teal-200 pl-6">
+              <span class="text-slate-500 block">Phí quản lý & dịch vụ chung:</span>
+              <strong class="text-slate-900 text-sm">150.000 ₫ / phòng</strong>
+            </div>
+          </div>
+          <span class="badge badge-success">Áp dụng cho 3 cơ sở</span>
+        </div>
+
+        
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">Phòng / Khách</th>
+                  <th class="p-3.5">Điện Cũ (kWh)</th>
+                  <th class="p-3.5">Điện Mới (kWh)</th>
+                  <th class="p-3.5">Tiêu Thụ Điện</th>
+                  <th class="p-3.5">Nước Cũ (m³)</th>
+                  <th class="p-3.5">Nước Mới (m³)</th>
+                  <th class="p-3.5">Tiêu Thụ Nước</th>
+                  <th class="p-3.5 text-right">Tổng Tiền Điện + Nước</th>
+                </tr>
+              </thead>
+              <tbody id="utilities-tbody" class="divide-y divide-slate-100 font-medium">
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    const rowsData = [
+      { room: 'P101', tenant: 'Nguyễn Văn Hùng', eOld: 890, eNew: 1025, wOld: 60, wNew: 66 },
+      { room: 'P102', tenant: 'Trần Thị Thu Thảo', eOld: 1100, eNew: 1260, wOld: 72, wNew: 80 },
+      { room: 'P201', tenant: 'Lê Văn An', eOld: 1240, eNew: 1410, wOld: 85, wNew: 93 },
+      { room: 'P204', tenant: 'Đỗ Thùy Trang', eOld: 950, eNew: 1110, wOld: 55, wNew: 62 },
+      { room: 'P301', tenant: 'Vũ Đức Nam', eOld: 1450, eNew: 1680, wOld: 110, wNew: 121 }
+    ];
+
+    function renderUtilitiesTable() {
+      const tbody = document.getElementById('utilities-tbody');
+      tbody.innerHTML = rowsData.map((row, idx) => {
+        const eUnits = Math.max(0, row.eNew - row.eOld);
+        const eMoney = eUnits * 3500;
+        const wUnits = Math.max(0, row.wNew - row.wOld);
+        const wMoney = wUnits * 25000;
+        const total = eMoney + wMoney;
+
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3.5">
+              <span class="font-bold text-slate-900">${row.room}</span>
+              <span class="block text-[11px] text-slate-400">${row.tenant}</span>
+            </td>
+            <td class="p-3.5 font-mono text-slate-500">${row.eOld}</td>
+            <td class="p-3.5">
+              <input type="number" value="${row.eNew}" oninput="updateRow(${idx}, 'eNew', this.value)" class="w-24 bg-slate-50 border border-slate-200 rounded p-1.5 font-mono font-bold text-slate-900 focus:bg-white focus:outline-teal-600">
+            </td>
+            <td class="p-3.5 font-semibold text-slate-700" id="e-units-${idx}">${eUnits} kWh <span class="text-[11px] text-slate-400 block">${formatVND(eMoney)}</span></td>
+            <td class="p-3.5 font-mono text-slate-500">${row.wOld}</td>
+            <td class="p-3.5">
+              <input type="number" value="${row.wNew}" oninput="updateRow(${idx}, 'wNew', this.value)" class="w-24 bg-slate-50 border border-slate-200 rounded p-1.5 font-mono font-bold text-slate-900 focus:bg-white focus:outline-teal-600">
+            </td>
+            <td class="p-3.5 font-semibold text-slate-700" id="w-units-${idx}">${wUnits} m³ <span class="text-[11px] text-slate-400 block">${formatVND(wMoney)}</span></td>
+            <td class="p-3.5 text-right font-extrabold text-teal-700 text-sm" id="row-total-${idx}">${formatVND(total)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function updateRow(idx, field, value) {
+      rowsData[idx][field] = parseInt(value) || 0;
+      const row = rowsData[idx];
+      const eUnits = Math.max(0, row.eNew - row.eOld);
+      const eMoney = eUnits * 3500;
+      const wUnits = Math.max(0, row.wNew - row.wOld);
+      const wMoney = wUnits * 25000;
+      const total = eMoney + wMoney;
+
+      document.getElementById(`e-units-${idx}`).innerHTML = `${eUnits} kWh <span class="text-[11px] text-slate-400 block">${formatVND(eMoney)}</span>`;
+      document.getElementById(`w-units-${idx}`).innerHTML = `${wUnits} m³ <span class="text-[11px] text-slate-400 block">${formatVND(wMoney)}</span>`;
+      document.getElementById(`row-total-${idx}`).innerText = formatVND(total);
+    }
+
+    function calculateAndSaveAll() {
+      showToast('Đã lưu chỉ số điện nước và cập nhật hóa đơn tự động thành công!');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSidebar('utilities.html');
+      renderTopbar('Phí & Chỉ số Điện Nước', 'Dịch vụ / Chỉ số tiêu thụ');
+      renderUtilitiesTable();
+    });
+  </script>
+</body>
+</html>

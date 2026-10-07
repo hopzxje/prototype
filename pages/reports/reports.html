@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHub - Báo cáo & Thống kê</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Báo cáo Tài chính & Tỷ lệ Khai thác</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Tổng hợp dòng tiền, cơ cấu chi phí vận hành và hiệu quả khai thác toàn chuỗi</p>
+          </div>
+          <button onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-semibold shadow-sm transition-colors">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Xuất Báo Cáo PDF</span>
+          </button>
+        </div>
+
+        
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Doanh thu thuần</span>
+            <h3 class="text-2xl font-extrabold text-teal-700 mt-1">142.500.000 ₫</h3>
+            <p class="text-[11px] text-emerald-600 mt-1 font-semibold">+8.4% so tháng trước</p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Chi phí vận hành</span>
+            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">38.200.000 ₫</h3>
+            <p class="text-[11px] text-slate-400 mt-1">Điện, nước, dọn dẹp, internet</p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Lợi nhuận gộp</span>
+            <h3 class="text-2xl font-extrabold text-emerald-600 mt-1">104.300.000 ₫</h3>
+            <p class="text-[11px] text-emerald-600 mt-1 font-semibold">Biên lợi nhuận: 73.2%</p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Công suất khai thác</span>
+            <h3 class="text-2xl font-extrabold text-teal-700 mt-1">88.9%</h3>
+            <p class="text-[11px] text-slate-400 mt-1">32 / 36 phòng hoạt động</p>
+          </div>
+        </div>
+
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="font-bold text-slate-900 text-sm mb-4">Doanh Thu Theo Từng Cơ Sở (Tháng 10/2026)</h3>
+            <div class="h-64">
+              <canvas id="buildingRevenueChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="font-bold text-slate-900 text-sm mb-4">Cơ Cấu Chi Phí Vận Hành</h3>
+            <div class="h-64 flex items-center justify-center">
+              <canvas id="costBreakdownChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSidebar('reports.html');
+      renderTopbar('Báo cáo & Thống kê tài chính', 'Báo cáo / Tổng hợp');
+
+      // Building revenue bar chart
+      const ctx1 = document.getElementById('buildingRevenueChart').getContext('2d');
+      new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Central - Ba Đình', 'Riverside - Tây Hồ', 'Eco - Cầu Giấy'],
+          datasets: [{
+            label: 'Doanh thu (Triệu VNĐ)',
+            data: [58.5, 48.2, 35.8],
+            backgroundColor: ['#166534', '#22C55E', '#4ADE80'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      // Cost breakdown doughnut
+      const ctx2 = document.getElementById('costBreakdownChart').getContext('2d');
+      new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Điện sinh hoạt', 'Nước máy', 'Internet cáp quang', 'Dọn vệ sinh', 'Bảo trì sửa chữa'],
+          datasets: [{
+            data: [18.5, 6.2, 3.5, 5.0, 5.0],
+            backgroundColor: ['#F59E0B', '#3B82F6', '#6366F1', '#10B981', '#F43F5E'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
