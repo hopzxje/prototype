@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StayHub - Quản lý Hóa đơn & Thu phí (Luồng 8)</title>
+  <title>StayHub - Quản lý Hóa đơn & Thu phí</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
@@ -37,7 +37,7 @@
               <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
               <span>Reset Dữ Liệu</span>
             </button>
-            <button onclick="openCyclicBillingWizard(1)" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+            <button onclick="openCreateInvoiceModal()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
               <i data-lucide="file-plus" class="w-4 h-4"></i>
               <span>Lập Hóa Đơn Kỳ Mới</span>
             </button>
@@ -138,309 +138,123 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- MODAL: WIZARD LẬP HÓA ĐƠN ĐỊNH KỲ (CYCLIC BILLING WIZARD - SWIMLANE 8)     -->
+  <!-- MODAL: LẬP HÓA ĐƠN KỲ MỚI (CHUẨN, KHÔNG CHIA BƯỚC)                        -->
   <!-- ========================================================================= -->
-  <div id="cyclicBillingWizardModal" class="modal-backdrop">
+  <div id="createInvoiceModal" class="modal-backdrop">
     <div class="modal-content max-w-4xl p-6">
       
-      <!-- Wizard Header & Steps Progress -->
-      <div class="border-b border-slate-200 pb-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
-              <i data-lucide="calculator" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h3 class="font-bold text-slate-900 text-base">Quy Trình Lập Hóa Đơn Định Kỳ (Luồng 8)</h3>
-              <p class="text-xs text-slate-500">Chạy theo sơ đồ tuần tự: Staff → System → Manager → Resident</p>
-            </div>
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-teal-50 text-[#0F766E] border border-teal-200 flex items-center justify-center font-bold">
+            <i data-lucide="file-plus" class="w-5 h-5"></i>
           </div>
-          <button onclick="closeModal('cyclicBillingWizardModal')" class="text-slate-400 hover:text-slate-600">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-
-        <!-- Wizard Nav Steps -->
-        <div class="flex items-center justify-between mt-4 max-w-2xl mx-auto text-xs">
-          <div class="wizard-step flex flex-col items-center" id="wz-indicator-1">
-            <span class="w-7 h-7 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-sm">1</span>
-            <span class="text-[11px] font-semibold text-slate-700 mt-1">Chọn Kỳ & Cơ Sở</span>
-          </div>
-          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
-          <div class="wizard-step flex flex-col items-center" id="wz-indicator-2">
-            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">2</span>
-            <span class="text-[11px] font-semibold text-slate-500 mt-1">Kiểm Tra Dữ Liệu</span>
-          </div>
-          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
-          <div class="wizard-step flex flex-col items-center" id="wz-indicator-3">
-            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">3</span>
-            <span class="text-[11px] font-semibold text-slate-500 mt-1">Nhập Phụ Phí</span>
-          </div>
-          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
-          <div class="wizard-step flex flex-col items-center" id="wz-indicator-4">
-            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">4</span>
-            <span class="text-[11px] font-semibold text-slate-500 mt-1">Lưu Bản Nháp</span>
-          </div>
-          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
-          <div class="wizard-step flex flex-col items-center" id="wz-indicator-5">
-            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">5</span>
-            <span class="text-[11px] font-semibold text-slate-500 mt-1">Quản Lý Review</span>
-          </div>
-          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
-          <div class="wizard-step flex flex-col items-center" id="wz-indicator-6">
-            <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">6</span>
-            <span class="text-[11px] font-semibold text-slate-500 mt-1">Phát Hành Zalo OA</span>
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">Lập Hóa Đơn Kỳ Mới</h3>
+            <p class="text-xs text-slate-500">Tính toán tiền phòng, điện nước và phụ phí theo cơ sở vận hành</p>
           </div>
         </div>
-      </div>
-
-      <!-- WIZARD STEP CONTENTS -->
-      <div class="py-5 text-xs" id="wizard-content-container">
-
-        <!-- STEP 1: Staff selects billing period and building -->
-        <div id="wz-step-1" class="space-y-4">
-          <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl text-teal-900 text-xs flex items-start gap-2.5">
-            <i data-lucide="info" class="w-4 h-4 text-teal-700 shrink-0 mt-0.5"></i>
-            <div>
-              <strong class="font-bold">Hành động của Nhân viên (Staff):</strong> Chọn tòa nhà và kỳ lập hóa đơn để hệ thống tải hợp đồng hiệu lực & số điện nước tiêu thụ.
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block font-semibold text-slate-700 mb-1">Chọn Tòa nhà / Cơ sở vận hành <span class="text-red-500">*</span></label>
-              <select id="wz-building-select" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs font-medium">
-                <option value="bld-1">StayHub Central - Quận 1 (12 phòng)</option>
-                <option value="bld-2">StayHub Riverside - Tây Hồ (12 phòng)</option>
-                <option value="bld-3">StayHub Eco - Cầu Giấy (12 phòng)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold text-slate-700 mb-1">Chọn Kỳ thu tiền (Billing Period) <span class="text-red-500">*</span></label>
-              <select id="wz-month-select" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs font-bold text-teal-800">
-                <option value="11/2026">Tháng 11/2026 (Kỳ tiếp theo)</option>
-                <option value="10/2026">Tháng 10/2026 (Kỳ hiện tại)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-            <h4 class="font-bold text-slate-900 text-xs">Quy định chu kỳ thu phí:</h4>
-            <ul class="list-disc pl-5 space-y-1 text-slate-600 text-[11px]">
-              <li>Hạn nộp định kỳ: Trước ngày <strong>05</strong> của tháng thanh toán.</li>
-              <li>Tự động tổng hợp: <strong>Tiền thuê phòng + Tiền điện + Tiền nước + Phí quản lý/dịch vụ + Phụ phí gửi xe</strong>.</li>
-              <li>Chỉ các căn hộ đang có trạng thái hợp đồng <strong>ACTIVE</strong> mới được sinh hóa đơn.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- STEP 2: System checks data sufficiency (Data sufficient?) -->
-        <div id="wz-step-2" class="space-y-4 hidden">
-          <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs flex items-start gap-2.5">
-            <i data-lucide="cpu" class="w-4 h-4 text-blue-700 shrink-0 mt-0.5"></i>
-            <div>
-              <strong class="font-bold">Hệ thống xử lý (System Logic):</strong> Đang tải danh sách phòng đang thuê và kiểm tra tính đầy đủ của chỉ số điện/nước.
-            </div>
-          </div>
-
-          <!-- Simulate Decision Branch -->
-          <div class="border border-slate-200 rounded-xl p-4 bg-white space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-              <span class="font-bold text-slate-800">Kết quả kiểm tra dữ liệu đầu vào:</span>
-              <span id="wz-data-check-badge" class="badge badge-success">✓ Dữ liệu đầy đủ (Sufficient)</span>
-            </div>
-
-            <div id="wz-data-check-details" class="space-y-2 text-xs text-slate-600">
-              <div class="flex items-center justify-between p-2 rounded bg-slate-50">
-                <span>Số phòng đang có hợp đồng ACTIVE:</span>
-                <strong class="text-slate-900">4 / 4 phòng hợp lệ</strong>
-              </div>
-              <div class="flex items-center justify-between p-2 rounded bg-slate-50">
-                <span>Chỉ số công tơ Điện & Nước:</span>
-                <strong class="text-emerald-700" id="wz-meter-check-text">Đã ghi nhận đủ 100%</strong>
-              </div>
-            </div>
-
-            <!-- Testing toggle buttons for Demo purpose -->
-            <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs mt-3">
-              <span class="font-bold block mb-1.5">Trình diễn nhánh rẽ của Sơ đồ:</span>
-              <div class="flex flex-wrap gap-2">
-                <button type="button" onclick="testDataCheckBranch(false)" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-[11px]">
-                  Mô phỏng: TH Thiếu dữ liệu (Nhánh No → Error Missing Data)
-                </button>
-                <button type="button" onclick="testDataCheckBranch(true)" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-[11px]">
-                  Mô phỏng: TH Đủ dữ liệu (Nhánh Yes → Hiện Form Tính Tiền)
-                </button>
-              </div>
-            </div>
-
-            <!-- Error container if missing data -->
-            <div id="wz-missing-data-error" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-xs space-y-1">
-              <div class="flex items-center gap-1.5 font-bold">
-                <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
-                <span>Lỗi thiếu dữ liệu (Error: Missing Data)</span>
-              </div>
-              <p>Phòng <strong>P203</strong> và <strong>P204</strong> chưa được nhân viên ghi nhận chỉ số điện nước kỳ này. Hệ thống không thể tiếp tục lập hóa đơn khi chưa đủ dữ liệu!</p>
-              <button onclick="testDataCheckBranch(true)" class="mt-2 text-xs font-bold text-red-700 underline">Bấm để cập nhật nhanh chỉ số mẫu →</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 3: Display cost calculation form & enter additional charges -->
-        <div id="wz-step-3" class="space-y-4 hidden">
-          <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl text-teal-900 text-xs flex items-start gap-2.5">
-            <i data-lucide="edit-3" class="w-4 h-4 text-teal-700 shrink-0 mt-0.5"></i>
-            <div>
-              <strong class="font-bold">Hành động của Nhân viên (Staff):</strong> Kiểm tra số điện nước từng phòng và nhập phụ phí phát sinh (tiền gửi xe, thẻ từ, phí dọn dẹp thêm...).
-            </div>
-          </div>
-
-          <div class="border border-slate-200 rounded-xl overflow-hidden bg-white">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-slate-600">
-                <thead class="bg-slate-100 text-slate-700 font-semibold uppercase text-[11px]">
-                  <tr>
-                    <th class="p-3">Phòng / Cư Dân</th>
-                    <th class="p-3">Tiền Thuê</th>
-                    <th class="p-3">Điện Tiêu Thụ</th>
-                    <th class="p-3">Nước Tiêu Thụ</th>
-                    <th class="p-3">Phí Dịch Vụ</th>
-                    <th class="p-3 w-36">Phụ Phí (Gửi xe...)</th>
-                    <th class="p-3 text-right">Tổng Tạm Tính</th>
-                  </tr>
-                </thead>
-                <tbody id="wz-cost-calc-tbody" class="divide-y divide-slate-100 font-medium">
-                  <!-- Rendered dynamically -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 4: Invoice preview & Save Draft -->
-        <div id="wz-step-4" class="space-y-4 hidden">
-          <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl text-purple-900 text-xs flex items-start gap-2.5">
-            <i data-lucide="eye" class="w-4 h-4 text-purple-700 shrink-0 mt-0.5"></i>
-            <div>
-              <strong class="font-bold">Xem trước & Kiểm tra (Display Invoice Preview):</strong> Nhân viên kiểm tra danh sách lần cuối. Nếu cần sửa có thể quay lại. Khi đúng → Bấm <strong>"Save Draft"</strong>.
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-              <span class="text-slate-500 text-[11px] block">Tổng số hóa đơn dự kiến:</span>
-              <strong class="text-slate-900 text-base" id="wz-prev-count">4 hóa đơn</strong>
-            </div>
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-              <span class="text-slate-500 text-[11px] block">Tổng phụ phí phát sinh:</span>
-              <strong class="text-teal-700 text-base" id="wz-prev-extra">450.000 ₫</strong>
-            </div>
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-              <span class="text-slate-500 text-[11px] block">Tổng doanh thu kỳ:</span>
-              <strong class="text-emerald-700 text-base font-extrabold" id="wz-prev-total">35.850.000 ₫</strong>
-            </div>
-          </div>
-
-          <div class="border border-slate-200 rounded-xl overflow-hidden bg-white max-h-56 overflow-y-auto">
-            <table class="w-full text-left text-xs text-slate-600">
-              <thead class="bg-slate-50 text-slate-700 font-semibold sticky top-0">
-                <tr>
-                  <th class="p-2.5">Phòng</th>
-                  <th class="p-2.5">Cư Dân</th>
-                  <th class="p-2.5">Tiền Phòng</th>
-                  <th class="p-2.5">Điện</th>
-                  <th class="p-2.5">Nước</th>
-                  <th class="p-2.5">Phụ Phí</th>
-                  <th class="p-2.5 text-right">Tổng Tiền</th>
-                </tr>
-              </thead>
-              <tbody id="wz-preview-tbody" class="divide-y divide-slate-100">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- STEP 5: Send to Manager for Review & Add Notes -->
-        <div id="wz-step-5" class="space-y-4 hidden">
-          <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs flex items-start gap-2.5">
-            <i data-lucide="user-check" class="w-4 h-4 text-amber-700 shrink-0 mt-0.5"></i>
-            <div>
-              <strong class="font-bold">Góc nhìn Quản Lý (Manager Review):</strong> Quản lý cơ sở kiểm tra danh sách hóa đơn nháp (status = DRAFT) và bổ sung phản hồi/ghi chú trước khi phát hành.
-            </div>
-          </div>
-
-          <div class="border border-slate-200 rounded-xl p-4 bg-white space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-              <div>
-                <h4 class="font-bold text-slate-900 text-xs">Danh sách hóa đơn nháp kỳ <span id="wz-manager-review-period">11/2026</span></h4>
-                <p class="text-[11px] text-slate-500">Trạng thái hiện tại: <span class="badge bg-purple-100 text-purple-800">DRAFT (Đã lưu nháp)</span></p>
-              </div>
-              <span class="text-xs text-emerald-700 font-bold">✓ Đã đối soát chỉ số công tơ</span>
-            </div>
-
-            <div>
-              <label class="block font-semibold text-slate-700 mb-1">Ghi chú / Phản hồi của Quản lý cơ sở (Add notes / feedback):</label>
-              <textarea id="wz-manager-notes" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:outline-teal-600">Đã kiểm tra khớp chỉ số đồng hồ điện nước và giá thuê theo hợp đồng. Đồng ý cho phép nhân viên phát hành toàn bộ hóa đơn.</textarea>
-            </div>
-
-            <div class="p-3 bg-slate-50 rounded-lg text-[11px] text-slate-600 flex items-center justify-between">
-              <span>Người thẩm định: <strong>Trần Minh Đức (Quản lý Cơ sở)</strong></span>
-              <span>Thời gian: <strong id="wz-review-time">Hôm nay</strong></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 6: Publish Invoices & Send Zalo OA Notification -->
-        <div id="wz-step-6" class="space-y-4 hidden">
-          <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs flex items-start gap-2.5">
-            <i data-lucide="send" class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5"></i>
-            <div>
-              <strong class="font-bold">Phát hành Hóa đơn (Publish Invoices):</strong> Cập nhật trạng thái thành <span class="font-bold underline text-emerald-800">PUBLISHED</span>, bắn tin nhắn qua <strong>Zalo OA</strong> tới điện thoại cư dân và ghi Activity Log.
-            </div>
-          </div>
-
-          <!-- Simulation Zalo Message for Resident -->
-          <div class="border border-teal-200 bg-teal-50/50 rounded-2xl p-4 max-w-md mx-auto space-y-3">
-            <div class="flex items-center justify-between border-b border-teal-200 pb-2">
-              <span class="font-bold text-teal-900 text-xs flex items-center gap-1.5">
-                <i data-lucide="message-circle" class="w-4 h-4 text-blue-600"></i>
-                Mô phỏng tin Zalo OA gửi đến Cư Dân
-              </span>
-              <span class="badge badge-success text-[10px]">Tự động gửi</span>
-            </div>
-
-            <div class="bg-white p-3.5 rounded-xl border border-teal-100 shadow-xs space-y-2 text-xs">
-              <p class="font-bold text-slate-900 text-sm">THÔNG BÁO TIỀN PHÒNG & ĐIỆN NƯỚC KỲ <span id="zalo-msg-month">11/2026</span></p>
-              <p class="text-slate-600">Kính gửi Cư dân: <strong id="zalo-msg-tenant">Lê Văn An</strong> (Căn hộ <strong id="zalo-msg-room">P201</strong>)</p>
-              <div class="p-2.5 bg-slate-50 rounded-lg space-y-1 text-[11px]">
-                <div class="flex justify-between"><span>Tiền phòng:</span><strong id="zalo-msg-rent">8.500.000 ₫</strong></div>
-                <div class="flex justify-between"><span>Tiền điện:</span><strong id="zalo-msg-elec">595.000 ₫</strong></div>
-                <div class="flex justify-between"><span>Tiền nước:</span><strong id="zalo-msg-water">200.000 ₫</strong></div>
-                <div class="flex justify-between"><span>Phí DV & Phụ phí:</span><strong id="zalo-msg-extra">250.000 ₫</strong></div>
-                <div class="flex justify-between pt-1 border-t border-slate-200 text-teal-800 font-extrabold text-xs">
-                  <span>TỔNG THANH TOÁN:</span>
-                  <span id="zalo-msg-total">9.545.000 ₫</span>
-                </div>
-              </div>
-              <p class="text-[10px] text-slate-400 italic">Quý cư dân vui lòng thanh toán trước ngày 05 qua VietQR ngân hàng.</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- WIZARD FOOTER NAVIGATION BUTTONS -->
-      <div class="border-t border-slate-200 pt-4 flex items-center justify-between">
-        <button id="wz-btn-prev" onclick="moveWizardStep(-1)" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-xs">
-          &larr; Quay lại
+        <button onclick="closeModal('createInvoiceModal')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
+      </div>
 
+      <!-- Controls: Building, Month, Due date -->
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Tòa nhà / Cơ sở vận hành <span class="text-red-500">*</span></label>
+          <select id="modal-inv-building" onchange="onModalBuildingOrMonthChange()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-900 focus:bg-white focus:outline-teal-600">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Kỳ thu tiền (Billing Period) <span class="text-red-500">*</span></label>
+          <select id="modal-inv-month" onchange="onModalBuildingOrMonthChange()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-teal-800 focus:bg-white focus:outline-teal-600">
+            <option value="11/2026" selected>Tháng 11/2026 (Kỳ tiếp theo)</option>
+            <option value="12/2026">Tháng 12/2026 (Kỳ tới)</option>
+            <option value="10/2026">Tháng 10/2026 (Kỳ hiện tại)</option>
+            <option value="09/2026">Tháng 09/2026</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Hạn nộp tiền (Due date) <span class="text-red-500">*</span></label>
+          <input type="text" id="modal-inv-due-date" value="05/11/2026" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-semibold text-slate-900 focus:bg-white focus:outline-teal-600">
+        </div>
+      </div>
+
+      <!-- Tariff & Data Sync Banner -->
+      <div class="mt-3.5 p-3 bg-teal-50 border border-teal-200/70 rounded-xl text-xs text-teal-900 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <button type="button" onclick="closeModal('cyclicBillingWizardModal')" class="px-3 py-2 text-slate-500 hover:text-slate-700 text-xs">Đóng</button>
-          <button id="wz-btn-next" onclick="moveWizardStep(1)" class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold text-xs shadow-sm flex items-center gap-1.5">
-            <span>Tiếp tục</span>
-            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          <i data-lucide="info" class="w-4 h-4 text-teal-700 shrink-0"></i>
+          <span id="modal-tariff-info-text">
+            Biểu phí: Điện 3.500 ₫/kWh • Nước 25.000 ₫/m³ • Dịch vụ 150.000 ₫/phòng. Số điện nước tự động tải từ bảng ghi chỉ số.
+          </span>
+        </div>
+        <a href="../operations/utilities.html" target="_blank" class="text-teal-800 underline font-semibold flex items-center gap-1 hover:text-teal-950">
+          <span>Xem / Nhập số điện nước</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+
+      <!-- Table of Rooms for Billing -->
+      <div class="mt-4 border border-slate-200 rounded-xl overflow-hidden bg-white">
+        <div class="max-h-64 overflow-y-auto">
+          <table class="w-full text-left text-xs text-slate-600">
+            <thead class="bg-slate-50 text-slate-700 font-semibold uppercase text-[11px] sticky top-0 border-b border-slate-200">
+              <tr>
+                <th class="p-3">Phòng / Cư Dân</th>
+                <th class="p-3">Tiền Phòng</th>
+                <th class="p-3">Điện Tiêu Thụ</th>
+                <th class="p-3">Nước Tiêu Thụ</th>
+                <th class="p-3">Phí Dịch Vụ</th>
+                <th class="p-3 w-32">Phụ Phí (Gửi xe...)</th>
+                <th class="p-3 text-right">Tổng Tiền</th>
+              </tr>
+            </thead>
+            <tbody id="modal-billing-tbody" class="divide-y divide-slate-100 font-medium">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Summary metrics -->
+      <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+          <span class="text-slate-400 text-[11px] block font-semibold uppercase">Số lượng phòng</span>
+          <strong class="text-slate-900 text-sm mt-0.5 block" id="modal-sum-rooms">0 phòng</strong>
+        </div>
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+          <span class="text-slate-400 text-[11px] block font-semibold uppercase">Tổng tiền phòng</span>
+          <strong class="text-slate-900 text-sm mt-0.5 block" id="modal-sum-rent">0 ₫</strong>
+        </div>
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+          <span class="text-slate-400 text-[11px] block font-semibold uppercase">Tổng điện, nước & DV</span>
+          <strong class="text-slate-900 text-sm mt-0.5 block" id="modal-sum-utility">0 ₫</strong>
+        </div>
+        <div class="p-3 bg-teal-50 border border-teal-200 rounded-lg">
+          <span class="text-teal-700 text-[11px] block font-semibold uppercase">TỔNG DOANH THU KỲ</span>
+          <strong class="text-teal-800 text-base font-extrabold mt-0.5 block" id="modal-sum-total">0 ₫</strong>
+        </div>
+      </div>
+
+      <!-- Notification toggle & Actions -->
+      <div class="mt-5 pt-3.5 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700 select-none">
+          <input type="checkbox" id="modal-inv-send-zalo" checked class="rounded text-teal-600 focus:ring-teal-500 w-4 h-4">
+          <span>Tự động phát hành & gửi thông báo qua Zalo OA / App cho cư dân</span>
+        </label>
+
+        <div class="flex items-center gap-2.5 justify-end">
+          <button type="button" onclick="closeModal('createInvoiceModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-semibold transition-colors">
+            Hủy
+          </button>
+          <button type="button" onclick="handleSaveBillingInvoices('DRAFT')" class="px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-lg font-bold transition-colors">
+            Lưu Bản Nháp (Draft)
+          </button>
+          <button type="button" onclick="handleSaveBillingInvoices('PUBLISHED')" class="flex items-center gap-1.5 px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold shadow-sm transition-colors">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Lập & Phát Hành Hóa Đơn</span>
           </button>
         </div>
       </div>
@@ -632,335 +446,257 @@
     }
 
     // =========================================================================
-    // CYCLIC BILLING WIZARD LOGIC (LUỒNG 8)
+    // LẬP HÓA ĐƠN KỲ MỚI (CHUẨN, KHÔNG CHIA BƯỚC WIZARD)
     // =========================================================================
 
-    function openCyclicBillingWizard(step = 1) {
-      prepareCalculationData();
-      wizardCurrentStep = step;
-      updateWizardUI();
-      openModal('cyclicBillingWizardModal');
-    }
+    let modalBillingRows = [];
 
-    function updateWizardUI() {
-      // Hide all step containers
-      for (let i = 1; i <= 6; i++) {
-        const el = document.getElementById(`wz-step-${i}`);
-        if (el) el.classList.add('hidden');
-        const indicator = document.getElementById(`wz-indicator-${i}`);
-        if (indicator) {
-          const circle = indicator.querySelector('span');
-          if (i === wizardCurrentStep) {
-            circle.className = 'w-7 h-7 rounded-full bg-teal-700 text-white font-bold flex items-center justify-center text-xs shadow-md ring-2 ring-teal-400';
-          } else if (i < wizardCurrentStep) {
-            circle.className = 'w-7 h-7 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs';
-          } else {
-            circle.className = 'w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs';
-          }
+    function openCreateInvoiceModal() {
+      const buildings = DataStore.getBuildings();
+      const currentBldId = DataStore.getCurrentBuilding();
+      const bldSelect = document.getElementById('modal-inv-building');
+      if (bldSelect) {
+        bldSelect.innerHTML = buildings.map(b => `
+          <option value="${b.id}" ${b.id === currentBldId ? 'selected' : ''}>${b.name}</option>
+        `).join('');
+      }
+
+      // Populate months if available from utility cycles
+      const monthSelect = document.getElementById('modal-inv-month');
+      if (monthSelect) {
+        const cycles = DataStore.getAvailableUtilityCycles();
+        if (cycles && cycles.length > 0) {
+          monthSelect.innerHTML = cycles.map(c => `
+            <option value="${c}" ${c === '11/2026' ? 'selected' : ''}>Kỳ tháng ${c}${c === '11/2026' ? ' (Kỳ tiếp theo)' : ''}</option>
+          `).join('');
         }
       }
 
-      // Show current step container
-      const currentEl = document.getElementById(`wz-step-${wizardCurrentStep}`);
-      if (currentEl) currentEl.classList.remove('hidden');
-
-      // Adjust next / prev buttons
-      const prevBtn = document.getElementById('wz-btn-prev');
-      const nextBtn = document.getElementById('wz-btn-next');
-
-      if (wizardCurrentStep === 1) {
-        prevBtn.style.visibility = 'hidden';
-      } else {
-        prevBtn.style.visibility = 'visible';
-      }
-
-      if (wizardCurrentStep === 4) {
-        nextBtn.innerHTML = `<span>Lưu Bản Nháp (Save Draft)</span> <i data-lucide="save" class="w-3.5 h-3.5"></i>`;
-      } else if (wizardCurrentStep === 5) {
-        nextBtn.innerHTML = `<span>Quản Lý Phê Duyệt & Tiếp Tục</span> <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>`;
-      } else if (wizardCurrentStep === 6) {
-        nextBtn.innerHTML = `<span>Phát Hành & Gửi Zalo OA</span> <i data-lucide="send" class="w-3.5 h-3.5"></i>`;
-      } else {
-        nextBtn.innerHTML = `<span>Tiếp tục</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>`;
-      }
-
-      lucide.createIcons();
+      onModalBuildingOrMonthChange();
+      openModal('createInvoiceModal');
     }
 
-    function moveWizardStep(delta) {
-      const nextStep = wizardCurrentStep + delta;
-
-      // Validation on step 2: Data sufficient check
-      if (wizardCurrentStep === 2 && delta > 0 && !wizardDataSufficient) {
-        alert('Cảnh báo: Dữ liệu chỉ số điện nước chưa đầy đủ. Bạn không thể tiếp tục cho đến khi bổ sung đủ dữ liệu!');
-        return;
-      }
-
-      // Action on Step 4 -> 5: Save Draft
-      if (wizardCurrentStep === 4 && delta > 0) {
-        saveDraftInvoices();
-      }
-
-      // Action on Step 5 -> 6: Manager notes saved
-      if (wizardCurrentStep === 5 && delta > 0) {
-        const notes = document.getElementById('wz-manager-notes').value.trim();
-        DataStore.addAuditLog('QUAN_LY_DUYET_HOA_DON_NHAP', `Hóa đơn kỳ ${document.getElementById('wz-month-select').value}`, `Quản lý xác nhận duyệt: "${notes}"`);
-      }
-
-      // Action on Step 6: Publish invoices
-      if (wizardCurrentStep === 6 && delta > 0) {
-        publishInvoicesNow();
-        return;
-      }
-
-      if (nextStep >= 1 && nextStep <= 6) {
-        wizardCurrentStep = nextStep;
-        updateWizardUI();
-      }
+    // Alias for backwards compatibility
+    function openCyclicBillingWizard() {
+      openCreateInvoiceModal();
     }
 
-    function testDataCheckBranch(isSufficient) {
-      wizardDataSufficient = isSufficient;
-      const badge = document.getElementById('wz-data-check-badge');
-      const text = document.getElementById('wz-meter-check-text');
-      const errBox = document.getElementById('wz-missing-data-error');
+    function onModalBuildingOrMonthChange() {
+      const bldId = document.getElementById('modal-inv-building').value;
+      const month = document.getElementById('modal-inv-month').value;
+      const buildings = DataStore.getBuildings();
+      const bld = buildings.find(b => b.id === bldId) || buildings[0];
 
-      if (isSufficient) {
-        badge.className = 'badge badge-success';
-        badge.innerText = '✓ Dữ liệu đầy đủ (Sufficient)';
-        text.innerText = 'Đã ghi nhận đủ 100% các phòng';
-        text.className = 'text-emerald-700 font-bold';
-        errBox.classList.add('hidden');
-        showToast('Hệ thống xác nhận dữ liệu đã đủ. Có thể chuyển sang Form tính tiền!');
-      } else {
-        badge.className = 'badge badge-danger';
-        badge.innerText = '✕ Thiếu dữ liệu (Missing Data)';
-        text.innerText = 'Thiếu 2 phòng P203, P204';
-        text.className = 'text-red-600 font-bold';
-        errBox.classList.remove('hidden');
-        showToast('Phát hiện thiếu chỉ số! Hệ thống chặn chuyển bước.', 'error');
+      // Update due date text
+      const dueDateInput = document.getElementById('modal-inv-due-date');
+      if (dueDateInput) {
+        dueDateInput.value = `05/${month}`;
       }
+
+      // Update tariff text
+      const tariffText = document.getElementById('modal-tariff-info-text');
+      if (tariffText && bld) {
+        tariffText.innerHTML = `Đơn giá ${bld.name}: Điện <strong>${formatVND(bld.elecRate || 3500)}/kWh</strong> • Nước <strong>${formatVND(bld.waterRate || 25000)}/m³</strong> • Dịch vụ <strong>${formatVND(bld.serviceFee || 150000)}/phòng</strong>.`;
+      }
+
+      // Load active rooms for this building
+      const rooms = DataStore.getRooms().filter(r => r.buildingId === bldId && r.tenant);
+      const utilityCycle = DataStore.getUtilityCycle(month);
+      const readings = (utilityCycle && utilityCycle.readings) ? utilityCycle.readings : {};
+
+      modalBillingRows = rooms.map(r => {
+        const rd = readings[r.id] || { eOld: 1000, eNew: 1140, wOld: 60, wNew: 67 };
+        const eUnits = Math.max(0, (rd.eNew || 0) - (rd.eOld || 0));
+        const wUnits = Math.max(0, (rd.wNew || 0) - (rd.wOld || 0));
+        const eMoney = eUnits * (bld.elecRate || 3500);
+        const wMoney = wUnits * (bld.waterRate || 25000);
+        const serviceFee = bld.serviceFee || 150000;
+        const extraFee = 100000; // Phí gửi xe mặc định
+
+        return {
+          roomId: r.id,
+          room: r.roomNumber,
+          tenant: r.tenant,
+          phone: r.phone || '0901234567',
+          rent: r.price || 6500000,
+          eOld: rd.eOld || 0,
+          eNew: rd.eNew || 0,
+          elecUnits: eUnits,
+          elecRate: bld.elecRate || 3500,
+          elecTotal: eMoney,
+          wOld: rd.wOld || 0,
+          wNew: rd.wNew || 0,
+          waterUnits: wUnits,
+          waterRate: bld.waterRate || 25000,
+          waterTotal: wMoney,
+          serviceFee: serviceFee,
+          extraFee: extraFee,
+          buildingId: bld.id,
+          building: bld.name
+        };
+      });
+
+      renderModalBillingTable();
     }
 
-    function prepareCalculationData() {
-      const month = document.getElementById('wz-month-select') ? document.getElementById('wz-month-select').value : '11/2026';
-      draftCalculationRows = [
-        { room: 'P201', tenant: 'Lê Văn An', phone: '0904445566', rent: 8500000, elecUnits: 170, elecRate: 3500, elecTotal: 595000, waterUnits: 8, waterRate: 25000, waterTotal: 200000, serviceFee: 150000, extraFee: 100000 },
-        { room: 'P101', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', rent: 6500000, elecUnits: 135, elecRate: 3500, elecTotal: 472500, waterUnits: 6, waterRate: 25000, waterTotal: 150000, serviceFee: 150000, extraFee: 120000 },
-        { room: 'P102', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', rent: 7500000, elecUnits: 160, elecRate: 3500, elecTotal: 560000, waterUnits: 8, waterRate: 25000, waterTotal: 200000, serviceFee: 150000, extraFee: 100000 },
-        { room: 'P301', tenant: 'Vũ Đức Nam', phone: '0907778899', rent: 9500000, elecUnits: 230, elecRate: 3500, elecTotal: 805000, waterUnits: 11, waterRate: 25000, waterTotal: 275000, serviceFee: 150000, extraFee: 130000 }
-      ];
-
-      renderCostCalculationTable();
-      renderInvoicePreviewTable();
-    }
-
-    function renderCostCalculationTable() {
-      const tbody = document.getElementById('wz-cost-calc-tbody');
+    function renderModalBillingTable() {
+      const tbody = document.getElementById('modal-billing-tbody');
       if (!tbody) return;
 
-      tbody.innerHTML = draftCalculationRows.map((row, idx) => {
+      if (modalBillingRows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Không tìm thấy phòng đang có hợp đồng thuê tại cơ sở này.</td></tr>`;
+        updateModalBillingSummary();
+        return;
+      }
+
+      tbody.innerHTML = modalBillingRows.map((row, idx) => {
         const subtotal = row.rent + row.elecTotal + row.waterTotal + row.serviceFee + row.extraFee;
         return `
           <tr class="hover:bg-slate-50">
             <td class="p-3">
-              <span class="font-bold text-teal-800">${row.room}</span> - ${row.tenant}
+              <span class="font-bold text-slate-900 block">${row.room}</span>
+              <span class="text-[11px] text-slate-400 block">${row.tenant}</span>
             </td>
-            <td class="p-3 font-semibold">${formatVND(row.rent)}</td>
-            <td class="p-3">${row.elecUnits} kWh <span class="text-slate-400">(${formatVND(row.elecTotal)})</span></td>
-            <td class="p-3">${row.waterUnits} m³ <span class="text-slate-400">(${formatVND(row.waterTotal)})</span></td>
-            <td class="p-3">${formatVND(row.serviceFee)}</td>
+            <td class="p-3 font-semibold text-slate-700">${formatVND(row.rent)}</td>
             <td class="p-3">
-              <input type="number" step="10000" value="${row.extraFee}" oninput="updateExtraFee(${idx}, this.value)" class="w-28 bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs font-bold text-slate-800 focus:outline-teal-600">
+              <span class="font-bold text-slate-800 block">${row.elecUnits} kWh</span>
+              <span class="text-[11px] text-amber-600 block">${formatVND(row.elecTotal)}</span>
             </td>
-            <td class="p-3 text-right font-extrabold text-teal-700" id="wz-subtotal-${idx}">
+            <td class="p-3">
+              <span class="font-bold text-slate-800 block">${row.waterUnits} m³</span>
+              <span class="text-[11px] text-blue-600 block">${formatVND(row.waterTotal)}</span>
+            </td>
+            <td class="p-3 text-slate-600">${formatVND(row.serviceFee)}</td>
+            <td class="p-3">
+              <input type="number" step="10000" value="${row.extraFee}" 
+                oninput="updateModalRowExtraFee(${idx}, this.value)" 
+                class="w-28 bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs font-bold text-slate-800 focus:bg-white focus:outline-teal-600">
+            </td>
+            <td class="p-3 text-right font-extrabold text-teal-700 text-sm" id="modal-subtotal-${idx}">
               ${formatVND(subtotal)}
             </td>
           </tr>
         `;
       }).join('');
+
+      updateModalBillingSummary();
+      lucide.createIcons();
     }
 
-    function updateExtraFee(idx, val) {
+    function updateModalRowExtraFee(idx, val) {
       const num = parseInt(val) || 0;
-      draftCalculationRows[idx].extraFee = num;
-      const row = draftCalculationRows[idx];
+      modalBillingRows[idx].extraFee = num;
+      const row = modalBillingRows[idx];
       const subtotal = row.rent + row.elecTotal + row.waterTotal + row.serviceFee + row.extraFee;
-      const el = document.getElementById(`wz-subtotal-${idx}`);
-      if (el) el.innerText = formatVND(subtotal);
-      renderInvoicePreviewTable();
+      const subtotalEl = document.getElementById(`modal-subtotal-${idx}`);
+      if (subtotalEl) subtotalEl.innerText = formatVND(subtotal);
+      updateModalBillingSummary();
     }
 
-    function renderInvoicePreviewTable() {
-      const tbody = document.getElementById('wz-preview-tbody');
-      if (!tbody) return;
+    function updateModalBillingSummary() {
+      let sumRent = 0;
+      let sumUtility = 0;
+      let sumTotal = 0;
 
-      let totalExtra = 0;
-      let grandTotal = 0;
+      modalBillingRows.forEach(r => {
+        const rowTotal = r.rent + r.elecTotal + r.waterTotal + r.serviceFee + r.extraFee;
+        sumRent += r.rent;
+        sumUtility += (r.elecTotal + r.waterTotal + r.serviceFee + r.extraFee);
+        sumTotal += rowTotal;
+      });
 
-      tbody.innerHTML = draftCalculationRows.map(row => {
-        const subtotal = row.rent + row.elecTotal + row.waterTotal + row.serviceFee + row.extraFee;
-        totalExtra += row.extraFee;
-        grandTotal += subtotal;
+      const roomsEl = document.getElementById('modal-sum-rooms');
+      const rentEl = document.getElementById('modal-sum-rent');
+      const utilityEl = document.getElementById('modal-sum-utility');
+      const totalEl = document.getElementById('modal-sum-total');
 
-        return `
-          <tr class="hover:bg-slate-50">
-            <td class="p-2.5 font-bold text-teal-800">${row.room}</td>
-            <td class="p-2.5">${row.tenant}</td>
-            <td class="p-2.5">${formatVND(row.rent)}</td>
-            <td class="p-2.5">${formatVND(row.elecTotal)}</td>
-            <td class="p-2.5">${formatVND(row.waterTotal)}</td>
-            <td class="p-2.5 font-semibold text-teal-700">${formatVND(row.serviceFee + row.extraFee)}</td>
-            <td class="p-2.5 text-right font-bold text-slate-900">${formatVND(subtotal)}</td>
-          </tr>
-        `;
-      }).join('');
+      if (roomsEl) roomsEl.innerText = `${modalBillingRows.length} phòng`;
+      if (rentEl) rentEl.innerText = formatVND(sumRent);
+      if (utilityEl) utilityEl.innerText = formatVND(sumUtility);
+      if (totalEl) totalEl.innerText = formatVND(sumTotal);
+    }
 
-      document.getElementById('wz-prev-count').innerText = `${draftCalculationRows.length} hóa đơn`;
-      document.getElementById('wz-prev-extra').innerText = formatVND(totalExtra);
-      document.getElementById('wz-prev-total').innerText = formatVND(grandTotal);
-
-      // Also sync Zalo preview for P201
-      const p201 = draftCalculationRows.find(r => r.room === 'P201') || draftCalculationRows[0];
-      if (p201) {
-        const month = document.getElementById('wz-month-select').value;
-        document.getElementById('zalo-msg-month').innerText = month;
-        document.getElementById('zalo-msg-tenant').innerText = p201.tenant;
-        document.getElementById('zalo-msg-room').innerText = p201.room;
-        document.getElementById('zalo-msg-rent').innerText = formatVND(p201.rent);
-        document.getElementById('zalo-msg-elec').innerText = formatVND(p201.elecTotal);
-        document.getElementById('zalo-msg-water').innerText = formatVND(p201.waterTotal);
-        document.getElementById('zalo-msg-extra').innerText = formatVND(p201.serviceFee + p201.extraFee);
-        document.getElementById('zalo-msg-total').innerText = formatVND(p201.rent + p201.elecTotal + p201.waterTotal + p201.serviceFee + p201.extraFee);
+    function handleSaveBillingInvoices(targetStatus = 'PUBLISHED') {
+      if (modalBillingRows.length === 0) {
+        alert('Không có phòng nào để lập hóa đơn!');
+        return;
       }
-    }
 
-    function saveDraftInvoices() {
-      const month = document.getElementById('wz-month-select').value;
+      const month = document.getElementById('modal-inv-month').value;
+      const dueDate = document.getElementById('modal-inv-due-date').value;
+      const sendZalo = document.getElementById('modal-inv-send-zalo').checked;
       const invoices = DataStore.getInvoices();
 
-      // Upsert draft records
-      draftCalculationRows.forEach(row => {
+      let createdCount = 0;
+
+      modalBillingRows.forEach(row => {
         const code = `INV-2026-${month.replace('/', '-')}-${row.room}`;
         const total = row.rent + row.elecTotal + row.waterTotal + row.serviceFee + row.extraFee;
         const existingIdx = invoices.findIndex(i => i.code === code);
-        const item = {
+
+        const newInv = {
           id: 'inv-' + Date.now().toString().slice(-4) + '-' + row.room,
-          buildingId: 'bld-1',
-          code,
-          month,
+          buildingId: row.buildingId,
+          code: code,
+          month: month,
+          dueDate: dueDate,
           room: row.room,
-          building: 'StayHub Central - Quận 1',
+          building: row.building,
           tenant: row.tenant,
           phone: row.phone,
           rent: row.rent,
-          elecOld: 1400,
-          elecNew: 1400 + row.elecUnits,
+          elecOld: row.eOld,
+          elecNew: row.eNew,
           elecUnits: row.elecUnits,
           elecRate: row.elecRate,
           elecTotal: row.elecTotal,
-          waterOld: 90,
-          waterNew: 90 + row.waterUnits,
+          waterOld: row.wOld,
+          waterNew: row.wNew,
           waterUnits: row.waterUnits,
           waterRate: row.waterRate,
           waterTotal: row.waterTotal,
           serviceFee: row.serviceFee,
           extraFee: row.extraFee,
-          total,
-          status: 'DRAFT',
+          total: total,
+          status: targetStatus === 'DRAFT' ? 'DRAFT' : 'UNPAID',
           paymentDate: null,
           method: null
         };
 
         if (existingIdx !== -1) {
-          invoices[existingIdx] = item;
+          invoices[existingIdx] = newInv;
         } else {
-          invoices.unshift(item);
+          invoices.unshift(newInv);
         }
+        createdCount++;
       });
 
       DataStore.saveInvoices(invoices);
-      DataStore.addAuditLog('LUU_HOA_DON_NHAP', `Kỳ ${month}`, `Nhân viên lưu nháp ${draftCalculationRows.length} hóa đơn trạng thái DRAFT chuyển Quản lý duyệt`);
-      showToast(`Đã lưu ${draftCalculationRows.length} hóa đơn trạng thái DRAFT! Chuyển Manager review.`);
-      renderInvoicesTable();
-    }
 
-    function publishInvoicesNow() {
-      const month = document.getElementById('wz-month-select').value;
-      const invoices = DataStore.getInvoices();
+      const actionName = targetStatus === 'DRAFT' ? 'LẬP_HÓA_ĐƠN_NHÁP' : 'LẬP_VÀ_PHÁT_HÀNH_HÓA_ĐƠN';
+      DataStore.addAuditLog(
+        actionName,
+        `Kỳ ${month}`,
+        `Đã lập ${createdCount} hóa đơn cho cơ sở ${modalBillingRows[0].building} trạng thái ${targetStatus === 'DRAFT' ? 'DRAFT' : 'PUBLISHED/UNPAID'}${sendZalo ? ' (Đã gửi Zalo OA)' : ''}.`
+      );
 
-      // Convert all DRAFT for this month to UNPAID / PUBLISHED
-      let publishedCount = 0;
-      invoices.forEach(inv => {
-        if (inv.month === month && (inv.status === 'DRAFT' || !inv.status)) {
-          inv.status = 'UNPAID';
-          publishedCount++;
-        }
-      });
+      if (sendZalo && targetStatus !== 'DRAFT') {
+        DataStore.addNotification({
+          title: `Phát hành hóa đơn tiền phòng & điện nước tháng ${month}`,
+          category: 'INVOICE',
+          content: `Hóa đơn kỳ thu phí tháng ${month} đã sẵn sàng. Hạn thanh toán: ${dueDate}. Quý cư dân vui lòng quét mã VietQR để thanh toán đúng hạn.`,
+          scope: 'Cư dân cơ sở ' + modalBillingRows[0].building,
+          channel: 'BOTH'
+        });
+      }
 
-      DataStore.saveInvoices(invoices);
-      DataStore.addAuditLog('PHAT_HANH_HOA_DON_ZALO', `Kỳ ${month}`, `Phát hành thành công ${publishedCount} hóa đơn và gửi thông báo qua Zalo OA`);
-      
-      DataStore.addNotification({
-        title: `Phát hành thông báo tiền phòng & điện nước tháng ${month}`,
-        category: 'INVOICE',
-        content: `Hóa đơn kỳ thu phí tháng ${month} đã sẵn sàng. Quý cư dân vui lòng kiểm tra và quét mã VietQR để thanh toán trước ngày 05/${month}.`,
-        scope: 'Cư dân đang thuê',
-        channel: 'BOTH'
-      });
-
-      closeModal('cyclicBillingWizardModal');
-      showToast(`Đã phát hành thành công ${publishedCount} hóa đơn qua Zalo OA!`, 'success');
+      closeModal('createInvoiceModal');
       renderInvoicesTable();
 
-      setTimeout(() => {
-        if (confirm(`Đã phát hành hóa đơn kỳ ${month} thành công qua Zalo OA!\n\nBạn có muốn chuyển sang Giao diện Cư Dân (Resident View) để kiểm tra hóa đơn và bóc tách chi tiết không?`)) {
-          window.location.href = appPath('resident-invoices.html');
-        }
-      }, 500);
-    }
-
-    function resetInvoiceDemoData() {
-      DataStore.saveInvoices(INITIAL_INVOICES);
-      showToast('Đã khôi phục dữ liệu hóa đơn ban đầu!');
-      renderInvoicesTable();
-    }
-
-    // Auto Walkthrough Runner for Flow 8
-    function runAutoBillingTour() {
-      const btn = document.getElementById('btn-auto-invoice-demo');
-      btn.innerHTML = `<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> <span>Đang chạy Demo...</span>`;
-      lucide.createIcons();
-
-      // Step 1: Open Wizard
-      openCyclicBillingWizard(1);
-
-      setTimeout(() => {
-        // Step 2: System check
-        moveWizardStep(1);
-
-        setTimeout(() => {
-          // Step 3: Enter costs & extra fees
-          moveWizardStep(1);
-
-          setTimeout(() => {
-            // Step 4: Preview & Save draft
-            moveWizardStep(1);
-
-            setTimeout(() => {
-              // Step 5: Manager review
-              moveWizardStep(1);
-
-              setTimeout(() => {
-                // Step 6: Publish & Zalo OA
-                moveWizardStep(1);
-                btn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i> <span>Chạy Tự Động Toàn Luồng</span>`;
-                lucide.createIcons();
-              }, 2000);
-            }, 2000);
-          }, 2000);
-        }, 2000);
-      }, 1500);
+      const msg = targetStatus === 'DRAFT' 
+        ? `📝 Đã lưu nháp ${createdCount} hóa đơn kỳ ${month} thành công!`
+        : `🎉 Đã lập & phát hành thành công ${createdCount} hóa đơn kỳ ${month}!`;
+      showToast(msg);
     }
 
     // Invoice Detail & QR Modal
