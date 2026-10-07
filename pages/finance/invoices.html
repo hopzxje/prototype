@@ -45,8 +45,8 @@
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
               <p class="text-xs font-semibold text-slate-500 uppercase">Tổng tiền đã thu</p>
-              <h3 class="text-xl font-extrabold text-emerald-600 mt-1">17.855.000 ₫</h3>
-              <p class="text-xs text-slate-400 mt-0.5">2 hóa đơn đã thanh toán</p>
+              <h3 id="payment-total-paid" class="text-xl font-extrabold text-emerald-600 mt-1">17.855.000 ₫</h3>
+              <p class="text-xs text-slate-400 mt-0.5"><span id="payment-count-paid">2</span> hóa đơn đã thanh toán</p>
             </div>
             <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <i data-lucide="check-circle" class="w-5 h-5"></i>
@@ -56,8 +56,8 @@
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
               <p class="text-xs font-semibold text-slate-500 uppercase">Tiền phòng chờ thu</p>
-              <h3 class="text-xl font-extrabold text-amber-600 mt-1">18.002.500 ₫</h3>
-              <p class="text-xs text-slate-400 mt-0.5">2 hóa đơn chưa thanh toán</p>
+              <h3 id="payment-total-unpaid" class="text-xl font-extrabold text-amber-600 mt-1">18.002.500 ₫</h3>
+              <p class="text-xs text-slate-400 mt-0.5"><span id="payment-count-unpaid">2</span> hóa đơn chưa thanh toán</p>
             </div>
             <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
               <i data-lucide="clock" class="w-5 h-5"></i>
@@ -193,31 +193,97 @@
         <div class="p-4 bg-teal-50 border border-teal-200 rounded-xl flex flex-col sm:flex-row items-center gap-4">
           <div class="w-32 h-32 bg-white p-2 border border-slate-200 rounded-lg flex items-center justify-center shrink-0 shadow-sm">
             <!-- Simulated VietQR with QuickChart or placeholder SVG -->
-            <img id="inv-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=STAYHUB-PAYMENT" class="w-full h-full object-contain" alt="VietQR">
+            <img id="inv-qr-code" src="../../assets/images/payment-qr-demo.svg" class="w-full h-full object-contain" alt="VietQR">
           </div>
           <div class="text-xs space-y-1 text-slate-700">
             <span class="inline-flex items-center gap-1 font-bold text-teal-800 uppercase text-[11px]">
               <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
-              Thanh toán tự động qua SePay VietQR
+              Thanh toán QR · Bản demo
             </span>
             <p>Ngân hàng: <strong>MB Bank (Ngân hàng Quân Đội)</strong></p>
             <p>Số tài khoản: <strong class="font-mono text-slate-900">0912345678</strong></p>
             <p>Chủ tài khoản: <strong>STAYHUB LIVING CO LTD</strong></p>
             <p>Nội dung CK: <strong id="inv-qr-memo" class="font-mono text-teal-700">STAYHUB INV-2026-10-P201</strong></p>
-            <p class="text-[10px] text-slate-500 italic mt-1">* Hệ thống tự động gạch nợ sau 3 giây khi nhận được tiền từ ngân hàng.</p>
+            <p class="text-[10px] text-slate-500 italic mt-1">* QR minh họa, không chuyển tiền. Hóa đơn chỉ cập nhật sau kết quả xác minh demo.</p>
           </div>
         </div>
 
       </div>
 
+      <div id="invoice-payment-panel" class="text-xs space-y-3" aria-live="polite"></div>
+
       <!-- Action buttons -->
       <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-end gap-3 no-print">
         <button onclick="closeModal('invoiceDetailModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 font-medium">Đóng</button>
-        <button id="btn-mark-paid" onclick="markCurrentInvoicePaid()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold">Xác Nhận Đã Thanh Toán</button>
+        <button id="btn-mark-paid" onclick="markCurrentInvoicePaid()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold">Xác nhận & tạo giao dịch</button>
       </div>
     </div>
   </div>
   <script data-stayhub-page="invoices.html">
+(() => {
+  const paymentStateRoot = {};
+(function (root) {
+  'use strict';
+  function assertPayableInvoice(invoice) {
+    if (invoice.status === 'PAID') throw Error('Hóa đơn đã thanh toán.');
+    if (invoice.status !== 'UNPAID' || !Number.isSafeInteger(invoice.total) || invoice.total <= 0) {
+      throw Error('Hóa đơn không hợp lệ.');
+    }
+  }
+
+  function assertMatchingAmount(invoice, attempt) {
+    if (attempt.amount !== invoice.total) {
+      throw Error('Số tiền hóa đơn đã thay đổi. Phiên thanh toán này không còn phù hợp.');
+    }
+  }
+
+  function update(input, invoiceId, action, now = Date.now(), reference) {
+    const invoices = JSON.parse(JSON.stringify(input));
+    const inv = invoices.find(i => i.id === invoiceId);
+    if (!inv) throw Error('Không tìm thấy hóa đơn.');
+    inv.paymentAttempts ||= [];
+    for (const a of inv.paymentAttempts) {
+      if (a.status === 'PENDING' && now >= a.expiresAt) {
+        a.status = 'EXPIRED'; a.finishedAt = a.expiresAt;
+        a.events.push({ at: a.expiresAt, text: 'Phiên QR hết hạn.' });
+      }
+    }
+    const attempt = inv.paymentAttempts.find(a => a.id === action.id);
+    if (action.type === 'CREATE') {
+      assertPayableInvoice(inv);
+      if (inv.paymentAttempts.some(a => a.status === 'PENDING')) return invoices;
+      if (!reference || invoices.some(i => i.paymentAttempts?.some(a => a.id === reference))) throw Error('Mã giao dịch không hợp lệ.');
+      inv.paymentAttempts.unshift({ id: reference, amount: inv.total, status: 'PENDING', submitted: false, createdAt: now, expiresAt: now + 900000, events: [{ at: now, text: 'Đã kiểm tra hóa đơn và tạo phiên QR demo.' }] });
+    } else if (action.type === 'SUBMIT') {
+      if (!attempt || attempt.status !== 'PENDING') throw Error('Phiên thanh toán không còn hiệu lực.');
+      assertPayableInvoice(inv);
+      assertMatchingAmount(inv, attempt);
+      if (!attempt.submitted) { attempt.submitted = true; attempt.events.push({ at: now, text: 'Đã báo hoàn tất. Chờ xác minh demo; hóa đơn vẫn chưa thanh toán.' }); }
+    } else if (action.type === 'RESOLVE') {
+      if (!attempt) throw Error('Không tìm thấy giao dịch.');
+      if (attempt.status !== 'PENDING') return invoices;
+      if (!['SUCCESS', 'FAILED', 'EXPIRED'].includes(action.result)) throw Error('Kết quả không hợp lệ.');
+      assertPayableInvoice(inv);
+      assertMatchingAmount(inv, attempt);
+      attempt.status = action.result; attempt.finishedAt = now;
+      attempt.events.push({ at: now, text: `Kết quả xác minh mô phỏng: ${action.result}.` });
+      if (attempt.status === 'SUCCESS') {
+        inv.status = 'PAID'; inv.paymentDate = new Date(now).toISOString();
+        inv.method = 'QR demo'; inv.paymentReference = attempt.id;
+        attempt.events.push({ at: now, text: 'Đã cập nhật hóa đơn PAID và lưu xác nhận thanh toán demo.' });
+      }
+    } else if (action.type !== 'TICK') throw Error('Thao tác không hợp lệ.');
+    return invoices;
+  }
+  const api = { update };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.InvoicePaymentState = api;
+})(paymentStateRoot);
+
+  const InvoicePaymentState = paymentStateRoot.InvoicePaymentState;
+  let pageActive = false;
+  let paymentTimer = null;
+
     let activeInvoiceId = null;
 
     function renderInvoicesTable() {
@@ -228,7 +294,7 @@
 
       const currentBldId = DataStore.getCurrentBuilding();
       let filtered = invoices.filter(inv => {
-        const matchBuilding = !inv.buildingId || inv.buildingId === currentBldId;
+        const matchBuilding = currentBldId === 'ALL' || !inv.buildingId || inv.buildingId === currentBldId;
         const matchSearch = inv.room.toLowerCase().includes(search) || inv.tenant.toLowerCase().includes(search) || inv.code.toLowerCase().includes(search);
         const matchStatus = statusFilter === 'ALL' || inv.status === statusFilter;
         return matchBuilding && matchSearch && matchStatus;
@@ -277,8 +343,8 @@
       document.getElementById('inv-grand-total').innerText = formatVND(inv.total);
       document.getElementById('inv-qr-memo').innerText = `STAYHUB ${inv.code}`;
 
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=STAYHUB-${inv.code}-${inv.total}`;
-      document.getElementById('inv-qr-code').src = qrUrl;
+      document.getElementById('inv-qr-code').src = appPath('assets/images/payment-qr-demo.svg');
+      document.getElementById('inv-date-tag').textContent = `Kỳ thu: Tháng ${inv.month}`;
 
       const isPaid = inv.status === 'PAID';
       const statusTag = document.getElementById('inv-status-tag');
@@ -326,32 +392,124 @@
         </tr>
       `;
 
+      renderPaymentPanel();
       openModal('invoiceDetailModal');
     }
 
-    function markCurrentInvoicePaid() {
-      if (!activeInvoiceId) return;
-      const invoices = DataStore.getInvoices();
-      const target = invoices.find(i => i.id === activeInvoiceId);
-      if (target) {
-        target.status = 'PAID';
-        target.paymentDate = new Date().toISOString().replace('T', ' ').substring(0, 16);
-        target.method = 'Thanh toán trực tiếp';
-        DataStore.saveInvoices(invoices);
-        showToast(`Đã gạch nợ thành công hóa đơn ${target.code}!`);
-        closeModal('invoiceDetailModal');
-        renderInvoicesTable();
-      }
-    }
 
-    registerPage('invoices.html', () => {
-      renderSidebar('invoices.html');
-      renderTopbar('Quản lý Hóa đơn & Thu tiền phòng', 'Tài chính / Hóa đơn');
-      renderInvoicesTable();
-      window.onFilterBuilding = function() {
-        renderInvoicesTable();
-      };
-    });
-  </script>
+/* Adds behavior to the original StayHub invoice modal; no replacement layout. */
+const paymentEscape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const paymentTime = value => new Date(value).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+let paymentBusy = false;
+function paymentStats() {
+  const invoices = DataStore.getInvoices();
+  for (const [name, status] of [['paid', 'PAID'], ['unpaid', 'UNPAID']]) {
+    const list = invoices.filter(i => i.status === status);
+    document.getElementById(`payment-total-${name}`).textContent = formatVND(list.reduce((sum, i) => sum + i.total, 0));
+    document.getElementById(`payment-count-${name}`).textContent = list.length;
+  }
+}
+function renderPaymentPanel() {
+  const inv = DataStore.getInvoices().find(i => i.id === activeInvoiceId);
+  if (!inv) return;
+  const attempts = inv.paymentAttempts || [];
+  const a = attempts[0];
+  const pending = a?.status === 'PENDING';
+  const btn = document.getElementById('btn-mark-paid');
+  btn.disabled = paymentBusy || (pending && a.submitted);
+  btn.style.display = inv.status === 'PAID' ? 'none' : 'inline-block';
+  btn.textContent = pending ? (a.submitted ? 'Đang chờ xác minh…' : 'Tôi đã hoàn tất thanh toán') : attempts.length ? 'Thử lại · Tạo giao dịch mới' : 'Xác nhận & tạo giao dịch';
+  const tag = document.getElementById('inv-status-tag');
+  tag.className = `badge ${inv.status === 'PAID' ? 'badge-success' : 'badge-warning'} text-xs`;
+  tag.textContent = inv.status === 'PAID' ? 'ĐÃ THANH TOÁN' : 'CHƯA THANH TOÁN';
+  document.getElementById('inv-qr-memo').textContent = a ? a.id : `STAYHUB ${inv.code}`;
+  document.getElementById('inv-qr-code').style.opacity = pending ? '1' : '.3';
+  const labels = { PENDING: a?.submitted ? 'Đang chờ xác minh' : 'Đang chờ thanh toán', SUCCESS: 'Thanh toán thành công', FAILED: 'Thanh toán thất bại · Có thể thử lại', EXPIRED: 'Phiên thanh toán hết hạn · Có thể thử lại' };
+  const status = a ? `<div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><p class="font-bold ${a.status === 'SUCCESS' ? 'text-emerald-700' : 'text-slate-900'}">${labels[a.status]}</p><p class="mt-1 font-mono">${paymentEscape(a.id)}</p>${pending ? '<p class="mt-1">QR demo hết hạn sau <strong id="payment-countdown"></strong></p>' : `<p class="mt-1">${paymentTime(a.finishedAt)}</p>`}</div>` : `<p class="text-slate-500">${inv.status === 'PAID' ? 'Hóa đơn đã thanh toán. Không tạo thêm giao dịch.' : 'Kiểm tra hóa đơn rồi nhấn xác nhận để tạo giao dịch và bắt đầu phiên QR 15 phút.'}</p>`;
+  const history = attempts.length ? `<details class="border border-slate-200 rounded-lg p-3"><summary class="font-semibold text-slate-700 cursor-pointer">Lịch sử thanh toán (${attempts.length} lần thử)</summary><div class="overflow-x-auto mt-3"><table class="w-full text-left text-xs"><thead class="bg-slate-50"><tr><th class="p-2">Mã giao dịch</th><th class="p-2">Thời gian</th><th class="p-2">Số tiền</th><th class="p-2">Kết quả</th></tr></thead><tbody>${attempts.map(item => `<tr class="border-t border-slate-100"><td class="p-2 font-mono">${paymentEscape(item.id)}</td><td class="p-2">${paymentTime(item.createdAt)}</td><td class="p-2">${formatVND(item.amount)}</td><td class="p-2"><span class="badge ${item.status === 'SUCCESS' ? 'badge-success' : item.status === 'PENDING' ? 'badge-warning' : 'badge-danger'}">${item.status}</span></td></tr>`).join('')}</tbody></table></div>${attempts.map(item => `<details class="mt-2"><summary class="cursor-pointer text-teal-700">Tiến trình ${paymentEscape(item.id)}</summary><ul class="mt-2 space-y-1 text-slate-500">${item.events.map(e => `<li>${paymentTime(e.at)} · ${paymentEscape(e.text)}</li>`).join('')}</ul></details>`).join('')}</details>` : '';
+  const controls = pending ? `<details class="no-print border border-slate-200 rounded-lg p-3"><summary class="font-semibold text-slate-500 cursor-pointer">Mô phỏng kết quả thanh toán</summary><p class="text-slate-400 mt-2">Chỉ dùng thử luồng, không xác nhận tiền thật.</p><div class="flex flex-wrap gap-2 mt-2">${[['SUCCESS','Thành công'],['FAILED','Thất bại'],['EXPIRED','Hết hạn']].map(([value,label]) => `<button type="button" data-payment-result="${value}" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-teal-700 font-semibold">${label}</button>`).join('')}</div></details>` : '';
+  document.getElementById('invoice-payment-panel').innerHTML = status + history + controls;
+  updatePaymentCountdown();
+}
+function updatePaymentCountdown() {
+  const el = document.getElementById('payment-countdown');
+  if (!el) return;
+  const a = DataStore.getInvoices().find(i => i.id === activeInvoiceId)?.paymentAttempts?.[0];
+  if (!a) return;
+  const seconds = Math.max(0, Math.ceil((a.expiresAt - Date.now()) / 1000));
+  el.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+}
+async function changeInvoicePayment(action) {
+  if (paymentBusy || !activeInvoiceId) return;
+  paymentBusy = true;
+  const invoiceId = activeInvoiceId;
+  try {
+    const run = () => {
+      const invoices = DataStore.getInvoices();
+      const inv = invoices.find(i => i.id === invoiceId);
+      if (!inv) throw Error('Không tìm thấy hóa đơn.');
+      const random = Array.from(crypto.getRandomValues(new Uint8Array(4)), n => n.toString(16).padStart(2, '0')).join('').toUpperCase();
+      const updated = InvoicePaymentState.update(invoices, invoiceId, action, Date.now(), `PAY-${Date.now().toString(36).toUpperCase()}-${random}`);
+      DataStore.saveInvoices(updated);
+    };
+    if (navigator.locks) await navigator.locks.request('stayhub-invoice-payments', run); else run();
+    if (pageActive) { renderInvoicesTable(); paymentStats(); }
+  } catch (error) { showToast(error.message || 'Không thể lưu giao dịch.', 'error'); }
+  finally { paymentBusy = false; if (pageActive) renderPaymentPanel(); }
+}
+function runInvoicePayment() {
+  const inv = DataStore.getInvoices().find(i => i.id === activeInvoiceId);
+  const a = inv?.paymentAttempts?.find(item => item.status === 'PENDING');
+  return changeInvoicePayment(a ? { type: 'SUBMIT', id: a.id } : { type: 'CREATE' });
+}
+
+  function markCurrentInvoicePaid() { return runInvoicePayment(); }
+  function handlePaymentResult(event) {
+    const button = event.target.closest('[data-payment-result]');
+    if (!button || !pageActive) return;
+    const attempt = DataStore.getInvoices().find(i => i.id === activeInvoiceId)?.paymentAttempts?.find(a => a.status === 'PENDING');
+    if (attempt) return changeInvoicePayment({type:'RESOLVE', id:attempt.id, result:button.dataset.paymentResult});
+  }
+  function refreshPayments(event) {
+    if (!event || event.key === STORAGE_KEYS.INVOICES || event.key === null) {
+      renderInvoicesTable(); paymentStats(); renderPaymentPanel();
+    }
+  }
+  function cleanupInvoices() {
+    pageActive = false;
+    clearInterval(paymentTimer);
+    paymentTimer = null;
+    document.removeEventListener('click', handlePaymentResult);
+    window.removeEventListener('storage', refreshPayments);
+    if (window.onFilterBuilding === refreshPayments) delete window.onFilterBuilding;
+    activeInvoiceId = null;
+  }
+  registerPage('invoices.html', () => {
+    cleanupInvoices();
+    if (DataStore.getRole() === 'RESIDENT') {
+      window.location.replace(appPath('resident-invoices.html'));
+      return;
+    }
+    pageActive = true;
+    Object.assign(window, {renderInvoicesTable, viewInvoiceModal, markCurrentInvoicePaid});
+    renderSidebar('invoices.html');
+    renderTopbar('Quản lý Hóa đơn & Thu tiền phòng', 'Tài chính / Hóa đơn');
+    renderInvoicesTable(); paymentStats();
+    window.onFilterBuilding = refreshPayments;
+    document.addEventListener('click', handlePaymentResult);
+    window.addEventListener('storage', refreshPayments);
+    paymentTimer = setInterval(() => {
+      if (!activeInvoiceId) return;
+      const attempt = DataStore.getInvoices().find(i => i.id === activeInvoiceId)?.paymentAttempts?.find(a => a.status === 'PENDING');
+      if (attempt && Date.now() >= attempt.expiresAt) changeInvoicePayment({type:'TICK'});
+      else updatePaymentCountdown();
+    }, 1000);
+  }, cleanupInvoices);
+})();
+</script>
+
+
+
+
 </body>
 </html>

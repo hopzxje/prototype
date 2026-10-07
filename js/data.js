@@ -20,7 +20,8 @@ const STORAGE_KEYS = {
   SYSTEM_CONFIG: 'stayhub_system_config',
   CURRENT_BUILDING: 'stayhub_current_building',
   USERS: 'stayhub_users',
-  HANDOVER: 'stayhub_handover'
+  HANDOVER: 'stayhub_handover',
+  CHECKOUT: 'stayhub_checkout_requests'
 };
 
 const DEFAULT_USERS = {
@@ -212,12 +213,14 @@ const INITIAL_CONTRACTS = [
   { id: 'ct-001', code: 'HD-2025-001', room: 'P201', building: 'StayHub Central - Ba Đình', tenant: 'Lê Văn An', phone: '0904445566', cccd: '001201004567', startDate: '2025-01-01', endDate: '2026-12-31', rent: 8500000, deposit: 8500000, status: 'ACTIVE' },
   { id: 'ct-002', code: 'HD-2025-002', room: 'P101', building: 'StayHub Central - Ba Đình', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', cccd: '001200001234', startDate: '2025-02-01', endDate: '2026-02-01', rent: 6500000, deposit: 6500000, status: 'EXPIRING_SOON' },
   { id: 'ct-003', code: 'HD-2025-003', room: 'P102', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', cccd: '001202008899', startDate: '2025-03-01', endDate: '2026-03-01', rent: 7500000, deposit: 7500000, status: 'ACTIVE' },
-  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Ba Đình', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON' }
+  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Ba Đình', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON' },
+  { id: 'ct-005', code: 'HD-2025-112', room: 'P402', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thu Trang', phone: '0908889900', startDate: '2025-01-01', endDate: '2026-09-30', rent: 10000000, deposit: 10000000, status: 'EXPIRED' }
 ];
 
 const INITIAL_INVOICES = [
   {
     id: 'inv-1001',
+    residentId: 'usr-res-1',
     buildingId: 'bld-1',
     code: 'INV-2026-10-P201',
     month: '10/2026',
@@ -374,6 +377,67 @@ const INITIAL_INVOICES = [
   }
 ];
 
+// Demo monthly bills for the resident payment flow. Existing stored bills are
+// never replaced by these examples, including their payment attempts/history.
+const RESIDENT_DEMO_INVOICES = [
+  {
+    id: 'inv-res-2026-09',
+    residentId: 'usr-res-1',
+    isDemo: true,
+    code: 'INV-2026-09-P201',
+    month: '09/2026',
+    dueDate: '2026-09-05',
+    room: 'P201',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    rent: 8500000,
+    elecOld: 1080,
+    elecNew: 1240,
+    elecUnits: 160,
+    elecRate: 3500,
+    elecTotal: 560000,
+    waterOld: 78,
+    waterNew: 85,
+    waterUnits: 7,
+    waterRate: 25000,
+    waterTotal: 175000,
+    serviceFee: 150000,
+    total: 9385000,
+    status: 'UNPAID',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-res-2026-08',
+    residentId: 'usr-res-1',
+    isDemo: true,
+    code: 'INV-2026-08-P201',
+    month: '08/2026',
+    dueDate: '2026-08-05',
+    room: 'P201',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    rent: 8500000,
+    elecOld: 930,
+    elecNew: 1080,
+    elecUnits: 150,
+    elecRate: 3500,
+    elecTotal: 525000,
+    waterOld: 71,
+    waterNew: 78,
+    waterUnits: 7,
+    waterRate: 25000,
+    waterTotal: 175000,
+    serviceFee: 150000,
+    total: 9350000,
+    status: 'PAID',
+    paymentDate: '2026-08-03 09:15',
+    method: 'VietQR SePay (demo)'
+  }
+];
+
 const INITIAL_MAINTENANCE = [
   {
     id: 'mnt-001',
@@ -428,6 +492,172 @@ const INITIAL_VISITORS = [
 const INITIAL_SEPAY_TXS = [
   { id: 'sp-101', txCode: 'FT26275991823901', amount: 9445000, content: 'STAYHUB INV-2026-10-P201', bank: 'MB Bank', account: '0912345678', time: '2026-10-01 09:24:12', invoiceCode: 'INV-2026-10-P201', status: 'MATCHED' },
   { id: 'sp-102', txCode: 'FT26275812903411', amount: 8410000, content: 'STAYHUB INV-2026-10-P102', bank: 'Vietcombank', account: '991234567899', time: '2026-10-02 08:15:33', invoiceCode: 'INV-2026-10-P102', status: 'MATCHED' }
+];
+
+const INITIAL_CHECKOUT_REQUESTS = [
+  {
+    id: 'req-01',
+    contractCode: 'HD-2025-001',
+    contractEndDate: '2026-12-31',
+    contractStatusAtRequest: 'ACTIVE',
+    isEarlyCheckout: true,
+    depositSettlementStatus: 'PENDING_SETTLEMENT',
+    code: 'REQ-OUT-2026-0045',
+    room: 'P201',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    deposit: 8500000,
+    requestDate: '2026-10-05',
+    expectedDate: '2026-10-20',
+    timeslot: '14:30',
+    status: 'PENDING_APPROVAL', // Staff Phạm Tuấn Anh ĐÃ NGHIỆM THU XONG lúc 14:30 -> Chờ Quản lý duyệt quyết toán
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 1450,
+    meterElectricCurr: 1580,
+    electricRate: 3000,
+    meterWaterPrev: 60,
+    meterWaterCurr: 65,
+    waterRate: 12000,
+    damages: [
+      { item: 'Rèm cửa chống nắng', issue: 'Hư hỏng nhẹ (rách mép)', cost: 350000 }
+    ],
+    cleaningFee: 0,
+    notes: 'Kỹ thuật viên Phạm Tuấn Anh đã kiểm tra phòng lúc 14:30 ngày 20/10. Đã chốt số điện nước, lập biên bản hư hại rèm cửa; yêu cầu trả phòng trước hạn nên tiền cọc không được hoàn, chờ Quản lý xem xét.',
+    bankAccount: { bank: 'MB Bank', accountNumber: '0904445566', accountName: 'LE VAN AN' },
+    refundAmount: 0,
+    isSigned: false,
+    disputeReason: null,
+  },
+  {
+    id: 'req-04',
+    code: 'REQ-OUT-2026-0049',
+    room: 'P402',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Trần Thu Trang',
+    phone: '0908889900',
+    contractCode: 'HD-2025-112',
+    contractEndDate: '2026-09-30',
+    contractStatusAtRequest: 'EXPIRED',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'REFUND_PENDING',
+    deposit: 10000000,
+    requestDate: '2026-10-01',
+    expectedDate: '2026-10-18',
+    timeslot: '10:00',
+    status: 'REFUND_PENDING', // Cư dân đã ký, chờ Quản lý duyệt lệnh chi UNC hoàn cọc
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 1800,
+    meterElectricCurr: 1950,
+    electricRate: 3000,
+    meterWaterPrev: 80,
+    meterWaterCurr: 85,
+    waterRate: 12000,
+    damages: [
+      { item: 'Sơn tường phòng ngủ', issue: 'Vết ố bẩn khó tẩy', cost: 290000 }
+    ],
+    cleaningFee: 0,
+    notes: 'Staff đã nghiệm thu, cư dân đã ký biên bản thanh lý. Chờ Quản lý phê duyệt lệnh chi hoàn cọc 9.200.000 ₫.',
+    bankAccount: { bank: 'Techcombank', accountNumber: '1903332211', accountName: 'TRAN THU TRANG' },
+    refundAmount: 9200000,
+    isSigned: true,
+    disputeReason: null,
+  },
+  {
+    id: 'req-05',
+    code: 'REQ-OUT-2026-0050',
+    room: 'P503',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Đỗ Mạnh Quân',
+    phone: '0901112233',
+    contractCode: 'HD-2025-067',
+    deposit: 9000000,
+    requestDate: '2026-10-02',
+    expectedDate: '2026-10-19',
+    timeslot: '15:00',
+    status: 'DISPUTED', // Staff đã nghiệm thu nhưng cư dân khiếu nại mức bồi thường -> Chờ Quản lý thẩm định giải quyết khiếu nại
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 2300,
+    meterElectricCurr: 2420,
+    electricRate: 3000,
+    meterWaterPrev: 95,
+    meterWaterCurr: 98,
+    waterRate: 12000,
+    damages: [
+      { item: 'Cửa kính ban công', issue: 'Vết nứt góc dưới', cost: 1200000 }
+    ],
+    cleaningFee: 0,
+    notes: 'Staff đã nghiệm thu hiện trường và ghi nhận nứt kính 1.200.000 ₫. Cư dân không đồng ý (khiếu nại kính rạn từ lúc nhận nhà, đính kèm ảnh bàn giao đầu vào). Chờ Quản lý thẩm định.',
+    bankAccount: { bank: 'VietinBank', accountNumber: '108877665544', accountName: 'DO MANH QUAN' },
+    refundAmount: 7404000,
+    isSigned: false,
+    disputeReason: 'Vết nứt kính góc ban công đã có từ thời điểm bàn giao nhà ban đầu tháng 10/2025; đã có ảnh chụp đối chiếu.',
+  },
+  {
+    id: 'req-02',
+    code: 'REQ-OUT-2026-0048',
+    room: 'P104',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Hoàng Kim Long',
+    phone: '0903334455',
+    contractCode: 'HD-2026-004',
+    deposit: 6800000,
+    requestDate: '2026-10-06',
+    expectedDate: '2026-10-22',
+    timeslot: '09:30',
+    status: 'SUBMITTED', // Cư dân mới nộp đơn -> Việc của STAFF tiếp nhận, xếp lịch và đi nghiệm thu (Quản lý không quản lý đơn này)
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 920,
+    meterElectricCurr: null,
+    electricRate: 3000,
+    meterWaterPrev: 42,
+    meterWaterCurr: null,
+    waterRate: 12000,
+    damages: [],
+    cleaningFee: 0,
+    notes: 'Chuyển công tác vào TP.HCM. Chờ nhân viên kỹ thuật tiếp nhận xếp lịch và đến phòng nghiệm thu.',
+    bankAccount: { bank: 'Vietcombank', accountNumber: '001100432198', accountName: 'HOANG KIM LONG' },
+    refundAmount: 6800000,
+    isSigned: false,
+    disputeReason: null,
+  },
+  {
+    id: 'req-03',
+    contractEndDate: '2026-10-01',
+    contractStatusAtRequest: 'EXPIRED',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'PAID',
+    code: 'REQ-OUT-2026-0042',
+    room: 'P301',
+    building: 'StayHub Central - Ba Đình',
+    tenant: 'Vũ Đức Nam',
+    phone: '0907778899',
+    contractCode: 'HD-2025-089',
+    deposit: 9500000,
+    requestDate: '2026-09-15',
+    expectedDate: '2026-09-30',
+    timeslot: '10:00',
+    status: 'CLOSED', // Đã hoàn tất thanh lý & giải ngân cọc
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 2100,
+    meterElectricCurr: 2250,
+    electricRate: 3000,
+    meterWaterPrev: 110,
+    meterWaterCurr: 115,
+    waterRate: 12000,
+    damages: [],
+    cleaningFee: 0,
+    notes: 'Đã hoàn tất bàn giao phòng và hoàn trả cọc đầy đủ qua UNC ngân hàng.',
+    bankAccount: { bank: 'Techcombank', accountNumber: '190324567890', accountName: 'VU DUC NAM' },
+    refundAmount: 8990000,
+    isSigned: true,
+    disputeReason: null,
+  }
 ];
 
 const INITIAL_AUDIT_LOGS = [
@@ -543,6 +773,10 @@ const DataStore = {
     }
     if (!localStorage.getItem(STORAGE_KEYS.INVOICES)) {
       localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(INITIAL_INVOICES));
+    }
+    this.migrateResidentDemoInvoices();
+    if (!localStorage.getItem(STORAGE_KEYS.CHECKOUT)) {
+      localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(INITIAL_CHECKOUT_REQUESTS));
     }
     if (!localStorage.getItem(STORAGE_KEYS.MAINTENANCE)) {
       localStorage.setItem(STORAGE_KEYS.MAINTENANCE, JSON.stringify(INITIAL_MAINTENANCE));
@@ -701,6 +935,37 @@ const DataStore = {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.INVOICES) || '[]');
   },
 
+  isResidentInvoice(invoice, user = DataStore.getUser()) {
+    if (!invoice || !user || user.role !== 'RESIDENT') return false;
+    if (invoice.residentId) return Boolean(user.id) && invoice.residentId === user.id;
+    return Boolean(user.room && user.building && user.fullName)
+      && invoice.room === user.room
+      && invoice.building === user.building
+      && invoice.tenant === user.fullName;
+  },
+
+  getResidentInvoices(user = DataStore.getUser()) {
+    return this.getInvoices().filter(invoice => this.isResidentInvoice(invoice, user));
+  },
+
+  migrateResidentDemoInvoices() {
+    const invoices = this.getInvoices();
+    let changed = false;
+    // Add the stable ID only to the known, unchanged owner of the legacy seed.
+    const legacy = invoices.find(invoice => invoice.id === 'inv-1001');
+    if (legacy && !legacy.residentId && this.isResidentInvoice(legacy, DEFAULT_USERS.RESIDENT)) {
+      legacy.residentId = DEFAULT_USERS.RESIDENT.id;
+      changed = true;
+    }
+    for (const example of RESIDENT_DEMO_INVOICES) {
+      if (!invoices.some(invoice => invoice.id === example.id)) {
+        invoices.push({ ...example });
+        changed = true;
+      }
+    }
+    if (changed) this.saveInvoices(invoices);
+  },
+
   saveInvoices(invoices) {
     localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(invoices));
   },
@@ -727,6 +992,14 @@ const DataStore = {
 
   saveSepayTxs(txs) {
     localStorage.setItem(STORAGE_KEYS.SEPAY_TXS, JSON.stringify(txs));
+  },
+
+  getCheckoutRequests() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.CHECKOUT) || '[]');
+  },
+
+  saveCheckoutRequests(reqs) {
+    localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(reqs));
   },
 
   getSystemConfig() {
@@ -773,6 +1046,11 @@ const DataStore = {
   },
 
   updateUser(id, userData) {
+    if (arguments.length === 1 && id && typeof id === 'object') {
+      const updatedUser = { ...this.getUser(), ...id };
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+      return updatedUser;
+    }
     const users = this.getUsers();
     const idx = users.findIndex(u => u.id === id);
     if (idx !== -1) {
