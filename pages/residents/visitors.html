@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StayHub - Quản lý Khách đến thăm (Luồng 2.7)</title>
+  <title>StayHub - Quản lý Khách đến thăm (Luồng 7)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
@@ -27,7 +27,7 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800 uppercase tracking-wider">Nghiệp Vụ 2.7</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800 uppercase tracking-wider">Nghiệp Vụ 7</span>
               <h2 class="text-xl font-bold text-slate-900">Visitor Registration & Approval</h2>
             </div>
             <p class="text-xs text-slate-500 mt-1">Đăng ký khách $\rightarrow$ Staff tiếp nhận $\rightarrow$ (Chuyển Manager nếu cần) $\rightarrow$ Duyệt / Từ chối $\rightarrow$ Check-in $\rightarrow$ Check-out</p>
@@ -45,14 +45,14 @@
         </div>
 
         <!-- ========================================================================= -->
-        <!-- INTERACTIVE FLOW RUNNER (Trình diễn trực quan từng bước theo Swimlane 2.7) -->
+        <!-- INTERACTIVE FLOW RUNNER (Trình diễn trực quan từng bước theo Swimlane 7)  -->
         <!-- ========================================================================= -->
         <div class="bg-gradient-to-r from-teal-900 via-teal-800 to-slate-900 text-white rounded-2xl p-5 shadow-lg border border-teal-700/50">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-teal-700/60">
             <div>
               <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <h3 class="font-bold text-sm tracking-wide uppercase text-teal-200">Trình diễn Luồng 2.7: Đăng Ký & Phê Duyệt Khách Thăm</h3>
+                <h3 class="font-bold text-sm tracking-wide uppercase text-teal-200">Trình diễn Luồng 7: Đăng Ký & Phê Duyệt Khách Thăm</h3>
               </div>
               <p class="text-xs text-slate-300 mt-0.5">Thực hiện tuần tự các bước theo đúng sơ đồ Activity Swimlane (Resident $\rightarrow$ Staff $\rightarrow$ Manager $\rightarrow$ System)</p>
             </div>
@@ -692,7 +692,7 @@
                   checkoutVisitor(approvedTarget.id);
                   btn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i> <span>Chạy Tự Động Toàn Luồng</span>`;
                   lucide.createIcons();
-                  showToast('Đã hoàn thành toàn bộ chu trình Luồng 2.7!', 'success');
+                  showToast('Đã hoàn thành toàn bộ chu trình Luồng 7!', 'success');
                   filterStatus('ALL');
                 }, 2000);
               }

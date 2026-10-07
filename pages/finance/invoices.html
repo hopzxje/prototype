@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StayHub - Quản lý Hóa đơn & Thu phí (Luồng 2.8)</title>
+  <title>StayHub - Quản lý Hóa đơn & Thu phí (Luồng 8)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
@@ -30,7 +30,7 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800 uppercase tracking-wider">Nghiệp Vụ 2.8</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800 uppercase tracking-wider">Nghiệp Vụ 8</span>
               <h2 class="text-xl font-bold text-slate-900">Cyclic Billing and Invoicing</h2>
             </div>
             <p class="text-xs text-slate-500 mt-1">Staff tạo hóa đơn $\rightarrow$ Kiểm tra chỉ số $\rightarrow$ Nhập phụ phí $\rightarrow$ Lưu Draft $\rightarrow$ Manager Review $\rightarrow$ Phát hành qua Zalo OA $\rightarrow$ Cư dân nhận hóa đơn</p>
@@ -48,14 +48,14 @@
         </div>
 
         <!-- ========================================================================= -->
-        <!-- INTERACTIVE FLOW RUNNER (Trình diễn trực quan từng bước theo Swimlane 2.8) -->
+        <!-- INTERACTIVE FLOW RUNNER (Trình diễn trực quan từng bước theo Swimlane 8)  -->
         <!-- ========================================================================= -->
         <div class="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 text-white rounded-2xl p-5 shadow-lg border border-teal-700/50">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-teal-800/60">
             <div>
               <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <h3 class="font-bold text-sm tracking-wide uppercase text-teal-200">Trình diễn Luồng 2.8: Lập & Phát Hành Hóa Đơn Định Kỳ</h3>
+                <h3 class="font-bold text-sm tracking-wide uppercase text-teal-200">Trình diễn Luồng 8: Lập & Phát Hành Hóa Đơn Định Kỳ</h3>
               </div>
               <p class="text-xs text-slate-300 mt-0.5">Khớp 100% sơ đồ Activity Swimlane (Staff $\rightarrow$ System $\rightarrow$ Manager $\rightarrow$ Resident)</p>
             </div>
@@ -225,7 +225,7 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- MODAL: WIZARD LẬP HÓA ĐƠN ĐỊNH KỲ (CYCLIC BILLING WIZARD - SWIMLANE 2.8)   -->
+  <!-- MODAL: WIZARD LẬP HÓA ĐƠN ĐỊNH KỲ (CYCLIC BILLING WIZARD - SWIMLANE 8)     -->
   <!-- ========================================================================= -->
   <div id="cyclicBillingWizardModal" class="modal-backdrop">
     <div class="modal-content max-w-4xl p-6">
@@ -238,7 +238,7 @@
               <i data-lucide="calculator" class="w-5 h-5"></i>
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-base">Quy Trình Lập Hóa Đơn Định Kỳ (Luồng 2.8)</h3>
+              <h3 class="font-bold text-slate-900 text-base">Quy Trình Lập Hóa Đơn Định Kỳ (Luồng 8)</h3>
               <p class="text-xs text-slate-500">Chạy theo sơ đồ tuần tự: Staff $\rightarrow$ System $\rightarrow$ Manager $\rightarrow$ Resident</p>
             </div>
           </div>
@@ -719,7 +719,7 @@
     }
 
     // =========================================================================
-    // CYCLIC BILLING WIZARD LOGIC (LUỒNG 2.8)
+    // CYCLIC BILLING WIZARD LOGIC (LUỒNG 8)
     // =========================================================================
 
     function openCyclicBillingWizard(step = 1) {
@@ -1013,7 +1013,7 @@
       renderInvoicesTable();
     }
 
-    // Auto Walkthrough Runner for Flow 2.8
+    // Auto Walkthrough Runner for Flow 8
     function runAutoBillingTour() {
       const btn = document.getElementById('btn-auto-invoice-demo');
       btn.innerHTML = `<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> <span>Đang chạy Demo...</span>`;

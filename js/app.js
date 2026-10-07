@@ -30,12 +30,23 @@ const PAGE_PATHS = {
 };
 
 function getAppRoot() {
-  return window.location.pathname.includes('/pages/') ? '../../' : './';
+  if (window.location.protocol === 'file:') {
+    return window.location.pathname.includes('/pages/') ? '../../' : './';
+  }
+  const pathname = window.location.pathname;
+  const pagesIndex = pathname.indexOf('/pages/');
+  if (pagesIndex !== -1) {
+    return pathname.slice(0, pagesIndex + 1);
+  }
+  const lastSlash = pathname.lastIndexOf('/');
+  return pathname.slice(0, lastSlash + 1);
 }
 
 function appPath(page) {
   const route = PAGE_PATHS[page] || page;
-  return `${getAppRoot()}${route}`;
+  const root = getAppRoot();
+  const cleanRoute = route.startsWith('/') ? route.slice(1) : route;
+  return `${root}${cleanRoute}`;
 }
 
 function currentPageKey() {
@@ -206,17 +217,21 @@ function updateSidebarActiveState(sidebar, activePage) {
     link.classList.toggle('hover:bg-slate-100', !isActive);
     link.classList.toggle('hover:text-slate-900', !isActive);
 
+    // Keep href accurate across dynamic navigation
+    if (link.dataset.navPage) {
+      link.href = appPath(link.dataset.navPage);
+    }
+
+    // Remove any existing indicator dots to avoid duplicate dots
+    link.querySelectorAll('.active-dot, span.rounded-full').forEach(dot => dot.remove());
+
     if (isActive) {
       link.setAttribute('aria-current', 'page');
-      if (!link.querySelector('.active-dot')) {
-        const dot = document.createElement('span');
-        dot.className = 'w-2 h-2 rounded-full bg-[#0F766E] active-dot';
-        link.appendChild(dot);
-      }
+      const dot = document.createElement('span');
+      dot.className = 'w-2 h-2 rounded-full bg-[#0F766E] active-dot';
+      link.appendChild(dot);
     } else {
       link.removeAttribute('aria-current');
-      const dot = link.querySelector('.active-dot');
-      if (dot) dot.remove();
     }
 
     const icon = link.querySelector('svg, i');
@@ -323,7 +338,7 @@ function renderSidebar(activePage = 'index.html') {
               <i data-lucide="${item.icon}" class="w-4 h-4 ${isActive ? 'text-[#0F766E]' : 'text-slate-500'}"></i>
               <span>${item.label}</span>
             </div>
-            ${isActive ? '<span class="w-2 h-2 rounded-full bg-[#0F766E]"></span>' : ''}
+            ${isActive ? '<span class="w-2 h-2 rounded-full bg-[#0F766E] active-dot"></span>' : ''}
           </a>
         `;
       }).join('')}
@@ -657,6 +672,9 @@ function commitPage(nextDocument, targetUrl, pageName, historyMode, restoreScrol
 
 async function navigateTo(targetHref, { historyMode = 'push', restoreScrollTop = 0 } = {}) {
   const targetUrl = new URL(targetHref, window.location.href);
+  if (targetUrl.pathname.indexOf('/pages/') !== targetUrl.pathname.lastIndexOf('/pages/')) {
+    targetUrl.pathname = targetUrl.pathname.slice(targetUrl.pathname.lastIndexOf('/pages/'));
+  }
   const targetPageName = getPageName(targetUrl.href);
   const targetRouteKey = getRouteKey(targetUrl.href);
 
@@ -772,6 +790,9 @@ function setupClientNavigation() {
     if (!isClientNavigationClick(event, anchor)) return;
 
     const targetUrl = new URL(anchor.href, window.location.href);
+    if (targetUrl.pathname.indexOf('/pages/') !== targetUrl.pathname.lastIndexOf('/pages/')) {
+      targetUrl.pathname = targetUrl.pathname.slice(targetUrl.pathname.lastIndexOf('/pages/'));
+    }
     const currentUrl = new URL(window.location.href);
     const isCurrentPage = targetUrl.pathname === currentUrl.pathname
       && targetUrl.search === currentUrl.search;
