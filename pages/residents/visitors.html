@@ -505,14 +505,10 @@
 
         // Status Badge
         let statusBadge = '';
-        if (v.status === 'PENDING') {
-          if (v.isOvernight) {
-            statusBadge = `<span class="badge bg-amber-50 text-amber-800 border border-amber-300 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Chờ tiếp nhận qua đêm</span>`;
-          } else {
-            statusBadge = `<span class="badge badge-warning flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span> Chờ Staff duyệt</span>`;
-          }
-        } else if (v.status === 'FORWARDED_MANAGER') {
+        if (v.status === 'FORWARDED_MANAGER' || (v.status === 'PENDING' && v.isOvernight)) {
           statusBadge = `<span class="badge bg-purple-100 text-purple-900 border border-purple-300 font-extrabold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-purple-600 animate-pulse"></span> Chờ Manager duyệt</span>`;
+        } else if (v.status === 'PENDING') {
+          statusBadge = `<span class="badge badge-warning flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span> Chờ Staff duyệt</span>`;
         } else if (v.status === 'APPROVED') {
           statusBadge = `<span class="badge badge-info">✓ Đã duyệt</span>`;
         } else if (v.status === 'IN_BUILDING') {

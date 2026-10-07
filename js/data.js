@@ -425,7 +425,7 @@ const INITIAL_VISITORS = [
   { id: 'vis-01', guestName: 'Nguyễn Thu Huyền', cccd: '001198003421', phone: '0988112233', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-02 18:30', status: 'APPROVED', stayType: 'DAILY', isOvernight: false, note: 'Bạn đại học ghé ăn tối (rời trước 22:00)', reviewedBy: 'Phạm Tuấn Anh (Staff Duyệt trong ngày)' },
   { id: 'vis-02', guestName: 'Phạm Quốc Bảo', cccd: '034200008765', phone: '0977223344', hostRoom: 'P102', hostTenant: 'Trần Thị Thu Thảo', timeExpected: '2026-10-02 14:00', status: 'IN_BUILDING', stayType: 'DAILY', isOvernight: false, note: 'Giao tài liệu công ty', reviewedBy: 'Phạm Tuấn Anh (Staff Duyệt trong ngày)', checkInTime: '2026-10-02 14:05' },
   { id: 'vis-03', guestName: 'Vũ Minh Khôi', cccd: '001201007744', phone: '0966334455', hostRoom: 'P301', hostTenant: 'Vũ Đức Nam', timeExpected: '2026-10-02 20:00', status: 'PENDING', stayType: 'DAILY', isOvernight: false, note: 'Em trai đến thăm ăn cơm tối (về trước 22:30 - Staff duyệt)' },
-  { id: 'vis-04', guestName: 'Hoàng Văn Bách', cccd: '001200009988', phone: '0912334455', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-03 22:30', status: 'FORWARDED_MANAGER', stayType: 'OVERNIGHT', isOvernight: true, note: 'Khách ở lại qua đêm - Chờ Quản lý (Manager) đồng ý phê duyệt', reviewedBy: 'Phạm Tuấn Anh (Staff tiếp nhận & chuyển Manager)' },
+  { id: 'vis-04', guestName: 'Hoàng Văn Bách', cccd: '001200009988', phone: '0912334455', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-03 22:30', status: 'FORWARDED_MANAGER', stayType: 'OVERNIGHT', isOvernight: true, note: 'Khách ở lại qua đêm - Chờ Manager duyệt', reviewedBy: 'Phạm Tuấn Anh (Staff tiếp nhận & chuyển Manager)' },
   { id: 'vis-05', guestName: 'Trịnh Thanh Tùng', cccd: '034200005522', phone: '0933445566', hostRoom: 'P101', hostTenant: 'Nguyễn Văn Hùng', timeExpected: '2026-10-01 23:45', status: 'REJECTED', stayType: 'OVERNIGHT', isOvernight: true, note: 'Xin ở lại qua đêm nhưng không đủ CCCD và quá giờ giới nghiêm', reviewedBy: 'Trần Minh Đức (Manager)', rejectReason: 'Quá giờ giới nghiêm tòa nhà theo điều 5 nội quy và không đủ giấy tờ' },
   { id: 'vis-06', guestName: 'Đỗ Thùy Linh', cccd: '001199002233', phone: '0988776655', hostRoom: 'P204', hostTenant: 'Đỗ Thùy Trang', timeExpected: '2026-10-01 10:00', status: 'DEPARTED', stayType: 'DAILY', isOvernight: false, note: 'Chị gái sang chơi nấu cơm', reviewedBy: 'Phạm Tuấn Anh (Staff Duyệt trong ngày)', checkInTime: '2026-10-01 10:15', checkOutTime: '2026-10-01 16:30' },
   { id: 'vis-07', guestName: 'Lâm Bảo Châu', cccd: '079201005588', phone: '0918889922', hostRoom: 'P201', hostTenant: 'Lê Văn An', timeExpected: '2026-10-04 21:00', status: 'PENDING', stayType: 'OVERNIGHT', isOvernight: true, note: 'Bạn ở lại qua đêm thứ Bảy - Cần Manager duyệt' }
@@ -769,10 +769,19 @@ const DataStore = {
       const isOvernight = v.isOvernight !== undefined
         ? Boolean(v.isOvernight)
         : (v.stayType === 'OVERNIGHT' || (v.note && (v.note.toLowerCase().includes('qua đêm') || v.note.toLowerCase().includes('sau 23h'))));
+      let note = v.note || '';
+      note = note.replace(/Quản lý \(Manager\)/g, 'Manager')
+                 .replace(/quản lý \(manager\)/gi, 'Manager')
+                 .replace(/Quản lý/g, 'Manager')
+                 .replace(/quản lý/g, 'Manager');
+      let reviewedBy = v.reviewedBy || '';
+      reviewedBy = reviewedBy.replace(/Quản lý/g, 'Manager').replace(/quản lý/g, 'Manager');
       return {
         ...v,
         stayType: isOvernight ? 'OVERNIGHT' : 'DAILY',
-        isOvernight: isOvernight
+        isOvernight: isOvernight,
+        note: note,
+        reviewedBy: reviewedBy
       };
     });
   },
@@ -787,7 +796,7 @@ const DataStore = {
     if (item) {
       if (item.isOvernight) {
         // Khách ở qua đêm: Staff không duyệt thẳng được, phải chuyển tiếp Manager duyệt!
-        return this.forwardVisitorToManager(id, 'Hồ sơ lưu trú qua đêm chuyển Quản lý (Manager) phê duyệt theo quy chế');
+        return this.forwardVisitorToManager(id, 'Hồ sơ lưu trú qua đêm chuyển Manager phê duyệt theo quy chế');
       }
       item.status = 'APPROVED';
       item.reviewedBy = 'Phạm Tuấn Anh (Staff Duyệt trong ngày)';

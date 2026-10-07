@@ -49,7 +49,7 @@
             <div>
               <p class="text-[11px] font-semibold text-slate-400 uppercase">Đang chờ xét duyệt</p>
               <h3 class="text-2xl font-extrabold text-amber-600 mt-1" id="res-pending-count">0</h3>
-              <p class="text-[11px] text-slate-400 mt-0.5">Ban Quản Lý đang xử lý</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">Manager / Staff đang xử lý</p>
             </div>
             <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
               <i data-lucide="clock" class="w-5 h-5"></i>
@@ -98,7 +98,7 @@
                   <th class="p-3.5">Số CCCD</th>
                   <th class="p-3.5">Thời gian dự kiến</th>
                   <th class="p-3.5">Mục đích / Ghi chú</th>
-                  <th class="p-3.5">Trạng thái BQL</th>
+                  <th class="p-3.5">Trạng thái</th>
                   <th class="p-3.5 text-right">Thao tác</th>
                 </tr>
               </thead>
@@ -117,7 +117,7 @@
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
         <div>
           <h3 class="text-base font-bold text-slate-900">Đăng ký khách đến thăm</h3>
-          <p class="text-xs text-slate-500 mt-0.5">Thông tin sẽ được gửi ngay đến Ban Quản Lý StayHub để phê duyệt.</p>
+          <p class="text-xs text-slate-500 mt-0.5">Thông tin sẽ được gửi đến Staff / Manager để phê duyệt.</p>
         </div>
         <button type="button" onclick="closeModal('residentVisitorModal')" class="text-slate-400 hover:text-slate-600">
           <i data-lucide="x" class="w-5 h-5"></i>
@@ -179,7 +179,7 @@
         </div>
         <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-200">
           <button type="button" onclick="closeModal('residentVisitorModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold text-xs">Hủy</button>
-          <button type="submit" class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold text-xs shadow-sm">Gửi Đăng Ký Tới BQL</button>
+          <button type="submit" class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold text-xs shadow-sm">Gửi Đăng Ký</button>
         </div>
       </form>
     </div>
@@ -218,16 +218,13 @@
   <script>
     function residentVisitorBadge(visitor) {
       const status = visitor.status;
-      if (status === 'FORWARDED_MANAGER') {
+      if (status === 'FORWARDED_MANAGER' || (status === 'PENDING' && visitor.isOvernight)) {
         return `<span class="badge bg-purple-100 text-purple-900 border border-purple-300 font-bold">⏳ Chờ Manager duyệt</span>`;
       }
       if (status === 'REJECTED') {
-        return `<span class="badge badge-danger cursor-pointer" onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định ra vào tòa nhà'}\\nNgười duyệt: ${visitor.reviewedBy || 'BQL'}')">✕ Bị từ chối (Xem lý do)</span>`;
+        return `<span class="badge badge-danger cursor-pointer" onclick="alert('Lý do từ chối:\\n${visitor.rejectReason || 'Không đáp ứng quy định ra vào tòa nhà'}\\nNgười duyệt: ${visitor.reviewedBy || 'Manager'}')">✕ Bị từ chối (Xem lý do)</span>`;
       }
       if (status === 'PENDING') {
-        if (visitor.isOvernight) {
-          return `<span class="badge bg-purple-50 text-purple-800 border border-purple-200 font-semibold">⏳ Chờ duyệt qua đêm</span>`;
-        }
         return `<span class="badge badge-warning">⏳ Chờ Staff duyệt</span>`;
       }
       const labels = {
