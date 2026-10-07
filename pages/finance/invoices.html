@@ -56,7 +56,6 @@
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 <h3 class="font-bold text-sm tracking-wide uppercase text-teal-200">Trình diễn Luồng 8: Lập & Phát Hành Hóa Đơn Định Kỳ</h3>
               </div>
-              <p class="text-xs text-slate-300 mt-0.5">Khớp 100% sơ đồ Activity Swimlane (Staff $\rightarrow$ System $\rightarrow$ Manager $\rightarrow$ Resident)</p>
             </div>
             <div class="flex items-center gap-2">
               <button id="btn-auto-invoice-demo" onclick="runAutoBillingTour()" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-sm transition-all">
@@ -238,7 +237,7 @@
             </div>
             <div>
               <h3 class="font-bold text-slate-900 text-base">Quy Trình Lập Hóa Đơn Định Kỳ (Luồng 8)</h3>
-              <p class="text-xs text-slate-500">Chạy theo sơ đồ tuần tự: Staff $\rightarrow$ System $\rightarrow$ Manager $\rightarrow$ Resident</p>
+              <p class="text-xs text-slate-500">Chạy theo sơ đồ tuần tự: Staff → System → Manager → Resident</p>
             </div>
           </div>
           <button onclick="closeModal('cyclicBillingWizardModal')" class="text-slate-400 hover:text-slate-600">
@@ -352,10 +351,10 @@
               <span class="font-bold block mb-1.5">Trình diễn nhánh rẽ của Sơ đồ:</span>
               <div class="flex flex-wrap gap-2">
                 <button type="button" onclick="testDataCheckBranch(false)" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-[11px]">
-                  Mô phỏng: TH Thiếu dữ liệu (Nhánh No $\rightarrow$ Error Missing Data)
+                  Mô phỏng: TH Thiếu dữ liệu (Nhánh No → Error Missing Data)
                 </button>
                 <button type="button" onclick="testDataCheckBranch(true)" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-[11px]">
-                  Mô phỏng: TH Đủ dữ liệu (Nhánh Yes $\rightarrow$ Hiện Form Tính Tiền)
+                  Mô phỏng: TH Đủ dữ liệu (Nhánh Yes → Hiện Form Tính Tiền)
                 </button>
               </div>
             </div>
@@ -367,7 +366,7 @@
                 <span>Lỗi thiếu dữ liệu (Error: Missing Data)</span>
               </div>
               <p>Phòng <strong>P203</strong> và <strong>P204</strong> chưa được nhân viên ghi nhận chỉ số điện nước kỳ này. Hệ thống không thể tiếp tục lập hóa đơn khi chưa đủ dữ liệu!</p>
-              <button onclick="testDataCheckBranch(true)" class="mt-2 text-xs font-bold text-red-700 underline">Bấm để cập nhật nhanh chỉ số mẫu $\rightarrow$</button>
+              <button onclick="testDataCheckBranch(true)" class="mt-2 text-xs font-bold text-red-700 underline">Bấm để cập nhật nhanh chỉ số mẫu →</button>
             </div>
           </div>
         </div>
@@ -408,7 +407,7 @@
           <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl text-purple-900 text-xs flex items-start gap-2.5">
             <i data-lucide="eye" class="w-4 h-4 text-purple-700 shrink-0 mt-0.5"></i>
             <div>
-              <strong class="font-bold">Xem trước & Kiểm tra (Display Invoice Preview):</strong> Nhân viên kiểm tra danh sách lần cuối. Nếu cần sửa có thể quay lại. Khi đúng $\rightarrow$ Bấm <strong>"Save Draft"</strong>.
+              <strong class="font-bold">Xem trước & Kiểm tra (Display Invoice Preview):</strong> Nhân viên kiểm tra danh sách lần cuối. Nếu cần sửa có thể quay lại. Khi đúng → Bấm <strong>"Save Draft"</strong>.
             </div>
           </div>
 
