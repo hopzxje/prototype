@@ -54,6 +54,10 @@
             <button onclick="filterUserRole('ALL')" id="filter-role-all" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-[#0F766E] text-white shadow-xs whitespace-nowrap">
               Tất cả (<span id="count-all">8</span>)
             </button>
+            <button onclick="filterUserRole('INACTIVE')" id="filter-role-inactive" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 whitespace-nowrap flex items-center gap-1.5 cursor-pointer">
+              <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+              <span>Chờ duyệt (<span id="count-inactive">0</span>)</span>
+            </button>
             <button onclick="filterUserRole('ADMIN')" id="filter-role-admin" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 whitespace-nowrap">
               Admin (<span id="count-admin">1</span>)
             </button>
@@ -67,6 +71,22 @@
               Cư dân (<span id="count-resident">1</span>)
             </button>
           </div>
+        </div>
+
+        <!-- Banner cảnh báo tài khoản cư dân mới tạo cần Admin duyệt -->
+        <div id="inactive-users-alert" class="hidden p-4 bg-amber-50 border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+              <i data-lucide="shield-alert" class="w-5 h-5 text-amber-700"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-amber-950 text-xs sm:text-sm">Có <span id="alert-inactive-count" class="font-extrabold text-amber-900">0</span> tài khoản cư dân vừa được tạo từ Hợp đồng đang chờ cấp quyền truy cập (INACTIVE)</h4>
+              <p class="text-[11.5px] text-amber-800 mt-0.5">Quản trị viên cần bấm nút <strong>"Duyệt Active"</strong> bên dưới để kích hoạt tài khoản cho cư dân đăng nhập.</p>
+            </div>
+          </div>
+          <button onclick="filterUserRole('INACTIVE')" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors shrink-0 cursor-pointer shadow-xs">
+            Xem danh sách chờ duyệt
+          </button>
         </div>
 
         <!-- Users Table Card -->
@@ -145,9 +165,19 @@
           </div>
         </div>
 
-        <div>
-          <label class="block font-semibold text-slate-700 mb-1">Phạm Vi Cơ Sở Phụ Trách</label>
-          <input type="text" id="usr-scope" placeholder="Ví dụ: Toàn bộ 3 cơ sở hoặc StayHub Central" value="Toàn bộ 3 cơ sở" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Phạm Vi Cơ Sở Phụ Trách</label>
+            <input type="text" id="usr-scope" placeholder="Ví dụ: Toàn bộ 3 cơ sở hoặc StayHub Central" value="Toàn bộ 3 cơ sở" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Trạng Thái Truy Cập</label>
+            <select id="usr-status" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-bold focus:ring-1 focus:ring-teal-600 focus:outline-none">
+              <option value="ACTIVE">ACTIVE (Đang hoạt động - Đã duyệt)</option>
+              <option value="INACTIVE">INACTIVE (Chờ duyệt truy cập)</option>
+              <option value="LOCKED">LOCKED (Đã tạm khóa)</option>
+            </select>
+          </div>
         </div>
 
         <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
@@ -208,16 +238,29 @@
       const countManager = users.filter(u => u.role === 'MANAGER').length;
       const countStaff = users.filter(u => u.role === 'STAFF').length;
       const countResident = users.filter(u => u.role === 'RESIDENT').length;
+      const countInactive = users.filter(u => u.status === 'INACTIVE').length;
 
       if (document.getElementById('count-all')) document.getElementById('count-all').innerText = countAll;
       if (document.getElementById('count-admin')) document.getElementById('count-admin').innerText = countAdmin;
       if (document.getElementById('count-manager')) document.getElementById('count-manager').innerText = countManager;
       if (document.getElementById('count-staff')) document.getElementById('count-staff').innerText = countStaff;
       if (document.getElementById('count-resident')) document.getElementById('count-resident').innerText = countResident;
+      if (document.getElementById('count-inactive')) document.getElementById('count-inactive').innerText = countInactive;
+      if (document.getElementById('alert-inactive-count')) document.getElementById('alert-inactive-count').innerText = countInactive;
       if (document.getElementById('user-count-badge')) document.getElementById('user-count-badge').innerText = `${countAll} Tài khoản`;
 
+      const alertEl = document.getElementById('inactive-users-alert');
+      if (alertEl) {
+        if (countInactive > 0) alertEl.classList.remove('hidden');
+        else alertEl.classList.add('hidden');
+      }
+
       let filtered = users.filter(u => {
-        const matchesRole = currentRoleFilter === 'ALL' || u.role === currentRoleFilter;
+        let matchesRole = false;
+        if (currentRoleFilter === 'ALL') matchesRole = true;
+        else if (currentRoleFilter === 'INACTIVE') matchesRole = u.status === 'INACTIVE';
+        else matchesRole = u.role === currentRoleFilter;
+
         const s = currentSearchTerm.toLowerCase();
         const matchesSearch = !s ||
           (u.fullName && u.fullName.toLowerCase().includes(s)) ||
@@ -250,12 +293,16 @@
         else if (u.role === 'RESIDENT') roleBadge = 'badge-success';
 
         const isLocked = u.status === 'LOCKED';
-        const statusBadge = isLocked 
-          ? '<span class="badge badge-danger">Đã khóa</span>'
-          : '<span class="badge badge-success">Đang hoạt động</span>';
+        const isInactive = u.status === 'INACTIVE';
+        let statusBadge = '<span class="badge badge-success">Đang hoạt động</span>';
+        if (isLocked) {
+          statusBadge = '<span class="badge badge-danger">Đã khóa</span>';
+        } else if (isInactive) {
+          statusBadge = '<span class="badge badge-warning flex items-center gap-1 font-bold text-amber-800 bg-amber-50 border border-amber-300">⏳ Chờ duyệt (Inactive)</span>';
+        }
 
         return `
-          <tr class="hover:bg-slate-50 transition-colors ${isLocked ? 'bg-slate-50/60 opacity-80' : ''}">
+          <tr class="hover:bg-slate-50 transition-colors ${isInactive ? 'bg-amber-50/30' : (isLocked ? 'bg-slate-50/60 opacity-80' : '')}">
             <td class="p-3.5">
               <div class="flex items-center gap-2.5">
                 <img src="${u.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover border border-slate-200">
@@ -266,21 +313,29 @@
               </div>
             </td>
             <td class="p-3.5 font-mono text-slate-700">${u.email}</td>
-            <td class="p-3.5 font-mono text-slate-700">${u.phone}</td>
+            <td class="p-3.5 font-mono text-slate-700 font-bold">${u.phone}</td>
             <td class="p-3.5"><span class="badge ${roleBadge}">${u.role}</span></td>
             <td class="p-3.5 text-slate-700">${u.scope || 'Toàn bộ 3 cơ sở'}</td>
             <td class="p-3.5">${statusBadge}</td>
             <td class="p-3.5 text-right">
               <div class="inline-flex items-center justify-end gap-1.5">
-                <button onclick="editUser('${u.id}')" title="Chỉnh sửa thông tin" class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-teal-50 transition-colors">
+                ${isInactive ? `
+                  <button onclick="handleActivateUser('${u.id}')" title="Phê duyệt truy cập - Chuyển sang ACTIVE" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1 transition-colors cursor-pointer">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                    <span>Duyệt Active</span>
+                  </button>
+                ` : ''}
+                <button onclick="editUser('${u.id}')" title="Chỉnh sửa thông tin" class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-teal-50 transition-colors cursor-pointer">
                   <i data-lucide="edit-3" class="w-4 h-4"></i>
                 </button>
-                <button onclick="handleResetPassword('${u.id}')" title="Cấp lại mật khẩu" class="p-1.5 rounded-lg text-slate-500 hover:text-amber-700 hover:bg-amber-50 transition-colors">
+                <button onclick="handleResetPassword('${u.id}')" title="Cấp lại mật khẩu" class="p-1.5 rounded-lg text-slate-500 hover:text-amber-700 hover:bg-amber-50 transition-colors cursor-pointer">
                   <i data-lucide="key-round" class="w-4 h-4"></i>
                 </button>
-                <button onclick="handleToggleStatus('${u.id}')" title="${isLocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}" class="p-1.5 rounded-lg ${isLocked ? 'text-emerald-600 hover:bg-emerald-50' : 'text-slate-400 hover:text-rose-600 hover:bg-rose-50'} transition-colors">
-                  <i data-lucide="${isLocked ? 'unlock' : 'ban'}" class="w-4 h-4"></i>
-                </button>
+                ${!isInactive ? `
+                  <button onclick="handleToggleStatus('${u.id}')" title="${isLocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}" class="p-1.5 rounded-lg ${isLocked ? 'text-emerald-600 hover:bg-emerald-50' : 'text-slate-400 hover:text-rose-600 hover:bg-rose-50'} transition-colors cursor-pointer">
+                    <i data-lucide="${isLocked ? 'unlock' : 'ban'}" class="w-4 h-4"></i>
+                  </button>
+                ` : ''}
               </div>
             </td>
           </tr>
@@ -290,16 +345,37 @@
       if (window.lucide) lucide.createIcons();
     }
 
+    // Admin phê duyệt cấp quyền truy cập cho tài khoản cư dân (chuyển từ INACTIVE sang ACTIVE)
+    function handleActivateUser(id) {
+      const users = DataStore.getUsers();
+      const u = users.find(x => x.id === id);
+      if (!u) return;
+
+      if (!confirm(`Bạn có chắc chắn muốn PHÊ DUYỆT CẤP QUYỀN (Access) và chuyển tài khoản cư dân [${u.fullName}] sang trạng thái ACTIVE?\n\nSau khi duyệt, cư dân có thể sử dụng SĐT (${u.phone}) hoặc Email để đăng nhập vào hệ thống.`)) {
+        return;
+      }
+
+      DataStore.activateUser(id);
+      showToast(`🎉 Đã duyệt access thành công! Tài khoản cư dân ${u.fullName} đã chuyển sang ACTIVE.`);
+      renderUsersTable();
+    }
+
     function filterUserRole(role) {
       currentRoleFilter = role;
-      const roles = ['ALL', 'ADMIN', 'MANAGER', 'STAFF', 'RESIDENT'];
+      const roles = ['ALL', 'INACTIVE', 'ADMIN', 'MANAGER', 'STAFF', 'RESIDENT'];
       roles.forEach(r => {
         const btn = document.getElementById(`filter-role-${r.toLowerCase()}`);
         if (btn) {
           const isActive = r === role;
-          btn.className = isActive
-            ? 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-[#0F766E] text-white shadow-xs whitespace-nowrap'
-            : 'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 whitespace-nowrap';
+          if (r === 'INACTIVE') {
+            btn.className = isActive
+              ? 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-amber-600 text-white shadow-xs whitespace-nowrap flex items-center gap-1.5 cursor-pointer'
+              : 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 whitespace-nowrap flex items-center gap-1.5 cursor-pointer';
+          } else {
+            btn.className = isActive
+              ? 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-[#0F766E] text-white shadow-xs whitespace-nowrap cursor-pointer'
+              : 'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 whitespace-nowrap cursor-pointer';
+          }
         }
       });
       renderUsersTable();
@@ -334,10 +410,12 @@
         document.getElementById('usr-role').value = user.role;
         document.getElementById('usr-title').value = user.title || '';
         document.getElementById('usr-scope').value = user.scope || 'Toàn bộ 3 cơ sở';
+        document.getElementById('usr-status').value = user.status || 'ACTIVE';
       } else {
         titleEl.innerHTML = '<i data-lucide="user-plus" class="w-5 h-5 text-[#0F766E]"></i><span>Thêm Tài Khoản Mới</span>';
         document.getElementById('usr-id').value = '';
         document.getElementById('usr-scope').value = 'Toàn bộ 3 cơ sở';
+        document.getElementById('usr-status').value = 'ACTIVE';
       }
       modal.classList.add('active');
       if (window.lucide) lucide.createIcons();
@@ -357,7 +435,8 @@
         phone: document.getElementById('usr-phone').value.trim(),
         role: document.getElementById('usr-role').value,
         title: document.getElementById('usr-title').value.trim(),
-        scope: document.getElementById('usr-scope').value.trim()
+        scope: document.getElementById('usr-scope').value.trim(),
+        status: document.getElementById('usr-status').value
       };
 
       if (id) {

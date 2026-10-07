@@ -35,8 +35,19 @@
     }
 
     .contract-paper {
-      font-family: 'Times New Roman', Times, serif;
-      line-height: 1.6;
+      font-family: 'Times New Roman', Times, 'Liberation Serif', serif;
+      line-height: 1.55;
+      color: #0f172a;
+    }
+    .contract-paper p {
+      margin-bottom: 2px;
+    }
+    .contract-paper h1,
+    .contract-paper h2,
+    .contract-paper h3,
+    .contract-paper h4 {
+      font-family: 'Times New Roman', Times, 'Liberation Serif', serif;
+      color: #0f172a;
     }
   </style>
 </head>
@@ -121,8 +132,6 @@
           </div>
           <div>
             <h3 class="text-base font-bold">Lập Hợp Đồng Thuê & Điền Hợp Đồng Mẫu</h3>
-            <p class="text-xs text-slate-400">Quyền thực hiện: <span class="text-teal-300 font-semibold">Nhân viên Vận
-                hành (Staff)</span></p>
           </div>
         </div>
 
@@ -153,18 +162,16 @@
               <i data-lucide="building" class="w-4 h-4 text-teal-600"></i>
               <span>I. BÊN CHO THUÊ (BÊN A - BQL STAYHUB)</span>
             </span>
-            <span class="text-[10px] bg-white px-2 py-0.5 rounded border border-teal-200 text-teal-700 font-bold">Đại
-              diện pháp lý BQL</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div>
-              <label class="block font-semibold text-slate-700 mb-1">Cơ sở vận hành <span
-                  class="text-red-500">*</span></label>
-              <select id="new-ct-bld" onchange="onContractBuildingChange()"
-                class="w-full bg-white border border-slate-200 rounded-lg p-2.5 font-bold text-slate-800 focus:outline-teal-600">
-                <!-- Populated dynamically -->
-              </select>
+              <label class="block font-semibold text-slate-700 mb-1">Cơ sở vận hành</label>
+              <div class="relative">
+                <input type="text" id="new-ct-bld-display" readonly
+                  class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-800 cursor-not-allowed select-none">
+                <input type="hidden" id="new-ct-bld" value="">
+              </div>
             </div>
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Chọn phòng còn trống <span
@@ -194,7 +201,6 @@
               <i data-lucide="user-check" class="w-4 h-4 text-teal-600"></i>
               <span>II. BÊN THUÊ ĐẠI DIỆN (BÊN B - KHÁCH THUÊ / CƯ DÂN)</span>
             </span>
-            <span class="text-[10px] text-slate-500 font-medium">Nhập chính xác theo CCCD gắn chip</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -260,8 +266,6 @@
               <i data-lucide="badge-dollar-sign" class="w-4 h-4 text-teal-600"></i>
               <span>III. ĐIỀU KHOẢN THỜI HẠN & TÀI CHÍNH</span>
             </span>
-            <span class="text-[10px] text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded">Tự động tính ngày &
-              cọc</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -334,7 +338,7 @@
       <div id="ct-tab-preview" class="hidden flex-1 overflow-y-auto p-6 bg-slate-100 flex flex-col">
         <!-- Tờ văn bản Hợp đồng A4 chuẩn pháp lý -->
         <div id="contract-full-paper"
-          class="contract-paper max-w-3xl w-full mx-auto bg-white p-10 md:p-14 shadow-lg border border-slate-300 text-slate-900 rounded-sm space-y-5 text-[13px]">
+          class="contract-paper max-w-3xl w-full mx-auto bg-white p-10 md:p-14 shadow-lg border border-slate-300 text-slate-900 rounded-sm space-y-2.5 text-[13px]">
           <!-- Nội dung văn bản hợp đồng đầy đủ được fill bằng JS -->
         </div>
 
@@ -391,7 +395,7 @@
 
       <div class="p-6 overflow-y-auto bg-slate-100 flex-1">
         <div id="view-contract-paper"
-          class="contract-paper max-w-3xl w-full mx-auto bg-white p-10 md:p-14 shadow-lg border border-slate-300 text-slate-900 rounded-sm space-y-5 text-[13px]">
+          class="contract-paper max-w-3xl w-full mx-auto bg-white p-10 md:p-14 shadow-lg border border-slate-300 text-slate-900 rounded-sm space-y-2.5 text-[13px]">
           <!-- Rendered dynamically -->
         </div>
       </div>
@@ -412,15 +416,12 @@
       <!-- Header Modal -->
       <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-300">
+          <div
+            class="w-9 h-9 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-300">
             <i data-lucide="file-cog" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-base font-bold flex items-center gap-2">
-              <span>Mẫu Hợp Đồng Thuê Căn Hộ</span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/30 text-amber-300 font-semibold uppercase tracking-wider">Manager Only</span>
-            </h3>
-            <p class="text-xs text-slate-400">Chỉnh sửa quy chuẩn điều khoản mẫu áp dụng cho các hợp đồng lập mới</p>
+            <h3 class="text-base font-bold">Mẫu Hợp Đồng Thuê Căn Hộ</h3>
           </div>
         </div>
 
@@ -434,130 +435,61 @@
             class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-300 hover:text-white bg-slate-800 cursor-pointer">
             2. Xem Trước Bản Mẫu A4
           </button>
-          <button type="button" onclick="closeModal('contractTemplateModal')" class="text-slate-400 hover:text-white p-1 ml-2 cursor-pointer">
+          <button type="button" onclick="closeModal('contractTemplateModal')"
+            class="text-slate-400 hover:text-white p-1 ml-2 cursor-pointer">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
       </div>
 
-      <!-- Tab 1: Soạn Thảo Điều Khoản -->
+      <!-- Tab 1: Soạn Thảo Điều Khoản (Viết chung trong một khung) -->
       <div id="tpl-tab-edit" class="p-6 overflow-y-auto space-y-4 text-xs flex-1 bg-slate-50">
-        <!-- Banner Bảo Toàn Hợp Đồng Lịch Sử -->
-        <div class="p-3.5 bg-amber-50 border border-amber-200/90 rounded-xl text-amber-950 flex items-start gap-3 shadow-xs">
-          <div class="p-1.5 bg-amber-100 rounded-lg text-amber-800 shrink-0 mt-0.5">
-            <i data-lucide="shield-alert" class="w-4 h-4"></i>
-          </div>
-          <div class="text-[11.5px] leading-relaxed">
-            <p class="font-bold text-amber-900 text-xs">Nguyên tắc bảo toàn pháp lý hợp đồng đã ký:</p>
-            <p class="mt-0.5 text-slate-700">Mọi điều chỉnh tại biểu mẫu này sẽ <strong>tự động áp dụng cho các hợp đồng được lập mới</strong> từ thời điểm này. <strong>Những hợp đồng đã ký trước đó vẫn giữ nguyên vẹn 100% nội dung & điều khoản</strong> tại thời điểm ký kết, không bị thay đổi hồi tố.</p>
-          </div>
-        </div>
 
         <!-- Thông tin biểu mẫu -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
           <div>
             <label class="block font-semibold text-slate-700 mb-1">Tiêu đề văn bản hợp đồng</label>
-            <input type="text" id="tpl-title" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-bold text-slate-800 focus:outline-teal-600" placeholder="HỢP ĐỒNG THUÊ CĂN HỘ DỊCH VỤ / PHÒNG TRỌ">
+            <input type="text" id="tpl-title"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-bold text-slate-800 focus:outline-teal-600"
+              placeholder="HỢP ĐỒNG THUÊ CĂN HỘ DỊCH VỤ / PHÒNG TRỌ">
           </div>
           <div>
-            <label class="block font-semibold text-slate-700 mb-1">Phiên bản / Ký hiệu bản sửa đổi</label>
-            <input type="text" id="tpl-version" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-mono font-bold text-slate-800 focus:outline-teal-600" placeholder="v2.0 - Cập nhật 2026">
+            <label class="block font-semibold text-slate-700 mb-1">Có hiệu lực từ ngày</label>
+            <input type="date" id="tpl-effective-date"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-bold text-slate-800 focus:outline-teal-600 cursor-pointer"
+              value="2026-10-07">
           </div>
         </div>
 
-        <!-- Điều 1 -->
-        <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-xs">
-          <div class="flex items-center justify-between">
-            <label class="font-bold text-slate-900 flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-extrabold">1</span>
-              <span>ĐIỀU 1: ĐỐI TƯỢNG VÀ MỤC ĐÍCH HỢP ĐỒNG</span>
-            </label>
-            <span class="text-[10px] text-slate-400 italic">Mục đích cư trú, nghiêm cấm sang nhượng trái phép</span>
-          </div>
-          <textarea id="tpl-purpose" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-sans leading-relaxed text-slate-800 focus:outline-teal-600 resize-y"></textarea>
-        </div>
 
-        <!-- Điều 2 -->
+        <!-- Khung Soạn Thảo Toàn Bộ Điều Khoản (Viết chung một nơi) -->
         <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-xs">
           <div class="flex items-center justify-between">
-            <label class="font-bold text-slate-900 flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-extrabold">2</span>
-              <span>ĐIỀU 2: THỜI HẠN THUÊ VÀ GIA HẠN</span>
+            <label for="tpl-content" class="font-bold text-slate-900 flex items-center gap-2">
+              <span
+                class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[11px] font-extrabold">§</span>
+              <span>NỘI DUNG TOÀN BỘ ĐIỀU KHOẢN HỢP ĐỒNG</span>
             </label>
-            <span class="text-[10px] text-slate-400 italic">Quy định thông báo trước gia hạn hoặc bàn giao phòng</span>
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="clearTemplateContent()"
+                class="text-[11px] text-slate-500 hover:text-rose-600 transition-colors cursor-pointer">
+                Xóa trắng để dán mới
+              </button>
+            </div>
           </div>
-          <textarea id="tpl-duration" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-sans leading-relaxed text-slate-800 focus:outline-teal-600 resize-y"></textarea>
-        </div>
-
-        <!-- Điều 3 -->
-        <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-xs">
-          <div class="flex items-center justify-between">
-            <label class="font-bold text-slate-900 flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-extrabold">3</span>
-              <span>ĐIỀU 3: GIÁ THUÊ VÀ PHƯƠNG THỨC THANH TOÁN</span>
-            </label>
-            <span class="text-[10px] text-slate-400 italic">Kỳ thanh toán, chuyển khoản VietQR tự động qua SePay</span>
+          <textarea id="tpl-content" rows="18" oninput="updateContractCharCount()"
+            class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 font-sans leading-relaxed text-slate-800 focus:outline-teal-600 focus:bg-white resize-y"
+            placeholder="Viết hoặc dán toàn bộ các điều khoản hợp đồng tại đây (ĐIỀU 1: ..., ĐIỀU 2: ..., ĐIỀU 3: ...)..."></textarea>
+          <div class="flex items-center justify-end text-[11px] text-slate-500 pt-0.5">
+            <span id="tpl-char-count" class="font-mono text-slate-400 font-semibold shrink-0">0 ký tự</span>
           </div>
-          <textarea id="tpl-payment" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-sans leading-relaxed text-slate-800 focus:outline-teal-600 resize-y"></textarea>
-        </div>
-
-        <!-- Điều 4 -->
-        <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-xs">
-          <div class="flex items-center justify-between">
-            <label class="font-bold text-slate-900 flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-extrabold">4</span>
-              <span>ĐIỀU 4: TIỀN ĐẶT CỌC BẢO ĐẢM VÀ HOÀN TRẢ</span>
-            </label>
-            <span class="text-[10px] text-slate-400 italic">Mục đích cọc & điều kiện khấu trừ/hoàn 100% tiền cọc</span>
-          </div>
-          <textarea id="tpl-deposit" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-sans leading-relaxed text-slate-800 focus:outline-teal-600 resize-y"></textarea>
-        </div>
-
-        <!-- Điều 5 -->
-        <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-xs">
-          <div class="flex items-center justify-between">
-            <label class="font-bold text-slate-900 flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-extrabold">5</span>
-              <span>ĐIỀU 5: QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN</span>
-            </label>
-            <span class="text-[10px] text-slate-400 italic">Trách nhiệm BQL và Cư dân (Nội quy PCCC, tạm trú, bảo trì)</span>
-          </div>
-          <textarea id="tpl-responsibilities" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-sans leading-relaxed text-slate-800 focus:outline-teal-600 resize-y"></textarea>
-        </div>
-
-        <!-- Điều 6 -->
-        <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-xs">
-          <div class="flex items-center justify-between">
-            <label class="font-bold text-slate-900 flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-extrabold">6</span>
-              <span>ĐIỀU 6: CHẤM DỨT HỢP ĐỒNG & BỒI THƯỜNG</span>
-            </label>
-            <span class="text-[10px] text-slate-400 italic">Quy định đơn phương chấm dứt & bồi thường vi phạm hợp đồng</span>
-          </div>
-          <textarea id="tpl-termination" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-sans leading-relaxed text-slate-800 focus:outline-teal-600 resize-y"></textarea>
-        </div>
-
-        <!-- Điều 7 -->
-        <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-xs">
-          <div class="flex items-center justify-between">
-            <label class="font-bold text-slate-900 flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-extrabold">7</span>
-              <span>ĐIỀU 7: HIỆU LỰC THI HÀNH</span>
-            </label>
-            <span class="text-[10px] text-slate-400 italic">Số lượng bản lập & thời điểm có hiệu lực pháp lý</span>
-          </div>
-          <textarea id="tpl-validity" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-sans leading-relaxed text-slate-800 focus:outline-teal-600 resize-y"></textarea>
         </div>
       </div>
 
       <!-- Tab 2: Xem Trước Bản Mẫu Hoàn Chỉnh -->
       <div id="tpl-tab-preview" class="p-6 overflow-y-auto bg-slate-100 flex-1 hidden">
-        <div class="max-w-3xl mx-auto mb-3 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-center gap-2">
-          <i data-lucide="eye" class="w-4 h-4 text-amber-600 shrink-0"></i>
-          <span>Đây là bản hiển thị giả lập khi áp dụng các điều khoản mẫu hiện hành cho một phòng thuê thực tế.</span>
-        </div>
         <div id="template-preview-paper"
-          class="contract-paper max-w-3xl w-full mx-auto bg-white p-10 md:p-14 shadow-lg border border-slate-300 text-slate-900 rounded-sm space-y-5 text-[13px]">
+          class="contract-paper max-w-3xl w-full mx-auto bg-white p-10 md:p-14 shadow-lg border border-slate-300 text-slate-900 rounded-sm space-y-2.5 text-[13px]">
           <!-- Rendered dynamically -->
         </div>
       </div>
@@ -586,6 +518,69 @@
     </div>
   </div>
 
+  <!-- Modal: Thông Báo Tự Động Khởi Tạo Tài Khoản Cư Dân (INACTIVE) -->
+  <div id="createdAccountInfoModal" class="modal-backdrop">
+    <div class="modal-content max-w-md w-full p-6 text-center space-y-4">
+      <div class="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-200 text-[#0F766E] flex items-center justify-center mx-auto shadow-sm">
+        <i data-lucide="user-plus" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Khởi Tạo Tài Khoản Cư Dân Thành Công</h3>
+        <p class="text-xs text-slate-500 mt-1">Hệ thống đã tự động trích xuất thông tin khách hàng để tạo tài khoản đăng nhập</p>
+      </div>
+
+      <!-- Khung thông tin tài khoản -->
+      <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-left space-y-2 text-xs">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <span class="text-slate-500">Khách thuê:</span>
+          <span class="font-bold text-slate-900" id="acc-modal-tenant">Nguyễn Văn A</span>
+        </div>
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <span class="text-slate-500">Phòng & Mã HĐ:</span>
+          <span class="font-bold text-teal-800"><span id="acc-modal-room">P101</span> • <span id="acc-modal-code" class="font-mono">HD-2026-101</span></span>
+        </div>
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <span class="text-slate-500">Tên đăng nhập (SĐT / Email):</span>
+          <span class="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200" id="acc-modal-username">0988776655</span>
+        </div>
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <span class="text-slate-500">Mật khẩu khởi tạo:</span>
+          <span class="font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200" id="acc-modal-password">StayHub@6655</span>
+        </div>
+        <div class="flex items-center justify-between pt-1">
+          <span class="text-slate-500 font-semibold">Trạng thái tài khoản:</span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-300">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+            INACTIVE (Chờ Admin duyệt access)
+          </span>
+        </div>
+      </div>
+
+      <!-- Cảnh báo quy trình phân quyền -->
+      <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-[11.5px] text-amber-900 flex items-start gap-2.5 shadow-xs">
+        <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+        <div class="leading-relaxed">
+          <p class="font-bold text-amber-950">Quy trình cấp quyền truy cập hệ thống:</p>
+          <p class="text-slate-700 mt-0.5">Tài khoản vừa tạo đang ở trạng thái <strong>INACTIVE</strong>. Quản trị viên (<strong>Admin</strong>) sẽ truy cập mục <em>Quản trị Tài khoản</em> để bấm <strong>"Duyệt Active"</strong> chuyển sang <strong>ACTIVE</strong> trước khi cư dân có thể đăng nhập.</p>
+        </div>
+      </div>
+
+      <div class="pt-2 flex flex-col sm:flex-row items-center gap-2">
+        <button type="button" onclick="copyResidentCredentials()" class="w-full sm:w-auto px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-1.5 border border-slate-200">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Sao chép</span>
+        </button>
+        <button type="button" onclick="goToAdminApproval()" class="w-full sm:flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-1.5">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          <span>Đến Quản Trị Duyệt (Admin)</span>
+        </button>
+        <button type="button" onclick="closeModal('createdAccountInfoModal')" class="w-full sm:w-auto px-4 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold transition-colors cursor-pointer">
+          Hoàn tất
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script data-stayhub-page="contracts.html">
     let currentContractDraft = null;
 
@@ -600,7 +595,15 @@
         return;
       }
 
-      if (role === 'MANAGER' || role === 'ADMIN') {
+      if (role === 'MANAGER') {
+        // Manager chỉ quản lý biểu mẫu hợp đồng mẫu, không tạo hợp đồng trực tiếp
+        container.innerHTML = `
+          <button onclick="openContractTemplateModal()" class="flex items-center gap-2 px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer">
+            <i data-lucide="file-cog" class="w-4 h-4 text-amber-700"></i>
+            <span>Hợp Đồng Mẫu</span>
+          </button>
+        `;
+      } else if (role === 'ADMIN') {
         container.innerHTML = `
           <div class="flex items-center gap-2.5">
             <button onclick="openContractTemplateModal()" class="flex items-center gap-2 px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer">
@@ -614,6 +617,7 @@
           </div>
         `;
       } else {
+        // STAFF
         container.innerHTML = `
           <button onclick="openCreateContractModal()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors cursor-pointer">
             <i data-lucide="plus-circle" class="w-4 h-4"></i>
@@ -631,6 +635,10 @@
         showToast('Tài khoản cư dân không có quyền tạo hợp đồng.', 'error');
         return;
       }
+      if (role === 'MANAGER') {
+        showToast('Tài khoản Quản lý (Manager) chỉ quản trị biểu mẫu hợp đồng. Chức năng tạo hợp đồng dành cho Nhân viên (Staff).', 'warning');
+        return;
+      }
 
       try {
         // Khởi tạo mã hợp đồng ngẫu nhiên dạng HD-2026-xxx
@@ -638,15 +646,20 @@
         const codeInput = document.getElementById('new-ct-code');
         if (codeInput) codeInput.value = `HD-2026-${randomNum}`;
 
-        // Đổ danh sách cơ sở
+        // Tự động lấy cơ sở đang chọn ở thanh trên cùng (Top bar)
         const buildings = DataStore.getBuildings();
-        const bldSelect = document.getElementById('new-ct-bld');
-        const curBldId = DataStore.getCurrentBuilding();
+        let curBldId = DataStore.getCurrentBuilding();
+        if (!curBldId || curBldId === 'ALL') {
+          curBldId = buildings.length > 0 ? buildings[0].id : 'bld-1';
+        }
+        const currentBld = buildings.find(b => b.id === curBldId) || buildings[0];
 
-        if (bldSelect) {
-          bldSelect.innerHTML = buildings.map(b => `
-            <option value="${b.id}" ${b.id === curBldId ? 'selected' : ''}>${b.name}</option>
-          `).join('');
+        const bldHidden = document.getElementById('new-ct-bld');
+        if (bldHidden) bldHidden.value = currentBld.id;
+
+        const bldDisplay = document.getElementById('new-ct-bld-display');
+        if (bldDisplay) {
+          bldDisplay.value = `${currentBld.name} (${currentBld.code || 'SH'})`;
         }
 
         // Đặt ngày bắt đầu mặc định là ngày hôm nay
@@ -870,27 +883,59 @@
 
       const tpl = DataStore.getContractTemplate();
       const titleInput = document.getElementById('tpl-title');
-      const versionInput = document.getElementById('tpl-version');
-      const purposeInput = document.getElementById('tpl-purpose');
-      const durationInput = document.getElementById('tpl-duration');
-      const paymentInput = document.getElementById('tpl-payment');
-      const depositInput = document.getElementById('tpl-deposit');
-      const respInput = document.getElementById('tpl-responsibilities');
-      const termInput = document.getElementById('tpl-termination');
-      const validInput = document.getElementById('tpl-validity');
+      const dateInput = document.getElementById('tpl-effective-date');
+      const contentInput = document.getElementById('tpl-content');
 
       if (titleInput) titleInput.value = tpl.title || 'HỢP ĐỒNG THUÊ CĂN HỘ DỊCH VỤ / PHÒNG TRỌ';
-      if (versionInput) versionInput.value = tpl.version || 'v2.0 (StayHub)';
-      if (purposeInput) purposeInput.value = tpl.purpose || '';
-      if (durationInput) durationInput.value = tpl.duration || '';
-      if (paymentInput) paymentInput.value = tpl.payment || '';
-      if (depositInput) depositInput.value = tpl.deposit || '';
-      if (respInput) respInput.value = tpl.responsibilities || '';
-      if (termInput) termInput.value = tpl.termination || '';
-      if (validInput) validInput.value = tpl.validity || '';
+      if (dateInput) {
+        const dVal = tpl.effectiveDate || tpl.updatedAt || new Date().toISOString().split('T')[0];
+        dateInput.value = (dVal && dVal.length === 10 && dVal.includes('-')) ? dVal : new Date().toISOString().split('T')[0];
+      }
+      if (contentInput) {
+        contentInput.value = getTemplateContentString(tpl);
+        updateContractCharCount();
+      }
 
       switchTemplateTab('edit');
       openModal('contractTemplateModal');
+    }
+
+    // Chèn thẻ biến tự động vào vị trí con trỏ của khung soạn thảo
+    function insertTemplateTag(tag) {
+      const textarea = document.getElementById('tpl-content');
+      if (!textarea) return;
+      const start = textarea.selectionStart || 0;
+      const end = textarea.selectionEnd || 0;
+      const text = textarea.value;
+      textarea.value = text.substring(0, start) + tag + text.substring(end);
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + tag.length;
+      updateContractCharCount();
+      showToast(`Đã chèn thẻ ${tag}`, 'info');
+    }
+
+    // Xóa trắng toàn bộ nội dung để dán từ Word / Docs
+    function clearTemplateContent() {
+      if (!confirm('Bạn có chắc chắn muốn xóa toàn bộ nội dung trong khung soạn thảo để dán mẫu mới?')) {
+        return;
+      }
+      const textarea = document.getElementById('tpl-content');
+      if (textarea) {
+        textarea.value = '';
+        textarea.focus();
+        updateContractCharCount();
+      }
+    }
+
+    // Cập nhật số ký tự / dòng
+    function updateContractCharCount() {
+      const textarea = document.getElementById('tpl-content');
+      const countEl = document.getElementById('tpl-char-count');
+      if (textarea && countEl) {
+        const charCount = textarea.value.length;
+        const lineCount = textarea.value ? textarea.value.split('\n').length : 0;
+        countEl.innerText = `${charCount.toLocaleString('vi-VN')} ký tự • ${lineCount} dòng`;
+      }
     }
 
     // Chuyển tab trong modal Quản lý hợp đồng mẫu
@@ -919,19 +964,32 @@
 
     // Thu thập dữ liệu từ các ô nhập liệu mẫu
     function getEditingTemplateData() {
+      const contentVal = document.getElementById('tpl-content')?.value || '';
+      const dateVal = document.getElementById('tpl-effective-date')?.value || new Date().toISOString().split('T')[0];
       return {
         title: (document.getElementById('tpl-title')?.value || '').trim() || 'HỢP ĐỒNG THUÊ CĂN HỘ DỊCH VỤ / PHÒNG TRỌ',
-        version: (document.getElementById('tpl-version')?.value || '').trim() || 'v2.0',
-        templateName: 'Hợp Đồng Thuê Căn Hộ (Đã tùy chỉnh bởi Manager)',
-        updatedAt: new Date().toISOString().split('T')[0],
-        purpose: document.getElementById('tpl-purpose')?.value || '',
-        duration: document.getElementById('tpl-duration')?.value || '',
-        payment: document.getElementById('tpl-payment')?.value || '',
-        deposit: document.getElementById('tpl-deposit')?.value || '',
-        responsibilities: document.getElementById('tpl-responsibilities')?.value || '',
-        termination: document.getElementById('tpl-termination')?.value || '',
-        validity: document.getElementById('tpl-validity')?.value || ''
+        effectiveDate: dateVal,
+        version: `Áp dụng từ ${dateVal}`,
+        templateName: `Hợp Đồng Thuê Căn Hộ (Hiệu lực từ ${dateVal})`,
+        updatedAt: dateVal,
+        content: contentVal
       };
+    }
+
+    // Lấy chuỗi nội dung điều khoản từ đối tượng template (tương thích ngược bản cũ)
+    function getTemplateContentString(tpl) {
+      if (!tpl) return '';
+      if (tpl.content) return tpl.content;
+      const parts = [
+        tpl.purpose ? `ĐIỀU 1: ĐỐI TƯỢNG VÀ MỤC ĐÍCH HỢP ĐỒNG\n${tpl.purpose}` : '',
+        tpl.duration ? `ĐIỀU 2: THỜI HẠN THUÊ VÀ GIA HẠN\n${tpl.duration}` : '',
+        tpl.payment ? `ĐIỀU 3: GIÁ THUÊ VÀ PHƯƠNG THỨC THANH TOÁN\n${tpl.payment}` : '',
+        tpl.deposit ? `ĐIỀU 4: TIỀN ĐẶT CỌC BẢO ĐẢM VÀ HOÀN TRẢ\n${tpl.deposit}` : '',
+        tpl.responsibilities ? `ĐIỀU 5: QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN\n${tpl.responsibilities}` : '',
+        tpl.termination ? `ĐIỀU 6: CHẤM DỨT HỢP ĐỒNG & BỒI THƯỜNG\n${tpl.termination}` : '',
+        tpl.validity ? `ĐIỀU 7: HIỆU LỰC THI HÀNH\n${tpl.validity}` : ''
+      ].filter(Boolean);
+      return parts.join('\n\n');
     }
 
     // Hiển thị tờ A4 xem trước trong modal chỉnh sửa mẫu
@@ -998,24 +1056,15 @@
       }
       const defaultTpl = DataStore.resetContractTemplate();
       const titleInput = document.getElementById('tpl-title');
-      const versionInput = document.getElementById('tpl-version');
-      const purposeInput = document.getElementById('tpl-purpose');
-      const durationInput = document.getElementById('tpl-duration');
-      const paymentInput = document.getElementById('tpl-payment');
-      const depositInput = document.getElementById('tpl-deposit');
-      const respInput = document.getElementById('tpl-responsibilities');
-      const termInput = document.getElementById('tpl-termination');
-      const validInput = document.getElementById('tpl-validity');
+      const dateInput = document.getElementById('tpl-effective-date');
+      const contentInput = document.getElementById('tpl-content');
 
       if (titleInput) titleInput.value = defaultTpl.title;
-      if (versionInput) versionInput.value = defaultTpl.version || 'v1.0 (Gốc)';
-      if (purposeInput) purposeInput.value = defaultTpl.purpose;
-      if (durationInput) durationInput.value = defaultTpl.duration;
-      if (paymentInput) paymentInput.value = defaultTpl.payment;
-      if (depositInput) depositInput.value = defaultTpl.deposit;
-      if (respInput) respInput.value = defaultTpl.responsibilities;
-      if (termInput) termInput.value = defaultTpl.termination;
-      if (validInput) validInput.value = defaultTpl.validity;
+      if (dateInput) dateInput.value = defaultTpl.effectiveDate || '2026-10-07';
+      if (contentInput) {
+        contentInput.value = defaultTpl.content || getTemplateContentString(defaultTpl);
+        updateContractCharCount();
+      }
 
       showToast('Đã khôi phục mẫu hợp đồng về bản gốc mặc định!');
       if (!document.getElementById('tpl-tab-preview').classList.contains('hidden')) {
@@ -1023,13 +1072,55 @@
       }
     }
 
-    // Hàm chuyển đổi các dòng văn bản sang thẻ paragraph
-    function formatTermsText(text) {
-      if (!text) return '';
+    // Hàm phân tích và render nội dung các điều khoản từ văn bản chung
+    function renderContractTermsContent(rawContent, d) {
+      if (!rawContent) return '';
+
+      // Tự động thay thế các biến động nếu có trong nội dung
+      let text = rawContent;
+      if (d) {
+        const replaceMap = {
+          '{ten_phong}': d.room || '',
+          '{phong}': d.room || '',
+          '{co_so}': d.building || '',
+          '{thoi_han}': d.duration || '',
+          '{ngay_bat_dau}': d.startDate || '',
+          '{ngay_ket_thuc}': d.endDate || '',
+          '{gia_thue}': d.rent ? (formatVND(d.rent) + ' / tháng') : '',
+          '{tien_coc}': d.deposit ? formatVND(d.deposit) : '',
+          '{ngay_thanh_toan}': d.dueDay ? ('ngày ' + d.dueDay) : 'ngày 05',
+          '{ho_ten_khach}': d.tenant || '',
+          '{khach_hang}': d.tenant || '',
+          '{cccd}': d.cccd || '',
+          '{sdt_khach}': d.phone || '',
+          '{hotline_bql}': d.bldPhone || '',
+          '{dia_chi_co_so}': d.bldAddress || '',
+          '{quan_ly}': d.managerName || '',
+          '{gia_dien}': d.elecRate ? (formatVND(d.elecRate) + ' / kWh') : '3.500 đ / kWh',
+          '{gia_nuoc}': d.waterRate ? (formatVND(d.waterRate) + ' / m³') : '25.000 đ / m³',
+          '{phi_dich_vu}': d.serviceFee ? (formatVND(d.serviceFee) + ' / tháng') : '150.000 đ / tháng'
+        };
+
+        for (const [key, val] of Object.entries(replaceMap)) {
+          text = text.split(key).join(val);
+        }
+      }
+
+      // Xử lý dòng tiêu đề điều khoản (ĐIỀU 1, ĐIỀU 2... hoặc ARTICLE ...)
       return text.split('\n')
         .map(line => line.trim())
-        .filter(line => line.length > 0)
-        .map(line => `<p class="leading-relaxed pl-2 pt-0.5">${line}</p>`)
+        .map(line => {
+          if (!line) return '<div class="h-1.5"></div>';
+          // Nếu dòng là tiêu đề Điều khoản (Bắt đầu bằng ĐIỀU hoặc Điều hoặc gạch chân)
+          if (/^(ĐIỀU|Điều|Article|MỤC|Mục)\s+\d+/i.test(line)) {
+            return `<p class="font-bold text-slate-950 uppercase pt-2.5 pb-0.5 text-[13px] tracking-wide">${line}</p>`;
+          }
+          // Dòng gạch đầu dòng hoặc mục con 1.1, 1.2
+          if (/^(\d+\.\d+|[-•*])\s+/.test(line)) {
+            return `<p class="leading-relaxed pl-4 pt-0.5 text-slate-900 text-justify">${line}</p>`;
+          }
+          return `<p class="leading-relaxed pl-1 pt-0.5 text-slate-900 text-justify">${line}</p>`;
+        })
         .join('');
     }
 
@@ -1037,6 +1128,8 @@
     // terms: Điều khoản tùy chọn. Nếu không truyền, ưu tiên d.customTerms (snapshot cũ), sau đó lấy template hiện hành
     function buildFullContractHTML(d, terms) {
       const tpl = terms || (d && d.customTerms) || DataStore.getContractTemplate();
+      const contentStr = getTemplateContentString(tpl);
+      const renderedTermsHTML = renderContractTermsContent(contentStr, d);
       const now = new Date();
       const dd = String(now.getDate()).padStart(2, '0');
       const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -1044,114 +1137,91 @@
 
       return `
         <!-- Tiêu ngữ & Quốc hiệu -->
-        <div class="text-center space-y-1 pb-4 border-b border-slate-300">
-          <p class="font-bold text-sm tracking-wider uppercase">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
-          <p class="font-semibold text-xs underline underline-offset-4 tracking-wide">Độc lập – Tự do – Hạnh phúc</p>
-          <p class="text-[11px] text-slate-400 italic pt-1">---o0o---</p>
+        <div class="text-center space-y-0.5 pb-2">
+          <p class="font-bold text-sm tracking-wider uppercase text-slate-950">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
+          <p class="font-bold text-xs underline underline-offset-4 tracking-wide text-slate-950">Độc lập – Tự do – Hạnh phúc</p>
+          <p class="text-[11px] text-slate-500 italic pt-0.5">---o0o---</p>
         </div>
 
         <!-- Tên Hợp đồng & Mã số -->
-        <div class="text-center pt-2">
-          <h1 class="text-base font-extrabold uppercase tracking-wide">${tpl.title || 'HỢP ĐỒNG THUÊ CĂN HỘ DỊCH VỤ / PHÒNG TRỌ'}</h1>
-          <p class="text-xs font-mono font-bold text-teal-800 mt-0.5">Số hiệu: <span class="bg-amber-100 px-2 py-0.5 rounded border border-amber-300 font-extrabold">${d.code}</span></p>
-          <p class="text-[12px] italic text-slate-600 mt-1">Hôm nay, ngày ${dd} tháng ${mm} năm ${yyyy}, tại Văn phòng Ban Quản lý ${d.building}, chúng tôi gồm các bên:</p>
+        <div class="text-center pt-1 pb-2">
+          <h1 class="text-base font-bold uppercase tracking-wide text-slate-950">${tpl.title || 'HỢP ĐỒNG THUÊ CĂN HỘ DỊCH VỤ / PHÒNG TRỌ'}</h1>
+          <p class="text-xs text-slate-800 mt-0.5">Số: <strong>${d.code}</strong></p>
+          <p class="text-[12.5px] italic text-slate-700 mt-2 text-justify">Hôm nay, ngày ${dd} tháng ${mm} năm ${yyyy}, tại Văn phòng Ban Quản lý ${d.building}, chúng tôi gồm các bên:</p>
         </div>
 
         <!-- Bên A -->
-        <div class="space-y-1.5 pt-2">
-          <h2 class="font-bold text-xs uppercase tracking-wider text-slate-900 border-l-4 border-teal-700 pl-2">I. BÊN CHO THUÊ (BÊN A):</h2>
-          <div class="pl-3 space-y-1 text-slate-800">
-            <p>• <strong>Đơn vị quản lý:</strong> HỆ THỐNG CĂN HỘ DỊCH VỤ STAYHUB VIỆT NAM</p>
-            <p>• <strong>Cơ sở vận hành:</strong> <span class="font-bold bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200 text-teal-900">${d.building}</span></p>
-            <p>• <strong>Địa chỉ cơ sở:</strong> ${d.bldAddress || '95 Pasteur, Quận 1, TP. Hồ Chí Minh'}</p>
-            <p>• <strong>Đại diện pháp lý Bên A:</strong> <span class="font-bold text-slate-900">${d.managerName || 'Trần Minh Đức'}</span> - <strong>Chức vụ:</strong> Quản lý Cơ sở (Facility Manager)</p>
-            <p>• <strong>Nhân viên lập HĐ:</strong> <span class="font-semibold text-slate-700">${d.staffName || 'Phạm Tuấn Anh (Staff)'}</span> - <strong>Hotline / Zalo:</strong> <span class="font-mono font-bold">${d.bldPhone || '0912345678'}</span></p>
+        <div class="space-y-1 text-[12.5px] text-slate-900 pt-1">
+          <p class="font-bold uppercase tracking-wide">I. BÊN CHO THUÊ (BÊN A):</p>
+          <div class="pl-4 space-y-0.5 text-justify">
+            <p>- <strong>Đơn vị quản lý:</strong> HỆ THỐNG CĂN HỘ DỊCH VỤ STAYHUB VIỆT NAM</p>
+            <p>- <strong>Cơ sở vận hành:</strong> <strong>${d.building}</strong></p>
+            <p>- <strong>Địa chỉ cơ sở:</strong> ${d.bldAddress || '95 Pasteur, Quận 1, TP. Hồ Chí Minh'}</p>
+            <p>- <strong>Đại diện pháp lý Bên A:</strong> <strong>${d.managerName || 'Trần Minh Đức'}</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>Chức vụ:</strong> Quản lý Cơ sở</p>
+            <p>- <strong>Nhân viên lập HĐ:</strong> ${d.staffName || 'Phạm Tuấn Anh (Staff)'} &nbsp;&nbsp;&nbsp;&nbsp; <strong>Hotline / Zalo:</strong> <strong>${d.bldPhone || '0912345678'}</strong></p>
           </div>
         </div>
 
         <!-- Bên B -->
-        <div class="space-y-1.5 pt-2">
-          <h2 class="font-bold text-xs uppercase tracking-wider text-slate-900 border-l-4 border-teal-700 pl-2">II. BÊN THUÊ (BÊN B):</h2>
-          <div class="pl-3 space-y-1 text-slate-800">
-            <p>• <strong>Ông / Bà:</strong> <span class="font-extrabold text-slate-950 text-sm bg-teal-50 px-2 py-0.5 rounded border border-teal-200">${d.tenant}</span></p>
-            <p>• <strong>Sinh ngày:</strong> ${d.dob} &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Số người lưu trú tối đa:</strong> <strong>${d.occupants || 2} người</strong></p>
-            <p>• <strong>Số CCCD / Hộ chiếu:</strong> <span class="font-mono font-bold text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded">${d.cccd}</span> &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Ngày cấp:</strong> ${d.cccdDate} &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Nơi cấp:</strong> ${d.cccdPlace}</p>
-            <p>• <strong>Địa chỉ thường trú / Hộ khẩu:</strong> <span class="font-semibold text-slate-900">${d.address}</span></p>
-            <p>• <strong>Số điện thoại:</strong> <span class="font-mono font-bold text-teal-800">${d.phone}</span> &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Email:</strong> ${d.email}</p>
+        <div class="space-y-1 text-[12.5px] text-slate-900 pt-1.5">
+          <p class="font-bold uppercase tracking-wide">II. BÊN THUÊ (BÊN B):</p>
+          <div class="pl-4 space-y-0.5 text-justify">
+            <p>- <strong>Ông / Bà:</strong> <strong>${d.tenant}</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>Sinh ngày:</strong> ${d.dob}</p>
+            <p>- <strong>Số CCCD / Hộ chiếu:</strong> <strong>${d.cccd}</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>Ngày cấp:</strong> ${d.cccdDate} &nbsp;&nbsp;&nbsp;&nbsp; <strong>Nơi cấp:</strong> ${d.cccdPlace}</p>
+            <p>- <strong>Địa chỉ thường trú / Hộ khẩu:</strong> ${d.address}</p>
+            <p>- <strong>Số điện thoại:</strong> <strong>${d.phone}</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>Email:</strong> ${d.email}</p>
+            <p>- <strong>Số người lưu trú tối đa:</strong> <strong>${d.occupants || 2} người</strong></p>
           </div>
         </div>
 
-        <p class="italic text-slate-700 pt-1 text-[12px]">Sau khi thỏa thuận, Bên A và Bên B thống nhất ký kết Hợp đồng thuê với các điều khoản chi tiết như sau:</p>
-
-        <!-- Các Điều khoản từ Template -->
-        <div class="space-y-3 pt-1 text-slate-800 leading-relaxed text-[12.5px]">
-          <div>
-            <h3 class="font-bold text-slate-900 uppercase">ĐIỀU 1: ĐỐI TƯỢNG VÀ MỤC ĐÍCH HỢP ĐỒNG</h3>
-            <p class="pl-2 pt-0.5 font-medium text-slate-900">• Căn hộ / Phòng số: <strong class="text-teal-800 text-sm bg-teal-50 px-2 py-0.5 rounded border border-teal-200">${d.room}</strong> (Tầng ${d.floor}, diện tích ${d.area} m², loại: ${d.type}) thuộc cơ sở <strong>${d.building}</strong>.</p>
-            <div class="space-y-1 text-slate-800">${formatTermsText(tpl.purpose)}</div>
+        <!-- III. THÔNG TIN PHÒNG VÀ CHI PHÍ THUÊ -->
+        <div class="space-y-1 text-[12.5px] text-slate-900 pt-1.5">
+          <p class="font-bold uppercase tracking-wide">III. THÔNG TIN PHÒNG VÀ CHI PHÍ THUÊ:</p>
+          <div class="pl-4 space-y-0.5 text-justify">
+            <p>- <strong>Căn hộ / Phòng số:</strong> <strong>${d.room}</strong> (Tầng ${d.floor}, diện tích sử dụng <strong>${d.area} m²</strong>, loại phòng: <strong>${d.type}</strong>).</p>
+            <p>- <strong>Thời hạn thuê:</strong> <strong>${d.duration}</strong> (Từ ngày <strong>${d.startDate}</strong> đến hết ngày <strong>${d.endDate}</strong>).</p>
+            <p>- <strong>Giá thuê phòng:</strong> <strong>${formatVND(d.rent)} / tháng</strong>.</p>
+            <p>- <strong>Tiền đặt cọc bảo đảm:</strong> <strong>${formatVND(d.deposit)}</strong> (nộp khi ký hợp đồng để bảo đảm thực hiện nghĩa vụ).</p>
+            <p>- <strong>Kỳ hạn thanh toán:</strong> Hàng tháng, trước ngày <strong>${d.dueDay}</strong> của mỗi kỳ thu phí.</p>
+            <p>- <strong>Chi phí dịch vụ sử dụng:</strong> Đơn giá điện: <strong>${formatVND(d.elecRate)} / kWh</strong> &nbsp;|&nbsp; Đơn giá nước: <strong>${formatVND(d.waterRate)} / m³</strong> &nbsp;|&nbsp; Phí dịch vụ chung: <strong>${formatVND(d.serviceFee)} / tháng</strong>.</p>
           </div>
+        </div>
 
-          <div>
-            <h3 class="font-bold text-slate-900 uppercase">ĐIỀU 2: THỜI HẠN THUÊ VÀ GIA HẠN</h3>
-            <p class="pl-2 pt-0.5 font-medium text-slate-900">• Thời hạn thuê: <strong class="bg-slate-100 px-2 py-0.5 rounded font-bold">${d.duration}</strong>, từ ngày <strong class="font-mono text-teal-900">${d.startDate}</strong> đến hết ngày <strong class="font-mono text-teal-900">${d.endDate}</strong>.</p>
-            <div class="space-y-1 text-slate-800">${formatTermsText(tpl.duration)}</div>
-          </div>
+        <p class="italic text-slate-800 pt-2 text-[12.5px] text-justify">
+          Sau khi bàn bạc và thống nhất, hai bên cùng ký kết Hợp đồng thuê với các điều khoản chi tiết như sau:
+        </p>
 
-          <div>
-            <h3 class="font-bold text-slate-900 uppercase">ĐIỀU 3: GIÁ THUÊ VÀ PHƯƠNG THỨC THANH TOÁN</h3>
-            <p class="pl-2 pt-0.5 font-medium text-slate-900">• Giá thuê phòng: <strong class="text-teal-900 text-sm bg-teal-50 px-2 py-0.5 rounded border border-teal-200">${formatVND(d.rent)} / tháng</strong>. Chi phí dịch vụ phụ trợ: Điện: <strong>${formatVND(d.elecRate)}/kWh</strong>; Nước: <strong>${formatVND(d.waterRate)}/m³</strong>; Phí dịch vụ: <strong>${formatVND(d.serviceFee)}/tháng</strong>.</p>
-            <p class="pl-2 pt-0.5 text-slate-700">• Kỳ thanh toán: Hàng tháng, trước ngày <strong>${d.dueDay}</strong> của kỳ thu phí.</p>
-            <div class="space-y-1 text-slate-800">${formatTermsText(tpl.payment)}</div>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-slate-900 uppercase">ĐIỀU 4: TIỀN ĐẶT CỌC BẢO ĐẢM VÀ HOÀN TRẢ</h3>
-            <p class="pl-2 pt-0.5 font-medium text-slate-900">• Tiền đặt cọc: <strong class="text-teal-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-bold">${formatVND(d.deposit)}</strong> ngay khi ký kết.</p>
-            <div class="space-y-1 text-slate-800">${formatTermsText(tpl.deposit)}</div>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-slate-900 uppercase">ĐIỀU 5: QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN</h3>
-            <div class="space-y-1 text-slate-800">${formatTermsText(tpl.responsibilities)}</div>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-slate-900 uppercase">ĐIỀU 6: CHẤM DỨT HỢP ĐỒNG & BỒI THƯỜNG</h3>
-            <div class="space-y-1 text-slate-800">${formatTermsText(tpl.termination)}</div>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-slate-900 uppercase">ĐIỀU 7: HIỆU LỰC THI HÀNH</h3>
-            <div class="space-y-1 text-slate-800">${formatTermsText(tpl.validity)}</div>
-          </div>
+        <!-- Các Điều khoản từ Template chung -->
+        <div class="text-[12.5px] text-slate-900 leading-relaxed text-justify space-y-1">
+          ${renderedTermsHTML}
         </div>
 
         <!-- Chữ ký 2 bên -->
-        <div class="grid grid-cols-2 pt-8 pb-4 text-center">
+        <div class="grid grid-cols-2 pt-8 pb-4 text-center text-slate-900 text-xs">
           <div class="space-y-1">
-            <p class="font-bold uppercase text-xs">ĐẠI DIỆN BÊN CHO THUÊ (BÊN A)</p>
-            <p class="text-[11px] text-slate-500 italic">(Quản lý Cơ sở ký, đóng dấu)</p>
+            <p class="font-bold uppercase">ĐẠI DIỆN BÊN CHO THUÊ (BÊN A)</p>
+            <p class="text-[11px] text-slate-600 italic">(Ký, ghi rõ họ tên và đóng dấu)</p>
             <div class="h-20 flex flex-col items-center justify-center">
-              <span class="text-[10px] font-mono px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-300 font-bold">✓ STAYHUB DIGITAL VERIFIED</span>
+              <span class="text-[10px] font-mono px-2.5 py-1 border border-slate-400 font-bold text-slate-800 bg-white">✓ STAYHUB DIGITAL VERIFIED</span>
             </div>
             <p class="font-bold text-slate-900 text-xs">${d.managerName || 'Trần Minh Đức'}</p>
-            <p class="text-[10px] text-slate-500">Quản lý cơ sở</p>
+            <p class="text-[11px] text-slate-600">Quản lý cơ sở</p>
           </div>
 
           <div class="space-y-1">
-            <p class="font-bold uppercase text-xs">ĐẠI DIỆN BÊN THUÊ (BÊN B)</p>
-            <p class="text-[11px] text-slate-500 italic">(Ký, ghi rõ họ tên)</p>
+            <p class="font-bold uppercase">ĐẠI DIỆN BÊN THUÊ (BÊN B)</p>
+            <p class="text-[11px] text-slate-600 italic">(Ký và ghi rõ họ tên)</p>
             <div class="h-20 flex flex-col items-center justify-center">
               <span class="text-xs font-serif italic text-slate-400">Đã xác nhận thỏa thuận</span>
             </div>
             <p class="font-bold text-slate-900 text-xs">${d.tenant}</p>
-            <p class="text-[10px] text-slate-500">Khách thuê</p>
+            <p class="text-[11px] text-slate-600">Khách thuê</p>
           </div>
         </div>
       `;
     }
 
-    // Xác nhận và Lưu hợp đồng mới vào hệ thống (lưu kèm snapshot điều khoản để không bao giờ bị ghi đè)
+    // Xác nhận và Lưu hợp đồng mới vào hệ thống & Tự động tạo tài khoản cư dân (INACTIVE)
     function confirmAndSaveContract() {
       if (!currentContractDraft) return;
 
@@ -1202,16 +1272,125 @@
         DataStore.saveRooms(rooms);
       }
 
-      // Ghi nhật ký hệ thống
+      // Đồng bộ vào danh sách Cư dân lưu trú
+      try {
+        const residents = DataStore.getResidents();
+        const existingResident = residents.find(r => (d.phone && r.phone === d.phone) || (d.cccd && r.cccd === d.cccd));
+        if (!existingResident) {
+          residents.unshift({
+            name: d.tenant,
+            room: d.room,
+            building: d.building,
+            phone: d.phone,
+            cccd: d.cccd,
+            startDate: d.startDate,
+            registered: false
+          });
+          DataStore.saveResidents(residents);
+        }
+      } catch (e) {
+        console.warn('Lỗi đồng bộ residents:', e);
+      }
+
+      // ========================================================================
+      // TỰ ĐỘNG LẤY TOÀN BỘ THÔNG TIN KHÁCH HÀNG ĐỂ TẠO TÀI KHOẢN & MẬT KHẨU
+      // TRẠNG THÁI TÀI KHOẢN: INACTIVE (Cần Quản trị viên/Admin phê duyệt Access)
+      // ========================================================================
+      const phoneClean = (d.phone || '').trim();
+      const last4 = phoneClean.length >= 4 ? phoneClean.slice(-4) : Math.floor(1000 + Math.random() * 9000);
+      const generatedPassword = 'StayHub@' + last4;
+      const userLogin = phoneClean || d.email || `resident_${Date.now()}`;
+      const userEmail = d.email || `${phoneClean || 'khachhang'}@stayhub.vn`;
+
+      const allUsers = DataStore.getUsers();
+      let residentAcc = allUsers.find(u => (phoneClean && u.phone === phoneClean) || (d.email && u.email === d.email));
+
+      if (residentAcc) {
+        residentAcc.fullName = d.tenant;
+        residentAcc.role = 'RESIDENT';
+        residentAcc.status = 'INACTIVE'; // Luôn về INACTIVE để Admin duyệt Access theo đúng nghiệp vụ
+        residentAcc.scope = `${d.room} - ${d.building}`;
+        residentAcc.title = `Cư dân Căn hộ ${d.room}`;
+        residentAcc.phone = phoneClean;
+        residentAcc.email = userEmail;
+        residentAcc.cccd = d.cccd;
+        residentAcc.room = d.room;
+        residentAcc.building = d.building;
+        residentAcc.contractCode = d.code;
+        residentAcc.initialPassword = generatedPassword;
+        residentAcc.updatedAt = new Date().toISOString();
+        DataStore.saveUsers(allUsers);
+      } else {
+        residentAcc = DataStore.addUser({
+          fullName: d.tenant,
+          email: userEmail,
+          phone: phoneClean,
+          cccd: d.cccd,
+          role: 'RESIDENT',
+          scope: `${d.room} - ${d.building}`,
+          status: 'INACTIVE', // YÊU CẦU: Trạng thái ban đầu luôn là INACTIVE
+          initialPassword: generatedPassword,
+          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+          title: `Cư dân Căn hộ ${d.room}`,
+          room: d.room,
+          building: d.building,
+          contractCode: d.code
+        });
+      }
+
+      // Ghi nhật ký hệ thống kiểm toán (Audit Log)
       DataStore.addAuditLog(
-        'TẠO HỢP ĐỒNG MỚI',
+        'TẠO_HỢP_ĐỒNG_VÀ_TÀI_KHOẢN',
         `Hợp đồng: ${d.code} (${d.room} - ${d.building})`,
-        `Nhân viên ${d.staffName} đã lập và ký hợp đồng thuê cho khách hàng ${d.tenant} (CCCD: ${d.cccd}), thời hạn ${d.duration}, giá thuê ${formatVND(d.rent)}/tháng. Đã lưu trữ điều khoản phiên bản ${newContract.templateVersion}.`
+        `Nhân viên ${d.staffName} đã lập và ký hợp đồng cho khách hàng ${d.tenant}. Hệ thống tự động tạo tài khoản cư dân [INACTIVE] cho SĐT ${phoneClean} (Mật khẩu: ${generatedPassword}). Đang chờ Quản trị viên (Admin) phê duyệt Access sang ACTIVE.`
       );
 
+      // Đổ dữ liệu vào Modal thông báo tài khoản
+      const elTenant = document.getElementById('acc-modal-tenant');
+      const elRoom = document.getElementById('acc-modal-room');
+      const elCode = document.getElementById('acc-modal-code');
+      const elUsername = document.getElementById('acc-modal-username');
+      const elPassword = document.getElementById('acc-modal-password');
+
+      if (elTenant) elTenant.textContent = d.tenant;
+      if (elRoom) elRoom.textContent = d.room;
+      if (elCode) elCode.textContent = d.code;
+      if (elUsername) elUsername.textContent = userLogin;
+      if (elPassword) elPassword.textContent = generatedPassword;
+
       closeModal('createContractModal');
-      showToast(`🎉 Tạo thành công hợp đồng ${d.code} cho phòng ${d.room} (${d.tenant})!`);
+      showToast(`🎉 Tạo thành công hợp đồng ${d.code} & đã tạo tài khoản cư dân (INACTIVE)!`);
       renderContracts();
+
+      // Mở modal hiển thị tài khoản vừa tạo
+      setTimeout(() => {
+        openModal('createdAccountInfoModal');
+        if (window.lucide) lucide.createIcons();
+      }, 350);
+    }
+
+    // Điều hướng sang trang Quản trị Người dùng (users.html) và đổi vai trò sang ADMIN để duyệt
+    function goToAdminApproval() {
+      closeModal('createdAccountInfoModal');
+      DataStore.setRole('ADMIN');
+      window.location.href = '../administration/users.html';
+    }
+
+    // Sao chép thông tin tài khoản cư dân vừa tạo
+    function copyResidentCredentials() {
+      const username = document.getElementById('acc-modal-username') ? document.getElementById('acc-modal-username').textContent : '';
+      const password = document.getElementById('acc-modal-password') ? document.getElementById('acc-modal-password').textContent : '';
+      const tenant = document.getElementById('acc-modal-tenant') ? document.getElementById('acc-modal-tenant').textContent : '';
+      const text = `Tài khoản cư dân StayHub (${tenant}):\n- Tên đăng nhập: ${username}\n- Mật khẩu: ${password}\n- Trạng thái: Chờ Admin duyệt Access (INACTIVE)`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('📋 Đã sao chép tài khoản & mật khẩu cư dân!');
+        }).catch(() => {
+          alert(text);
+        });
+      } else {
+        alert(text);
+      }
     }
 
     // Xem Hợp đồng đầy đủ của một dòng trong bảng danh sách (Bảo toàn pháp lý: Ưu tiên snapshot của hợp đồng đó)
@@ -1267,20 +1446,15 @@
         serviceFee: bld.serviceFee || 150000
       };
 
-      // Bảo toàn pháp lý: Ưu tiên snapshot HTML đã ký gốc; nếu chưa có thì dùng snapshot customTerms đã lưu trong hợp đồng
+      // Chuẩn hóa văn bản: Tự động cập nhật sang định dạng liền mạch chuẩn Word nếu bản cũ bị phân mảnh
       const terms = contract.customTerms || fullData.customTerms || DEFAULT_CONTRACT_TEMPLATE;
-      const contractBodyHTML = contract.contractHtmlSnapshot || buildFullContractHTML(fullData, terms);
+      let contractBodyHTML = contract.contractHtmlSnapshot;
+      if (!contractBodyHTML || contractBodyHTML.includes('border-b border-slate-200') || contractBodyHTML.includes('border-l-4') || contractBodyHTML.includes('bg-slate-50/80')) {
+        contractBodyHTML = buildFullContractHTML(fullData, terms);
+        contract.contractHtmlSnapshot = contractBodyHTML;
+      }
 
-      paperEl.innerHTML = `
-        <div class="no-print mb-6 p-3 bg-emerald-50 border border-emerald-300 rounded-lg flex items-center justify-between text-xs text-emerald-900 shadow-xs">
-          <div class="flex items-center gap-2">
-            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-700 shrink-0"></i>
-            <span><strong>Bản ký kết gốc lưu trữ bất biến:</strong> Hợp đồng áp dụng điều khoản phiên bản <em>${contract.templateVersion || 'v1.0 (Bản gốc)'}</em> tại thời điểm ký kết. Mọi thay đổi mẫu sau này hoàn toàn không làm thay đổi bản hợp đồng này.</span>
-          </div>
-          <span class="px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded text-[10px] font-bold uppercase tracking-wider shrink-0">BẤT BIẾN</span>
-        </div>
-        ${contractBodyHTML}
-      `;
+      paperEl.innerHTML = contractBodyHTML;
 
       openModal('viewFullContractModal');
       lucide.createIcons();
@@ -1392,8 +1566,21 @@
       renderTopbar('Quản lý Hợp đồng Thuê', 'Hợp đồng / Danh sách');
       checkContractRoleAccess();
       renderContracts();
-      window.onFilterBuilding = function () {
+      window.onFilterBuilding = function (bldId) {
         renderContracts();
+        const bldInput = document.getElementById('new-ct-bld');
+        const bldDisplay = document.getElementById('new-ct-bld-display');
+        const buildings = DataStore.getBuildings();
+        let activeBldId = bldId || DataStore.getCurrentBuilding();
+        if (!activeBldId || activeBldId === 'ALL') {
+          activeBldId = buildings.length > 0 ? buildings[0].id : 'bld-1';
+        }
+        const currentBld = buildings.find(b => b.id === activeBldId);
+        if (currentBld) {
+          if (bldInput) bldInput.value = currentBld.id;
+          if (bldDisplay) bldDisplay.value = `${currentBld.name} (${currentBld.code || 'SH'})`;
+          if (typeof onContractBuildingChange === 'function') onContractBuildingChange();
+        }
       };
     });
   </script>

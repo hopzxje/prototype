@@ -253,9 +253,7 @@ function renderSidebar(activePage = 'index.html') {
       { href: 'index.html', icon: 'layout-grid', label: 'Tổng quan Hệ thống' },
       { href: 'users.html', icon: 'users', label: 'Quản trị Tài khoản' },
       { href: 'audit-logs.html', icon: 'scroll-text', label: 'Giám sát & Nhật ký' },
-      { href: 'system-settings.html', icon: 'sliders-horizontal', label: 'Cấu hình Hệ thống' },
-      { href: 'sepay.html', icon: 'qr-code', label: 'Cổng SePay Đối soát' },
-      { href: 'reports.html', icon: 'bar-chart-3', label: 'Báo cáo Toàn chuỗi' }
+      { href: 'system-settings.html', icon: 'sliders-horizontal', label: 'Cấu hình Hệ thống' }
     ];
   } else if (role === 'RESIDENT') {
     navItems = [

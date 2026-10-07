@@ -28,10 +28,9 @@
             <h2 class="text-xl font-bold text-slate-900">Danh sách Cư dân & Đăng ký Tạm trú</h2>
             <p class="text-xs text-slate-500 mt-0.5">Quản lý hồ sơ định danh, thông tin liên lạc và tình trạng khai báo công an phường</p>
           </div>
-          <button onclick="openModal('addResidentModal')" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
-            <i data-lucide="user-plus" class="w-4 h-4"></i>
-            <span>Thêm Cư Dân Mới</span>
-          </button>
+          <div id="add-resident-btn-container">
+            <!-- Được render bởi checkResidentRoleAccess() -->
+          </div>
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -116,13 +115,9 @@
     </div>
   </div>
   <script data-stayhub-page="residents.html">
-    let residentsList = [
-      { name: 'Lê Văn An', room: 'P201', building: 'StayHub Central', phone: '0904445566', cccd: '001201004567', startDate: '01/01/2025', registered: true },
-      { name: 'Nguyễn Văn Hùng', room: 'P101', building: 'StayHub Central', phone: '0901112233', cccd: '001200001234', startDate: '01/02/2025', registered: true },
-      { name: 'Trần Thị Thu Thảo', room: 'P102', building: 'StayHub Central', phone: '0902223344', cccd: '001202008899', startDate: '01/03/2025', registered: true },
-      { name: 'Vũ Đức Nam', room: 'P301', building: 'StayHub Central', phone: '0907778899', cccd: '001201009988', startDate: '01/04/2025', registered: false },
-      { name: 'Hà Kiều Oanh', room: 'P101', building: 'StayHub Riverside', phone: '0911223344', cccd: '001198002345', startDate: '15/03/2025', registered: true }
-    ];
+    function getResidentsList() {
+      return DataStore.getResidents();
+    }
 
     function renderResidents() {
       const q = document.getElementById('res-search').value.toLowerCase();
@@ -130,9 +125,10 @@
       const currentBldId = DataStore.getCurrentBuilding();
       const currentBld = DataStore.getBuildings().find(b => b.id === currentBldId);
       const bldNamePart = currentBld ? currentBld.name.split(' - ')[0] : 'StayHub Central';
+      const residentsList = getResidentsList();
 
       const filtered = residentsList.filter(r => {
-        const matchBuilding = r.building.includes(bldNamePart) || r.building === (currentBld ? currentBld.name : '');
+        const matchBuilding = currentBldId === 'ALL' || r.building.includes(bldNamePart) || r.building === (currentBld ? currentBld.name : '');
         const matchQuery = r.name.toLowerCase().includes(q) || r.phone.includes(q) || r.room.toLowerCase().includes(q) || r.cccd.includes(q);
         return matchBuilding && matchQuery;
       });
@@ -168,8 +164,42 @@
       lucide.createIcons();
     }
 
+    // Kiểm tra phân quyền: Ẩn nút Thêm Cư Dân Mới đối với Manager, Admin và Resident (Chỉ Staff được thêm)
+    function checkResidentRoleAccess() {
+      const role = DataStore.getRole();
+      const container = document.getElementById('add-resident-btn-container');
+      if (!container) return;
+
+      if (role === 'STAFF') {
+        container.innerHTML = `
+          <button onclick="openAddResidentModal()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors cursor-pointer">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            <span>Thêm Cư Dân Mới</span>
+          </button>
+        `;
+        lucide.createIcons();
+      } else {
+        container.innerHTML = '';
+      }
+    }
+
+    function openAddResidentModal() {
+      const role = DataStore.getRole();
+      if (role === 'MANAGER' || role === 'ADMIN' || role === 'RESIDENT') {
+        showToast('Chỉ Nhân viên (Staff) mới có quyền thêm cư dân mới.', 'warning');
+        return;
+      }
+      openModal('addResidentModal');
+    }
+
     function handleAddResident(e) {
       e.preventDefault();
+      const role = DataStore.getRole();
+      if (role === 'MANAGER' || role === 'ADMIN' || role === 'RESIDENT') {
+        showToast('Chỉ Nhân viên (Staff) mới có quyền thêm cư dân mới.', 'error');
+        return;
+      }
+
       const name = document.getElementById('res-name').value.trim();
       const room = document.getElementById('res-room').value.trim();
       const phone = document.getElementById('res-phone').value.trim();
@@ -178,9 +208,11 @@
       const currentBldId = DataStore.getCurrentBuilding();
       const currentBld = DataStore.getBuildings().find(b => b.id === currentBldId);
 
-      residentsList.unshift({
+      const list = getResidentsList();
+      list.unshift({
         name, room, building: currentBld ? currentBld.name : 'StayHub Central', phone, cccd, startDate: '02/10/2026', registered
       });
+      DataStore.saveResidents(list);
 
       closeModal('addResidentModal');
       showToast(`Đã thêm cư dân ${name} vào phòng ${room}!`);
@@ -190,6 +222,7 @@
     registerPage('residents.html', () => {
       renderSidebar('residents.html');
       renderTopbar('Danh sách Cư dân & Lưu trú', 'Cư dân / Danh sách');
+      checkResidentRoleAccess();
       renderResidents();
       window.onFilterBuilding = function() {
         renderResidents();
