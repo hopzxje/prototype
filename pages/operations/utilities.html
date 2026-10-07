@@ -23,41 +23,146 @@
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <!-- Top Header & Cycle Selector -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <h2 class="text-xl font-bold text-slate-900">Ghi chỉ số Điện & Nước kỳ tháng 10/2026</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Nhập số mới, hệ thống tự động tính lượng tiêu thụ và thành tiền theo đơn giá quy định</p>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <h2 class="text-xl font-bold text-slate-900">
+                Ghi chỉ số Điện & Nước kỳ <span id="current-cycle-display" class="text-teal-700">Tháng 10/2026</span>
+              </h2>
+              <span id="current-cycle-badge" class="badge badge-success text-xs font-semibold">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                <span>Đã chốt số</span>
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              Chỉ số Cũ tự động kế thừa từ chỉ số Mới của tháng trước. Nhập số Mới để tự động tính tiền theo biểu phí cơ sở.
+            </p>
           </div>
-          <div class="flex items-center gap-3">
-            <button onclick="calculateAndSaveAll()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+
+          <!-- Cycle Navigation & Actions -->
+          <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Stepper and Dropdown -->
+            <div class="inline-flex items-center bg-white border border-slate-200 rounded-lg p-1 shadow-xs">
+              <button onclick="navigateCycle(-1)" class="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition-colors" title="Kỳ tháng trước">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <div class="flex items-center gap-1.5 px-2">
+                <i data-lucide="calendar" class="w-3.5 h-3.5 text-teal-600"></i>
+                <select id="cycle-select" onchange="onSelectCycle(this.value)" class="text-xs font-bold text-slate-800 bg-transparent border-0 focus:outline-none cursor-pointer">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <button onclick="navigateCycle(1)" class="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition-colors" title="Kỳ tháng sau">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Quick Add Cycle -->
+            <button onclick="openCreateCycleModal()" class="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors" title="Mở kỳ chốt số cho tháng mới">
+              <i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-slate-600"></i>
+              <span>+ Mở Kỳ Mới</span>
+            </button>
+
+            <!-- Sample Estimator -->
+            <button onclick="fillEstimateReadings()" class="flex items-center gap-1.5 px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-semibold transition-colors" title="Tự động điền số mới mẫu cho các phòng chưa nhập">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
+              <span>Điền Số Mẫu</span>
+            </button>
+
+            <!-- Save All -->
+            <button onclick="calculateAndSaveAll()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-xs sm:text-sm font-semibold shadow-sm transition-colors">
               <i data-lucide="save" class="w-4 h-4"></i>
               <span>Lưu Toàn Bộ & Tính Tiền</span>
             </button>
           </div>
         </div>
 
+        <!-- Dynamic Notice Banner for Month Transitions -->
+        <div id="cycle-notice-banner" class="p-3.5 bg-teal-50 border border-teal-200 rounded-xl text-xs text-teal-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center gap-2.5">
+            <i data-lucide="info" class="w-4 h-4 text-teal-700 shrink-0 mt-0.5 sm:mt-0"></i>
+            <span id="cycle-notice-text">
+              Đang xem kỳ <strong>Tháng 10/2026</strong>. Chỉ số cũ tự động kế thừa từ chỉ số mới của Tháng 09/2026.
+            </span>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <a href="../finance/invoices.html" class="px-3 py-1 bg-white border border-teal-300 hover:bg-teal-100 text-teal-800 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <i data-lucide="receipt" class="w-3.5 h-3.5 text-[#0F766E]"></i>
+              <span>Xem Hóa Đơn Kỳ Này</span>
+            </a>
+          </div>
+        </div>
+
         <!-- Tariff info bar (Dynamically per facility) -->
-        <div class="bg-teal-50 border border-teal-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 text-xs">
+        <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 text-xs shadow-xs">
           <div class="flex flex-wrap items-center gap-6">
             <div>
-              <span class="text-slate-500 block">Đơn giá Điện sinh hoạt:</span>
-              <strong class="text-slate-900 text-sm" id="util-bld-elec">3.500 ₫ / kWh</strong>
+              <span class="text-slate-400 block text-[11px] font-semibold uppercase">Đơn giá Điện sinh hoạt</span>
+              <strong class="text-slate-900 text-sm mt-0.5 block" id="util-bld-elec">3.500 ₫ / kWh</strong>
             </div>
-            <div class="border-l border-teal-200 pl-6">
-              <span class="text-slate-500 block">Đơn giá Nước sinh hoạt:</span>
-              <strong class="text-slate-900 text-sm" id="util-bld-water">25.000 ₫ / m³</strong>
+            <div class="border-l border-slate-200 pl-6">
+              <span class="text-slate-400 block text-[11px] font-semibold uppercase">Đơn giá Nước sinh hoạt</span>
+              <strong class="text-slate-900 text-sm mt-0.5 block" id="util-bld-water">25.000 ₫ / m³</strong>
             </div>
-            <div class="border-l border-teal-200 pl-6">
-              <span class="text-slate-500 block">Phí quản lý & dịch vụ chung:</span>
-              <strong class="text-slate-900 text-sm" id="util-bld-service">150.000 ₫ / phòng</strong>
+            <div class="border-l border-slate-200 pl-6">
+              <span class="text-slate-400 block text-[11px] font-semibold uppercase">Phí quản lý & dịch vụ chung</span>
+              <strong class="text-slate-900 text-sm mt-0.5 block" id="util-bld-service">150.000 ₫ / phòng</strong>
             </div>
           </div>
           <div class="flex items-center gap-2">
             <span class="badge badge-success" id="util-bld-badge">Cơ sở: StayHub Central</span>
-            <button onclick="openEditTariffModal()" class="px-3 py-1.5 rounded-lg bg-white border border-teal-300 text-teal-900 text-xs font-bold hover:bg-teal-100/70 transition-all flex items-center gap-1.5 shadow-xs" title="Cài đặt đơn giá điện nước riêng cho cơ sở này">
+            <button onclick="openEditTariffModal()" class="px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-all flex items-center gap-1.5 shadow-xs" title="Cài đặt đơn giá điện nước riêng cho cơ sở này">
               <i data-lucide="sliders" class="w-3.5 h-3.5 text-[#0F766E]"></i>
               <span>Cài Đặt Biểu Phí</span>
             </button>
+          </div>
+        </div>
+
+        <!-- Summary Statistics for active month -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Tổng Điện Tiêu Thụ</span>
+              <span class="text-base font-extrabold text-slate-900 mt-0.5 block" id="stat-total-elec">0 kWh</span>
+              <span class="text-[11px] text-amber-600 font-semibold" id="stat-total-elec-money">0 ₫</span>
+            </div>
+            <div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+              <i data-lucide="zap" class="w-4 h-4"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Tổng Nước Tiêu Thụ</span>
+              <span class="text-base font-extrabold text-slate-900 mt-0.5 block" id="stat-total-water">0 m³</span>
+              <span class="text-[11px] text-blue-600 font-semibold" id="stat-total-water-money">0 ₫</span>
+            </div>
+            <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+              <i data-lucide="droplet" class="w-4 h-4"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Tổng Tiền Điện + Nước</span>
+              <span class="text-base font-extrabold text-teal-700 mt-0.5 block" id="stat-grand-total">0 ₫</span>
+              <span class="text-[11px] text-slate-400 font-medium">Theo đơn giá cơ sở</span>
+            </div>
+            <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <i data-lucide="badge-dollar-sign" class="w-4 h-4"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Tiến Độ Ghi Số</span>
+              <span class="text-base font-extrabold text-slate-900 mt-0.5 block" id="stat-progress-count">0 / 0 phòng</span>
+              <span class="text-[11px] text-emerald-600 font-semibold" id="stat-progress-percent">100% hoàn thành</span>
+            </div>
+            <div class="w-9 h-9 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center">
+              <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+            </div>
           </div>
         </div>
 
@@ -67,14 +172,15 @@
             <table class="w-full text-left text-xs text-slate-600">
               <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
                 <tr>
-                  <th class="p-3.5">Phòng / Khách</th>
-                  <th class="p-3.5">Điện Cũ (kWh)</th>
-                  <th class="p-3.5">Điện Mới (kWh)</th>
+                  <th class="p-3.5">Phòng / Khách Thuê</th>
+                  <th class="p-3.5">Điện Cũ (kWh)<span class="block text-[10px] text-slate-400 font-normal lowercase">(chỉ số tháng trước)</span></th>
+                  <th class="p-3.5">Điện Mới (kWh)<span class="block text-[10px] text-teal-600 font-normal lowercase">(nhập kỳ này)</span></th>
                   <th class="p-3.5">Tiêu Thụ Điện</th>
-                  <th class="p-3.5">Nước Cũ (m³)</th>
-                  <th class="p-3.5">Nước Mới (m³)</th>
+                  <th class="p-3.5">Nước Cũ (m³)<span class="block text-[10px] text-slate-400 font-normal lowercase">(chỉ số tháng trước)</span></th>
+                  <th class="p-3.5">Nước Mới (m³)<span class="block text-[10px] text-teal-600 font-normal lowercase">(nhập kỳ này)</span></th>
                   <th class="p-3.5">Tiêu Thụ Nước</th>
                   <th class="p-3.5 text-right">Tổng Tiền Điện + Nước</th>
+                  <th class="p-3.5 text-center">Trạng Thái</th>
                 </tr>
               </thead>
               <tbody id="utilities-tbody" class="divide-y divide-slate-100 font-medium">
@@ -86,6 +192,78 @@
 
       </div>
     </main>
+  </div>
+
+  <!-- Modal: Mở Kỳ Chốt Số Mới (Next Month Wizard) -->
+  <div id="createCycleModal" class="modal-backdrop">
+    <div class="modal-content p-6 max-w-md">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-teal-50 text-[#0F766E] flex items-center justify-center border border-teal-200">
+            <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Mở Kỳ Chốt Số Mới</h3>
+            <p class="text-xs text-slate-500 font-medium">Khởi tạo chu kỳ ghi chỉ số điện nước cho tháng tiếp theo</p>
+          </div>
+        </div>
+        <button onclick="closeModal('createCycleModal')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="createCycleForm" onsubmit="handleCreateNewCycle(event)" class="mt-4 space-y-4">
+        <div class="p-3 bg-teal-50 border border-teal-200/70 rounded-xl text-xs text-teal-800 leading-relaxed flex items-start gap-2">
+          <i data-lucide="sparkles" class="w-4 h-4 text-teal-600 shrink-0 mt-0.5"></i>
+          <div>
+            <strong>Quy tắc kết chuyển tự động:</strong> Chỉ số <strong>Mới</strong> của tháng trước sẽ tự động trở thành chỉ số <strong>Cũ</strong> của kỳ mới được tạo.
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Chọn Tháng <span class="text-red-500">*</span></label>
+            <select id="new-cycle-month" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-900 focus:bg-white focus:outline-teal-600">
+              <option value="01">Tháng 01</option>
+              <option value="02">Tháng 02</option>
+              <option value="03">Tháng 03</option>
+              <option value="04">Tháng 04</option>
+              <option value="05">Tháng 05</option>
+              <option value="06">Tháng 06</option>
+              <option value="07">Tháng 07</option>
+              <option value="08">Tháng 08</option>
+              <option value="09">Tháng 09</option>
+              <option value="10">Tháng 10</option>
+              <option value="11" selected>Tháng 11</option>
+              <option value="12">Tháng 12</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Chọn Năm <span class="text-red-500">*</span></label>
+            <select id="new-cycle-year" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-900 focus:bg-white focus:outline-teal-600">
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1 text-xs text-slate-600">
+          <label class="flex items-center gap-2 cursor-pointer font-medium">
+            <input type="checkbox" id="new-cycle-auto-inherit" checked class="rounded text-teal-600 focus:ring-teal-500 w-4 h-4">
+            <span>Tự động kết chuyển chỉ số Cũ từ kỳ gần nhất</span>
+          </label>
+          <p class="text-[11px] text-slate-400 pl-6">Giúp nhân viên không cần nhập lại chỉ số công tơ ban đầu.</p>
+        </div>
+
+        <div class="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+          <button type="button" onclick="closeModal('createCycleModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-xs text-slate-600 hover:bg-slate-50 font-semibold">Hủy</button>
+          <button type="submit" class="flex items-center gap-1.5 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-xs font-bold transition-all shadow-sm">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Khởi Tạo Kỳ Này</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- Modal: Cài đặt Biểu Phí Điện Nước Riêng Của Cơ Sở (Manager) -->
@@ -139,13 +317,9 @@
   </div>
 
   <script data-stayhub-page="utilities.html">
-    const rowsData = [
-      { room: 'P101', tenant: 'Nguyễn Văn Hùng', eOld: 890, eNew: 1025, wOld: 60, wNew: 66 },
-      { room: 'P102', tenant: 'Trần Thị Thu Thảo', eOld: 1100, eNew: 1260, wOld: 72, wNew: 80 },
-      { room: 'P201', tenant: 'Lê Văn An', eOld: 1240, eNew: 1410, wOld: 85, wNew: 93 },
-      { room: 'P204', tenant: 'Đỗ Thùy Trang', eOld: 950, eNew: 1110, wOld: 55, wNew: 62 },
-      { room: 'P301', tenant: 'Vũ Đức Nam', eOld: 1450, eNew: 1680, wOld: 110, wNew: 121 }
-    ];
+    // State management for multi-period utilities
+    let currentCycle = '10/2026';
+    let activeTableRows = {};
 
     function getActiveBuildingRates() {
       const currentBldId = DataStore.getCurrentBuilding();
@@ -172,65 +346,409 @@
       if (badgeEl) badgeEl.innerText = rates.name;
     }
 
+    function renderCycleControls() {
+      const availableCycles = DataStore.getAvailableUtilityCycles();
+      if (!availableCycles.includes(currentCycle)) {
+        availableCycles.push(currentCycle);
+        availableCycles.sort((a, b) => {
+          const [ma, ya] = a.split('/').map(Number);
+          const [mb, yb] = b.split('/').map(Number);
+          return (ya * 12 + ma) - (yb * 12 + mb);
+        });
+      }
+
+      const cycleSelect = document.getElementById('cycle-select');
+      if (cycleSelect) {
+        cycleSelect.innerHTML = availableCycles.map(c => {
+          let suffix = '';
+          if (c === '09/2026') suffix = ' (Đã khóa sổ)';
+          else if (c === '10/2026') suffix = ' (Kỳ hiện tại)';
+          else if (c === '11/2026') suffix = ' (Kỳ tiếp theo)';
+          return `<option value="${c}" ${c === currentCycle ? 'selected' : ''}>Kỳ tháng ${c}${suffix}</option>`;
+        }).join('');
+      }
+
+      // Display header title
+      const titleDisplay = document.getElementById('current-cycle-display');
+      if (titleDisplay) {
+        titleDisplay.innerText = `Tháng ${currentCycle}`;
+      }
+
+      // Badge & notice update
+      const cycleData = DataStore.getUtilityCycle(currentCycle);
+      const badgeEl = document.getElementById('current-cycle-badge');
+      const noticeBanner = document.getElementById('cycle-notice-banner');
+      const noticeText = document.getElementById('cycle-notice-text');
+
+      if (badgeEl) {
+        if (cycleData.status === 'LOCKED') {
+          badgeEl.className = 'badge badge-success text-xs font-semibold';
+          badgeEl.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i> <span>Đã khóa sổ</span>`;
+        } else if (cycleData.status === 'RECORDED') {
+          badgeEl.className = 'badge badge-success text-xs font-semibold';
+          badgeEl.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5"></i> <span>Đã chốt số & Lập hóa đơn</span>`;
+        } else {
+          badgeEl.className = 'badge badge-warning text-xs font-semibold';
+          badgeEl.innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5"></i> <span>Đang ghi số (Chưa chốt)</span>`;
+        }
+      }
+
+      if (noticeText) {
+        const [curM, curY] = currentCycle.split('/').map(Number);
+        let prevM = curM - 1;
+        let prevY = curY;
+        if (prevM === 0) { prevM = 12; prevY--; }
+        const prevCycleKey = `${String(prevM).padStart(2, '0')}/${prevY}`;
+
+        if (currentCycle === '11/2026') {
+          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng 11/2026</strong> (Kỳ tiếp theo). Chỉ số Điện cũ & Nước cũ đã <strong>tự động kết chuyển 100%</strong> từ chỉ số Mới của Tháng 10/2026. Bạn có thể nhập số mới hoặc bấm "Điền Số Mẫu" để tính thử!`;
+        } else if (currentCycle === '10/2026') {
+          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng 10/2026</strong>. Chỉ số cũ tự động kế thừa từ chỉ số mới của Tháng 09/2026.`;
+        } else {
+          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng ${currentCycle}</strong>. Chỉ số cũ tự động kết chuyển từ chỉ số mới của kỳ liền kề (${prevCycleKey}).`;
+        }
+      }
+    }
+
+    function onSelectCycle(selected) {
+      currentCycle = selected;
+      renderUtilitiesTable();
+    }
+
+    function navigateCycle(direction) {
+      const availableCycles = DataStore.getAvailableUtilityCycles();
+      const currentIndex = availableCycles.indexOf(currentCycle);
+
+      if (direction === -1) {
+        if (currentIndex > 0) {
+          currentCycle = availableCycles[currentIndex - 1];
+        } else {
+          // Compute earlier month
+          const [m, y] = currentCycle.split('/').map(Number);
+          let prevM = m - 1;
+          let prevY = y;
+          if (prevM === 0) { prevM = 12; prevY--; }
+          currentCycle = `${String(prevM).padStart(2, '0')}/${prevY}`;
+        }
+      } else if (direction === 1) {
+        if (currentIndex !== -1 && currentIndex < availableCycles.length - 1) {
+          currentCycle = availableCycles[currentIndex + 1];
+        } else {
+          // Compute next month
+          const [m, y] = currentCycle.split('/').map(Number);
+          let nextM = m + 1;
+          let nextY = y;
+          if (nextM === 13) { nextM = 1; nextY++; }
+          currentCycle = `${String(nextM).padStart(2, '0')}/${nextY}`;
+        }
+      }
+
+      renderUtilitiesTable();
+    }
+
     function renderUtilitiesTable() {
       updateTariffBar();
+      renderCycleControls();
+
       const rates = getActiveBuildingRates();
       const tbody = document.getElementById('utilities-tbody');
       const currentBldId = DataStore.getCurrentBuilding();
       const rooms = DataStore.getRooms().filter(r => (currentBldId === 'ALL' || r.buildingId === currentBldId) && r.tenant);
-      const displayRows = rooms.length > 0 ? rooms.map(r => ({
-        room: r.roomNumber,
-        tenant: r.tenant,
-        eOld: 890,
-        eNew: 1025,
-        wOld: 60,
-        wNew: 66
-      })) : rowsData;
 
-      tbody.innerHTML = displayRows.map((row, idx) => {
+      const cycleData = DataStore.getUtilityCycle(currentCycle);
+      activeTableRows = {};
+
+      if (rooms.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="p-8 text-center text-slate-400">
+              <i data-lucide="building" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+              Không tìm thấy căn hộ có cư dân đang thuê tại cơ sở này.
+            </td>
+          </tr>
+        `;
+        lucide.createIcons();
+        updateSummaryStats();
+        return;
+      }
+
+      // Populate active rows
+      rooms.forEach(r => {
+        let saved = cycleData.readings && cycleData.readings[r.id];
+        if (!saved) {
+          // Fallback if not recorded: inherit from previous month
+          const prevKey = getPreviousCycleKey(currentCycle);
+          const prevData = DataStore.getUtilityCycle(prevKey);
+          const prevRow = prevData.readings && prevData.readings[r.id];
+          const baseEOld = prevRow ? prevRow.eNew : 1000;
+          const baseWOld = prevRow ? prevRow.wNew : 60;
+          saved = {
+            eOld: baseEOld,
+            eNew: baseEOld,
+            wOld: baseWOld,
+            wNew: baseWOld
+          };
+        }
+        activeTableRows[r.id] = {
+          roomId: r.id,
+          room: r.roomNumber,
+          tenant: r.tenant,
+          phone: r.phone,
+          buildingId: r.buildingId,
+          eOld: Number(saved.eOld) || 0,
+          eNew: Number(saved.eNew) || 0,
+          wOld: Number(saved.wOld) || 0,
+          wNew: Number(saved.wNew) || 0
+        };
+      });
+
+      tbody.innerHTML = rooms.map(r => {
+        const row = activeTableRows[r.id];
         const eUnits = Math.max(0, row.eNew - row.eOld);
         const eMoney = eUnits * rates.elecRate;
         const wUnits = Math.max(0, row.wNew - row.wOld);
         const wMoney = wUnits * rates.waterRate;
         const total = eMoney + wMoney;
+        const isRecorded = row.eNew > row.eOld || row.wNew > row.wOld;
 
         return `
-          <tr class="hover:bg-slate-50">
+          <tr class="hover:bg-slate-50/80 transition-colors" id="tr-room-${r.id}">
             <td class="p-3.5">
-              <span class="font-bold text-slate-900">${row.room}</span>
-              <span class="block text-[11px] text-slate-400">${row.tenant}</span>
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 font-bold flex items-center justify-center text-xs">
+                  ${row.room}
+                </span>
+                <div>
+                  <span class="font-bold text-slate-900 block">${row.room}</span>
+                  <span class="block text-[11px] text-slate-400">${row.tenant}</span>
+                </div>
+              </div>
             </td>
-            <td class="p-3.5 font-mono text-slate-500">${row.eOld}</td>
+
+            <!-- Điện cũ -->
             <td class="p-3.5">
-              <input type="number" value="${row.eNew}" oninput="updateRow(${idx}, 'eNew', this.value)" class="w-24 bg-slate-50 border border-slate-200 rounded p-1.5 font-mono font-bold text-slate-900 focus:bg-white focus:outline-teal-600">
+              <span class="font-mono font-bold text-slate-700 block">${row.eOld}</span>
+              <span class="text-[10px] text-slate-400">kWh</span>
             </td>
-            <td class="p-3.5 font-semibold text-slate-700" id="e-units-${idx}">${eUnits} kWh <span class="text-[11px] text-slate-400 block">${formatVND(eMoney)}</span></td>
-            <td class="p-3.5 font-mono text-slate-500">${row.wOld}</td>
+
+            <!-- Điện mới (Input) -->
             <td class="p-3.5">
-              <input type="number" value="${row.wNew}" oninput="updateRow(${idx}, 'wNew', this.value)" class="w-24 bg-slate-50 border border-slate-200 rounded p-1.5 font-mono font-bold text-slate-900 focus:bg-white focus:outline-teal-600">
+              <input type="number" 
+                value="${row.eNew}" 
+                min="${row.eOld}"
+                oninput="updateRowInput('${r.id}', 'eNew', this.value)" 
+                class="w-24 bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-mono font-bold text-slate-900 focus:bg-white focus:outline-teal-600 focus:ring-1 focus:ring-teal-600">
             </td>
-            <td class="p-3.5 font-semibold text-slate-700" id="w-units-${idx}">${wUnits} m³ <span class="text-[11px] text-slate-400 block">${formatVND(wMoney)}</span></td>
-            <td class="p-3.5 text-right font-extrabold text-teal-700 text-sm" id="row-total-${idx}">${formatVND(total)}</td>
+
+            <!-- Tiêu thụ điện -->
+            <td class="p-3.5">
+              <span class="font-bold text-slate-900 block" id="e-units-${r.id}">${eUnits} kWh</span>
+              <span class="text-[11px] text-amber-600 font-semibold block" id="e-money-${r.id}">${formatVND(eMoney)}</span>
+            </td>
+
+            <!-- Nước cũ -->
+            <td class="p-3.5">
+              <span class="font-mono font-bold text-slate-700 block">${row.wOld}</span>
+              <span class="text-[10px] text-slate-400">m³</span>
+            </td>
+
+            <!-- Nước mới (Input) -->
+            <td class="p-3.5">
+              <input type="number" 
+                value="${row.wNew}" 
+                min="${row.wOld}"
+                oninput="updateRowInput('${r.id}', 'wNew', this.value)" 
+                class="w-24 bg-slate-50 border border-slate-200 rounded-lg p-1.5 font-mono font-bold text-slate-900 focus:bg-white focus:outline-teal-600 focus:ring-1 focus:ring-teal-600">
+            </td>
+
+            <!-- Tiêu thụ nước -->
+            <td class="p-3.5">
+              <span class="font-bold text-slate-900 block" id="w-units-${r.id}">${wUnits} m³</span>
+              <span class="text-[11px] text-blue-600 font-semibold block" id="w-money-${r.id}">${formatVND(wMoney)}</span>
+            </td>
+
+            <!-- Tổng tiền -->
+            <td class="p-3.5 text-right">
+              <span class="font-extrabold text-teal-700 text-sm block" id="row-total-${r.id}">${formatVND(total)}</span>
+              <span class="text-[10px] text-slate-400">Điện + Nước</span>
+            </td>
+
+            <!-- Trạng thái dòng -->
+            <td class="p-3.5 text-center" id="row-status-${r.id}">
+              ${isRecorded 
+                ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><i data-lucide="check" class="w-3 h-3"></i> Đã ghi</span>'
+                : '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200"><i data-lucide="edit-2" class="w-3 h-3"></i> Chờ nhập</span>'
+              }
+            </td>
           </tr>
         `;
       }).join('');
 
       lucide.createIcons();
+      updateSummaryStats();
     }
 
-    function updateRow(idx, field, value) {
-      rowsData[idx][field] = parseInt(value) || 0;
-      const row = rowsData[idx];
+    function getPreviousCycleKey(cycle) {
+      const [m, y] = cycle.split('/').map(Number);
+      let prevM = m - 1;
+      let prevY = y;
+      if (prevM === 0) { prevM = 12; prevY--; }
+      return `${String(prevM).padStart(2, '0')}/${prevY}`;
+    }
+
+    function updateRowInput(roomId, field, value) {
+      if (!activeTableRows[roomId]) return;
+      activeTableRows[roomId][field] = parseInt(value) || 0;
+      const row = activeTableRows[roomId];
       const rates = getActiveBuildingRates();
+
       const eUnits = Math.max(0, row.eNew - row.eOld);
       const eMoney = eUnits * rates.elecRate;
       const wUnits = Math.max(0, row.wNew - row.wOld);
       const wMoney = wUnits * rates.waterRate;
       const total = eMoney + wMoney;
 
-      document.getElementById(`e-units-${idx}`).innerHTML = `${eUnits} kWh <span class="text-[11px] text-slate-400 block">${formatVND(eMoney)}</span>`;
-      document.getElementById(`w-units-${idx}`).innerHTML = `${wUnits} m³ <span class="text-[11px] text-slate-400 block">${formatVND(wMoney)}</span>`;
-      document.getElementById(`row-total-${idx}`).innerText = formatVND(total);
+      const eUnitsEl = document.getElementById(`e-units-${roomId}`);
+      const eMoneyEl = document.getElementById(`e-money-${roomId}`);
+      const wUnitsEl = document.getElementById(`w-units-${roomId}`);
+      const wMoneyEl = document.getElementById(`w-money-${roomId}`);
+      const rowTotalEl = document.getElementById(`row-total-${roomId}`);
+      const rowStatusEl = document.getElementById(`row-status-${roomId}`);
+
+      if (eUnitsEl) eUnitsEl.innerText = `${eUnits} kWh`;
+      if (eMoneyEl) eMoneyEl.innerText = formatVND(eMoney);
+      if (wUnitsEl) wUnitsEl.innerText = `${wUnits} m³`;
+      if (wMoneyEl) wMoneyEl.innerText = formatVND(wMoney);
+      if (rowTotalEl) rowTotalEl.innerText = formatVND(total);
+
+      const isRecorded = row.eNew > row.eOld || row.wNew > row.wOld;
+      if (rowStatusEl) {
+        rowStatusEl.innerHTML = isRecorded 
+          ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><i data-lucide="check" class="w-3 h-3"></i> Đã ghi</span>'
+          : '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200"><i data-lucide="edit-2" class="w-3 h-3"></i> Chờ nhập</span>';
+        lucide.createIcons();
+      }
+
+      updateSummaryStats();
+    }
+
+    function updateSummaryStats() {
+      const rates = getActiveBuildingRates();
+      let totalElecUnits = 0;
+      let totalWaterUnits = 0;
+      let recordedCount = 0;
+      const rows = Object.values(activeTableRows);
+      const totalRooms = rows.length;
+
+      rows.forEach(r => {
+        const eU = Math.max(0, r.eNew - r.eOld);
+        const wU = Math.max(0, r.wNew - r.wOld);
+        totalElecUnits += eU;
+        totalWaterUnits += wU;
+        if (r.eNew > r.eOld || r.wNew > r.wOld) {
+          recordedCount++;
+        }
+      });
+
+      const totalElecMoney = totalElecUnits * rates.elecRate;
+      const totalWaterMoney = totalWaterUnits * rates.waterRate;
+      const grandTotal = totalElecMoney + totalWaterMoney;
+      const percent = totalRooms > 0 ? Math.round((recordedCount / totalRooms) * 100) : 100;
+
+      const statElec = document.getElementById('stat-total-elec');
+      const statElecMoney = document.getElementById('stat-total-elec-money');
+      const statWater = document.getElementById('stat-total-water');
+      const statWaterMoney = document.getElementById('stat-total-water-money');
+      const statGrand = document.getElementById('stat-grand-total');
+      const statProgress = document.getElementById('stat-progress-count');
+      const statPercent = document.getElementById('stat-progress-percent');
+
+      if (statElec) statElec.innerText = `${totalElecUnits.toLocaleString()} kWh`;
+      if (statElecMoney) statElecMoney.innerText = formatVND(totalElecMoney);
+      if (statWater) statWater.innerText = `${totalWaterUnits.toLocaleString()} m³`;
+      if (statWaterMoney) statWaterMoney.innerText = formatVND(totalWaterMoney);
+      if (statGrand) statGrand.innerText = formatVND(grandTotal);
+      if (statProgress) statProgress.innerText = `${recordedCount} / ${totalRooms} phòng`;
+      if (statPercent) {
+        statPercent.innerText = `${percent}% hoàn thành`;
+        statPercent.className = percent === 100 ? 'text-[11px] text-emerald-600 font-semibold' : 'text-[11px] text-amber-600 font-semibold';
+      }
+    }
+
+    // Auto-fill sample incremental readings for demo purpose
+    function fillEstimateReadings() {
+      let count = 0;
+      Object.keys(activeTableRows).forEach(roomId => {
+        const row = activeTableRows[roomId];
+        if (row.eNew <= row.eOld) {
+          // Increment sample electricity ~130 to 175 kWh
+          const estElec = Math.floor(130 + (parseInt(roomId.replace(/\D/g, '')) * 7) % 45);
+          row.eNew = row.eOld + estElec;
+        }
+        if (row.wNew <= row.wOld) {
+          // Increment sample water ~6 to 10 m3
+          const estWater = Math.floor(6 + (parseInt(roomId.replace(/\D/g, '')) * 3) % 5);
+          row.wNew = row.wOld + estWater;
+        }
+        count++;
+      });
+
+      renderUtilitiesTable();
+      showToast(`✨ Đã tự động điền chỉ số mẫu cho ${count} phòng kỳ tháng ${currentCycle}! Bấm "Lưu" để hoàn tất.`);
+    }
+
+    function calculateAndSaveAll() {
+      const readingsToSave = {};
+      Object.keys(activeTableRows).forEach(roomId => {
+        const r = activeTableRows[roomId];
+        readingsToSave[roomId] = {
+          eOld: r.eOld,
+          eNew: r.eNew,
+          wOld: r.wOld,
+          wNew: r.wNew
+        };
+      });
+
+      const rates = getActiveBuildingRates();
+      DataStore.saveUtilityCycle(
+        currentCycle,
+        readingsToSave,
+        'RECORDED',
+        `Nhân viên lưu và tính tiền chỉ số điện nước kỳ tháng ${currentCycle} cho ${rates.name} (${Object.keys(readingsToSave).length} phòng)`
+      );
+
+      renderUtilitiesTable();
+      showToast(`🎉 Đã lưu toàn bộ chỉ số kỳ tháng ${currentCycle} & cập nhật hóa đơn cơ sở thành công!`);
+    }
+
+    function openCreateCycleModal() {
+      // Suggest next month
+      const [m, y] = currentCycle.split('/').map(Number);
+      let nextM = m + 1;
+      let nextY = y;
+      if (nextM === 13) { nextM = 1; nextY++; }
+
+      const mSelect = document.getElementById('new-cycle-month');
+      const ySelect = document.getElementById('new-cycle-year');
+      if (mSelect) mSelect.value = String(nextM).padStart(2, '0');
+      if (ySelect) ySelect.value = String(nextY);
+
+      openModal('createCycleModal');
+    }
+
+    function handleCreateNewCycle(e) {
+      e.preventDefault();
+      const m = document.getElementById('new-cycle-month').value;
+      const y = document.getElementById('new-cycle-year').value;
+      const newCycleKey = `${m}/${y}`;
+
+      // Initialize in DataStore (auto inherit from prior cycle)
+      DataStore.getUtilityCycle(newCycleKey);
+      currentCycle = newCycleKey;
+
+      closeModal('createCycleModal');
+      renderUtilitiesTable();
+      showToast(`🎉 Đã mở kỳ chốt số mới: Tháng ${newCycleKey}! Chỉ số cũ đã tự động kế thừa.`);
     }
 
     function openEditTariffModal() {
@@ -269,14 +787,19 @@
       }
     }
 
-    function calculateAndSaveAll() {
-      showToast('Đã lưu chỉ số điện nước và cập nhật hóa đơn theo đơn giá cơ sở thành công!');
-    }
-
     registerPage('utilities.html', () => {
       renderSidebar('utilities.html');
       renderTopbar('Phí & Chỉ số Điện Nước', 'Dịch vụ / Chỉ số tiêu thụ');
+
+      // Check URL search param if month is specified (e.g. ?month=11/2026)
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramMonth = urlParams.get('month');
+      if (paramMonth) {
+        currentCycle = paramMonth;
+      }
+
       renderUtilitiesTable();
+
       window.onFilterBuilding = function() {
         renderUtilitiesTable();
       };

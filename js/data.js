@@ -526,6 +526,68 @@ const INITIAL_AUDIT_LOGS = [
   }
 ];
 
+// Seed Utility Readings for multiple billing cycles (09/2026, 10/2026, 11/2026)
+// Old index (Chỉ số cũ) inherits from previous month's new index (Chỉ số mới).
+const INITIAL_UTILITIES = {
+  '09/2026': {
+    status: 'LOCKED',
+    updatedAt: '2026-09-30 18:00',
+    readings: {
+      'rm-101': { eOld: 755, eNew: 890, wOld: 54, wNew: 60 },
+      'rm-102': { eOld: 940, eNew: 1100, wOld: 64, wNew: 72 },
+      'rm-104': { eOld: 810, eNew: 920, wOld: 50, wNew: 56 },
+      'rm-201': { eOld: 1070, eNew: 1240, wOld: 77, wNew: 85 },
+      'rm-203': { eOld: 880, eNew: 995, wOld: 55, wNew: 61 },
+      'rm-204': { eOld: 790, eNew: 950, wOld: 48, wNew: 55 },
+      'rm-301': { eOld: 1220, eNew: 1450, wOld: 99, wNew: 110 },
+      'rm-303': { eOld: 900, eNew: 1045, wOld: 62, wNew: 69 },
+      'rm-b2-101': { eOld: 350, eNew: 500, wOld: 32, wNew: 40 },
+      'rm-b2-102': { eOld: 420, eNew: 560, wOld: 38, wNew: 45 },
+      'rm-b2-201': { eOld: 580, eNew: 740, wOld: 44, wNew: 52 },
+      'rm-b3-101': { eOld: 210, eNew: 330, wOld: 20, wNew: 26 },
+      'rm-b3-102': { eOld: 280, eNew: 410, wOld: 25, wNew: 32 }
+    }
+  },
+  '10/2026': {
+    status: 'RECORDED',
+    updatedAt: '2026-10-02 08:30',
+    readings: {
+      'rm-101': { eOld: 890, eNew: 1025, wOld: 60, wNew: 66 },
+      'rm-102': { eOld: 1100, eNew: 1260, wOld: 72, wNew: 80 },
+      'rm-104': { eOld: 920, eNew: 1045, wOld: 56, wNew: 62 },
+      'rm-201': { eOld: 1240, eNew: 1410, wOld: 85, wNew: 93 },
+      'rm-203': { eOld: 995, eNew: 1120, wOld: 61, wNew: 68 },
+      'rm-204': { eOld: 950, eNew: 1110, wOld: 55, wNew: 62 },
+      'rm-301': { eOld: 1450, eNew: 1680, wOld: 110, wNew: 121 },
+      'rm-303': { eOld: 1045, eNew: 1180, wOld: 69, wNew: 76 },
+      'rm-b2-101': { eOld: 500, eNew: 650, wOld: 40, wNew: 48 },
+      'rm-b2-102': { eOld: 560, eNew: 710, wOld: 45, wNew: 53 },
+      'rm-b2-201': { eOld: 740, eNew: 915, wOld: 52, wNew: 61 },
+      'rm-b3-101': { eOld: 330, eNew: 460, wOld: 26, wNew: 33 },
+      'rm-b3-102': { eOld: 410, eNew: 545, wOld: 32, wNew: 39 }
+    }
+  },
+  '11/2026': {
+    status: 'IN_PROGRESS',
+    updatedAt: '2026-10-07 14:00',
+    readings: {
+      'rm-101': { eOld: 1025, eNew: 1165, wOld: 66, wNew: 73 },
+      'rm-102': { eOld: 1260, eNew: 1420, wOld: 80, wNew: 88 },
+      'rm-104': { eOld: 1045, eNew: 1175, wOld: 62, wNew: 68 },
+      'rm-201': { eOld: 1410, eNew: 1585, wOld: 93, wNew: 101 },
+      'rm-203': { eOld: 1120, eNew: 1250, wOld: 68, wNew: 75 },
+      'rm-204': { eOld: 1110, eNew: 1275, wOld: 62, wNew: 70 },
+      'rm-301': { eOld: 1680, eNew: 1910, wOld: 121, wNew: 133 },
+      'rm-303': { eOld: 1180, eNew: 1320, wOld: 76, wNew: 84 },
+      'rm-b2-101': { eOld: 650, eNew: 805, wOld: 48, wNew: 56 },
+      'rm-b2-102': { eOld: 710, eNew: 865, wOld: 53, wNew: 61 },
+      'rm-b2-201': { eOld: 915, eNew: 1090, wOld: 61, wNew: 70 },
+      'rm-b3-101': { eOld: 460, eNew: 595, wOld: 33, wNew: 40 },
+      'rm-b3-102': { eOld: 545, eNew: 680, wOld: 39, wNew: 46 }
+    }
+  }
+};
+
 // Initialize Data Store in localStorage
 const INITIAL_HANDOVER = {
   status: 'NOT_SCHEDULED',
@@ -582,6 +644,9 @@ const DataStore = {
     }
     if (!localStorage.getItem(STORAGE_KEYS.INVOICES)) {
       localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(INITIAL_INVOICES));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.UTILITIES)) {
+      localStorage.setItem(STORAGE_KEYS.UTILITIES, JSON.stringify(INITIAL_UTILITIES));
     }
     if (!localStorage.getItem(STORAGE_KEYS.MAINTENANCE)) {
       localStorage.setItem(STORAGE_KEYS.MAINTENANCE, JSON.stringify(INITIAL_MAINTENANCE));
@@ -744,6 +809,128 @@ const DataStore = {
 
   saveInvoices(invoices) {
     localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(invoices));
+  },
+
+  getUtilitiesData() {
+    const raw = localStorage.getItem(STORAGE_KEYS.UTILITIES);
+    if (!raw) {
+      localStorage.setItem(STORAGE_KEYS.UTILITIES, JSON.stringify(INITIAL_UTILITIES));
+      return INITIAL_UTILITIES;
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      // Ensure month 11/2026 exists for next month demo
+      if (!parsed['11/2026']) {
+        parsed['11/2026'] = INITIAL_UTILITIES['11/2026'];
+        localStorage.setItem(STORAGE_KEYS.UTILITIES, JSON.stringify(parsed));
+      }
+      return parsed;
+    } catch (e) {
+      return INITIAL_UTILITIES;
+    }
+  },
+
+  getAvailableUtilityCycles() {
+    const all = this.getUtilitiesData();
+    const cycles = Object.keys(all);
+    cycles.sort((a, b) => {
+      const [ma, ya] = a.split('/').map(Number);
+      const [mb, yb] = b.split('/').map(Number);
+      return (ya * 12 + ma) - (yb * 12 + mb);
+    });
+    return cycles;
+  },
+
+  getUtilityCycle(cycle) {
+    const all = this.getUtilitiesData();
+    if (all[cycle]) {
+      return all[cycle];
+    }
+
+    // Auto inherit old numbers from the most recent prior cycle
+    const previousCycles = this.getAvailableUtilityCycles().filter(c => {
+      const [mc, yc] = c.split('/').map(Number);
+      const [mt, yt] = cycle.split('/').map(Number);
+      return (yc * 12 + mc) < (yt * 12 + mt);
+    });
+    const lastCycleKey = previousCycles[previousCycles.length - 1] || '10/2026';
+    const lastCycle = all[lastCycleKey] || all['10/2026'] || {};
+
+    const newReadings = {};
+    if (lastCycle && lastCycle.readings) {
+      Object.keys(lastCycle.readings).forEach(roomId => {
+        const prev = lastCycle.readings[roomId];
+        newReadings[roomId] = {
+          eOld: prev.eNew || 0,
+          eNew: prev.eNew || 0,
+          wOld: prev.wNew || 0,
+          wNew: prev.wNew || 0
+        };
+      });
+    }
+
+    all[cycle] = {
+      status: 'IN_PROGRESS',
+      updatedAt: '',
+      readings: newReadings
+    };
+    localStorage.setItem(STORAGE_KEYS.UTILITIES, JSON.stringify(all));
+    return all[cycle];
+  },
+
+  saveUtilityCycle(cycle, readings, status = 'RECORDED', auditDetail = '') {
+    const all = this.getUtilitiesData();
+    all[cycle] = {
+      status: status,
+      updatedAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      readings: readings
+    };
+    localStorage.setItem(STORAGE_KEYS.UTILITIES, JSON.stringify(all));
+
+    // Synchronize matching invoices for this cycle if present
+    const invoices = this.getInvoices();
+    let updatedInvoicesCount = 0;
+    const buildings = this.getBuildings();
+    const rooms = this.getRooms();
+
+    invoices.forEach(inv => {
+      if (inv.month === cycle) {
+        const room = rooms.find(r => r.roomNumber === inv.room && (!inv.buildingId || r.buildingId === inv.buildingId));
+        if (room && readings[room.id]) {
+          const rd = readings[room.id];
+          const bld = buildings.find(b => b.id === inv.buildingId) || buildings[0];
+          const eRate = inv.elecRate || bld.elecRate || 3500;
+          const wRate = inv.waterRate || bld.waterRate || 25000;
+          const eUnits = Math.max(0, rd.eNew - rd.eOld);
+          const wUnits = Math.max(0, rd.wNew - rd.wOld);
+          const eMoney = eUnits * eRate;
+          const wMoney = wUnits * wRate;
+
+          inv.elecOld = rd.eOld;
+          inv.elecNew = rd.eNew;
+          inv.elecUnits = eUnits;
+          inv.elecTotal = eMoney;
+          inv.waterOld = rd.wOld;
+          inv.waterNew = rd.wNew;
+          inv.waterUnits = wUnits;
+          inv.waterTotal = wMoney;
+          inv.total = (inv.rent || 0) + eMoney + wMoney + (inv.serviceFee || bld.serviceFee || 150000) + (inv.otherFees || 0);
+          updatedInvoicesCount++;
+        }
+      }
+    });
+
+    if (updatedInvoicesCount > 0) {
+      this.saveInvoices(invoices);
+    }
+
+    this.addAuditLog(
+      'CHỐT_CHỈ_SỐ_ĐIỆN_NƯỚC',
+      `Kỳ ${cycle}`,
+      auditDetail || `Lưu chỉ số điện nước kỳ tháng ${cycle} cho ${Object.keys(readings).length} phòng, cập nhật ${updatedInvoicesCount} hóa đơn liên quan.`
+    );
+
+    return all[cycle];
   },
 
   getMaintenance() {
