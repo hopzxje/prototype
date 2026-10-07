@@ -4,33 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StayHub - Quản trị Tài khoản Người dùng</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
+  <!-- Top Demo Role Bar -->
   <div id="demo-role-bar"></div>
 
   <div class="flex-1 flex overflow-hidden">
-    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+    <!-- App Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
 
+    <!-- Main Content Area -->
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      <script>initStayHubShell('users.html', 'Quản trị Tài khoản & Phân quyền', 'Hệ thống / Tài khoản');</script>
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
+        <!-- Page Header & Action -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h2 class="text-xl font-bold text-slate-900">Quản trị Tài khoản & Phân quyền (RBAC)</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Quản lý phân quyền 4 vai trò (Admin, Quản lý cơ sở, Nhân viên kỹ thuật, Cư dân)</p>
+            <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>Quản trị Tài khoản & Phân quyền (RBAC)</span>
+              <span id="user-count-badge" class="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold border border-teal-200/60">8 Tài khoản</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Quản lý phân quyền 4 vai trò (Admin, Quản lý cơ sở, Nhân viên vận hành, Cư dân) toàn hệ thống</p>
           </div>
-          <button onclick="showToast('Mở form tạo tài khoản mới')" class="flex items-center gap-2 px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white rounded-lg text-sm font-semibold shadow-sm transition-colors">
+          <button onclick="openUserModal()" class="flex items-center gap-2 px-4 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all">
             <i data-lucide="user-plus" class="w-4 h-4"></i>
             <span>Thêm Tài Khoản Mới</span>
           </button>
         </div>
 
-        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <!-- Filter & Search Toolbar -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <!-- Search box -->
+          <div class="relative flex-1 max-w-md">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <input type="text" id="user-search-input" oninput="handleUserSearch(this.value)" placeholder="Tìm theo họ tên, email, số điện thoại..." class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-600 transition-all">
+          </div>
+
+          <!-- Role Filter Chips -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" id="role-filter-chips">
+            <button onclick="filterUserRole('ALL')" id="filter-role-all" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-[#0F766E] text-white shadow-xs whitespace-nowrap">
+              Tất cả (<span id="count-all">8</span>)
+            </button>
+            <button onclick="filterUserRole('ADMIN')" id="filter-role-admin" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 whitespace-nowrap">
+              Admin (<span id="count-admin">1</span>)
+            </button>
+            <button onclick="filterUserRole('MANAGER')" id="filter-role-manager" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 whitespace-nowrap">
+              Quản lý (<span id="count-manager">2</span>)
+            </button>
+            <button onclick="filterUserRole('STAFF')" id="filter-role-staff" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 whitespace-nowrap">
+              Nhân viên (<span id="count-staff">4</span>)
+            </button>
+            <button onclick="filterUserRole('RESIDENT')" id="filter-role-resident" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 whitespace-nowrap">
+              Cư dân (<span id="count-resident">1</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Users Table Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs text-slate-600">
               <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
@@ -44,57 +84,8 @@
                   <th class="p-3.5 text-right">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 font-medium">
-                <tr class="hover:bg-slate-50">
-                  <td class="p-3.5">
-                    <div class="flex items-center gap-2.5">
-                      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-8 h-8 rounded-full object-cover">
-                      <span class="font-bold text-slate-900">Nguyễn Hoàng Nam</span>
-                    </div>
-                  </td>
-                  <td class="p-3.5 font-mono">admin@stayhub.vn</td>
-                  <td class="p-3.5 font-mono">0908889999</td>
-                  <td class="p-3.5"><span class="badge badge-warning">ADMIN</span></td>
-                  <td class="p-3.5">Toàn bộ 3 cơ sở</td>
-                  <td class="p-3.5"><span class="badge badge-success">Đang hoạt động</span></td>
-                  <td class="p-3.5 text-right">
-                    <button onclick="showToast('Khóa tài khoản thành công')" class="text-slate-400 hover:text-rose-600 p-1">Khóa</button>
-                  </td>
-                </tr>
-
-                <tr class="hover:bg-slate-50">
-                  <td class="p-3.5">
-                    <div class="flex items-center gap-2.5">
-                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" class="w-8 h-8 rounded-full object-cover">
-                      <span class="font-bold text-slate-900">Trần Minh Đức</span>
-                    </div>
-                  </td>
-                  <td class="p-3.5 font-mono">manager1@stayhub.vn</td>
-                  <td class="p-3.5 font-mono">0912345678</td>
-                  <td class="p-3.5"><span class="badge badge-info">MANAGER</span></td>
-                  <td class="p-3.5">StayHub Central & Eco</td>
-                  <td class="p-3.5"><span class="badge badge-success">Đang hoạt động</span></td>
-                  <td class="p-3.5 text-right">
-                    <button onclick="showToast('Đổi mật khẩu tài khoản thành công')" class="text-teal-700 font-semibold hover:underline">Cấp lại MK</button>
-                  </td>
-                </tr>
-
-                <tr class="hover:bg-slate-50">
-                  <td class="p-3.5">
-                    <div class="flex items-center gap-2.5">
-                      <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" class="w-8 h-8 rounded-full object-cover">
-                      <span class="font-bold text-slate-900">Phạm Tuấn Anh</span>
-                    </div>
-                  </td>
-                  <td class="p-3.5 font-mono">staff1@stayhub.vn</td>
-                  <td class="p-3.5 font-mono">0933112233</td>
-                  <td class="p-3.5"><span class="badge badge-neutral">STAFF</span></td>
-                  <td class="p-3.5">StayHub Central</td>
-                  <td class="p-3.5"><span class="badge badge-success">Đang hoạt động</span></td>
-                  <td class="p-3.5 text-right">
-                    <button onclick="showToast('Đổi mật khẩu tài khoản thành công')" class="text-teal-700 font-semibold hover:underline">Cấp lại MK</button>
-                  </td>
-                </tr>
+              <tbody id="users-table-body" class="divide-y divide-slate-100 font-medium">
+                <!-- Dynamically rendered via renderUsersTable() -->
               </tbody>
             </table>
           </div>
@@ -104,12 +95,330 @@
     </main>
   </div>
 
-  <script src="../../js/data.js"></script>
-  <script src="../../js/app.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
+  <!-- ===================================================================
+       MODAL: Thêm / Chỉnh Sửa Tài Khoản
+       =================================================================== -->
+  <div id="user-modal" class="modal-overlay">
+    <div class="modal-content max-w-lg w-full p-6">
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 mb-4">
+        <h3 id="user-modal-title" class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-5 h-5 text-[#0F766E]"></i>
+          <span>Thêm Tài Khoản Mới</span>
+        </h3>
+        <button onclick="closeUserModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="user-form" onsubmit="handleSaveUser(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="usr-id">
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Họ và Tên <span class="text-rose-500">*</span></label>
+          <input type="text" id="usr-fullName" required placeholder="Ví dụ: Nguyễn Văn Hùng" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Email Đăng Nhập <span class="text-rose-500">*</span></label>
+            <input type="email" id="usr-email" required placeholder="ten@stayhub.vn" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Số Điện Thoại <span class="text-rose-500">*</span></label>
+            <input type="tel" id="usr-phone" required placeholder="0901234567" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-mono font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Vai Trò Phân Quyền <span class="text-rose-500">*</span></label>
+            <select id="usr-role" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-semibold focus:ring-1 focus:ring-teal-600 focus:outline-none">
+              <option value="ADMIN">ADMIN (Quản trị Hệ thống)</option>
+              <option value="MANAGER">MANAGER (Quản lý Cơ sở)</option>
+              <option value="STAFF">STAFF (Nhân viên Vận hành)</option>
+              <option value="RESIDENT">RESIDENT (Cư dân Căn hộ)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Chức Danh / Vị Trí</label>
+            <input type="text" id="usr-title" placeholder="Ví dụ: Kỹ thuật viên Trưởng" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Phạm Vi Cơ Sở Phụ Trách</label>
+          <input type="text" id="usr-scope" placeholder="Ví dụ: Toàn bộ 3 cơ sở hoặc StayHub Central" value="Toàn bộ 3 cơ sở" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeUserModal()" class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-lg font-semibold text-xs transition-colors">
+            Hủy Bỏ
+          </button>
+          <button type="submit" class="flex items-center gap-1.5 px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold text-xs shadow-sm transition-colors">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Lưu Thông Tin</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL: Cấp Lại Mật Khẩu Tạm
+       =================================================================== -->
+  <div id="reset-pass-modal" class="modal-overlay">
+    <div class="modal-content max-w-sm w-full p-6 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3 border border-amber-100">
+        <i data-lucide="key-round" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-900">Cấp Mật Khẩu Tạm Thành Công</h3>
+      <p class="text-xs text-slate-500 mt-1" id="reset-pass-user-info">Tài khoản: admin@stayhub.vn</p>
+
+      <div class="my-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+        <span class="font-mono text-base font-bold text-teal-800 tracking-wider" id="temp-password-text">StayHub@8892</span>
+        <button onclick="copyTempPassword()" class="text-xs font-semibold text-teal-700 hover:text-teal-900 flex items-center gap-1">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Sao chép</span>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-slate-400 mb-5 leading-relaxed">
+        Vui lòng gửi mật khẩu tạm này cho nhân sự. Hệ thống sẽ yêu cầu đổi mật khẩu ở lần đăng nhập tiếp theo.
+      </p>
+
+      <button onclick="closeModal('reset-pass-modal')" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors">
+        Đóng Cửa Sổ
+      </button>
+    </div>
+  </div>
+
+  <script data-stayhub-page="users.html">
+    let currentRoleFilter = 'ALL';
+    let currentSearchTerm = '';
+
+    function renderUsersTable() {
+      const tbody = document.getElementById('users-table-body');
+      if (!tbody) return;
+
+      const users = DataStore.getUsers();
+
+      // Update count indicators
+      const countAll = users.length;
+      const countAdmin = users.filter(u => u.role === 'ADMIN').length;
+      const countManager = users.filter(u => u.role === 'MANAGER').length;
+      const countStaff = users.filter(u => u.role === 'STAFF').length;
+      const countResident = users.filter(u => u.role === 'RESIDENT').length;
+
+      if (document.getElementById('count-all')) document.getElementById('count-all').innerText = countAll;
+      if (document.getElementById('count-admin')) document.getElementById('count-admin').innerText = countAdmin;
+      if (document.getElementById('count-manager')) document.getElementById('count-manager').innerText = countManager;
+      if (document.getElementById('count-staff')) document.getElementById('count-staff').innerText = countStaff;
+      if (document.getElementById('count-resident')) document.getElementById('count-resident').innerText = countResident;
+      if (document.getElementById('user-count-badge')) document.getElementById('user-count-badge').innerText = `${countAll} Tài khoản`;
+
+      let filtered = users.filter(u => {
+        const matchesRole = currentRoleFilter === 'ALL' || u.role === currentRoleFilter;
+        const s = currentSearchTerm.toLowerCase();
+        const matchesSearch = !s ||
+          (u.fullName && u.fullName.toLowerCase().includes(s)) ||
+          (u.email && u.email.toLowerCase().includes(s)) ||
+          (u.phone && u.phone.includes(s)) ||
+          (u.scope && u.scope.toLowerCase().includes(s));
+        return matchesRole && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="p-8 text-center text-slate-400">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <i data-lucide="user-x" class="w-8 h-8 text-slate-300"></i>
+                <p class="font-medium text-xs">Không tìm thấy tài khoản nào phù hợp.</p>
+                <button onclick="resetUserFilter()" class="mt-1 text-xs text-[#0F766E] font-semibold hover:underline">Xóa bộ lọc tìm kiếm</button>
+              </div>
+            </td>
+          </tr>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(u => {
+        let roleBadge = 'badge-neutral';
+        if (u.role === 'ADMIN') roleBadge = 'badge-warning';
+        else if (u.role === 'MANAGER') roleBadge = 'badge-info';
+        else if (u.role === 'RESIDENT') roleBadge = 'badge-success';
+
+        const isLocked = u.status === 'LOCKED';
+        const statusBadge = isLocked 
+          ? '<span class="badge badge-danger">Đã khóa</span>'
+          : '<span class="badge badge-success">Đang hoạt động</span>';
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors ${isLocked ? 'bg-slate-50/60 opacity-80' : ''}">
+            <td class="p-3.5">
+              <div class="flex items-center gap-2.5">
+                <img src="${u.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover border border-slate-200">
+                <div>
+                  <span class="font-bold text-slate-900 block">${u.fullName}</span>
+                  <span class="text-[11px] text-slate-500 font-normal">${u.title || u.role}</span>
+                </div>
+              </div>
+            </td>
+            <td class="p-3.5 font-mono text-slate-700">${u.email}</td>
+            <td class="p-3.5 font-mono text-slate-700">${u.phone}</td>
+            <td class="p-3.5"><span class="badge ${roleBadge}">${u.role}</span></td>
+            <td class="p-3.5 text-slate-700">${u.scope || 'Toàn bộ 3 cơ sở'}</td>
+            <td class="p-3.5">${statusBadge}</td>
+            <td class="p-3.5 text-right">
+              <div class="inline-flex items-center justify-end gap-1.5">
+                <button onclick="editUser('${u.id}')" title="Chỉnh sửa thông tin" class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-teal-50 transition-colors">
+                  <i data-lucide="edit-3" class="w-4 h-4"></i>
+                </button>
+                <button onclick="handleResetPassword('${u.id}')" title="Cấp lại mật khẩu" class="p-1.5 rounded-lg text-slate-500 hover:text-amber-700 hover:bg-amber-50 transition-colors">
+                  <i data-lucide="key-round" class="w-4 h-4"></i>
+                </button>
+                <button onclick="handleToggleStatus('${u.id}')" title="${isLocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}" class="p-1.5 rounded-lg ${isLocked ? 'text-emerald-600 hover:bg-emerald-50' : 'text-slate-400 hover:text-rose-600 hover:bg-rose-50'} transition-colors">
+                  <i data-lucide="${isLocked ? 'unlock' : 'ban'}" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function filterUserRole(role) {
+      currentRoleFilter = role;
+      const roles = ['ALL', 'ADMIN', 'MANAGER', 'STAFF', 'RESIDENT'];
+      roles.forEach(r => {
+        const btn = document.getElementById(`filter-role-${r.toLowerCase()}`);
+        if (btn) {
+          const isActive = r === role;
+          btn.className = isActive
+            ? 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-[#0F766E] text-white shadow-xs whitespace-nowrap'
+            : 'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 whitespace-nowrap';
+        }
+      });
+      renderUsersTable();
+    }
+
+    function handleUserSearch(term) {
+      currentSearchTerm = term.trim();
+      renderUsersTable();
+    }
+
+    function resetUserFilter() {
+      currentSearchTerm = '';
+      currentRoleFilter = 'ALL';
+      const searchInput = document.getElementById('user-search-input');
+      if (searchInput) searchInput.value = '';
+      filterUserRole('ALL');
+    }
+
+    function openUserModal(user = null) {
+      const modal = document.getElementById('user-modal');
+      const titleEl = document.getElementById('user-modal-title');
+      const form = document.getElementById('user-form');
+      if (!modal || !form) return;
+
+      form.reset();
+      if (user) {
+        titleEl.innerHTML = '<i data-lucide="edit-3" class="w-5 h-5 text-[#0F766E]"></i><span>Chỉnh Sửa Tài Khoản</span>';
+        document.getElementById('usr-id').value = user.id;
+        document.getElementById('usr-fullName').value = user.fullName;
+        document.getElementById('usr-email').value = user.email;
+        document.getElementById('usr-phone').value = user.phone;
+        document.getElementById('usr-role').value = user.role;
+        document.getElementById('usr-title').value = user.title || '';
+        document.getElementById('usr-scope').value = user.scope || 'Toàn bộ 3 cơ sở';
+      } else {
+        titleEl.innerHTML = '<i data-lucide="user-plus" class="w-5 h-5 text-[#0F766E]"></i><span>Thêm Tài Khoản Mới</span>';
+        document.getElementById('usr-id').value = '';
+        document.getElementById('usr-scope').value = 'Toàn bộ 3 cơ sở';
+      }
+      modal.classList.add('active');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeUserModal() {
+      const modal = document.getElementById('user-modal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function handleSaveUser(e) {
+      e.preventDefault();
+      const id = document.getElementById('usr-id').value;
+      const data = {
+        fullName: document.getElementById('usr-fullName').value.trim(),
+        email: document.getElementById('usr-email').value.trim(),
+        phone: document.getElementById('usr-phone').value.trim(),
+        role: document.getElementById('usr-role').value,
+        title: document.getElementById('usr-title').value.trim(),
+        scope: document.getElementById('usr-scope').value.trim()
+      };
+
+      if (id) {
+        DataStore.updateUser(id, data);
+        showToast(`Đã cập nhật thông tin tài khoản ${data.fullName}`);
+      } else {
+        DataStore.addUser(data);
+        showToast(`Đã tạo thành công tài khoản [${data.role}] cho ${data.fullName}`);
+      }
+
+      closeUserModal();
+      renderUsersTable();
+    }
+
+    function editUser(id) {
+      const users = DataStore.getUsers();
+      const user = users.find(u => u.id === id);
+      if (user) {
+        openUserModal(user);
+      }
+    }
+
+    function handleToggleStatus(id) {
+      const u = DataStore.toggleUserStatus(id);
+      if (u) {
+        const msg = u.status === 'LOCKED' ? `Đã khóa tài khoản ${u.fullName}` : `Đã mở khóa tài khoản ${u.fullName}`;
+        showToast(msg);
+        renderUsersTable();
+      }
+    }
+
+    function handleResetPassword(id) {
+      const users = DataStore.getUsers();
+      const u = users.find(x => x.id === id);
+      if (!u) return;
+
+      const tempPass = DataStore.resetUserPassword(id);
+      document.getElementById('reset-pass-user-info').innerText = `Tài khoản: ${u.fullName} (${u.email})`;
+      document.getElementById('temp-password-text').innerText = tempPass;
+      openModal('reset-pass-modal');
+    }
+
+    function copyTempPassword() {
+      const pass = document.getElementById('temp-password-text').innerText;
+      navigator.clipboard.writeText(pass).then(() => {
+        showToast('Đã sao chép mật khẩu tạm vào bộ nhớ tạm!');
+      }).catch(() => {
+        showToast(`Mật khẩu tạm: ${pass}`);
+      });
+    }
+
+    registerPage('users.html', () => {
       renderSidebar('users.html');
       renderTopbar('Quản trị Tài khoản & Phân quyền', 'Hệ thống / Tài khoản');
+      renderUsersTable();
+
+      // Auto-open modal if URL has ?action=new
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('action') === 'new') {
+        openUserModal();
+      }
     });
   </script>
 </body>

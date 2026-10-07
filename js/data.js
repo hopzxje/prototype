@@ -1,4 +1,7 @@
-
+/**
+ * StayHub Prototype - Data Store & LocalStorage Persistence
+ * Contains initial seed data and helper methods to query and update state.
+ */
 
 const STORAGE_KEYS = {
   ROLE: 'stayhub_role',
@@ -13,6 +16,10 @@ const STORAGE_KEYS = {
   VISITORS: 'stayhub_visitors',
   ASSETS: 'stayhub_assets',
   SEPAY_TXS: 'stayhub_sepay_txs',
+  AUDIT_LOGS: 'stayhub_audit_logs',
+  SYSTEM_CONFIG: 'stayhub_system_config',
+  CURRENT_BUILDING: 'stayhub_current_building',
+  USERS: 'stayhub_users',
   HANDOVER: 'stayhub_handover',
   CHECKOUT: 'stayhub_checkout_requests'
 };
@@ -48,19 +55,136 @@ const DEFAULT_USERS = {
     fullName: 'Lê Văn An',
     email: 'resident@stayhub.vn',
     room: 'P201',
-    building: 'StayHub Central - Ba Đình',
+    building: 'Tòa nhà StayHub Central - Quận 1 (SH-CENTRAL)',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
     title: 'Cư dân Căn hộ P201'
   }
 };
 
+const INITIAL_USERS = [
+  {
+    id: 'usr-admin-1',
+    fullName: 'Nguyễn Hoàng Nam',
+    email: 'admin@stayhub.vn',
+    phone: '0908889999',
+    role: 'ADMIN',
+    scope: 'Toàn bộ 3 cơ sở',
+    status: 'ACTIVE',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    title: 'Giám đốc Vận hành & Hệ thống'
+  },
+  {
+    id: 'usr-mgr-1',
+    fullName: 'Trần Minh Đức',
+    email: 'manager1@stayhub.vn',
+    phone: '0912345678',
+    role: 'MANAGER',
+    scope: 'StayHub Central & Eco',
+    status: 'ACTIVE',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    title: 'Quản lý Vận hành Cơ sở'
+  },
+  {
+    id: 'usr-mgr-2',
+    fullName: 'Lê Hải Yến',
+    email: 'manager2@stayhub.vn',
+    phone: '0918765432',
+    role: 'MANAGER',
+    scope: 'StayHub Riverside - Tây Hồ',
+    status: 'ACTIVE',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150',
+    title: 'Quản lý Cơ sở Riverside'
+  },
+  {
+    id: 'usr-staff-1',
+    fullName: 'Phạm Tuấn Anh',
+    email: 'staff1@stayhub.vn',
+    phone: '0933112233',
+    role: 'STAFF',
+    scope: 'StayHub Central',
+    status: 'ACTIVE',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+    title: 'Kỹ thuật viên Trưởng'
+  },
+  {
+    id: 'usr-staff-2',
+    fullName: 'Vũ Hoàng Long',
+    email: 'staff2@stayhub.vn',
+    phone: '0933224455',
+    role: 'STAFF',
+    scope: 'StayHub Central & Riverside',
+    status: 'ACTIVE',
+    avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150',
+    title: 'Nhân viên Bảo trì & An ninh'
+  },
+  {
+    id: 'usr-staff-3',
+    fullName: 'Đỗ Thị Thu Trang',
+    email: 'staff3@stayhub.vn',
+    phone: '0933778899',
+    role: 'STAFF',
+    scope: 'StayHub Riverside - Tây Hồ',
+    status: 'ACTIVE',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150',
+    title: 'Lễ tân & Chăm sóc Cư dân'
+  },
+  {
+    id: 'usr-staff-4',
+    fullName: 'Bùi Văn Hậu',
+    email: 'staff4@stayhub.vn',
+    phone: '0933556677',
+    role: 'STAFF',
+    scope: 'StayHub Eco - Cầu Giấy',
+    status: 'ACTIVE',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150',
+    title: 'Kỹ thuật viên Vận hành'
+  },
+  {
+    id: 'usr-res-1',
+    fullName: 'Lê Văn An',
+    email: 'resident@stayhub.vn',
+    phone: '0904445566',
+    role: 'RESIDENT',
+    scope: 'P201 - StayHub Central',
+    status: 'ACTIVE',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+    title: 'Cư dân Căn hộ P201'
+  }
+];
+
+const INITIAL_SYSTEM_CONFIG = {
+  brandName: 'StayHub',
+  slogan: 'Quản lý Không gian sống & Căn hộ Dịch vụ Hiện đại',
+  companyName: 'Hệ thống Căn hộ Dịch vụ StayHub Việt Nam',
+  hotline: '1900 8899',
+  email: 'hotro@stayhub.vn',
+  headquarters: 'Tòa nhà StayHub Innovation, Quận 1, TP. Hồ Chí Minh',
+  currency: 'VND',
+  timezone: 'Asia/Ho_Chi_Minh',
+  sessionTimeout: 60,
+  maxLoginAttempts: 5,
+  logRetention: 365,
+  maintenanceMode: false,
+  elecRate: 3500,
+  waterRate: 25000,
+  serviceFee: 150000,
+  bankName: 'MB Bank (Quân Đội)',
+  bankAccount: '0912345678',
+  bankOwner: 'STAYHUB LIVING CO LTD',
+  zaloAppId: '381920391823901',
+  zaloSecretKey: 'zalo_sec_892109841029381',
+  zaloTemplateBill: 'TMP_STAYHUB_BILL_NOTICE',
+  zaloTemplatePay: 'TMP_STAYHUB_PAYMENT_SUCCESS'
+};
+
 const INITIAL_BUILDINGS = [
-  { id: 'bld-1', code: 'SH-CENTRAL', name: 'StayHub Central - Ba Đình', address: '95 Kim Mã, Quận Ba Đình, Hà Nội', floors: 3, totalRooms: 12, manager: 'Trần Minh Đức', phone: '0912345678' },
-  { id: 'bld-2', code: 'SH-RIVERSIDE', name: 'StayHub Riverside - Tây Hồ', address: '18 Quảng Khánh, Quận Tây Hồ, Hà Nội', floors: 3, totalRooms: 12, manager: 'Lê Hải Yến', phone: '0918765432' },
-  { id: 'bld-3', code: 'SH-ECO', name: 'StayHub Eco - Cầu Giấy', address: '45 Duy Tân, Quận Cầu Giấy, Hà Nội', floors: 3, totalRooms: 12, manager: 'Trần Minh Đức', phone: '0912345678' }
+  { id: 'bld-1', code: 'SH-CENTRAL', name: 'StayHub Central - Quận 1', address: '95 Pasteur, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh', floors: 5, totalRooms: 12, manager: 'Trần Minh Đức', phone: '0912345678', status: 'Active', elecRate: 3500, waterRate: 25000, serviceFee: 150000 },
+  { id: 'bld-2', code: 'SH-RIVERSIDE', name: 'StayHub Riverside - Tây Hồ', address: '12 Quảng An, Phường Quảng An, Quận Tây Hồ, Hà Nội', floors: 3, totalRooms: 12, manager: 'Lê Hải Yến', phone: '0918765432', status: 'Active', elecRate: 3800, waterRate: 28000, serviceFee: 180000 },
+  { id: 'bld-3', code: 'SH-ECO', name: 'StayHub Eco - Cầu Giấy', address: '45 Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, Hà Nội', floors: 4, totalRooms: 12, manager: 'Trần Minh Đức', phone: '0912345678', status: 'Active', elecRate: 3600, waterRate: 26000, serviceFee: 160000 }
 ];
 
 const INITIAL_ROOMS = [
+  // Building 1
   { id: 'rm-101', buildingId: 'bld-1', roomNumber: 'P101', floor: 1, type: 'Studio', area: 28, price: 6500000, deposit: 6500000, status: 'OCCUPIED', tenant: 'Nguyễn Văn Hùng', phone: '0901112233' },
   { id: 'rm-102', buildingId: 'bld-1', roomNumber: 'P102', floor: 1, type: '1 Phòng ngủ', area: 35, price: 7500000, deposit: 7500000, status: 'OCCUPIED', tenant: 'Trần Thị Thu Thảo', phone: '0902223344' },
   { id: 'rm-103', buildingId: 'bld-1', roomNumber: 'P103', floor: 1, type: 'Studio', area: 26, price: 6000000, deposit: 6000000, status: 'AVAILABLE', tenant: null, phone: null },
@@ -73,10 +197,14 @@ const INITIAL_ROOMS = [
   { id: 'rm-302', buildingId: 'bld-1', roomNumber: 'P302', floor: 3, type: 'Studio', area: 30, price: 6800000, deposit: 6800000, status: 'RESERVED', tenant: 'Bùi Thị Hà', phone: '0908889900' },
   { id: 'rm-303', buildingId: 'bld-1', roomNumber: 'P303', floor: 3, type: '1 Phòng ngủ', area: 36, price: 7800000, deposit: 7800000, status: 'OCCUPIED', tenant: 'Ngô Quốc Bảo', phone: '0909990011' },
   { id: 'rm-304', buildingId: 'bld-1', roomNumber: 'P304', floor: 3, type: 'Studio', area: 28, price: 6500000, deposit: 6500000, status: 'AVAILABLE', tenant: null, phone: null },
+
+  // Building 2
   { id: 'rm-b2-101', buildingId: 'bld-2', roomNumber: 'P101', floor: 1, type: 'View Hồ Tây', area: 35, price: 8500000, deposit: 8500000, status: 'OCCUPIED', tenant: 'Hà Kiều Oanh', phone: '0911223344' },
   { id: 'rm-b2-102', buildingId: 'bld-2', roomNumber: 'P102', floor: 1, type: 'Studio', area: 30, price: 7200000, deposit: 7200000, status: 'OCCUPIED', tenant: 'Lê Hoàng Hải', phone: '0912233445' },
   { id: 'rm-b2-201', buildingId: 'bld-2', roomNumber: 'P201', floor: 2, type: '1 PN View Hồ', area: 42, price: 9800000, deposit: 9800000, status: 'OCCUPIED', tenant: 'Đinh Tiến Đạt', phone: '0913344556' },
   { id: 'rm-b2-202', buildingId: 'bld-2', roomNumber: 'P202', floor: 2, type: 'Studio', area: 30, price: 7200000, deposit: 7200000, status: 'AVAILABLE', tenant: null, phone: null },
+
+  // Building 3
   { id: 'rm-b3-101', buildingId: 'bld-3', roomNumber: 'P101', floor: 1, type: 'Studio Hiện đại', area: 28, price: 6200000, deposit: 6200000, status: 'OCCUPIED', tenant: 'Võ Minh Thắng', phone: '0922334455' },
   { id: 'rm-b3-102', buildingId: 'bld-3', roomNumber: 'P102', floor: 1, type: '1 Phòng ngủ', area: 36, price: 7200000, deposit: 7200000, status: 'OCCUPIED', tenant: 'Mai Thanh Tâm', phone: '0923344556' }
 ];
@@ -93,10 +221,11 @@ const INITIAL_INVOICES = [
   {
     id: 'inv-1001',
     residentId: 'usr-res-1',
+    buildingId: 'bld-1',
     code: 'INV-2026-10-P201',
     month: '10/2026',
     room: 'P201',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
     tenant: 'Lê Văn An',
     phone: '0904445566',
     rent: 8500000,
@@ -118,10 +247,11 @@ const INITIAL_INVOICES = [
   },
   {
     id: 'inv-1002',
+    buildingId: 'bld-1',
     code: 'INV-2026-10-P101',
     month: '10/2026',
     room: 'P101',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
     tenant: 'Nguyễn Văn Hùng',
     phone: '0901112233',
     rent: 6500000,
@@ -143,10 +273,11 @@ const INITIAL_INVOICES = [
   },
   {
     id: 'inv-1003',
+    buildingId: 'bld-1',
     code: 'INV-2026-10-P102',
     month: '10/2026',
     room: 'P102',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
     tenant: 'Trần Thị Thu Thảo',
     phone: '0902223344',
     rent: 7500000,
@@ -168,10 +299,11 @@ const INITIAL_INVOICES = [
   },
   {
     id: 'inv-1004',
+    buildingId: 'bld-1',
     code: 'INV-2026-10-P301',
     month: '10/2026',
     room: 'P301',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
     tenant: 'Vũ Đức Nam',
     phone: '0907778899',
     rent: 9500000,
@@ -187,6 +319,58 @@ const INITIAL_INVOICES = [
     waterTotal: 275000,
     serviceFee: 150000,
     total: 10730000,
+    status: 'UNPAID',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-2001',
+    buildingId: 'bld-2',
+    code: 'INV-2026-10-RS101',
+    month: '10/2026',
+    room: 'P101',
+    building: 'StayHub Riverside - Tây Hồ',
+    tenant: 'Hà Kiều Oanh',
+    phone: '0911223344',
+    rent: 8500000,
+    elecOld: 500,
+    elecNew: 650,
+    elecUnits: 150,
+    elecRate: 3500,
+    elecTotal: 525000,
+    waterOld: 40,
+    waterNew: 48,
+    waterUnits: 8,
+    waterRate: 25000,
+    waterTotal: 200000,
+    serviceFee: 150000,
+    total: 9375000,
+    status: 'PAID',
+    paymentDate: '2026-10-02 11:30',
+    method: 'VietQR SePay'
+  },
+  {
+    id: 'inv-3001',
+    buildingId: 'bld-3',
+    code: 'INV-2026-10-ECO101',
+    month: '10/2026',
+    room: 'P101',
+    building: 'StayHub Eco - Cầu Giấy',
+    tenant: 'Võ Minh Thắng',
+    phone: '0922334455',
+    rent: 6200000,
+    elecOld: 300,
+    elecNew: 420,
+    elecUnits: 120,
+    elecRate: 3500,
+    elecTotal: 420000,
+    waterOld: 30,
+    waterNew: 36,
+    waterUnits: 6,
+    waterRate: 25000,
+    waterTotal: 150000,
+    serviceFee: 150000,
+    total: 6920000,
     status: 'UNPAID',
     paymentDate: null,
     method: null
@@ -257,9 +441,10 @@ const RESIDENT_DEMO_INVOICES = [
 const INITIAL_MAINTENANCE = [
   {
     id: 'mnt-001',
+    buildingId: 'bld-1',
     code: 'REQ-2026-091',
     room: 'P202',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
     title: 'Điều hòa Daikin không phả hơi lạnh',
     description: 'Bật 18 độ nhưng chỉ có gió thường, nghi ngờ bị rò rỉ gas làm lạnh.',
     priority: 'HIGH',
@@ -270,9 +455,10 @@ const INITIAL_MAINTENANCE = [
   },
   {
     id: 'mnt-002',
+    buildingId: 'bld-1',
     code: 'REQ-2026-092',
     room: 'P201',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
     title: 'Vòi sen tắm bị rỉ nước ở chân ren',
     description: 'Chân ren vòi tắm rỉ nước giọt giọt liên tục gây ồn vào ban đêm.',
     priority: 'MEDIUM',
@@ -283,14 +469,15 @@ const INITIAL_MAINTENANCE = [
   },
   {
     id: 'mnt-003',
+    buildingId: 'bld-2',
     code: 'REQ-2026-088',
-    room: 'P104',
-    building: 'StayHub Central - Ba Đình',
+    room: 'P102',
+    building: 'StayHub Riverside - Tây Hồ',
     title: 'Khóa cửa vân tay báo pin yếu',
     description: 'Khóa cửa nhấp nháy đèn đỏ báo cần thay 4 viên pin AA.',
     priority: 'LOW',
     status: 'RESOLVED',
-    requester: 'Hoàng Kim Long',
+    requester: 'Lê Hoàng Hải',
     assignee: 'Phạm Tuấn Anh (Kỹ thuật)',
     createdAt: '2026-09-28 10:00'
   }
@@ -473,6 +660,64 @@ const INITIAL_CHECKOUT_REQUESTS = [
   }
 ];
 
+const INITIAL_AUDIT_LOGS = [
+  {
+    time: '27/09/2026 16:45:12',
+    user: 'Trần Minh Đức',
+    role: 'MANAGER',
+    action: 'GIA_HAN_HOP_DONG',
+    entity: 'Hợp đồng HD-2025-SH1-202',
+    detail: 'Gia hạn hợp đồng HD-2025-SH1-202 thành HD-2025-SH1-202-GH đến 2026-10-31',
+    ip: '14.161.22.89'
+  },
+  {
+    time: '27/09/2026 10:15:00',
+    user: 'Phạm Tuấn Anh',
+    role: 'STAFF',
+    action: 'PHAT_HANH_HOA_DON',
+    entity: 'Hóa đơn P201',
+    detail: 'Phát hành hóa đơn HD-1026-SH1-P201 trị giá 9.445.000 ₫ cho cư dân Lê Văn An',
+    ip: '14.161.22.89'
+  },
+  {
+    time: '26/09/2026 15:20:00',
+    user: 'Nguyễn Hoàng Nam',
+    role: 'ADMIN',
+    action: 'CAP_NHAT_CAU_HINH',
+    entity: 'Cấu hình bảo mật',
+    detail: 'Cập nhật cấu hình bảo mật: thời gian hết hạn phiên làm việc 60 phút',
+    ip: '14.161.22.89'
+  },
+  {
+    time: '25/09/2026 09:00:00',
+    user: 'Trần Minh Đức',
+    role: 'MANAGER',
+    action: 'THEM_CO_SO_MOI',
+    entity: 'Cơ sở SH-ECO',
+    detail: 'Thêm cơ sở StayHub Eco - Cầu Giấy (32 phòng) vào hệ thống vận hành chuỗi',
+    ip: '14.161.22.89'
+  },
+  {
+    time: '02/10/2026 09:24:12',
+    user: 'SePay Webhook',
+    role: 'SYSTEM',
+    action: 'GẠCH NỢ TỰ ĐỘNG',
+    entity: 'Hóa đơn INV-2026-10-P201',
+    detail: 'Khớp mã chuyển khoản MB Bank +9.445.000 ₫',
+    ip: '118.69.182.4'
+  },
+  {
+    time: '02/10/2026 08:30:00',
+    user: 'Trần Minh Đức',
+    role: 'MANAGER',
+    action: 'LẬP HÓA ĐƠN',
+    entity: 'Kỳ thu tháng 10/2026',
+    detail: 'Tính toán chỉ số điện nước 12 phòng tại Ba Đình',
+    ip: '14.161.22.89'
+  }
+];
+
+// Initialize Data Store in localStorage
 const INITIAL_HANDOVER = {
   status: 'NOT_SCHEDULED',
   apartmentReady: true,
@@ -542,6 +787,16 @@ const DataStore = {
     if (!localStorage.getItem(STORAGE_KEYS.SEPAY_TXS)) {
       localStorage.setItem(STORAGE_KEYS.SEPAY_TXS, JSON.stringify(INITIAL_SEPAY_TXS));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.AUDIT_LOGS)) {
+      localStorage.setItem(STORAGE_KEYS.AUDIT_LOGS, JSON.stringify(INITIAL_AUDIT_LOGS));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SYSTEM_CONFIG)) {
+      localStorage.setItem(STORAGE_KEYS.SYSTEM_CONFIG, JSON.stringify(INITIAL_SYSTEM_CONFIG));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(INITIAL_USERS));
+    localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(INITIAL_HANDOVER));
+    }
     if (!localStorage.getItem(STORAGE_KEYS.HANDOVER)) {
       localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(INITIAL_HANDOVER));
     }
@@ -568,15 +823,96 @@ const DataStore = {
     }
   },
 
-  updateUser(updates) {
-    const currentUser = this.getUser();
-    const updatedUser = { ...currentUser, ...updates };
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
-    return updatedUser;
+  getBuildings() {
+    const raw = localStorage.getItem(STORAGE_KEYS.BUILDINGS);
+    let list = raw ? JSON.parse(raw) : INITIAL_BUILDINGS;
+    if (list.length > 0 && (list[0].name.includes('Ba Đình') || list[0].name.startsWith('Tòa nhà') || !list[0].elecRate)) {
+      list = INITIAL_BUILDINGS;
+      localStorage.setItem(STORAGE_KEYS.BUILDINGS, JSON.stringify(list));
+    }
+    return list.map(b => ({
+      ...b,
+      status: b.status || 'Active',
+      elecRate: b.elecRate || (b.id === 'bld-2' ? 3800 : b.id === 'bld-3' ? 3600 : 3500),
+      waterRate: b.waterRate || (b.id === 'bld-2' ? 28000 : b.id === 'bld-3' ? 26000 : 25000),
+      serviceFee: b.serviceFee || (b.id === 'bld-2' ? 180000 : b.id === 'bld-3' ? 160000 : 150000)
+    }));
   },
 
-  getBuildings() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.BUILDINGS) || '[]');
+  updateBuildingTariff(buildingId, { elecRate, waterRate, serviceFee }) {
+    const buildings = this.getBuildings();
+    const target = buildings.find(b => b.id === buildingId);
+    if (target) {
+      target.elecRate = parseInt(elecRate) || target.elecRate || 3500;
+      target.waterRate = parseInt(waterRate) || target.waterRate || 25000;
+      target.serviceFee = parseInt(serviceFee) || target.serviceFee || 150000;
+      this.saveBuildings(buildings);
+      return target;
+    }
+    return null;
+  },
+
+  getCurrentBuilding() {
+    if (this.getRole() === 'ADMIN') {
+      return 'ALL';
+    }
+    const buildings = this.getBuildings();
+    let currentId = localStorage.getItem(STORAGE_KEYS.CURRENT_BUILDING);
+    if (!currentId || currentId === 'ALL' || !buildings.some(b => b.id === currentId)) {
+      currentId = buildings[0] ? buildings[0].id : 'bld-1';
+      localStorage.setItem(STORAGE_KEYS.CURRENT_BUILDING, currentId);
+    }
+    return currentId;
+  },
+
+  setCurrentBuilding(buildingId) {
+    if (buildingId) {
+      localStorage.setItem(STORAGE_KEYS.CURRENT_BUILDING, buildingId);
+    }
+  },
+
+  saveBuildings(buildings) {
+    localStorage.setItem(STORAGE_KEYS.BUILDINGS, JSON.stringify(buildings));
+  },
+
+  getAuditLogs() {
+    const raw = localStorage.getItem(STORAGE_KEYS.AUDIT_LOGS);
+    if (!raw) return INITIAL_AUDIT_LOGS;
+    try {
+      const logs = JSON.parse(raw);
+      if (!logs.some(l => l.action === 'GIA_HAN_HOP_DONG')) {
+        return INITIAL_AUDIT_LOGS;
+      }
+      return logs;
+    } catch (e) {
+      return INITIAL_AUDIT_LOGS;
+    }
+  },
+
+  saveAuditLogs(logs) {
+    localStorage.setItem(STORAGE_KEYS.AUDIT_LOGS, JSON.stringify(logs));
+  },
+
+  addAuditLog(action, entity, detail) {
+    const user = this.getUser();
+    const logs = this.getAuditLogs();
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    logs.unshift({
+      time: `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`,
+      user: user.fullName || 'Trần Minh Đức',
+      role: user.role || 'MANAGER',
+      action: action,
+      entity: entity,
+      detail: detail,
+      ip: '14.161.22.89'
+    });
+    this.saveAuditLogs(logs);
   },
 
   getRooms() {
@@ -666,6 +1002,90 @@ const DataStore = {
     localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(reqs));
   },
 
+  getSystemConfig() {
+    const raw = localStorage.getItem(STORAGE_KEYS.SYSTEM_CONFIG);
+    return raw ? JSON.parse(raw) : INITIAL_SYSTEM_CONFIG;
+  },
+
+  saveSystemConfig(cfg) {
+    localStorage.setItem(STORAGE_KEYS.SYSTEM_CONFIG, JSON.stringify(cfg));
+  },
+
+  getUsers() {
+    const raw = localStorage.getItem(STORAGE_KEYS.USERS);
+    if (!raw) return INITIAL_USERS;
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_USERS;
+    } catch (e) {
+      return INITIAL_USERS;
+    }
+  },
+
+  saveUsers(users) {
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+  },
+
+  addUser(userData) {
+    const users = this.getUsers();
+    const newUser = {
+      id: 'usr-' + Date.now(),
+      fullName: userData.fullName || 'Người dùng mới',
+      email: userData.email || '',
+      phone: userData.phone || '',
+      role: userData.role || 'STAFF',
+      scope: userData.scope || 'Toàn bộ 3 cơ sở',
+      status: 'ACTIVE',
+      avatar: userData.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+      title: userData.title || 'Nhân sự StayHub'
+    };
+    users.unshift(newUser);
+    this.saveUsers(users);
+    this.addAuditLog('TẠO_TÀI_KHOẢN', `Tài khoản ${newUser.fullName}`, `Tạo mới tài khoản [${newUser.role}] cho ${newUser.email}`);
+    return newUser;
+  },
+
+  updateUser(id, userData) {
+    if (arguments.length === 1 && id && typeof id === 'object') {
+      const updatedUser = { ...this.getUser(), ...id };
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+      return updatedUser;
+    }
+    const users = this.getUsers();
+    const idx = users.findIndex(u => u.id === id);
+    if (idx !== -1) {
+      users[idx] = { ...users[idx], ...userData };
+      this.saveUsers(users);
+      this.addAuditLog('CẬP_NHẬT_TÀI_KHOẢN', `Tài khoản ${users[idx].fullName}`, `Cập nhật thông tin phân quyền [${users[idx].role}]`);
+      return users[idx];
+    }
+    return null;
+  },
+
+  toggleUserStatus(id) {
+    const users = this.getUsers();
+    const u = users.find(x => x.id === id);
+    if (u) {
+      u.status = u.status === 'ACTIVE' ? 'LOCKED' : 'ACTIVE';
+      this.saveUsers(users);
+      const actionText = u.status === 'LOCKED' ? 'KHÓA_TÀI_KHOẢN' : 'MỞ_KHÓA_TÀI_KHOẢN';
+      this.addAuditLog(actionText, `Tài khoản ${u.fullName}`, `Đổi trạng thái tài khoản sang ${u.status}`);
+      return u;
+    }
+    return null;
+  },
+
+  resetUserPassword(id) {
+    const users = this.getUsers();
+    const u = users.find(x => x.id === id);
+    if (u) {
+      const tempPass = 'StayHub@' + Math.floor(1000 + Math.random() * 9000);
+      this.addAuditLog('CẤP_LẠI_MẬT_KHẨU', `Tài khoản ${u.fullName}`, `Cấp mật khẩu tạm mới cho email ${u.email}`);
+      return tempPass;
+    }
+    return null;
+  },
+
   getHandover() {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.HANDOVER) || JSON.stringify(INITIAL_HANDOVER));
     const stored = parsed && typeof parsed === 'object' ? parsed : {};
@@ -708,5 +1128,8 @@ const DataStore = {
   saveHandover(handover) {
     localStorage.setItem(STORAGE_KEYS.HANDOVER, JSON.stringify(handover));
   }
+
 };
+
+// Auto initialize on script load
 DataStore.init();

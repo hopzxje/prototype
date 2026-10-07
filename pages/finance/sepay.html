@@ -4,18 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StayHub - Cổng Thanh toán VietQR & SePay</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
   <div id="demo-role-bar"></div>
 
   <div class="flex-1 flex overflow-hidden">
-    <aside id="app-sidebar" class="w-64 bg-white border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
 
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
+      <script>initStayHubShell('sepay.html', 'Cổng Thanh toán VietQR & SePay', 'Tài chính / Đối soát SePay');</script>
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
@@ -30,7 +34,7 @@
           </button>
         </div>
 
-        
+        <!-- SePay Gateway Status -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
@@ -69,7 +73,7 @@
           </div>
         </div>
 
-        
+        <!-- Transactions Log Table -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -93,7 +97,7 @@
                 </tr>
               </thead>
               <tbody id="sepay-txs-tbody" class="divide-y divide-slate-100 font-medium">
-                
+                <!-- Rendered by JS -->
               </tbody>
             </table>
           </div>
@@ -102,10 +106,7 @@
       </div>
     </main>
   </div>
-
-  <script src="../../js/data.js"></script>
-  <script src="../../js/app.js"></script>
-  <script>
+  <script data-stayhub-page="sepay.html">
     function renderSepayTable() {
       const txs = DataStore.getSepayTxs();
       const tbody = document.getElementById('sepay-txs-tbody');
@@ -162,7 +163,7 @@
       renderSepayTable();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    registerPage('sepay.html', () => {
       renderSidebar('sepay.html');
       renderTopbar('Cổng Thanh toán VietQR & SePay', 'Tài chính / Đối soát SePay');
       renderSepayTable();
