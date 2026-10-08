@@ -370,6 +370,43 @@
     let wizardDataSufficient = true;
     let draftCalculationRows = [];
 
+    function populateInvoiceMonthFilter(preferredMonth) {
+      const monthFilterEl = document.getElementById('inv-month-filter');
+      if (!monthFilterEl) return;
+
+      const currentVal = preferredMonth || monthFilterEl.value || 'ALL';
+      const invoices = DataStore.getInvoices();
+      const utilCycles = (typeof DataStore.getAvailableUtilityCycles === 'function') ? DataStore.getAvailableUtilityCycles() : [];
+
+      const cycleSet = new Set(['09/2026', '10/2026', '11/2026', '12/2026', ...utilCycles]);
+      invoices.forEach(inv => {
+        if (inv.month) cycleSet.add(inv.month);
+      });
+
+      const sortedCycles = Array.from(cycleSet).sort((a, b) => {
+        const [ma, ya] = a.split('/').map(Number);
+        const [mb, yb] = b.split('/').map(Number);
+        return (yb * 12 + mb) - (ya * 12 + ma); // Newest month on top
+      });
+
+      let optionsHtml = `<option value="ALL">Tất cả kỳ thu</option>`;
+      sortedCycles.forEach(c => {
+        let label = `Tháng ${c}`;
+        if (c === '12/2026') label += ' (Kỳ tới)';
+        else if (c === '11/2026') label += ' (Mới)';
+        else if (c === '10/2026') label += ' (Hiện tại)';
+        else if (c === '09/2026') label += ' (Đã thu)';
+        optionsHtml += `<option value="${c}">${label}</option>`;
+      });
+
+      monthFilterEl.innerHTML = optionsHtml;
+      if (sortedCycles.includes(currentVal) || currentVal === 'ALL') {
+        monthFilterEl.value = currentVal;
+      } else {
+        monthFilterEl.value = 'ALL';
+      }
+    }
+
     function renderInvoicesTable() {
       const search = document.getElementById('inv-search').value.toLowerCase();
       const statusFilter = document.getElementById('inv-status-filter').value;
@@ -377,6 +414,16 @@
       const monthFilter = monthFilterEl ? monthFilterEl.value : 'ALL';
       const invoices = DataStore.getInvoices();
       const tbody = document.getElementById('invoices-tbody');
+
+      // Update metric banner for current cycle
+      const metricMonthEl = document.getElementById('metric-current-month');
+      if (metricMonthEl) {
+        if (monthFilter === 'ALL') {
+          metricMonthEl.innerText = 'Tất cả các kỳ';
+        } else {
+          metricMonthEl.innerText = `Tháng ${monthFilter}`;
+        }
+      }
 
       const currentBldId = DataStore.getCurrentBuilding();
       let filtered = invoices.filter(inv => {
@@ -476,15 +523,20 @@
         `).join('');
       }
 
-      // Populate months if available from utility cycles
+      // Populate months dynamically from utility cycles + existing invoices + baseline cycles
       const monthSelect = document.getElementById('modal-inv-month');
       if (monthSelect) {
-        const cycles = DataStore.getAvailableUtilityCycles();
-        if (cycles && cycles.length > 0) {
-          monthSelect.innerHTML = cycles.map(c => `
-            <option value="${c}" ${c === '11/2026' ? 'selected' : ''}>Kỳ tháng ${c}${c === '11/2026' ? ' (Kỳ tiếp theo)' : ''}</option>
-          `).join('');
-        }
+        const utilCycles = (typeof DataStore.getAvailableUtilityCycles === 'function') ? DataStore.getAvailableUtilityCycles() : [];
+        const invCycles = DataStore.getInvoices().map(i => i.month).filter(Boolean);
+        const cycleSet = new Set(['12/2026', '11/2026', '10/2026', '09/2026', ...utilCycles, ...invCycles]);
+        const sorted = Array.from(cycleSet).sort((a, b) => {
+          const [ma, ya] = a.split('/').map(Number);
+          const [mb, yb] = b.split('/').map(Number);
+          return (yb * 12 + mb) - (ya * 12 + ma);
+        });
+        monthSelect.innerHTML = sorted.map(c => `
+          <option value="${c}" ${c === '12/2026' ? 'selected' : (c === '11/2026' ? '' : '')}>Kỳ tháng ${c}${c === '12/2026' ? ' (Kỳ tới)' : (c === '11/2026' ? ' (Kỳ tiếp theo)' : (c === '10/2026' ? ' (Hiện tại)' : ''))}</option>
+        `).join('');
       }
 
       onModalBuildingOrMonthChange();
@@ -705,6 +757,7 @@
         });
       }
 
+      populateInvoiceMonthFilter(month);
       closeModal('createInvoiceModal');
       renderInvoicesTable();
 
@@ -816,6 +869,7 @@
     registerPage('invoices.html', () => {
       renderSidebar('invoices.html');
       renderTopbar('Quản lý Hóa đơn & Thu tiền phòng', 'Tài chính / Hóa đơn');
+      populateInvoiceMonthFilter();
       renderInvoicesTable();
       window.onFilterBuilding = function() {
         renderInvoicesTable();
