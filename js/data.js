@@ -21,7 +21,7 @@ const STORAGE_KEYS = {
   CURRENT_BUILDING: 'stayhub_current_building',
   USERS: 'stayhub_users',
   HANDOVER: 'stayhub_handover',
-  SETTLEMENTS: 'stayhub_settlements'
+  SETTLEMENTS: 'stayhub_settlements',
   CHECKOUT: 'stayhub_checkout_requests'
 };
 
