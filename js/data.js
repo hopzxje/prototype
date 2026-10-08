@@ -918,7 +918,7 @@ const INITIAL_UTILITIES = {
     }
   },
   '10/2026': {
-    status: 'RECORDED',
+    status: 'LOCKED',
     updatedAt: '2026-10-02 08:30',
     readings: {
       'rm-101': { eOld: 890, eNew: 1025, wOld: 58, wNew: 64 },  // Tiêu thụ: 135 kWh, 6 m³
@@ -1205,6 +1205,16 @@ const DataStore = {
           changed = true;
         }
       });
+      // Ensure all past cycles (prior to active month 11/2026) are strictly marked LOCKED
+      Object.keys(parsed).forEach(k => {
+        const [m, y] = k.split('/').map(Number);
+        if ((y < 2026) || (y === 2026 && m < 11)) {
+          if (parsed[k].status !== 'LOCKED') {
+            parsed[k].status = 'LOCKED';
+            changed = true;
+          }
+        }
+      });
       if (changed) {
         localStorage.setItem(STORAGE_KEYS.UTILITIES, JSON.stringify(parsed));
       }
@@ -1228,6 +1238,10 @@ const DataStore = {
   getUtilityCycle(cycle) {
     const all = this.getUtilitiesData();
     if (all[cycle]) {
+      const [mc, yc] = cycle.split('/').map(Number);
+      if ((yc < 2026) || (yc === 2026 && mc < 11)) {
+        all[cycle].status = 'LOCKED';
+      }
       return all[cycle];
     }
 
@@ -1253,8 +1267,11 @@ const DataStore = {
       });
     }
 
+    const [targetM, targetY] = cycle.split('/').map(Number);
+    const isPast = (targetY < 2026) || (targetY === 2026 && targetM < 11);
+
     all[cycle] = {
-      status: 'IN_PROGRESS',
+      status: isPast ? 'LOCKED' : 'IN_PROGRESS',
       updatedAt: '',
       readings: newReadings
     };

@@ -366,12 +366,16 @@
 
       // Badge & notice update
       const cycleData = DataStore.getUtilityCycle(currentCycle);
+      const [curM, curY] = currentCycle.split('/').map(Number);
+      const isPast = (curY < 2026) || (curY === 2026 && curM < 11);
+      const isLocked = cycleData.status === 'LOCKED' || isPast;
+
       const badgeEl = document.getElementById('current-cycle-badge');
       const noticeBanner = document.getElementById('cycle-notice-banner');
       const noticeText = document.getElementById('cycle-notice-text');
 
       if (badgeEl) {
-        if (cycleData.status === 'LOCKED') {
+        if (isLocked) {
           badgeEl.className = 'badge badge-success text-xs font-semibold';
           badgeEl.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i> <span>Đã khóa sổ</span>`;
         } else if (cycleData.status === 'RECORDED') {
@@ -384,16 +388,15 @@
       }
 
       if (noticeText) {
-        const [curM, curY] = currentCycle.split('/').map(Number);
         let prevM = curM - 1;
         let prevY = curY;
         if (prevM === 0) { prevM = 12; prevY--; }
         const prevCycleKey = `${String(prevM).padStart(2, '0')}/${prevY}`;
 
-        if (currentCycle === '11/2026') {
-          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng 11/2026</strong> (Kỳ tiếp theo). Chỉ số Điện cũ & Nước cũ đã <strong>tự động kết chuyển 100%</strong> từ chỉ số Mới của Tháng 10/2026. Bạn có thể nhập chỉ số mới và bấm "Lưu Toàn Bộ & Tính Tiền"!`;
-        } else if (currentCycle === '10/2026') {
-          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng 10/2026</strong>. Chỉ số cũ tự động kế thừa từ chỉ số mới của Tháng 09/2026.`;
+        if (isLocked) {
+          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng ${currentCycle}</strong> (Đã khóa sổ). Chỉ số điện nước đã được chốt và đồng bộ hoàn tất sang hóa đơn.`;
+        } else if (currentCycle === '11/2026') {
+          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng 11/2026</strong>. Chỉ số Điện cũ & Nước cũ đã <strong>tự động kết chuyển 100%</strong> từ chỉ số Mới của Tháng 10/2026. Bạn có thể nhập chỉ số mới và bấm "Lưu Toàn Bộ & Tính Tiền"!`;
         } else {
           noticeText.innerHTML = `Đang xem kỳ <strong>Tháng ${currentCycle}</strong>. Chỉ số cũ tự động kết chuyển từ chỉ số mới của kỳ liền kề (${prevCycleKey}).`;
         }
