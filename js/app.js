@@ -270,9 +270,7 @@ function renderSidebar(activePage = 'index.html') {
       { href: 'index.html', icon: 'layout-grid', label: 'Tổng quan Hệ thống' },
       { href: 'users.html', icon: 'users', label: 'Quản trị Tài khoản' },
       { href: 'audit-logs.html', icon: 'scroll-text', label: 'Giám sát & Nhật ký' },
-      { href: 'system-settings.html', icon: 'sliders-horizontal', label: 'Cấu hình Hệ thống' },
-      { href: 'sepay.html', icon: 'qr-code', label: 'Cổng SePay Đối soát' },
-      { href: 'reports.html', icon: 'bar-chart-3', label: 'Báo cáo Toàn chuỗi' }
+      { href: 'system-settings.html', icon: 'sliders-horizontal', label: 'Cấu hình Hệ thống' }
     ];
   } else if (role === 'RESIDENT') {
     navItems = [
@@ -289,7 +287,10 @@ function renderSidebar(activePage = 'index.html') {
     navItems = [
       { href: 'index.html', icon: 'layout-dashboard', label: 'Tổng quan Vận hành' },
       { href: 'buildings.html', icon: 'building-2', label: 'Cơ sở & Sơ đồ phòng' },
+      { href: 'contracts.html', icon: 'file-text', label: 'Hợp đồng thuê' },
+      { href: 'invoices.html', icon: 'receipt', label: 'Hóa đơn & Thu phí' },
       { href: 'utilities.html', icon: 'zap', label: 'Chỉ số Điện Nước' },
+      { href: 'residents.html', icon: 'users', label: 'Cư dân & Lưu trú' },
       { href: 'maintenance.html', icon: 'wrench', label: 'Quản lý Sửa chữa' },
       { href: 'visitors.html', icon: 'user-check', label: 'Khách đến thăm' },
       { href: 'assets.html', icon: 'boxes', label: 'Tài sản thiết bị' },

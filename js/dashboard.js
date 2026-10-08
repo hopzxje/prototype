@@ -75,7 +75,7 @@ function renderAdminDashboard() {
           <div><span><i class="role-dashboard-status-dot is-green"></i>StayHub Riverside</span><b>Ổn định</b></div>
           <div><span><i class="role-dashboard-status-dot is-amber"></i>StayHub Eco</span><b>Cần theo dõi</b></div>
         </div>
-        <div class="role-dashboard-card-actions"><a href="${appPath('system-settings.html')}">Cấu hình hệ thống</a><a href="${appPath('reports.html')}">Báo cáo</a></div>
+        <div class="role-dashboard-card-actions"><a href="${appPath('system-settings.html')}">Cấu hình hệ thống</a><a href="${appPath('audit-logs.html')}">Nhật ký hệ thống</a></div>
       </section>
     </div>
   `;
