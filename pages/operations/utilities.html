@@ -64,12 +64,6 @@
               <span>+ Mở Kỳ Mới</span>
             </button>
 
-            <!-- Sample Estimator -->
-            <button onclick="fillEstimateReadings()" class="flex items-center gap-1.5 px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-semibold transition-colors" title="Tự động điền số mới mẫu cho các phòng chưa nhập">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
-              <span>Điền Số Mẫu</span>
-            </button>
-
             <!-- Save All -->
             <button onclick="calculateAndSaveAll()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-xs sm:text-sm font-semibold shadow-sm transition-colors">
               <i data-lucide="save" class="w-4 h-4"></i>
@@ -401,7 +395,7 @@
         const prevCycleKey = `${String(prevM).padStart(2, '0')}/${prevY}`;
 
         if (currentCycle === '11/2026') {
-          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng 11/2026</strong> (Kỳ tiếp theo). Chỉ số Điện cũ & Nước cũ đã <strong>tự động kết chuyển 100%</strong> từ chỉ số Mới của Tháng 10/2026. Bạn có thể nhập số mới hoặc bấm "Điền Số Mẫu" để tính thử!`;
+          noticeText.innerHTML = `Đang xem kỳ <strong>Tháng 11/2026</strong> (Kỳ tiếp theo). Chỉ số Điện cũ & Nước cũ đã <strong>tự động kết chuyển 100%</strong> từ chỉ số Mới của Tháng 10/2026. Bạn có thể nhập chỉ số mới và bấm "Lưu Toàn Bộ & Tính Tiền"!`;
         } else if (currentCycle === '10/2026') {
           noticeText.innerHTML = `Đang xem kỳ <strong>Tháng 10/2026</strong>. Chỉ số cũ tự động kế thừa từ chỉ số mới của Tháng 09/2026.`;
         } else {
@@ -673,28 +667,6 @@
         statPercent.innerText = `${percent}% hoàn thành`;
         statPercent.className = percent === 100 ? 'text-[11px] text-emerald-600 font-semibold' : 'text-[11px] text-amber-600 font-semibold';
       }
-    }
-
-    // Auto-fill sample incremental readings for demo purpose
-    function fillEstimateReadings() {
-      let count = 0;
-      Object.keys(activeTableRows).forEach(roomId => {
-        const row = activeTableRows[roomId];
-        if (row.eNew <= row.eOld) {
-          // Increment sample electricity ~130 to 175 kWh
-          const estElec = Math.floor(130 + (parseInt(roomId.replace(/\D/g, '')) * 7) % 45);
-          row.eNew = row.eOld + estElec;
-        }
-        if (row.wNew <= row.wOld) {
-          // Increment sample water ~6 to 10 m3
-          const estWater = Math.floor(6 + (parseInt(roomId.replace(/\D/g, '')) * 3) % 5);
-          row.wNew = row.wOld + estWater;
-        }
-        count++;
-      });
-
-      renderUtilitiesTable();
-      showToast(`✨ Đã tự động điền chỉ số mẫu cho ${count} phòng kỳ tháng ${currentCycle}! Bấm "Lưu" để hoàn tất.`);
     }
 
     function calculateAndSaveAll() {
