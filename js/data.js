@@ -218,6 +218,191 @@ const INITIAL_CONTRACTS = [
 ];
 
 const INITIAL_INVOICES = [
+  // --- KỲ THÁNG 09/2026 (ĐÃ THU XONG 100%) ---
+  {
+    id: 'inv-0901',
+    buildingId: 'bld-1',
+    code: 'INV-2026-09-P201',
+    month: '09/2026',
+    room: 'P201',
+    building: 'StayHub Central - Quận 1',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    rent: 8500000,
+    elecOld: 980,
+    elecNew: 1240,
+    elecUnits: 260,
+    elecRate: 3500,
+    elecTotal: 910000,
+    waterOld: 72,
+    waterNew: 84,
+    waterUnits: 12,
+    waterRate: 25000,
+    waterTotal: 300000,
+    serviceFee: 150000,
+    total: 9860000,
+    status: 'PAID',
+    paymentDate: '2026-09-02 09:15',
+    method: 'VietQR SePay'
+  },
+  {
+    id: 'inv-0902',
+    buildingId: 'bld-1',
+    code: 'INV-2026-09-P101',
+    month: '09/2026',
+    room: 'P101',
+    building: 'StayHub Central - Quận 1',
+    tenant: 'Nguyễn Văn Hùng',
+    phone: '0901112233',
+    rent: 6500000,
+    elecOld: 680,
+    elecNew: 890,
+    elecUnits: 210,
+    elecRate: 3500,
+    elecTotal: 735000,
+    waterOld: 48,
+    waterNew: 58,
+    waterUnits: 10,
+    waterRate: 25000,
+    waterTotal: 250000,
+    serviceFee: 150000,
+    total: 7635000,
+    status: 'PAID',
+    paymentDate: '2026-09-03 14:20',
+    method: 'VietQR SePay'
+  },
+  {
+    id: 'inv-0903',
+    buildingId: 'bld-1',
+    code: 'INV-2026-09-P102',
+    month: '09/2026',
+    room: 'P102',
+    building: 'StayHub Central - Quận 1',
+    tenant: 'Trần Thị Thu Thảo',
+    phone: '0902223344',
+    rent: 7500000,
+    elecOld: 850,
+    elecNew: 1100,
+    elecUnits: 250,
+    elecRate: 3500,
+    elecTotal: 875000,
+    waterOld: 58,
+    waterNew: 70,
+    waterUnits: 12,
+    waterRate: 25000,
+    waterTotal: 300000,
+    serviceFee: 150000,
+    total: 8825000,
+    status: 'PAID',
+    paymentDate: '2026-09-02 08:30',
+    method: 'VietQR SePay'
+  },
+  {
+    id: 'inv-0904',
+    buildingId: 'bld-1',
+    code: 'INV-2026-09-P301',
+    month: '09/2026',
+    room: 'P301',
+    building: 'StayHub Central - Quận 1',
+    tenant: 'Vũ Đức Nam',
+    phone: '0907778899',
+    rent: 9500000,
+    elecOld: 1120,
+    elecNew: 1450,
+    elecUnits: 330,
+    elecRate: 3500,
+    elecTotal: 1155000,
+    waterOld: 92,
+    waterNew: 108,
+    waterUnits: 16,
+    waterRate: 25000,
+    waterTotal: 400000,
+    serviceFee: 150000,
+    total: 11205000,
+    status: 'PAID',
+    paymentDate: '2026-09-04 16:45',
+    method: 'VietQR SePay'
+  },
+  {
+    id: 'inv-0905',
+    buildingId: 'bld-2',
+    code: 'INV-2026-09-RS101',
+    month: '09/2026',
+    room: 'P101',
+    building: 'StayHub Riverside - Tây Hồ',
+    tenant: 'Hà Kiều Oanh',
+    phone: '0911223344',
+    rent: 8500000,
+    elecOld: 290,
+    elecNew: 500,
+    elecUnits: 210,
+    elecRate: 3800,
+    elecTotal: 798000,
+    waterOld: 28,
+    waterNew: 39,
+    waterUnits: 11,
+    waterRate: 28000,
+    waterTotal: 308000,
+    serviceFee: 180000,
+    total: 9786000,
+    status: 'PAID',
+    paymentDate: '2026-09-02 11:20',
+    method: 'VietQR SePay'
+  },
+  {
+    id: 'inv-0906',
+    buildingId: 'bld-3',
+    code: 'INV-2026-09-ECO101',
+    month: '09/2026',
+    room: 'P101',
+    building: 'StayHub Eco - Cầu Giấy',
+    tenant: 'Võ Minh Thắng',
+    phone: '0922334455',
+    rent: 6200000,
+    elecOld: 120,
+    elecNew: 330,
+    elecUnits: 210,
+    elecRate: 3600,
+    elecTotal: 756000,
+    waterOld: 15,
+    waterNew: 26,
+    waterUnits: 11,
+    waterRate: 26000,
+    waterTotal: 286000,
+    serviceFee: 160000,
+    total: 7402000,
+    status: 'PAID',
+    paymentDate: '2026-09-03 09:00',
+    method: 'VietQR SePay'
+  },
+  {
+    id: 'inv-0907',
+    buildingId: 'bld-3',
+    code: 'INV-2026-09-ECO102',
+    month: '09/2026',
+    room: 'P102',
+    building: 'StayHub Eco - Cầu Giấy',
+    tenant: 'Mai Thanh Tâm',
+    phone: '0923344556',
+    rent: 7200000,
+    elecOld: 170,
+    elecNew: 410,
+    elecUnits: 240,
+    elecRate: 3600,
+    elecTotal: 864000,
+    waterOld: 18,
+    waterNew: 32,
+    waterUnits: 14,
+    waterRate: 26000,
+    waterTotal: 364000,
+    serviceFee: 160000,
+    total: 8588000,
+    status: 'PAID',
+    paymentDate: '2026-09-03 10:15',
+    method: 'VietQR SePay'
+  },
+
+  // --- KỲ THÁNG 10/2026 (KỲ HIỆN TẠI: ĐANG THU & ĐỐI SOÁT SEPAY) ---
   {
     id: 'inv-1001',
     buildingId: 'bld-1',
@@ -233,8 +418,8 @@ const INITIAL_INVOICES = [
     elecUnits: 170,
     elecRate: 3500,
     elecTotal: 595000,
-    waterOld: 85,
-    waterNew: 93,
+    waterOld: 84,
+    waterNew: 92,
     waterUnits: 8,
     waterRate: 25000,
     waterTotal: 200000,
@@ -259,8 +444,8 @@ const INITIAL_INVOICES = [
     elecUnits: 135,
     elecRate: 3500,
     elecTotal: 472500,
-    waterOld: 60,
-    waterNew: 66,
+    waterOld: 58,
+    waterNew: 64,
     waterUnits: 6,
     waterRate: 25000,
     waterTotal: 150000,
@@ -285,8 +470,8 @@ const INITIAL_INVOICES = [
     elecUnits: 160,
     elecRate: 3500,
     elecTotal: 560000,
-    waterOld: 72,
-    waterNew: 80,
+    waterOld: 70,
+    waterNew: 78,
     waterUnits: 8,
     waterRate: 25000,
     waterTotal: 200000,
@@ -311,8 +496,8 @@ const INITIAL_INVOICES = [
     elecUnits: 230,
     elecRate: 3500,
     elecTotal: 805000,
-    waterOld: 110,
-    waterNew: 121,
+    waterOld: 108,
+    waterNew: 119,
     waterUnits: 11,
     waterRate: 25000,
     waterTotal: 275000,
@@ -335,15 +520,15 @@ const INITIAL_INVOICES = [
     elecOld: 500,
     elecNew: 650,
     elecUnits: 150,
-    elecRate: 3500,
-    elecTotal: 525000,
-    waterOld: 40,
-    waterNew: 48,
+    elecRate: 3800,
+    elecTotal: 570000,
+    waterOld: 39,
+    waterNew: 47,
     waterUnits: 8,
-    waterRate: 25000,
-    waterTotal: 200000,
-    serviceFee: 150000,
-    total: 9375000,
+    waterRate: 28000,
+    waterTotal: 224000,
+    serviceFee: 180000,
+    total: 9474000,
     status: 'PAID',
     paymentDate: '2026-10-02 11:30',
     method: 'VietQR SePay'
@@ -358,19 +543,203 @@ const INITIAL_INVOICES = [
     tenant: 'Võ Minh Thắng',
     phone: '0922334455',
     rent: 6200000,
-    elecOld: 300,
-    elecNew: 420,
-    elecUnits: 120,
-    elecRate: 3500,
-    elecTotal: 420000,
-    waterOld: 30,
-    waterNew: 36,
-    waterUnits: 6,
-    waterRate: 25000,
-    waterTotal: 150000,
-    serviceFee: 150000,
-    total: 6920000,
+    elecOld: 330,
+    elecNew: 460,
+    elecUnits: 130,
+    elecRate: 3600,
+    elecTotal: 468000,
+    waterOld: 26,
+    waterNew: 33,
+    waterUnits: 7,
+    waterRate: 26000,
+    waterTotal: 182000,
+    serviceFee: 160000,
+    total: 7010000,
     status: 'UNPAID',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-3002',
+    buildingId: 'bld-3',
+    code: 'INV-2026-10-ECO102',
+    month: '10/2026',
+    room: 'P102',
+    building: 'StayHub Eco - Cầu Giấy',
+    tenant: 'Mai Thanh Tâm',
+    phone: '0923344556',
+    rent: 7200000,
+    elecOld: 410,
+    elecNew: 545,
+    elecUnits: 135,
+    elecRate: 3600,
+    elecTotal: 486000,
+    waterOld: 32,
+    waterNew: 39,
+    waterUnits: 7,
+    waterRate: 26000,
+    waterTotal: 182000,
+    serviceFee: 160000,
+    total: 8028000,
+    status: 'PAID',
+    paymentDate: '2026-10-04 15:30',
+    method: 'VietQR SePay'
+  },
+
+  // --- KỲ THÁNG 11/2026 (KỲ TIẾP THEO - BẢN NHÁP/CHUẨN BỊ PHÁT HÀNH) ---
+  {
+    id: 'inv-1101',
+    buildingId: 'bld-1',
+    code: 'INV-2026-11-P201',
+    month: '11/2026',
+    room: 'P201',
+    building: 'StayHub Central - Quận 1',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    rent: 8500000,
+    elecOld: 1410,
+    elecNew: 1605,
+    elecUnits: 195,
+    elecRate: 3500,
+    elecTotal: 682500,
+    waterOld: 92,
+    waterNew: 101,
+    waterUnits: 9,
+    waterRate: 25000,
+    waterTotal: 225000,
+    serviceFee: 150000,
+    total: 9557500,
+    status: 'DRAFT',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-1102',
+    buildingId: 'bld-1',
+    code: 'INV-2026-11-P101',
+    month: '11/2026',
+    room: 'P101',
+    building: 'StayHub Central - Quận 1',
+    tenant: 'Nguyễn Văn Hùng',
+    phone: '0901112233',
+    rent: 6500000,
+    elecOld: 1025,
+    elecNew: 1195,
+    elecUnits: 170,
+    elecRate: 3500,
+    elecTotal: 595000,
+    waterOld: 64,
+    waterNew: 72,
+    waterUnits: 8,
+    waterRate: 25000,
+    waterTotal: 200000,
+    serviceFee: 150000,
+    total: 7445000,
+    status: 'DRAFT',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-1103',
+    buildingId: 'bld-1',
+    code: 'INV-2026-11-P102',
+    month: '11/2026',
+    room: 'P102',
+    building: 'StayHub Central - Quận 1',
+    tenant: 'Trần Thị Thu Thảo',
+    phone: '0902223344',
+    rent: 7500000,
+    elecOld: 1260,
+    elecNew: 1375,
+    elecUnits: 115,
+    elecRate: 3500,
+    elecTotal: 402500,
+    waterOld: 78,
+    waterNew: 83,
+    waterUnits: 5,
+    waterRate: 25000,
+    waterTotal: 125000,
+    serviceFee: 150000,
+    total: 8177500,
+    status: 'DRAFT',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-1104',
+    buildingId: 'bld-1',
+    code: 'INV-2026-11-P301',
+    month: '11/2026',
+    room: 'P301',
+    building: 'StayHub Central - Quận 1',
+    tenant: 'Vũ Đức Nam',
+    phone: '0907778899',
+    rent: 9500000,
+    elecOld: 1680,
+    elecNew: 1960,
+    elecUnits: 280,
+    elecRate: 3500,
+    elecTotal: 980000,
+    waterOld: 119,
+    waterNew: 133,
+    waterUnits: 14,
+    waterRate: 25000,
+    waterTotal: 350000,
+    serviceFee: 150000,
+    total: 10980000,
+    status: 'DRAFT',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-3101',
+    buildingId: 'bld-3',
+    code: 'INV-2026-11-ECO101',
+    month: '11/2026',
+    room: 'P101',
+    building: 'StayHub Eco - Cầu Giấy',
+    tenant: 'Võ Minh Thắng',
+    phone: '0922334455',
+    rent: 6200000,
+    elecOld: 460,
+    elecNew: 625,
+    elecUnits: 165,
+    elecRate: 3600,
+    elecTotal: 594000,
+    waterOld: 33,
+    waterNew: 42,
+    waterUnits: 9,
+    waterRate: 26000,
+    waterTotal: 234000,
+    serviceFee: 160000,
+    total: 7188000,
+    status: 'DRAFT',
+    paymentDate: null,
+    method: null
+  },
+  {
+    id: 'inv-3102',
+    buildingId: 'bld-3',
+    code: 'INV-2026-11-ECO102',
+    month: '11/2026',
+    room: 'P102',
+    building: 'StayHub Eco - Cầu Giấy',
+    tenant: 'Mai Thanh Tâm',
+    phone: '0923344556',
+    rent: 7200000,
+    elecOld: 545,
+    elecNew: 660,
+    elecUnits: 115,
+    elecRate: 3600,
+    elecTotal: 414000,
+    waterOld: 39,
+    waterNew: 45,
+    waterUnits: 6,
+    waterRate: 26000,
+    waterTotal: 156000,
+    serviceFee: 160000,
+    total: 7930000,
+    status: 'DRAFT',
     paymentDate: null,
     method: null
   }
@@ -533,57 +902,57 @@ const INITIAL_UTILITIES = {
     status: 'LOCKED',
     updatedAt: '2026-09-30 18:00',
     readings: {
-      'rm-101': { eOld: 755, eNew: 890, wOld: 54, wNew: 60 },
-      'rm-102': { eOld: 940, eNew: 1100, wOld: 64, wNew: 72 },
-      'rm-104': { eOld: 810, eNew: 920, wOld: 50, wNew: 56 },
-      'rm-201': { eOld: 1070, eNew: 1240, wOld: 77, wNew: 85 },
-      'rm-203': { eOld: 880, eNew: 995, wOld: 55, wNew: 61 },
-      'rm-204': { eOld: 790, eNew: 950, wOld: 48, wNew: 55 },
-      'rm-301': { eOld: 1220, eNew: 1450, wOld: 99, wNew: 110 },
-      'rm-303': { eOld: 900, eNew: 1045, wOld: 62, wNew: 69 },
-      'rm-b2-101': { eOld: 350, eNew: 500, wOld: 32, wNew: 40 },
-      'rm-b2-102': { eOld: 420, eNew: 560, wOld: 38, wNew: 45 },
-      'rm-b2-201': { eOld: 580, eNew: 740, wOld: 44, wNew: 52 },
-      'rm-b3-101': { eOld: 210, eNew: 330, wOld: 20, wNew: 26 },
-      'rm-b3-102': { eOld: 280, eNew: 410, wOld: 25, wNew: 32 }
+      'rm-101': { eOld: 680, eNew: 890, wOld: 48, wNew: 58 },   // Tiêu thụ: 210 kWh, 10 m³
+      'rm-102': { eOld: 850, eNew: 1100, wOld: 58, wNew: 70 },  // Tiêu thụ: 250 kWh, 12 m³
+      'rm-104': { eOld: 740, eNew: 920, wOld: 45, wNew: 54 },   // Tiêu thụ: 180 kWh, 9 m³
+      'rm-201': { eOld: 980, eNew: 1240, wOld: 72, wNew: 84 },  // Tiêu thụ: 260 kWh, 12 m³
+      'rm-203': { eOld: 810, eNew: 995, wOld: 50, wNew: 59 },   // Tiêu thụ: 185 kWh, 9 m³
+      'rm-204': { eOld: 710, eNew: 950, wOld: 42, wNew: 53 },   // Tiêu thụ: 240 kWh, 11 m³
+      'rm-301': { eOld: 1120, eNew: 1450, wOld: 92, wNew: 108 },// Tiêu thụ: 330 kWh, 16 m³
+      'rm-303': { eOld: 830, eNew: 1045, wOld: 56, wNew: 66 },  // Tiêu thụ: 215 kWh, 10 m³
+      'rm-b2-101': { eOld: 290, eNew: 500, wOld: 28, wNew: 39 },// Tiêu thụ: 210 kWh, 11 m³
+      'rm-b2-102': { eOld: 360, eNew: 560, wOld: 34, wNew: 44 },// Tiêu thụ: 200 kWh, 10 m³
+      'rm-b2-201': { eOld: 500, eNew: 740, wOld: 38, wNew: 50 },// Tiêu thụ: 240 kWh, 12 m³
+      'rm-b3-101': { eOld: 120, eNew: 330, wOld: 15, wNew: 26 },// Tiêu thụ: 210 kWh, 11 m³
+      'rm-b3-102': { eOld: 170, eNew: 410, wOld: 18, wNew: 32 } // Tiêu thụ: 240 kWh, 14 m³
     }
   },
   '10/2026': {
     status: 'RECORDED',
     updatedAt: '2026-10-02 08:30',
     readings: {
-      'rm-101': { eOld: 890, eNew: 1025, wOld: 60, wNew: 66 },
-      'rm-102': { eOld: 1100, eNew: 1260, wOld: 72, wNew: 80 },
-      'rm-104': { eOld: 920, eNew: 1045, wOld: 56, wNew: 62 },
-      'rm-201': { eOld: 1240, eNew: 1410, wOld: 85, wNew: 93 },
-      'rm-203': { eOld: 995, eNew: 1120, wOld: 61, wNew: 68 },
-      'rm-204': { eOld: 950, eNew: 1110, wOld: 55, wNew: 62 },
-      'rm-301': { eOld: 1450, eNew: 1680, wOld: 110, wNew: 121 },
-      'rm-303': { eOld: 1045, eNew: 1180, wOld: 69, wNew: 76 },
-      'rm-b2-101': { eOld: 500, eNew: 650, wOld: 40, wNew: 48 },
-      'rm-b2-102': { eOld: 560, eNew: 710, wOld: 45, wNew: 53 },
-      'rm-b2-201': { eOld: 740, eNew: 915, wOld: 52, wNew: 61 },
-      'rm-b3-101': { eOld: 330, eNew: 460, wOld: 26, wNew: 33 },
-      'rm-b3-102': { eOld: 410, eNew: 545, wOld: 32, wNew: 39 }
+      'rm-101': { eOld: 890, eNew: 1025, wOld: 58, wNew: 64 },  // Tiêu thụ: 135 kWh, 6 m³
+      'rm-102': { eOld: 1100, eNew: 1260, wOld: 70, wNew: 78 }, // Tiêu thụ: 160 kWh, 8 m³
+      'rm-104': { eOld: 920, eNew: 1045, wOld: 54, wNew: 60 },  // Tiêu thụ: 125 kWh, 6 m³
+      'rm-201': { eOld: 1240, eNew: 1410, wOld: 84, wNew: 92 }, // Tiêu thụ: 170 kWh, 8 m³
+      'rm-203': { eOld: 995, eNew: 1120, wOld: 59, wNew: 66 },  // Tiêu thụ: 125 kWh, 7 m³
+      'rm-204': { eOld: 950, eNew: 1110, wOld: 53, wNew: 60 },  // Tiêu thụ: 160 kWh, 7 m³
+      'rm-301': { eOld: 1450, eNew: 1680, wOld: 108, wNew: 119 },// Tiêu thụ: 230 kWh, 11 m³
+      'rm-303': { eOld: 1045, eNew: 1180, wOld: 66, wNew: 73 }, // Tiêu thụ: 135 kWh, 7 m³
+      'rm-b2-101': { eOld: 500, eNew: 650, wOld: 39, wNew: 47 }, // Tiêu thụ: 150 kWh, 8 m³
+      'rm-b2-102': { eOld: 560, eNew: 710, wOld: 44, wNew: 52 }, // Tiêu thụ: 150 kWh, 8 m³
+      'rm-b2-201': { eOld: 740, eNew: 915, wOld: 50, wNew: 59 }, // Tiêu thụ: 175 kWh, 9 m³
+      'rm-b3-101': { eOld: 330, eNew: 460, wOld: 26, wNew: 33 }, // Tiêu thụ: 130 kWh, 7 m³
+      'rm-b3-102': { eOld: 410, eNew: 545, wOld: 32, wNew: 39 }  // Tiêu thụ: 135 kWh, 7 m³
     }
   },
   '11/2026': {
     status: 'IN_PROGRESS',
     updatedAt: '2026-10-07 14:00',
     readings: {
-      'rm-101': { eOld: 1025, eNew: 1165, wOld: 66, wNew: 73 },
-      'rm-102': { eOld: 1260, eNew: 1420, wOld: 80, wNew: 88 },
-      'rm-104': { eOld: 1045, eNew: 1175, wOld: 62, wNew: 68 },
-      'rm-201': { eOld: 1410, eNew: 1585, wOld: 93, wNew: 101 },
-      'rm-203': { eOld: 1120, eNew: 1250, wOld: 68, wNew: 75 },
-      'rm-204': { eOld: 1110, eNew: 1275, wOld: 62, wNew: 70 },
-      'rm-301': { eOld: 1680, eNew: 1910, wOld: 121, wNew: 133 },
-      'rm-303': { eOld: 1180, eNew: 1320, wOld: 76, wNew: 84 },
-      'rm-b2-101': { eOld: 650, eNew: 805, wOld: 48, wNew: 56 },
-      'rm-b2-102': { eOld: 710, eNew: 865, wOld: 53, wNew: 61 },
-      'rm-b2-201': { eOld: 915, eNew: 1090, wOld: 61, wNew: 70 },
-      'rm-b3-101': { eOld: 460, eNew: 595, wOld: 33, wNew: 40 },
-      'rm-b3-102': { eOld: 545, eNew: 680, wOld: 39, wNew: 46 }
+      'rm-101': { eOld: 1025, eNew: 1195, wOld: 64, wNew: 72 }, // Tiêu thụ: 170 kWh, 8 m³
+      'rm-102': { eOld: 1260, eNew: 1375, wOld: 78, wNew: 83 }, // Tiêu thụ: 115 kWh, 5 m³ (về quê 2 tuần)
+      'rm-104': { eOld: 1045, eNew: 1190, wOld: 60, wNew: 67 }, // Tiêu thụ: 145 kWh, 7 m³
+      'rm-201': { eOld: 1410, eNew: 1605, wOld: 92, wNew: 101 },// Tiêu thụ: 195 kWh, 9 m³
+      'rm-203': { eOld: 1120, eNew: 1270, wOld: 66, wNew: 74 }, // Tiêu thụ: 150 kWh, 8 m³
+      'rm-204': { eOld: 1110, eNew: 1245, wOld: 60, wNew: 66 }, // Tiêu thụ: 135 kWh, 6 m³
+      'rm-301': { eOld: 1680, eNew: 1960, wOld: 119, wNew: 133 },// Tiêu thụ: 280 kWh, 14 m³
+      'rm-303': { eOld: 1180, eNew: 1345, wOld: 73, wNew: 81 }, // Tiêu thụ: 165 kWh, 8 m³
+      'rm-b2-101': { eOld: 650, eNew: 825, wOld: 47, wNew: 56 }, // Tiêu thụ: 175 kWh, 9 m³
+      'rm-b2-102': { eOld: 710, eNew: 840, wOld: 52, wNew: 58 }, // Tiêu thụ: 130 kWh, 6 m³
+      'rm-b2-201': { eOld: 915, eNew: 1110, wOld: 59, wNew: 69 },// Tiêu thụ: 195 kWh, 10 m³
+      'rm-b3-101': { eOld: 460, eNew: 625, wOld: 33, wNew: 42 }, // Tiêu thụ: 165 kWh, 9 m³
+      'rm-b3-102': { eOld: 545, eNew: 660, wOld: 39, wNew: 45 }  // Tiêu thụ: 115 kWh, 6 m³
     }
   }
 };
@@ -629,6 +998,16 @@ const INITIAL_HANDOVER = {
 
 const DataStore = {
   init() {
+    const DATA_VERSION = 'v2.2';
+    const storedVersion = localStorage.getItem('stayhub_data_version');
+    if (storedVersion !== DATA_VERSION) {
+      localStorage.setItem('stayhub_data_version', DATA_VERSION);
+      localStorage.setItem(STORAGE_KEYS.UTILITIES, JSON.stringify(INITIAL_UTILITIES));
+      localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(INITIAL_INVOICES));
+      localStorage.setItem(STORAGE_KEYS.BUILDINGS, JSON.stringify(INITIAL_BUILDINGS));
+      localStorage.setItem(STORAGE_KEYS.ROOMS, JSON.stringify(INITIAL_ROOMS));
+    }
+
     if (!localStorage.getItem(STORAGE_KEYS.ROLE)) {
       localStorage.setItem(STORAGE_KEYS.ROLE, 'MANAGER');
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(DEFAULT_USERS.MANAGER));
@@ -819,9 +1198,14 @@ const DataStore = {
     }
     try {
       const parsed = JSON.parse(raw);
-      // Ensure month 11/2026 exists for next month demo
-      if (!parsed['11/2026']) {
-        parsed['11/2026'] = INITIAL_UTILITIES['11/2026'];
+      let changed = false;
+      ['09/2026', '10/2026', '11/2026'].forEach(k => {
+        if (!parsed[k]) {
+          parsed[k] = INITIAL_UTILITIES[k];
+          changed = true;
+        }
+      });
+      if (changed) {
         localStorage.setItem(STORAGE_KEYS.UTILITIES, JSON.stringify(parsed));
       }
       return parsed;

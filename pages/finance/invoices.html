@@ -100,7 +100,13 @@
             </div>
             <!-- Search & Filters -->
             <div class="flex items-center gap-3">
-              <input type="text" id="inv-search" oninput="renderInvoicesTable()" placeholder="Tìm số phòng, tên, mã..." class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none w-48">
+              <input type="text" id="inv-search" oninput="renderInvoicesTable()" placeholder="Tìm số phòng, tên, mã..." class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none w-44">
+              <select id="inv-month-filter" onchange="renderInvoicesTable()" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-teal-800">
+                <option value="ALL">Tất cả kỳ thu</option>
+                <option value="11/2026">Tháng 11/2026 (Mới)</option>
+                <option value="10/2026" selected>Tháng 10/2026 (Hiện tại)</option>
+                <option value="09/2026">Tháng 09/2026 (Đã thu)</option>
+              </select>
               <select id="inv-status-filter" onchange="renderInvoicesTable()" class="text-xs font-medium bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5">
                 <option value="ALL">Tất cả trạng thái</option>
                 <option value="PAID">Đã thanh toán (Paid)</option>
@@ -367,12 +373,15 @@
     function renderInvoicesTable() {
       const search = document.getElementById('inv-search').value.toLowerCase();
       const statusFilter = document.getElementById('inv-status-filter').value;
+      const monthFilterEl = document.getElementById('inv-month-filter');
+      const monthFilter = monthFilterEl ? monthFilterEl.value : 'ALL';
       const invoices = DataStore.getInvoices();
       const tbody = document.getElementById('invoices-tbody');
 
       const currentBldId = DataStore.getCurrentBuilding();
       let filtered = invoices.filter(inv => {
-        const matchBuilding = !inv.buildingId || inv.buildingId === currentBldId;
+        const matchBuilding = currentBldId === 'ALL' || !inv.buildingId || inv.buildingId === currentBldId;
+        const matchMonth = monthFilter === 'ALL' || inv.month === monthFilter;
         const matchSearch = (inv.room || '').toLowerCase().includes(search) || 
                             (inv.tenant || '').toLowerCase().includes(search) || 
                             (inv.code || '').toLowerCase().includes(search);
@@ -380,15 +389,21 @@
         if (statusFilter === 'PAID') matchStatus = inv.status === 'PAID';
         else if (statusFilter === 'UNPAID') matchStatus = inv.status === 'UNPAID' || inv.status === 'PUBLISHED';
         else if (statusFilter === 'DRAFT') matchStatus = inv.status === 'DRAFT';
-        return matchBuilding && matchSearch && matchStatus;
+        return matchBuilding && matchMonth && matchSearch && matchStatus;
       });
 
-      // Update metrics
+      // Update metrics (reflecting current building and month filter if selected)
       let totalPaid = 0, countPaid = 0;
       let totalUnpaid = 0, countUnpaid = 0;
       let totalDraft = 0, countDraft = 0;
 
-      invoices.forEach(i => {
+      const metricInvoices = invoices.filter(inv => {
+        const matchBld = currentBldId === 'ALL' || !inv.buildingId || inv.buildingId === currentBldId;
+        const matchM = monthFilter === 'ALL' || inv.month === monthFilter;
+        return matchBld && matchM;
+      });
+
+      metricInvoices.forEach(i => {
         if (i.status === 'PAID') { totalPaid += (i.total || 0); countPaid++; }
         else if (i.status === 'DRAFT') { totalDraft += (i.total || 0); countDraft++; }
         else { totalUnpaid += (i.total || 0); countUnpaid++; }
