@@ -7,7 +7,8 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const values = new Map();
 const context = vm.createContext({
   localStorage: {getItem: key => values.get(key) ?? null, setItem: (key,value) => values.set(key,String(value)), clear: () => values.clear()},
-  document: {addEventListener() {}}, window: {addEventListener() {}, location: {pathname: '/pages/operations/checkout.html'}},
+  document: {addEventListener() {}}, window: {addEventListener() {}, location: {pathname: '/pages/operations/checkout.html', href: 'http://localhost:3001/pages/operations/checkout.html'}},
+  URL: global.URL,
   setInterval() {}, setTimeout() {}, console
 });
 vm.runInContext(read('js/data.js'),context);
@@ -19,7 +20,7 @@ for (const match of checkout.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)
 }
 const run = source => vm.runInContext(source,context);
 assert.equal(run('DataStore.getHandover().status'),'NOT_SCHEDULED');
-assert.equal(run('DataStore.getCheckoutRequests().length'),5);
+assert.equal(run('DataStore.getCheckoutRequests().length'),8);
 run("DataStore.saveHandover({...DataStore.getHandover(), note: 'tai saved'}); DataStore.saveCheckoutRequests([{id:'saved'}]); DataStore.init();");
 assert.equal(run('DataStore.getCheckoutRequests()[0].id'),'saved');
 assert.equal(run('DataStore.getHandover().note'),'tai saved');

@@ -59,7 +59,7 @@ const DEFAULT_USERS = {
     fullName: 'Lê Văn An',
     email: 'resident@stayhub.vn',
     room: 'P201',
-    building: 'Tòa nhà StayHub Central - Quận 1 (SH-CENTRAL)',
+    building: 'StayHub Central - Quận 1',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
     title: 'Cư dân Căn hộ P201'
   }
@@ -494,11 +494,14 @@ const DEFAULT_CONTRACT_TEMPLATE = {
 };
 
 const INITIAL_CONTRACTS = [
-  { id: 'ct-001', code: 'HD-2025-001', room: 'P201', building: 'StayHub Central - Ba Đình', tenant: 'Lê Văn An', phone: '0904445566', cccd: '001201004567', startDate: '2025-01-01', endDate: '2026-12-31', rent: 8500000, deposit: 8500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
-  { id: 'ct-002', code: 'HD-2025-002', room: 'P101', building: 'StayHub Central - Ba Đình', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', cccd: '001200001234', startDate: '2025-02-01', endDate: '2026-02-01', rent: 6500000, deposit: 6500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
-  { id: 'ct-003', code: 'HD-2025-003', room: 'P102', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', cccd: '001202008899', startDate: '2025-03-01', endDate: '2026-03-01', rent: 7500000, deposit: 7500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
-  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Ba Đình', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
-  { id: 'ct-005', code: 'HD-2025-112', room: 'P402', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thu Trang', phone: '0908889900', startDate: '2025-01-01', endDate: '2026-09-30', rent: 10000000, deposit: 10000000, status: 'EXPIRED', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } }
+  { id: 'ct-001', code: 'HD-2025-001', room: 'P201', building: 'StayHub Central - Quận 1', tenant: 'Lê Văn An', phone: '0904445566', cccd: '001201004567', startDate: '2025-01-01', endDate: '2026-12-31', rent: 8500000, deposit: 8500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-002', code: 'HD-2025-002', room: 'P101', building: 'StayHub Central - Quận 1', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', cccd: '001200001234', startDate: '2025-02-01', endDate: '2026-02-01', rent: 6500000, deposit: 6500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-003', code: 'HD-2025-003', room: 'P102', building: 'StayHub Central - Quận 1', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', cccd: '001202008899', startDate: '2025-03-01', endDate: '2026-10-25', rent: 7500000, deposit: 7500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Quận 1', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-005', code: 'HD-2025-112', room: 'P402', building: 'StayHub Central - Quận 1', tenant: 'Trần Thu Trang', phone: '0908889900', startDate: '2025-01-01', endDate: '2026-09-30', rent: 10000000, deposit: 10000000, status: 'EXPIRED', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-006', code: 'HD-2026-004', room: 'P104', building: 'StayHub Central - Quận 1', tenant: 'Hoàng Kim Long', phone: '0903334455', cccd: '001203001122', startDate: '2025-05-01', endDate: '2026-11-30', rent: 6800000, deposit: 6800000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-007', code: 'HD-2025-067', room: 'P503', building: 'StayHub Central - Quận 1', tenant: 'Đỗ Mạnh Quân', phone: '0901112233', cccd: '001202003344', startDate: '2025-01-15', endDate: '2026-10-19', rent: 9000000, deposit: 9000000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-008', code: 'HD-2025-007', room: 'P203', building: 'StayHub Central - Quận 1', tenant: 'Phan Minh Tuấn', phone: '0905556677', cccd: '001201005566', startDate: '2025-03-01', endDate: '2026-10-31', rent: 6500000, deposit: 6500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } }
 ];
 
 const INITIAL_INVOICES = [
@@ -788,12 +791,14 @@ const INITIAL_CHECKOUT_REQUESTS = [
     depositSettlementStatus: 'PENDING_SETTLEMENT',
     code: 'REQ-OUT-2026-0045',
     room: 'P201',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
+    residentId: 'usr-res-1',
     tenant: 'Lê Văn An',
     phone: '0904445566',
     deposit: 8500000,
     requestDate: '2026-10-05',
     expectedDate: '2026-10-20',
+    actualCheckoutDate: '2026-10-20',
     timeslot: '14:30',
     status: 'PENDING_APPROVAL', // Staff Phạm Tuấn Anh ĐÃ NGHIỆM THU XONG lúc 14:30 -> Chờ Quản lý duyệt quyết toán
     assignedStaff: 'Phạm Tuấn Anh',
@@ -808,58 +813,134 @@ const INITIAL_CHECKOUT_REQUESTS = [
       { item: 'Rèm cửa chống nắng', issue: 'Hư hỏng nhẹ (rách mép)', cost: 350000 }
     ],
     cleaningFee: 0,
-    notes: 'Kỹ thuật viên Phạm Tuấn Anh đã kiểm tra phòng lúc 14:30 ngày 20/10. Đã chốt số điện nước, lập biên bản hư hại rèm cửa; yêu cầu trả phòng trước hạn nên tiền cọc không được hoàn, chờ Quản lý xem xét.',
+    notes: 'Kỹ thuật viên Phạm Tuấn Anh đã kiểm tra phòng lúc 14:30 ngày 20/10. Đã chốt số điện nước, lập biên bản hư hại rèm cửa; yêu cầu trả phòng trước hạn nên tiền cọc không được hoàn, tiền thuê trả trước chưa sử dụng được hoàn sau đối soát, chờ Quản lý duyệt.',
     bankAccount: { bank: 'MB Bank', accountNumber: '0904445566', accountName: 'LE VAN AN' },
-    refundAmount: 0,
+    refundAmount: 2216129,
     isSigned: false,
     disputeReason: null,
   },
   {
-    id: 'req-04',
-    code: 'REQ-OUT-2026-0049',
-    room: 'P402',
-    building: 'StayHub Central - Ba Đình',
-    tenant: 'Trần Thu Trang',
-    phone: '0908889900',
-    contractCode: 'HD-2025-112',
-    contractEndDate: '2026-09-30',
-    contractStatusAtRequest: 'EXPIRED',
+    id: 'req-02',
+    code: 'REQ-OUT-2026-0048',
+    room: 'P104',
+    building: 'StayHub Central - Quận 1',
+    residentId: 'usr-res-long',
+    tenant: 'Hoàng Kim Long',
+    phone: '0903334455',
+    contractCode: 'HD-2026-004',
+    contractEndDate: '2026-11-30',
+    contractStatusAtRequest: 'ACTIVE',
     isEarlyCheckout: false,
-    depositSettlementStatus: 'REFUND_PENDING',
-    deposit: 10000000,
-    requestDate: '2026-10-01',
-    expectedDate: '2026-10-18',
-    timeslot: '10:00',
-    status: 'REFUND_PENDING', // Cư dân đã ký, chờ Quản lý duyệt lệnh chi UNC hoàn cọc
+    depositSettlementStatus: 'PENDING_SETTLEMENT',
+    deposit: 6800000,
+    requestDate: '2026-10-06',
+    expectedDate: '2026-10-22',
+    timeslot: '09:30',
+    status: 'SUBMITTED', // Cư dân mới nộp đơn -> STAFF tiếp nhận & xếp lịch
     assignedStaff: 'Phạm Tuấn Anh',
     manager: 'Trần Minh Đức',
-    meterElectricPrev: 1800,
-    meterElectricCurr: 1950,
+    meterElectricPrev: 920,
+    meterElectricCurr: null,
     electricRate: 3000,
-    meterWaterPrev: 80,
-    meterWaterCurr: 85,
+    meterWaterPrev: 42,
+    meterWaterCurr: null,
+    waterRate: 12000,
+    damages: [],
+    cleaningFee: 0,
+    notes: 'Chuyển công tác vào TP.HCM. Chờ nhân viên kỹ thuật tiếp nhận xếp lịch và đến phòng nghiệm thu.',
+    bankAccount: { bank: 'Vietcombank', accountNumber: '001100432198', accountName: 'HOANG KIM LONG' },
+    refundAmount: 6800000,
+    isSigned: false,
+    disputeReason: null,
+  },
+  {
+    id: 'req-06',
+    code: 'REQ-OUT-2026-0047',
+    room: 'P102',
+    building: 'StayHub Central - Quận 1',
+    residentId: 'usr-res-thao',
+    tenant: 'Trần Thị Thu Thảo',
+    phone: '0902223344',
+    contractCode: 'HD-2025-003',
+    contractEndDate: '2026-10-25',
+    contractStatusAtRequest: 'ACTIVE',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'PENDING_SETTLEMENT',
+    deposit: 7500000,
+    requestDate: '2026-10-04',
+    expectedDate: '2026-10-21',
+    timeslot: '14:30',
+    status: 'SCHEDULED', // Đã hẹn lịch khảo sát -> STAFF nghiệm thu tại phòng
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 1100,
+    meterElectricCurr: 1260,
+    electricRate: 3000,
+    meterWaterPrev: 72,
+    meterWaterCurr: 80,
     waterRate: 12000,
     damages: [
-      { item: 'Sơn tường phòng ngủ', issue: 'Vết ố bẩn khó tẩy', cost: 290000 }
+      { item: 'Rèm cửa chống nắng', issue: 'Bình thường', cost: 0 }
     ],
     cleaningFee: 0,
-    notes: 'Staff đã nghiệm thu, cư dân đã ký biên bản thanh lý. Chờ Quản lý phê duyệt lệnh chi hoàn cọc 9.200.000 ₫.',
-    bankAccount: { bank: 'Techcombank', accountNumber: '1903332211', accountName: 'TRAN THU TRANG' },
-    refundAmount: 9200000,
-    isSigned: true,
+    notes: 'Đã hẹn lịch khảo sát với cư dân lúc 14:30 ngày 21/10. Cư dân đã dọn xong đồ đạc cá nhân, chờ kỹ thuật đến chốt công tơ.',
+    bankAccount: { bank: 'BIDV', accountNumber: '12810001234567', accountName: 'TRAN THI THU THAO' },
+    refundAmount: 6924000,
+    isSigned: false,
+    disputeReason: null,
+  },
+  {
+    id: 'req-07',
+    code: 'REQ-OUT-2026-0046',
+    room: 'P203',
+    building: 'StayHub Central - Quận 1',
+    residentId: 'usr-res-tuan',
+    tenant: 'Phan Minh Tuấn',
+    phone: '0905556677',
+    contractCode: 'HD-2025-007',
+    contractEndDate: '2026-10-31',
+    contractStatusAtRequest: 'ACTIVE',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'PENDING_SETTLEMENT',
+    deposit: 6500000,
+    requestDate: '2026-10-03',
+    expectedDate: '2026-10-19',
+    actualCheckoutDate: '2026-10-19',
+    timeslot: '10:00',
+    status: 'WAITING_RESIDENT_SIGN', // Quản lý đã duyệt quyết toán -> Chờ Cư dân ký online
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 1350,
+    meterElectricCurr: 1470,
+    electricRate: 3000,
+    meterWaterPrev: 55,
+    meterWaterCurr: 60,
+    waterRate: 12000,
+    damages: [],
+    cleaningFee: 0,
+    notes: 'Quản lý Trần Minh Đức đã kiểm tra và duyệt bảng tính quyết toán. Đã chuyển biên bản sang cho cư dân ký online.',
+    bankAccount: { bank: 'VPBank', accountNumber: '990555667788', accountName: 'PHAN MINH TUAN' },
+    refundAmount: 6080000,
+    isSigned: false,
     disputeReason: null,
   },
   {
     id: 'req-05',
     code: 'REQ-OUT-2026-0050',
     room: 'P503',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
+    residentId: 'usr-res-quan',
     tenant: 'Đỗ Mạnh Quân',
     phone: '0901112233',
     contractCode: 'HD-2025-067',
+    contractEndDate: '2026-10-19',
+    contractStatusAtRequest: 'ACTIVE',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'PENDING_SETTLEMENT',
     deposit: 9000000,
     requestDate: '2026-10-02',
     expectedDate: '2026-10-19',
+    actualCheckoutDate: '2026-10-19',
     timeslot: '15:00',
     status: 'DISPUTED', // Staff đã nghiệm thu nhưng cư dân khiếu nại mức bồi thường -> Chờ Quản lý thẩm định giải quyết khiếu nại
     assignedStaff: 'Phạm Tuấn Anh',
@@ -881,32 +962,76 @@ const INITIAL_CHECKOUT_REQUESTS = [
     disputeReason: 'Vết nứt kính góc ban công đã có từ thời điểm bàn giao nhà ban đầu tháng 10/2025; đã có ảnh chụp đối chiếu.',
   },
   {
-    id: 'req-02',
-    code: 'REQ-OUT-2026-0048',
-    room: 'P104',
-    building: 'StayHub Central - Ba Đình',
-    tenant: 'Hoàng Kim Long',
-    phone: '0903334455',
-    contractCode: 'HD-2026-004',
-    deposit: 6800000,
-    requestDate: '2026-10-06',
-    expectedDate: '2026-10-22',
-    timeslot: '09:30',
-    status: 'SUBMITTED', // Cư dân mới nộp đơn -> Việc của STAFF tiếp nhận, xếp lịch và đi nghiệm thu (Quản lý không quản lý đơn này)
+    id: 'req-04',
+    code: 'REQ-OUT-2026-0049',
+    room: 'P402',
+    building: 'StayHub Central - Quận 1',
+    residentId: 'resident-trang',
+    tenant: 'Trần Thu Trang',
+    phone: '0908889900',
+    contractCode: 'HD-2025-112',
+    contractEndDate: '2026-09-30',
+    contractStatusAtRequest: 'EXPIRED',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'REFUND_PENDING',
+    deposit: 10000000,
+    requestDate: '2026-10-01',
+    expectedDate: '2026-10-18',
+    actualCheckoutDate: '2026-10-18',
+    timeslot: '10:00',
+    status: 'REFUND_PENDING', // Cư dân đã ký, chờ Quản lý duyệt lệnh chi UNC hoàn cọc
     assignedStaff: 'Phạm Tuấn Anh',
     manager: 'Trần Minh Đức',
-    meterElectricPrev: 920,
-    meterElectricCurr: null,
+    meterElectricPrev: 1800,
+    meterElectricCurr: 1950,
     electricRate: 3000,
-    meterWaterPrev: 42,
-    meterWaterCurr: null,
+    meterWaterPrev: 80,
+    meterWaterCurr: 85,
+    waterRate: 12000,
+    damages: [
+      { item: 'Sơn tường phòng ngủ', issue: 'Vết ố bẩn khó tẩy', cost: 290000 }
+    ],
+    cleaningFee: 0,
+    notes: 'Staff đã nghiệm thu, cư dân đã ký biên bản thanh lý. Chờ Quản lý phê duyệt lệnh chi hoàn cọc 9.200.000 ₫.',
+    bankAccount: { bank: 'Techcombank', accountNumber: '1903332211', accountName: 'TRAN THU TRANG' },
+    refundAmount: 9200000,
+    isSigned: true,
+    disputeReason: null,
+  },
+  {
+    id: 'req-08',
+    code: 'REQ-OUT-2026-0044',
+    room: 'P101',
+    building: 'StayHub Central - Quận 1',
+    residentId: 'usr-res-hung',
+    tenant: 'Nguyễn Văn Hùng',
+    phone: '0901112233',
+    contractCode: 'HD-2025-002',
+    contractEndDate: '2026-10-15',
+    contractStatusAtRequest: 'ACTIVE',
+    isEarlyCheckout: false,
+    depositSettlementStatus: 'TRANSFERRED',
+    deposit: 6500000,
+    requestDate: '2026-09-28',
+    expectedDate: '2026-10-15',
+    actualCheckoutDate: '2026-10-15',
+    timeslot: '09:00',
+    status: 'REFUND_TRANSFERRED', // Quản lý đã chuyển tiền UNC -> Chờ Cư dân xác nhận nhận tiền
+    assignedStaff: 'Phạm Tuấn Anh',
+    manager: 'Trần Minh Đức',
+    meterElectricPrev: 890,
+    meterElectricCurr: 1025,
+    electricRate: 3000,
+    meterWaterPrev: 60,
+    meterWaterCurr: 66,
     waterRate: 12000,
     damages: [],
     cleaningFee: 0,
-    notes: 'Chuyển công tác vào TP.HCM. Chờ nhân viên kỹ thuật tiếp nhận xếp lịch và đến phòng nghiệm thu.',
-    bankAccount: { bank: 'Vietcombank', accountNumber: '001100432198', accountName: 'HOANG KIM LONG' },
-    refundAmount: 6800000,
-    isSigned: false,
+    notes: 'Quản lý Trần Minh Đức đã hoàn tất chuyển tiền hoàn cọc qua UNC Vietcombank. Đang chờ cư dân xác nhận.',
+    bankAccount: { bank: 'Vietcombank', accountNumber: '0071001234567', accountName: 'NGUYEN VAN HUNG' },
+    refundAmount: 6023000,
+    isSigned: true,
+    refundTransferredAt: '2026-10-15T10:30:00.000Z',
     disputeReason: null,
   },
   {
@@ -917,13 +1042,15 @@ const INITIAL_CHECKOUT_REQUESTS = [
     depositSettlementStatus: 'PAID',
     code: 'REQ-OUT-2026-0042',
     room: 'P301',
-    building: 'StayHub Central - Ba Đình',
+    building: 'StayHub Central - Quận 1',
+    residentId: 'usr-res-nam',
     tenant: 'Vũ Đức Nam',
     phone: '0907778899',
     contractCode: 'HD-2025-089',
     deposit: 9500000,
     requestDate: '2026-09-15',
     expectedDate: '2026-09-30',
+    actualCheckoutDate: '2026-09-30',
     timeslot: '10:00',
     status: 'CLOSED', // Đã hoàn tất thanh lý & giải ngân cọc
     assignedStaff: 'Phạm Tuấn Anh',
@@ -940,6 +1067,9 @@ const INITIAL_CHECKOUT_REQUESTS = [
     bankAccount: { bank: 'Techcombank', accountNumber: '190324567890', accountName: 'VU DUC NAM' },
     refundAmount: 8990000,
     isSigned: true,
+    refundTransferredAt: '2026-09-30T11:00:00.000Z',
+    refundReceivedAt: '2026-09-30T14:30:00.000Z',
+    refundReceivedBy: 'usr-res-nam',
     disputeReason: null,
   }
 ];
@@ -1244,6 +1374,7 @@ const DataStore = {
     if (!localStorage.getItem(STORAGE_KEYS.CHECKOUT)) {
       localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(INITIAL_CHECKOUT_REQUESTS));
     }
+    this.migrateCheckoutRequests();
     if (!localStorage.getItem(STORAGE_KEYS.MAINTENANCE)) {
       localStorage.setItem(STORAGE_KEYS.MAINTENANCE, JSON.stringify(INITIAL_MAINTENANCE));
     }
@@ -1567,11 +1698,53 @@ const DataStore = {
   },
 
   getCheckoutRequests() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.CHECKOUT) || '[]');
+    const raw = localStorage.getItem(STORAGE_KEYS.CHECKOUT);
+    if (!raw) return INITIAL_CHECKOUT_REQUESTS;
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_CHECKOUT_REQUESTS;
+    } catch (e) {
+      return INITIAL_CHECKOUT_REQUESTS;
+    }
   },
 
   saveCheckoutRequests(reqs) {
     localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(reqs));
+  },
+
+  migrateCheckoutRequests() {
+    let requests = this.getCheckoutRequests();
+    if (!Array.isArray(requests) || requests.length === 0) {
+      this.saveCheckoutRequests(INITIAL_CHECKOUT_REQUESTS);
+      return;
+    }
+    const hasSeedIds = requests.some(r => r.id && typeof r.id === 'string' && r.id.startsWith('req-'));
+    if (!hasSeedIds) return;
+
+    let changed = false;
+    for (const seed of INITIAL_CHECKOUT_REQUESTS) {
+      const idx = requests.findIndex(r => r.id === seed.id);
+      if (idx === -1) {
+        requests.push({ ...seed });
+        changed = true;
+      } else {
+        if (seed.residentId && requests[idx].residentId !== seed.residentId) {
+          requests[idx].residentId = seed.residentId;
+          changed = true;
+        }
+        if (seed.building && requests[idx].building !== seed.building) {
+          requests[idx].building = seed.building;
+          changed = true;
+        }
+        if (seed.contractCode && !requests[idx].contractCode) {
+          requests[idx].contractCode = seed.contractCode;
+          changed = true;
+        }
+      }
+    }
+    if (changed) {
+      this.saveCheckoutRequests(requests);
+    }
   },
 
   getSystemConfig() {

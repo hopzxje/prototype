@@ -26,7 +26,7 @@ function load(seed = {}) {
 const fresh = load();
 const store = fresh.DataStore;
 const resident = clone(fresh.DEFAULT_USERS.RESIDENT);
-assert.equal(store.getInvoices().length, 6);
+assert.equal(store.getInvoices().length, 8);
 assert.equal(store.getResidentInvoices().length, 0, 'The current manager does not own resident bills.');
 store.setRole('RESIDENT');
 const owned = clone(store.getResidentInvoices());

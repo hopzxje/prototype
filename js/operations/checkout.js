@@ -36,17 +36,32 @@ function checkoutDateLabel(value) {
   return value ? value.split('-').reverse().join('/') : 'Chưa có thông tin';
 }
 
+function isSameBuilding(b1, b2) {
+  if (!b1 || !b2) return true;
+  if (b1 === b2) return true;
+  const norm = s => String(s).toLowerCase().replace(/tòa nhà\s*/i, '').replace(/\(sh-central\)/i, '').replace(/[\s\-_]/g, '');
+  const n1 = norm(b1);
+  const n2 = norm(b2);
+  if (n1 === n2) return true;
+  if (n1.includes('central') && n2.includes('central')) return true;
+  if (n1.includes('riverside') && n2.includes('riverside')) return true;
+  if (n1.includes('eco') && n2.includes('eco')) return true;
+  return false;
+}
+
 function getResidentContract() {
   const user = DataStore.getUser();
   const contracts = [...DataStore.getContracts(), ...INITIAL_CONTRACTS];
-  return contracts.find(contract => contract.room === user.room && contract.building === user.building && contract.tenant === user.fullName && contract.status !== 'TERMINATED') || null;
+  return contracts.find(contract => contract.room === user.room && isSameBuilding(contract.building, user.building) && contract.tenant === user.fullName && contract.status !== 'TERMINATED')
+    || contracts.find(contract => contract.room === user.room && contract.tenant === user.fullName && contract.status !== 'TERMINATED')
+    || contracts.find(contract => contract.room === user.room && contract.status !== 'TERMINATED') || null;
 }
 
 function getRequestContractEndDate(request) {
   if (request?.contractEndDate) return request.contractEndDate;
   const contracts = [...DataStore.getContracts(), ...INITIAL_CONTRACTS];
   const contract = contracts.find(item => item.code === request?.contractCode && item.endDate)
-    || contracts.find(item => item.room === request?.room && item.building === request?.building && item.tenant === request?.tenant && item.endDate)
+    || contracts.find(item => item.room === request?.room && isSameBuilding(item.building, request?.building) && item.tenant === request?.tenant && item.endDate)
     || contracts.find(item => item.room === request?.room && item.tenant === request?.tenant && item.endDate);
   return contract?.endDate || null;
 }
@@ -59,7 +74,7 @@ function getPaidRentAdvance(request, actualCheckoutDate = request?.actualCheckou
   if (!Number.isFinite(checkoutTime)) return { grossUnusedRent: 0, chargesOffset: 0, refundAmount: 0, periods: [] };
   const invoices = DataStore.getInvoices().filter(invoice =>
     invoice.status === 'PAID' && Number(invoice.rent) > 0 && invoice.room === request.room
-    && (!request.building || invoice.building === request.building)
+    && (!request.building || isSameBuilding(invoice.building, request.building))
     && (request.residentId && invoice.residentId
       ? invoice.residentId === request.residentId
       : !request.tenant || invoice.tenant === request.tenant)
@@ -201,7 +216,9 @@ function getResidentRequest() {
   const user = DataStore.getUser();
   if (user.role !== 'RESIDENT') return null;
   return requests.find(r => r.residentId ? r.residentId === user.id
-    : r.room === user.room && r.building === user.building && r.tenant === user.fullName) || null;
+    : (r.room === user.room && r.tenant === user.fullName && isSameBuilding(r.building, user.building)))
+    || requests.find(r => r.room === user.room && r.tenant === user.fullName)
+    || requests.find(r => r.room === user.room) || null;
 }
 
 function getReqActualStep(req) {
@@ -1046,7 +1063,7 @@ function renderCheckoutTable() {
     if (isManager) {
       if (currentManagerTab === 'INSPECTED') {
         // QUẢN LÝ CHỈ QUẢN LÝ CÁC HỒ SƠ ĐÃ NGHIỆM THU
-        matchScope = (r.status === 'PENDING_APPROVAL' || r.status === 'DISPUTED' || r.status === 'REFUND_PENDING' || r.status === 'REFUND_TRANSFERRED' || r.status === 'CLOSED');
+        matchScope = (r.status === 'PENDING_APPROVAL' || r.status === 'DISPUTED' || r.status === 'WAITING_RESIDENT_SIGN' || r.status === 'REFUND_PENDING' || r.status === 'REFUND_TRANSFERRED' || r.status === 'CLOSED');
       } else {
         // Tab giám sát Staff đang khảo sát (chưa nghiệm thu)
         matchScope = (r.status === 'SUBMITTED' || r.status === 'SCHEDULED');
@@ -1085,6 +1102,9 @@ function renderCheckoutTable() {
             </button>
           </div>
         `;
+      } else if (r.status === 'WAITING_RESIDENT_SIGN') {
+        statusBadge = '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Đã duyệt · Chờ cư dân ký biên bản</span>';
+        actionButtons = '<span class="text-xs text-slate-500 font-medium">Đã gửi cư dân ký online</span>';
       } else if (r.status === 'DISPUTED') {
         statusBadge = '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">Cư dân khiếu nại bồi thường</span>';
         actionButtons = `
@@ -1305,10 +1325,15 @@ function openInspectionModal(reqId) {
   document.getElementById('chk-cleaning').checked = Number(item.cleaningFee || 0) > 0;
   document.getElementById('inp-damage-curtain').value = item.damages?.[0]?.cost || 0;
 
-  if (item.meterElectricPrev) document.getElementById('inp-elec-prev').value = item.meterElectricPrev;
-  if (item.meterElectricCurr) document.getElementById('inp-elec-curr').value = item.meterElectricCurr;
-  if (item.meterWaterPrev) document.getElementById('inp-water-prev').value = item.meterWaterPrev;
-  if (item.meterWaterCurr) document.getElementById('inp-water-curr').value = item.meterWaterCurr;
+  const elecPrev = item.meterElectricPrev || 1450;
+  const elecCurr = item.meterElectricCurr || (elecPrev + 130);
+  const waterPrev = item.meterWaterPrev || 60;
+  const waterCurr = item.meterWaterCurr || (waterPrev + 5);
+
+  document.getElementById('inp-elec-prev').value = elecPrev;
+  document.getElementById('inp-elec-curr').value = elecCurr;
+  document.getElementById('inp-water-prev').value = waterPrev;
+  document.getElementById('inp-water-curr').value = waterCurr;
 
   calcInspectionTotals();
   openModal('inspectionModal');
@@ -1398,6 +1423,13 @@ function submitManagerRejection() {
   if (!reason) {
     showToast('Vui lòng nhập lý do yêu cầu Kỹ thuật kiểm tra lại!', 'error');
     return;
+  }
+  const requests = DataStore.getCheckoutRequests();
+  const target = requests.find(r => r.id === activeApprovalId);
+  if (target) {
+    target.status = 'SCHEDULED';
+    target.notes = `Quản lý yêu cầu kiểm tra lại: ${reason}`;
+    DataStore.saveCheckoutRequests(requests);
   }
   showToast('Đã từ chối xác nhận & gửi yêu cầu kiểm tra lại cho Kỹ thuật viên: ' + reason);
   hideManagerRejectBox();
@@ -1623,7 +1655,7 @@ function confirmManagerRefund() {
 
 function confirmResidentSign() {
   const requests = DataStore.getCheckoutRequests();
-  const target = requests.find(r => r.room === 'P201' || r.id === 'req-01') || requests[0];
+  const target = getResidentRequest() || requests.find(r => r.room === 'P201' || r.id === 'req-01') || requests[0];
   if (target) {
     target.isSigned = true;
     const isEarlyCheckout = getCheckoutCase(target).isEarlyCheckout;
@@ -1660,7 +1692,7 @@ function confirmResidentSign() {
 function submitResidentDispute() {
   const reason = document.getElementById('disp-reason')?.value.trim();
   const requests = DataStore.getCheckoutRequests();
-  const target = requests.find(r => r.room === 'P201' || r.id === 'req-01') || requests[0];
+  const target = getResidentRequest() || requests.find(r => r.room === 'P201' || r.id === 'req-01') || requests[0];
   if (target) {
     target.status = 'DISPUTED';
     target.disputeReason = reason || 'Cư dân giải trình rèm cửa đã có dấu hiệu hao mòn từ khi nhận nhà.';

@@ -7,7 +7,8 @@ const panel = { innerHTML: '' };
 const context = vm.createContext({
   localStorage: { getItem: k => values.get(k) ?? null, setItem: (k,v) => values.set(k,String(v)), clear: () => values.clear() },
   document: { addEventListener() {}, getElementById: () => panel },
-  window: { location: { pathname: '/pages/operations/checkout.html' } },
+  window: { location: { pathname: '/pages/operations/checkout.html', href: 'http://localhost:3001/pages/operations/checkout.html' } },
+  URL: global.URL,
   lucide: { createIcons() {} }, console
 });
 const run = code => vm.runInContext(code,context);
