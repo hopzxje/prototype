@@ -103,9 +103,10 @@
               <input type="text" id="inv-search" oninput="renderInvoicesTable()" placeholder="Tìm số phòng, tên, mã..." class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none w-44">
               <select id="inv-month-filter" onchange="renderInvoicesTable()" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-teal-800">
                 <option value="ALL">Tất cả kỳ thu</option>
-                <option value="11/2026">Tháng 11/2026 (Mới)</option>
-                <option value="10/2026" selected>Tháng 10/2026 (Hiện tại)</option>
-                <option value="09/2026">Tháng 09/2026 (Đã thu)</option>
+                <option value="12/2026">Tháng 12/2026</option>
+                <option value="11/2026">Tháng 11/2026</option>
+                <option value="10/2026" selected>Tháng 10/2026</option>
+                <option value="09/2026">Tháng 09/2026</option>
               </select>
               <select id="inv-status-filter" onchange="renderInvoicesTable()" class="text-xs font-medium bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5">
                 <option value="ALL">Tất cả trạng thái</option>
@@ -176,9 +177,9 @@
         <div>
           <label class="block font-semibold text-slate-700 mb-1">Kỳ thu tiền (Billing Period) <span class="text-red-500">*</span></label>
           <select id="modal-inv-month" onchange="onModalBuildingOrMonthChange()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-teal-800 focus:bg-white focus:outline-teal-600">
-            <option value="11/2026" selected>Tháng 11/2026 (Kỳ tiếp theo)</option>
-            <option value="12/2026">Tháng 12/2026 (Kỳ tới)</option>
-            <option value="10/2026">Tháng 10/2026 (Kỳ hiện tại)</option>
+            <option value="12/2026" selected>Tháng 12/2026</option>
+            <option value="11/2026">Tháng 11/2026</option>
+            <option value="10/2026">Tháng 10/2026</option>
             <option value="09/2026">Tháng 09/2026</option>
           </select>
         </div>
@@ -391,12 +392,7 @@
 
       let optionsHtml = `<option value="ALL">Tất cả kỳ thu</option>`;
       sortedCycles.forEach(c => {
-        let label = `Tháng ${c}`;
-        if (c === '12/2026') label += ' (Kỳ tới)';
-        else if (c === '11/2026') label += ' (Mới)';
-        else if (c === '10/2026') label += ' (Hiện tại)';
-        else if (c === '09/2026') label += ' (Đã thu)';
-        optionsHtml += `<option value="${c}">${label}</option>`;
+        optionsHtml += `<option value="${c}">Tháng ${c}</option>`;
       });
 
       monthFilterEl.innerHTML = optionsHtml;
@@ -535,7 +531,7 @@
           return (yb * 12 + mb) - (ya * 12 + ma);
         });
         monthSelect.innerHTML = sorted.map(c => `
-          <option value="${c}" ${c === '12/2026' ? 'selected' : (c === '11/2026' ? '' : '')}>Kỳ tháng ${c}${c === '12/2026' ? ' (Kỳ tới)' : (c === '11/2026' ? ' (Kỳ tiếp theo)' : (c === '10/2026' ? ' (Hiện tại)' : ''))}</option>
+          <option value="${c}" ${c === '12/2026' ? 'selected' : ''}>Tháng ${c}</option>
         `).join('');
       }
 

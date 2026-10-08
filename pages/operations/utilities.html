@@ -354,11 +354,7 @@
       const cycleSelect = document.getElementById('cycle-select');
       if (cycleSelect) {
         cycleSelect.innerHTML = availableCycles.map(c => {
-          let suffix = '';
-          if (c === '09/2026') suffix = ' (Đã khóa sổ)';
-          else if (c === '10/2026') suffix = ' (Kỳ hiện tại)';
-          else if (c === '11/2026') suffix = ' (Kỳ tiếp theo)';
-          return `<option value="${c}" ${c === currentCycle ? 'selected' : ''}>Kỳ tháng ${c}${suffix}</option>`;
+          return `<option value="${c}" ${c === currentCycle ? 'selected' : ''}>Tháng ${c}</option>`;
         }).join('');
       }
 
