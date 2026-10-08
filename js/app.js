@@ -28,13 +28,13 @@ const PAGE_PATHS = {
   'users.html': 'pages/administration/users.html',
   'system-settings.html': 'pages/administration/system-settings.html',
   'audit-logs.html': 'pages/administration/audit-logs.html',
-  'settlements.html': 'settlement/settlements.html',
-  'prepare-settlement.html': 'settlement/prepare-settlement.html',
-  'settlement-details.html': 'settlement/settlement-details.html',
-  'settlement-dispute.html': 'settlement/settlement-dispute.html',
-  'additional-payment.html': 'settlement/additional-payment.html',
-  'process-refund.html': 'settlement/process-refund.html',
-  'completed-settlement.html': 'settlement/completed-settlement.html'
+  'settlements.html': 'pages/settlement/settlements.html',
+  'prepare-settlement.html': 'pages/settlement/prepare-settlement.html',
+  'settlement-details.html': 'pages/settlement/settlement-details.html',
+  'settlement-dispute.html': 'pages/settlement/settlement-dispute.html',
+  'additional-payment.html': 'pages/settlement/additional-payment.html',
+  'process-refund.html': 'pages/settlement/process-refund.html',
+  'completed-settlement.html': 'pages/settlement/completed-settlement.html'
 };
 
 const ROLE_PAGE_ACCESS = {
@@ -47,7 +47,6 @@ const ROLE_PAGE_ACCESS = {
 const APP_ROOT = window.location.pathname.includes('/pages/') ? '../../' : './';
 function getAppRoot() {
   if (window.location.pathname.includes('/pages/')) return '../../';
-  if (window.location.pathname.includes('/settlement/')) return '../';
   return './';
 }
 
@@ -539,7 +538,8 @@ function runPage(pageName) {
   const normalizedPage = getPageName(pageName);
   const page = stayHubPages.get(normalizedPage);
   if (!page) {
-    throw new Error(`Không tìm thấy bộ khởi tạo cho ${normalizedPage}.`);
+    if (window.lucide) lucide.createIcons();
+    return;
   }
   page.init();
   if (window.lucide) lucide.createIcons();

@@ -1326,8 +1326,13 @@ const DataStore = {
     }
     try {
       const list = JSON.parse(raw);
-      return Array.isArray(list) && list.length ? list : INITIAL_SETTLEMENTS;
+      if (Array.isArray(list) && list.length && list[0] && list[0].netBalance !== undefined && list[0].deposit !== undefined && list[0].room) {
+        return list;
+      }
+      localStorage.setItem(STORAGE_KEYS.SETTLEMENTS, JSON.stringify(INITIAL_SETTLEMENTS));
+      return INITIAL_SETTLEMENTS;
     } catch (e) {
+      localStorage.setItem(STORAGE_KEYS.SETTLEMENTS, JSON.stringify(INITIAL_SETTLEMENTS));
       return INITIAL_SETTLEMENTS;
     }
   },

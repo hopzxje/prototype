@@ -6,9 +6,9 @@
   <title>Quyết toán Hợp đồng</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="../css/style.css">
-  <script src="../js/data.js"></script>
-  <script src="../js/app.js"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
@@ -243,9 +243,17 @@
         let statusBadge = '';
         let actionBtn = '';
 
+        const room = item.room || item.roomNumber || 'P201';
+        const tenant = item.tenant || item.tenantName || 'Cư dân';
+        const phone = item.phone || item.tenantPhone || '';
+        const checkoutId = item.checkoutRecordId || item.checkoutId || 'CKO-2026-001';
+        const deposit = item.deposit ?? item.depositAmount ?? 0;
+        const totalDue = item.totalDue ?? item.totalDebt ?? 0;
+        const netBalance = item.netBalance !== undefined && item.netBalance !== null ? item.netBalance : (deposit - totalDue);
+
         if (item.type === 'REFUND_DUE') {
           netBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            +${formatVND(item.netBalance)} (Hoàn cọc)
+            +${formatVND(netBalance)} (Hoàn cọc)
           </span>`;
           statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Chờ chuyển khoản hoàn cọc
@@ -258,7 +266,7 @@
           `;
         } else if (item.type === 'REPAYMENT_REQUIRED') {
           netBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-            ${formatVND(item.netBalance)} (Thu thêm)
+            ${formatVND(netBalance)} (Thu thêm)
           </span>`;
           statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-800">
             <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Cư dân cần nộp thêm
@@ -314,20 +322,20 @@
             <td class="py-4 px-4">
               <div class="font-bold text-slate-900">${item.contractCode}</div>
               <div class="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-                <span class="font-semibold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded">${item.room}</span>
+                <span class="font-semibold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded">${room}</span>
                 <span>•</span>
-                <span>BB Checkout: ${item.checkoutRecordId}</span>
+                <span>BB Checkout: ${checkoutId}</span>
               </div>
             </td>
             <td class="py-4 px-4">
-              <div class="font-medium text-slate-900">${item.tenant}</div>
-              <div class="text-xs text-slate-500">${item.phone}</div>
+              <div class="font-medium text-slate-900">${tenant}</div>
+              <div class="text-xs text-slate-500">${phone}</div>
             </td>
             <td class="py-4 px-4 text-right font-medium text-slate-900">
-              ${formatVND(item.deposit)}
+              ${formatVND(deposit)}
             </td>
             <td class="py-4 px-4 text-right font-medium text-slate-900">
-              ${item.hasPendingQuote ? '<span class="text-amber-600 font-semibold">Chưa chốt</span>' : formatVND(item.totalDue)}
+              ${item.hasPendingQuote ? '<span class="text-amber-600 font-semibold">Chưa chốt</span>' : formatVND(totalDue)}
             </td>
             <td class="py-4 px-4 text-right">
               ${netBadge}
