@@ -32,6 +32,7 @@ const PAGE_PATHS = {
   'prepare-settlement.html': 'pages/settlement/prepare-settlement.html',
   'settlement-details.html': 'pages/settlement/settlement-details.html',
   'settlement-dispute.html': 'pages/settlement/settlement-dispute.html',
+  'send-dispute.html': 'pages/settlement/send-dispute.html',
   'additional-payment.html': 'pages/settlement/additional-payment.html',
   'process-refund.html': 'pages/settlement/process-refund.html',
   'completed-settlement.html': 'pages/settlement/completed-settlement.html'

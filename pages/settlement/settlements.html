@@ -317,6 +317,19 @@
           `;
         }
 
+        const isDisputed = item.status === 'DISPUTED' || sessionStorage.getItem(`stayhub_disputed_${item.id}`) === 'true';
+        if (isDisputed) {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Cư dân khiếu nại
+          </span>`;
+          actionBtn = `
+            <a href="settlement-dispute.html?id=${item.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-sm transition-colors">
+              <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+              <span>Xử lý khiếu nại</span>
+            </a>
+          `;
+        }
+
         return `
           <tr class="hover:bg-slate-50/80 transition-colors">
             <td class="py-4 px-4">

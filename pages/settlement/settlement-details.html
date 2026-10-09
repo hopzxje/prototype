@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -305,7 +305,13 @@
             <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Số tiền hoàn lại: +${formatVND(currentSettlement.netBalance)}</h2>
             <p class="text-xs text-slate-500 mt-1">Tiền cọc ${formatVND(currentSettlement.deposit)} lớn hơn tổng chi phí khấu trừ ${formatVND(currentSettlement.totalDue)}</p>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            ${!isResident ? `
+              <a href="settlement-dispute.html?id=${currentSettlement.id}" class="px-4 py-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-1.5" title="Màn hình dành cho Staff xử lý khiếu nại">
+                <i data-lucide="scale" class="w-4 h-4 text-amber-600"></i>
+                <span>Xử lý khiếu nại</span>
+              </a>
+            ` : ''}
             <a href="process-refund.html?id=${currentSettlement.id}" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2">
               <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
               <span>${isResident ? 'Theo dõi nhận hoàn tiền' : 'Tiến hành hoàn tiền'}</span>
@@ -366,9 +372,60 @@
       // RENDER CARD "XÁC NHẬN CỦA CƯ DÂN"
       // =================================================================
 
-      // TRƯỜNG HỢP 1: Ở MÀN HÌNH CƯ DÂN (RESIDENT) VÀ CHƯA ĐỒNG Ý
-      // Cư dân sẽ thấy các lựa chọn phản hồi: Gửi khiếu nại hoặc Đồng ý
-      if (isResident && !isAgreed && currentSettlement.type !== 'PENDING_ASSESSMENT') {
+      // TRƯỜNG HỢP 1: CƯ DÂN ĐÃ GỬI ĐƠN KHIẾU NẠI (HOẶC BQL TIẾP NHẬN KHIẾU NẠI)
+      const isDisputed = sessionStorage.getItem(`stayhub_disputed_${currentSettlement.id}`) === 'true' || currentSettlement.status === 'DISPUTED' || currentSettlement.dispute?.status === 'PENDING_REVIEW';
+      
+      if (isDisputed) {
+        badgeEl.textContent = 'Đang khiếu nại';
+        badgeEl.className = 'text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800';
+
+        if (isResident) {
+          actionArea.innerHTML = `
+            <div class="bg-amber-50/90 p-4 rounded-xl border border-amber-200 text-xs space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-amber-950 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-4 h-4 text-amber-600"></i>
+                  <span>Bạn đã gửi đơn khiếu nại</span>
+                </span>
+                <span class="text-[11px] text-amber-700 font-semibold">Chờ BQL xử lý</span>
+              </div>
+              <p class="text-slate-700 leading-relaxed">
+                Đơn phản hồi chi phí khấu trừ của bạn đã được chuyển đến Quản lý cơ sở. BQL sẽ kiểm tra lại hiện trạng và giải quyết trong vòng 24 giờ.
+              </p>
+              <div class="pt-2 border-t border-amber-200/60 flex items-center justify-between">
+                <a href="send-dispute.html?id=${currentSettlement.id}" class="text-teal-700 hover:text-teal-800 font-bold underline">
+                  Xem lại đơn đã gửi
+                </a>
+                <button onclick="sessionStorage.removeItem('stayhub_disputed_${currentSettlement.id}'); loadSettlement('${currentSettlement.id}');" class="text-slate-400 hover:text-slate-600 text-[11px] underline">
+                  Hủy khiếu nại (Demo)
+                </button>
+              </div>
+            </div>
+          `;
+        } else {
+          actionArea.innerHTML = `
+            <div class="bg-amber-50/90 p-4 rounded-xl border border-amber-200 text-xs space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-amber-950 flex items-center gap-1.5">
+                  <i data-lucide="alert-circle" class="w-4 h-4 text-amber-600"></i>
+                  <span>Cư dân khiếu nại chi phí</span>
+                </span>
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-200 text-amber-900">Cần xử lý</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-amber-200/80 space-y-1">
+                <div><span class="text-slate-400">Người khiếu nại:</span> <strong class="text-slate-800">${currentSettlement.tenant}</strong></div>
+                <div><span class="text-slate-400">Nội dung:</span> <span class="italic text-slate-600">"Không đồng ý tiền chốt khóa 400.000 ₫, đề xuất chỉ trừ 150.000 ₫."</span></div>
+              </div>
+              <a href="settlement-dispute.html?id=${currentSettlement.id}" class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-all flex items-center justify-center gap-2">
+                <i data-lucide="scale" class="w-4 h-4"></i>
+                <span>Vào màn hình Xử lý khiếu nại của Staff</span>
+              </a>
+            </div>
+          `;
+        }
+      }
+      // TRƯỜNG HỢP 2: Ở MÀN HÌNH CƯ DÂN (RESIDENT) VÀ CHƯA ĐỒNG Ý
+      else if (isResident && !isAgreed && currentSettlement.type !== 'PENDING_ASSESSMENT') {
         badgeEl.textContent = 'Chờ bạn phản hồi';
         badgeEl.className = 'text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800';
 
@@ -390,7 +447,7 @@
                 <span>Đồng ý với quyết toán</span>
               </button>
               
-              <a href="settlement-dispute.html?id=${currentSettlement.id}" class="w-full py-2.5 px-4 border border-amber-300 text-amber-800 hover:bg-amber-50 rounded-xl text-xs font-semibold text-center block transition-colors flex items-center justify-center gap-1.5">
+              <a href="send-dispute.html?id=${currentSettlement.id}" class="w-full py-2.5 px-4 border border-amber-300 text-amber-800 hover:bg-amber-50 rounded-xl text-xs font-semibold text-center block transition-colors flex items-center justify-center gap-1.5">
                 <i data-lucide="message-square" class="w-3.5 h-3.5 text-amber-600"></i>
                 <span>Gửi khiếu nại chi phí</span>
               </a>
@@ -398,7 +455,7 @@
           </div>
         `;
       } 
-      // TRƯỜNG HỢP 2: CƯ DÂN ĐÃ BẤM ĐỒNG Ý (HOẶC XEM Ở VAI TRÒ QUẢN LÝ ĐÃ CÓ XÁC NHẬN)
+      // TRƯỜNG HỢP 3: CƯ DÂN ĐÃ BẤM ĐỒNG Ý (HOẶC XEM Ở VAI TRÒ QUẢN LÝ ĐÃ CÓ XÁC NHẬN)
       // Hiện chính xác hộp xanh như Ảnh 3!
       else if (isAgreed || currentSettlement.residentApproval?.status === 'ACCEPTED') {
         badgeEl.textContent = 'Đã xác nhận';
@@ -430,25 +487,34 @@
           }
         } else {
           // Quản lý hoặc Kỹ thuật
+          let primaryBtn = '';
           if (currentSettlement.type === 'REFUND_DUE') {
-            nextActionBtn = `
+            primaryBtn = `
               <a href="process-refund.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-[#0F766E] hover:bg-teal-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
                 Thực hiện lệnh hoàn tiền cọc
               </a>
             `;
           } else if (currentSettlement.type === 'REPAYMENT_REQUIRED') {
-            nextActionBtn = `
+            primaryBtn = `
               <a href="additional-payment.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
                 Thu tiền từ cư dân
               </a>
             `;
           } else if (currentSettlement.type === 'EXACT_BALANCE') {
-            nextActionBtn = `
+            primaryBtn = `
               <a href="completed-settlement.html?id=${currentSettlement.id}" class="w-full px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold text-center block shadow-sm transition-colors">
                 Đóng hợp đồng tài chính
               </a>
             `;
           }
+
+          nextActionBtn = `
+            ${primaryBtn}
+            <a href="settlement-dispute.html?id=${currentSettlement.id}" class="w-full py-2 px-3 border border-amber-300 bg-amber-50/40 hover:bg-amber-100/60 text-amber-900 rounded-xl text-xs font-semibold text-center block transition-colors flex items-center justify-center gap-1.5 mt-2">
+              <i data-lucide="scale" class="w-3.5 h-3.5 text-amber-600"></i>
+              <span>Xem màn hình Xử lý khiếu nại của Staff</span>
+            </a>
+          `;
         }
 
         actionArea.innerHTML = `

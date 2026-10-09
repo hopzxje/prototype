@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gửi Khiếu Nại Bảng Quyết Toán - StayHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/data.js"></script>
+  <script src="../../js/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Top Demo Role Switcher Bar -->
+  <div id="demo-role-bar"></div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="app-topbar"></header>
+      <script>
+        initStayHubShell('send-dispute.html', 'Gửi Khiếu Nại Quyết Toán', 'Dành cho cư dân / Quyết toán hợp đồng / Gửi khiếu nại');
+      </script>
+
+      <div class="p-6 max-w-4xl w-full mx-auto space-y-6">
+
+        <!-- Top Navigation -->
+        <div class="flex items-center justify-between">
+          <a href="settlement-details.html?id=STL-2026-001" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Quay lại chi tiết quyết toán</span>
+          </a>
+          <span class="text-xs text-slate-400">Hợp đồng: <strong class="text-slate-700 font-mono">HD-2025-001</strong></span>
+        </div>
+
+        <!-- Banner Info Card -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                Đơn phản hồi chi phí
+              </span>
+              <h2 class="text-xl font-bold text-slate-900">HD-2025-001 • Căn hộ P201 (Lê Văn An)</h2>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              Nếu bạn không đồng ý với khoản khấu trừ nào trong bảng quyết toán, vui lòng chọn hạng mục và nhập ý kiến giải trình dưới đây.
+            </p>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-400 block font-medium">Tiền đặt cọc giữ</span>
+            <span class="text-xl font-extrabold text-slate-800">8.500.000 ₫</span>
+          </div>
+        </div>
+
+        <!-- Main Complaint Form -->
+        <form onsubmit="submitDisputeForm(event)" class="space-y-6">
+
+          <!-- Section 1: Select Disputed Items -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                <i data-lucide="check-square" class="w-4 h-4 text-amber-600"></i>
+                <span>1. Chọn các khoản mục bạn muốn khiếu nại</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Tích chọn các hạng mục chi phí mà bạn thấy chưa thỏa đáng hoặc cần đối soát lại</p>
+            </div>
+
+            <div class="space-y-2.5 text-xs">
+              <!-- Item 1: Unpaid Invoices -->
+              <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/50 cursor-pointer transition-colors">
+                <input type="checkbox" name="dispute_item" value="inv" class="mt-0.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+                <div class="flex-1">
+                  <div class="flex justify-between font-bold text-slate-800">
+                    <span>Hóa đơn nợ đọng (Tháng 09/2026)</span>
+                    <span class="text-slate-600">1.505.000 ₫</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Phí dịch vụ, internet và tiền gửi xe tháng trước</p>
+                </div>
+              </label>
+
+              <!-- Item 2: Utilities -->
+              <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/50 cursor-pointer transition-colors">
+                <input type="checkbox" name="dispute_item" value="utilities" class="mt-0.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+                <div class="flex-1">
+                  <div class="flex justify-between font-bold text-slate-800">
+                    <span>Chỉ số Điện & Nước kỳ cuối (Chốt tại biên bản checkout)</span>
+                    <span class="text-slate-600">327.000 ₫</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Điện: 72 kWh (252.000 ₫) | Nước: 3 m³ (75.000 ₫)</p>
+                </div>
+              </label>
+
+              <!-- Item 3: Damages (Pre-checked based on scenario) -->
+              <div class="p-3.5 rounded-xl border-2 border-amber-300 bg-amber-50/30 space-y-3">
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" name="dispute_item" value="damages" checked class="mt-0.5 rounded border-amber-400 text-amber-600 focus:ring-amber-500">
+                  <div class="flex-1">
+                    <div class="flex justify-between font-bold text-amber-950">
+                      <span>Bồi thường hư hại tài sản & Phí vệ sinh phòng</span>
+                      <span class="text-rose-600 font-extrabold">700.000 ₫</span>
+                    </div>
+                    <p class="text-[11px] text-amber-800 mt-0.5">Khoản khấu trừ kỹ thuật ghi nhận trong biên bản nghiệm thu</p>
+                  </div>
+                </label>
+
+                <!-- Sub items for damages -->
+                <div class="pl-7 space-y-2 pt-2 border-t border-amber-200/60 text-xs">
+                  <label class="flex items-center justify-between text-slate-700 cursor-pointer">
+                    <span class="flex items-center gap-2">
+                      <input type="checkbox" checked class="rounded border-slate-300 text-amber-600">
+                      <span>Thay chốt khóa cửa kính ban công gãy lẫy cơ khí</span>
+                    </span>
+                    <span class="font-bold text-rose-600">400.000 ₫</span>
+                  </label>
+                  <label class="flex items-center justify-between text-slate-700 cursor-pointer">
+                    <span class="flex items-center gap-2">
+                      <input type="checkbox" checked class="rounded border-slate-300 text-amber-600">
+                      <span>Vệ sinh công nghiệp sau trả phòng</span>
+                    </span>
+                    <span class="font-bold text-rose-600">300.000 ₫</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Explanation & Proposed Amount -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                <i data-lucide="message-square" class="w-4 h-4 text-teal-600"></i>
+                <span>2. Nội dung giải trình & Đề xuất của bạn</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Nêu rõ lý do bạn thấy khoản khấu trừ chưa chính xác để Ban Quản Lý đối chiếu hồ sơ</p>
+            </div>
+
+            <div class="space-y-4 text-xs">
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Lý do khiếu nại chính *</label>
+                <select id="dispute-category" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-teal-600">
+                  <option value="wear_tear">Thiết bị đã cũ / hao mòn tự nhiên theo thời gian</option>
+                  <option value="pre_existing">Lỗi đã có sẵn từ lúc nhận phòng ban đầu (Check-in)</option>
+                  <option value="cleaned">Căn hộ đã được tự quét dọn sạch sẽ trước khi bàn giao</option>
+                  <option value="high_quote">Đơn giá khấu trừ cao hơn giá thị trường</option>
+                  <option value="meter_wrong">Chỉ số điện nước bị ghi nhận sai</option>
+                  <option value="other">Lý do khác</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Nội dung giải trình chi tiết *</label>
+                <textarea id="dispute-details" rows="4" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-teal-600 leading-relaxed" placeholder="Mô tả cụ thể căn cứ hoặc sự việc...">Tôi không đồng ý với khoản phí thay chốt khóa 400.000 ₫ vì khóa này đã có dấu hiệu lỏng lẻo từ lúc tôi nhận phòng vào tháng 01/2025. Riêng tiền vệ sinh 300.000 ₫ tôi đồng ý hỗ trợ 150.000 ₫ vì tôi đã tự quét dọn cơ bản.</textarea>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="font-bold text-slate-700 block mb-1">Số tiền bạn đề xuất khấu trừ lại (₫):</label>
+                  <div class="relative">
+                    <input type="number" id="proposed-amount" value="150000" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-teal-800 text-sm focus:bg-white focus:outline-none focus:border-teal-600">
+                    <span class="absolute right-3 top-2.5 font-semibold text-slate-400">VND</span>
+                  </div>
+                  <span class="text-[11px] text-slate-400 mt-1 block">Ví dụ: Đề xuất chỉ chịu 150.000 ₫ thay vì 700.000 ₫</span>
+                </div>
+
+                <div>
+                  <label class="font-bold text-slate-700 block mb-1">Số điện thoại liên hệ thuận tiện:</label>
+                  <input type="text" value="0904445566" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium">
+                  <span class="text-[11px] text-slate-400 mt-1 block">Để BQL gọi trao đổi trực tiếp khi giải quyết</span>
+                </div>
+              </div>
+
+              <!-- Attach Proof Photos -->
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">Đính kèm ảnh / video đối chứng (nếu có):</label>
+                <div class="border-2 border-dashed border-teal-200 bg-teal-50/20 rounded-2xl p-5 text-center space-y-2 cursor-pointer hover:bg-teal-50/40 transition-colors">
+                  <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-700 mx-auto flex items-center justify-center">
+                    <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+                  </div>
+                  <div class="text-xs">
+                    <span class="font-bold text-slate-800 block">Tải ảnh chụp biên lai Check-in hoặc hiện trạng bàn giao</span>
+                    <span class="text-slate-400">Hỗ trợ JPG, PNG, MP4 (tối đa 3 files) • Đã đính kèm: bien_ban_checkin_p201.jpg</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <a href="settlement-details.html?id=STL-2026-001" class="px-5 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold transition-colors">
+              Hủy bỏ & Quay lại
+            </a>
+
+            <button type="submit" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-[0.99] text-white rounded-xl text-xs font-bold shadow-md shadow-amber-600/20 transition-all flex items-center gap-2">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>Gửi Đơn Khiếu Nại Đến Ban Quản Lý</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function submitDisputeForm(e) {
+      e.preventDefault();
+      const content = document.getElementById('dispute-details').value.trim();
+      const proposed = Number(document.getElementById('proposed-amount').value) || 150000;
+      const s = DataStore.getSettlementById('STL-2026-001');
+
+      if (s) {
+        s.status = 'DISPUTED';
+        s.dispute = {
+          status: 'PENDING_REVIEW',
+          content: content,
+          proposedAmount: proposed,
+          submittedAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
+          category: document.getElementById('dispute-category').value
+        };
+        s.auditLogs.push({
+          time: new Date().toISOString().replace('T', ' ').slice(0, 16),
+          actor: 'Lê Văn An (Cư dân)',
+          action: `Gửi đơn khiếu nại chi phí khấu trừ 700.000 ₫ (Đề xuất: ${formatVND(proposed)}). Lý do: "${content}".`
+        });
+        DataStore.saveSettlement(s);
+      }
+
+      sessionStorage.setItem('stayhub_disputed_STL-2026-001', 'true');
+      sessionStorage.removeItem('stayhub_agreed_STL-2026-001');
+
+      showToast('✓ Đã gửi đơn khiếu nại thành công! Ban Quản Lý sẽ phản hồi trong vòng 24 giờ.');
+      setTimeout(() => {
+        window.location.href = 'settlement-details.html?id=STL-2026-001';
+      }, 700);
+    }
+  </script>
+</body>
+</html>
