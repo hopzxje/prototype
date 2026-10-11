@@ -7,8 +7,8 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const values = new Map();
 const context = vm.createContext({
   localStorage: {getItem: key => values.get(key) ?? null, setItem: (key,value) => values.set(key,String(value)), clear: () => values.clear()},
-  document: {addEventListener() {}}, window: {addEventListener() {}, location: {pathname: '/pages/operations/checkout.html'}},
-  setInterval() {}, setTimeout() {}, console
+  document: {addEventListener() {}}, window: {addEventListener() {}, location: {pathname: '/pages/operations/checkout.html', href: 'http://localhost/pages/operations/checkout.html'}},
+  setInterval() {}, setTimeout() {}, console, URL
 });
 vm.runInContext(read('js/data.js'),context);
 vm.runInContext(read('js/app.js'),context);
@@ -32,7 +32,8 @@ assert.equal(result.refundAmount, Math.round(8500000 * 11 / 31) - 800000);
 assert.equal(run("getCheckoutCase(DataStore.getCheckoutRequests().find(r => r.id === 'req-04')).refundAmount"),9200000);
 run("DataStore.saveInvoices(DataStore.getInvoices().map(i=>({...i,status:'UNPAID'})))");
 assert.equal(run("getPaidRentAdvance(DataStore.getCheckoutRequests()[0]).refundAmount"),0);
-for (const role of ['ADMIN','MANAGER','STAFF','RESIDENT']) assert.equal(run(`ROLE_PAGE_ACCESS.${role}.has('checkout.html')`),true);
+for (const role of ['MANAGER','STAFF','RESIDENT']) assert.equal(run(`ROLE_PAGE_ACCESS.${role}.has('checkout.html')`),true);
+assert.equal(run("ROLE_PAGE_ACCESS.ADMIN.has('checkout.html')"), false);
 assert.equal(run("ROLE_PAGE_ACCESS.STAFF.has('invoices.html')"),true);
 assert.equal(run("appPath('resident-invoices.html')"),'../../pages/residents/invoices.html');
 assert.equal(run("appPath('checkout.html')"),'../../pages/operations/checkout.html');

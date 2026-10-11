@@ -38,7 +38,7 @@ const PAGE_PATHS = {
 };
 
 const ROLE_PAGE_ACCESS = {
-  ADMIN: new Set(['checkout.html', 'index.html', 'users.html', 'audit-logs.html', 'system-settings.html', 'sepay.html', 'reports.html', 'login.html']),
+  ADMIN: new Set(['index.html', 'users.html', 'audit-logs.html', 'system-settings.html', 'sepay.html', 'reports.html', 'login.html']),
   MANAGER: new Set(['checkout.html', 'index.html', 'buildings.html', 'contracts.html', 'invoices.html', 'utilities.html', 'residents.html', 'maintenance.html', 'visitors.html', 'assets.html', 'sepay.html', 'notifications.html', 'reports.html', 'handover.html', 'login.html']),
   STAFF: new Set(['checkout.html', 'invoices.html', 'index.html', 'buildings.html', 'utilities.html', 'maintenance.html', 'visitors.html', 'assets.html', 'handover.html', 'login.html']),
   RESIDENT: new Set(['checkout.html', 'index.html', 'resident-invoices.html', 'resident-contract.html', 'requests.html', 'resident-visitors.html', 'profile.html', 'account.html', 'handover.html', 'login.html'])
@@ -98,6 +98,7 @@ function showToast(message, type = 'success') {
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
+    modal.classList.remove('hidden');
     modal.classList.add('active');
     const firstInput = modal.querySelector('input:not([readonly]), select, textarea');
     if (firstInput) setTimeout(() => firstInput.focus(), 50);
@@ -107,6 +108,7 @@ function openModal(modalId) {
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
+    modal.classList.add('hidden');
     modal.classList.remove('active');
   }
 }
@@ -318,8 +320,18 @@ function renderSidebar(activePage = 'index.html') {
     ];
   }
 
-  navItems.push({ href: 'checkout.html', icon: 'log-out', label: 'Trả căn hộ & bàn giao' });
-  if (role === 'STAFF') navItems.push({ href: 'invoices.html', icon: 'receipt', label: 'Hóa đơn & Thu phí' });
+  // Chức năng Trả căn hộ & bàn giao dành riêng cho Quản lý, Nhân viên và Cư dân (không áp dụng cho Quản trị viên Admin)
+  if (role !== 'ADMIN') {
+    navItems.push({ href: 'checkout.html', icon: 'log-out', label: 'Trả căn hộ & bàn giao' });
+  }
+
+  // Tự động loại bỏ bất kỳ mục menu trùng lặp nào (chỉ giữ vị trí xuất hiện đầu tiên)
+  const seenHrefs = new Set();
+  navItems = navItems.filter(item => {
+    if (seenHrefs.has(item.href)) return false;
+    seenHrefs.add(item.href);
+    return true;
+  });
 
   sidebar.innerHTML = `
     <!-- Brand -->
@@ -592,12 +604,11 @@ async function ensurePageDependencies(nextDocument, targetUrl) {
 }
 
 function ensurePageController(nextDocument, pageName, targetUrl) {
-  if (stayHubPages.has(pageName)) return;
-
   const pageScript = Array.from(nextDocument.querySelectorAll('script[data-stayhub-page]'))
     .find(script => getPageName(script.dataset.stayhubPage) === pageName);
 
   if (!pageScript) {
+    if (stayHubPages.has(pageName)) return;
     throw new Error(`Trang ${pageName} không có bộ khởi tạo.`);
   }
 

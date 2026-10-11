@@ -1,0 +1,118 @@
+{
+  "input": "D:\\ki9\\prototype\\artifacts\\Create_Building_Functional_Requirements.docx",
+  "fonts_by_char_count": {},
+  "direct_run_formatting_runs": 65,
+  "direct_paragraph_formatting_paragraphs": 86,
+  "heading_like_paragraphs_not_heading_style": [
+    {
+      "para_index": 47,
+      "text": "Field Name",
+      "style": "normal"
+    },
+    {
+      "para_index": 48,
+      "text": "Description",
+      "style": "normal"
+    },
+    {
+      "para_index": 57,
+      "text": "Field Name",
+      "style": "normal"
+    },
+    {
+      "para_index": 58,
+      "text": "Description",
+      "style": "normal"
+    },
+    {
+      "para_index": 79,
+      "text": "Scenario",
+      "style": "normal"
+    },
+    {
+      "para_index": 80,
+      "text": "System behavior",
+      "style": "normal"
+    },
+    {
+      "para_index": 89,
+      "text": "Field Name",
+      "style": "normal"
+    },
+    {
+      "para_index": 90,
+      "text": "Description",
+      "style": "normal"
+    },
+    {
+      "para_index": 101,
+      "text": "Role",
+      "style": "normal"
+    },
+    {
+      "para_index": 102,
+      "text": "Create Building flow permission",
+      "style": "normal"
+    }
+  ],
+  "examples": {
+    "direct_paragraph_formatting": [
+      {
+        "para_index": 1,
+        "text": "III. Functional Requirements",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 2,
+        "text": "This section specifies the screens and system behavior for creating a new building and preparing its rooms for operation",
+        "style": "normal"
+      },
+      {
+        "para_index": 8,
+        "text": "This screen is the entry point for the Create Building flow. It shows the currently selected building, operating status,",
+        "style": "normal"
+      },
+      {
+        "para_index": 9,
+        "text": "This screen allows the authorized user to:",
+        "style": "normal"
+      },
+      {
+        "para_index": 10,
+        "text": "- View the current building summary and room occupancy metrics.",
+        "style": "normal"
+      }
+    ],
+    "direct_run_formatting": [
+      {
+        "para_index": 7,
+        "run_text": "Figure 1. Building Management Screen",
+        "style": "normal"
+      },
+      {
+        "para_index": 47,
+        "run_text": "Field Name",
+        "style": "normal"
+      },
+      {
+        "para_index": 48,
+        "run_text": "Description",
+        "style": "normal"
+      },
+      {
+        "para_index": 49,
+        "run_text": "Building selector",
+        "style": "normal"
+      },
+      {
+        "para_index": 50,
+        "run_text": "Initial values: all active buildings. The selected building becomes the context ",
+        "style": "normal"
+      }
+    ]
+  },
+  "notes": [
+    "Direct formatting is not always wrong, but it often causes inconsistent output when templates change.",
+    "Heading-like paragraphs not using Heading styles can break TOC and accessibility."
+  ]
+}

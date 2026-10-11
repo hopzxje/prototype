@@ -1,0 +1,9 @@
+# Browser testing temporary profiles
+.chrome-temp-user-data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary test screenshots
+shot_test.png

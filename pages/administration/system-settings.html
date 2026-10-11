@@ -26,15 +26,8 @@
 
       <div class="p-6 max-w-6xl w-full mx-auto space-y-6">
 
-        <!-- Header -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Cấu hình Hệ thống</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Cài đặt nhận diện thương hiệu, cổng thanh toán VietQR SePay, Zalo ZNS, chính sách bảo mật và sao lưu dữ liệu toàn chuỗi</p>
-          </div>
-
-          <!-- Compact & Clean Tabs Switcher -->
-          <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto max-w-full shrink-0" id="settings-tabs">
+        <!-- Compact & Clean Tabs Switcher -->
+        <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto max-w-full w-fit" id="settings-tabs">
             <button onclick="switchTab('general')" id="tab-btn-general" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm whitespace-nowrap">
               Chung & Thương hiệu
             </button>
@@ -50,7 +43,6 @@
             <button onclick="switchTab('backup')" id="tab-btn-backup" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 whitespace-nowrap">
               Sao lưu & Khôi phục
             </button>
-          </div>
         </div>
 
         <!-- ===================================================================

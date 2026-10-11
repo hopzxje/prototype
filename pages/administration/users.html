@@ -26,15 +26,9 @@
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
-        <!-- Page Header & Action -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <span>Quản trị Tài khoản & Phân quyền (RBAC)</span>
-              <span id="user-count-badge" class="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold border border-teal-200/60">8 Tài khoản</span>
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Quản lý phân quyền 4 vai trò (Admin, Quản lý cơ sở, Nhân viên vận hành, Cư dân) toàn hệ thống</p>
-          </div>
+        <!-- Page actions -->
+        <div class="flex flex-wrap items-center justify-end gap-3">
+          <span id="user-count-badge" class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold border border-teal-200/60">8 Tài khoản</span>
           <button onclick="openUserModal()" class="flex items-center gap-2 px-4 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all">
             <i data-lucide="user-plus" class="w-4 h-4"></i>
             <span>Thêm Tài Khoản Mới</span>
@@ -81,7 +75,6 @@
             </div>
             <div>
               <h4 class="font-bold text-amber-950 text-xs sm:text-sm">Có <span id="alert-inactive-count" class="font-extrabold text-amber-900">0</span> tài khoản cư dân vừa được tạo từ Hợp đồng đang chờ cấp quyền truy cập (INACTIVE)</h4>
-              <p class="text-[11.5px] text-amber-800 mt-0.5">Quản trị viên cần bấm nút <strong>"Duyệt Active"</strong> bên dưới để kích hoạt tài khoản cho cư dân đăng nhập.</p>
             </div>
           </div>
           <button onclick="filterUserRole('INACTIVE')" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors shrink-0 cursor-pointer shadow-xs">
@@ -149,26 +142,26 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Vai Trò Phân Quyền <span class="text-rose-500">*</span></label>
-            <select id="usr-role" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-semibold focus:ring-1 focus:ring-teal-600 focus:outline-none">
-              <option value="ADMIN">ADMIN (Quản trị Hệ thống)</option>
-              <option value="MANAGER">MANAGER (Quản lý Cơ sở)</option>
-              <option value="STAFF">STAFF (Nhân viên Vận hành)</option>
-              <option value="RESIDENT">RESIDENT (Cư dân Căn hộ)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Chức Danh / Vị Trí</label>
-            <input type="text" id="usr-title" placeholder="Ví dụ: Kỹ thuật viên Trưởng" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
-          </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Số Zalo <span class="text-rose-500">*</span></label>
+          <input type="tel" id="usr-zalo" required placeholder="0901234567" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-mono font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
-            <label class="block font-semibold text-slate-700 mb-1">Phạm Vi Cơ Sở Phụ Trách</label>
-            <input type="text" id="usr-scope" placeholder="Ví dụ: Toàn bộ 3 cơ sở hoặc StayHub Central" value="Toàn bộ 3 cơ sở" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-teal-600 focus:outline-none">
+            <label class="block font-semibold text-slate-700 mb-1">Vai Trò Phân Quyền <span class="text-rose-500">*</span></label>
+            <select id="usr-role" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-semibold focus:ring-1 focus:ring-teal-600 focus:outline-none">
+              <option value="MANAGER">MANAGER (Quản lý Cơ sở)</option>
+              <option value="STAFF">STAFF (Nhân viên Vận hành)</option>
+            </select>
+          </div>
+          <div></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Cơ Sở Phụ Trách <span class="text-rose-500">*</span></label>
+            <select id="usr-building" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 font-semibold focus:ring-1 focus:ring-teal-600 focus:outline-none"></select>
           </div>
           <div>
             <label class="block font-semibold text-slate-700 mb-1">Trạng Thái Truy Cập</label>
@@ -186,10 +179,49 @@
           </button>
           <button type="submit" class="flex items-center gap-1.5 px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold text-xs shadow-sm transition-colors">
             <i data-lucide="check" class="w-4 h-4"></i>
-            <span>Lưu Thông Tin</span>
+            <span>Tạo Tài Khoản</span>
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL: Thông tin tài khoản mới tạo
+       =================================================================== -->
+  <div id="create-account-success-modal" class="modal-overlay">
+    <div class="modal-content max-w-md w-full p-6">
+      <div class="flex items-start gap-3 pb-4 border-b border-slate-100">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+          <i data-lucide="user-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Tạo tài khoản thành công</h3>
+          <p class="text-xs text-slate-500 mt-1">Vui lòng gửi thông tin đăng nhập cho nhân sự.</p>
+        </div>
+        <button type="button" onclick="closeCreatedAccountSuccessModal()" class="ml-auto text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 text-xs">
+        <div class="flex justify-between gap-4"><span class="text-slate-500">Tên tài khoản</span><strong id="created-account-username" class="text-slate-900 font-mono text-right">—</strong></div>
+        <div class="flex justify-between gap-4"><span class="text-slate-500">Mật khẩu tạm</span><strong id="created-account-password" class="text-teal-700 font-mono text-right">—</strong></div>
+        <div class="flex justify-between gap-4"><span class="text-slate-500">Cơ sở làm việc</span><strong id="created-account-building" class="text-slate-900 text-right">—</strong></div>
+        <div class="flex justify-between gap-4"><span class="text-slate-500">Số Zalo nhận thông báo</span><strong id="created-account-zalo" class="text-blue-700 font-mono text-right">—</strong></div>
+      </div>
+
+      <div class="mt-3 p-3.5 rounded-xl bg-blue-50/70 border border-blue-100 text-xs text-slate-700 leading-relaxed">
+        <p class="font-bold text-blue-900 mb-1">Nội dung gửi qua Zalo</p>
+        <p id="created-account-zalo-message">—</p>
+        <p id="created-account-zalo-status" class="mt-2 font-semibold text-amber-700">Chưa gửi thông báo</p>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 mt-5 pt-3 border-t border-slate-100">
+        <button type="button" onclick="copyCreatedAccountPassword()" class="px-4 py-2 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-semibold">Sao chép mật khẩu</button>
+        <button type="button" id="send-created-account-zalo" onclick="sendCreatedAccountZaloNotification()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold">Gửi thông báo Zalo</button>
+        <button type="button" onclick="closeCreatedAccountSuccessModal()" class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-xs font-bold">Đã hiểu</button>
+      </div>
     </div>
   </div>
 
@@ -222,9 +254,49 @@
     </div>
   </div>
 
+  <!-- ===================================================================
+       MODAL: Kích hoạt tài khoản & gửi thông báo Zalo
+       =================================================================== -->
+  <div id="activate-zalo-modal" class="modal-overlay">
+    <div class="modal-content max-w-lg w-full p-6">
+      <div class="flex items-start gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
+          <i data-lucide="send" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Kích hoạt tài khoản & gửi Zalo</h3>
+          <p class="text-xs text-slate-500 mt-1">Thông báo đăng nhập sẽ được gửi đến số Zalo của cư dân.</p>
+        </div>
+      </div>
+
+      <div class="mt-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+        <div class="flex justify-between gap-4"><span class="text-slate-500">Người nhận</span><strong id="activate-zalo-name" class="text-slate-900 text-right">—</strong></div>
+        <div class="flex justify-between gap-4"><span class="text-slate-500">Số Zalo</span><strong id="activate-zalo-phone" class="text-blue-700 font-mono text-right">—</strong></div>
+        <div class="flex justify-between gap-4"><span class="text-slate-500">Tài khoản</span><strong id="activate-zalo-username" class="text-slate-900 font-mono text-right">—</strong></div>
+        <div class="flex justify-between gap-4"><span class="text-slate-500">Mật khẩu tạm</span><strong id="activate-zalo-password" class="text-amber-700 font-mono text-right">—</strong></div>
+      </div>
+
+      <div class="mt-3 p-3.5 rounded-xl bg-blue-50/70 border border-blue-100 text-xs text-slate-700 leading-relaxed">
+        <p class="font-bold text-blue-900 mb-1">Nội dung thông báo</p>
+        <p id="activate-zalo-message">Chào mừng bạn đến với StayHub.</p>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 mt-5 pt-3 border-t border-slate-100">
+        <button type="button" onclick="closeModal('activate-zalo-modal')" class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-xs font-semibold">Hủy</button>
+        <button type="button" onclick="confirmActivateUserWithZalo()" class="px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-xs font-bold flex items-center gap-1.5">
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+          Kích hoạt & gửi Zalo
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script data-stayhub-page="users.html">
     let currentRoleFilter = 'ALL';
     let currentSearchTerm = '';
+    let pendingActivationUserId = null;
+    let createdAccountUserId = null;
+    let createdAccountNotificationSent = false;
 
     function renderUsersTable() {
       const tbody = document.getElementById('users-table-body');
@@ -308,7 +380,7 @@
                 <img src="${u.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover border border-slate-200">
                 <div>
                   <span class="font-bold text-slate-900 block">${u.fullName}</span>
-                  <span class="text-[11px] text-slate-500 font-normal">${u.title || u.role}</span>
+                  <span class="text-[11px] text-slate-500 font-normal">${u.role}</span>
                 </div>
               </div>
             </td>
@@ -325,12 +397,14 @@
                     <span>Duyệt Active</span>
                   </button>
                 ` : ''}
-                <button onclick="editUser('${u.id}')" title="Chỉnh sửa thông tin" class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-teal-50 transition-colors cursor-pointer">
-                  <i data-lucide="edit-3" class="w-4 h-4"></i>
-                </button>
-                <button onclick="handleResetPassword('${u.id}')" title="Cấp lại mật khẩu" class="p-1.5 rounded-lg text-slate-500 hover:text-amber-700 hover:bg-amber-50 transition-colors cursor-pointer">
-                  <i data-lucide="key-round" class="w-4 h-4"></i>
-                </button>
+                ${!isInactive ? `
+                  <button onclick="editUser('${u.id}')" title="Chỉnh sửa thông tin" class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-teal-50 transition-colors cursor-pointer">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="handleResetPassword('${u.id}')" title="Cấp lại mật khẩu" class="p-1.5 rounded-lg text-slate-500 hover:text-amber-700 hover:bg-amber-50 transition-colors cursor-pointer">
+                    <i data-lucide="key-round" class="w-4 h-4"></i>
+                  </button>
+                ` : ''}
                 ${!isInactive ? `
                   <button onclick="handleToggleStatus('${u.id}')" title="${isLocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}" class="p-1.5 rounded-lg ${isLocked ? 'text-emerald-600 hover:bg-emerald-50' : 'text-slate-400 hover:text-rose-600 hover:bg-rose-50'} transition-colors cursor-pointer">
                     <i data-lucide="${isLocked ? 'unlock' : 'ban'}" class="w-4 h-4"></i>
@@ -351,12 +425,47 @@
       const u = users.find(x => x.id === id);
       if (!u) return;
 
-      if (!confirm(`Bạn có chắc chắn muốn PHÊ DUYỆT CẤP QUYỀN (Access) và chuyển tài khoản cư dân [${u.fullName}] sang trạng thái ACTIVE?\n\nSau khi duyệt, cư dân có thể sử dụng SĐT (${u.phone}) hoặc Email để đăng nhập vào hệ thống.`)) {
-        return;
+      pendingActivationUserId = id;
+      const usernameEl = document.getElementById('activate-zalo-username');
+      const passwordEl = document.getElementById('activate-zalo-password');
+      const nameEl = document.getElementById('activate-zalo-name');
+      const phoneEl = document.getElementById('activate-zalo-phone');
+      const messageEl = document.getElementById('activate-zalo-message');
+      const username = u.email || 'Chưa có email đăng nhập';
+      const password = u.initialPassword || 'Mật khẩu tạm đã được cấp trước đó';
+      const zaloPhone = u.zaloPhone || u.phone || 'Chưa cập nhật';
+
+      if (nameEl) nameEl.textContent = u.fullName || 'Cư dân';
+      if (phoneEl) phoneEl.textContent = zaloPhone;
+      if (usernameEl) usernameEl.textContent = username;
+      if (passwordEl) passwordEl.textContent = password;
+      if (messageEl) {
+        messageEl.textContent = `Chào mừng bạn đến với StayHub! Tài khoản đăng nhập: ${username}. Mật khẩu tạm thời: ${password}. Vì lý do bảo mật, vui lòng đăng nhập vào hệ thống và thay đổi mật khẩu ngay lần đầu sử dụng.`;
       }
 
-      DataStore.activateUser(id);
-      showToast(`🎉 Đã duyệt access thành công! Tài khoản cư dân ${u.fullName} đã chuyển sang ACTIVE.`);
+      openModal('activate-zalo-modal');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function confirmActivateUserWithZalo() {
+      if (!pendingActivationUserId) return;
+      const users = DataStore.getUsers();
+      const u = users.find(x => x.id === pendingActivationUserId);
+      if (!u) return;
+
+      u.zaloNotificationStatus = 'SENT';
+      u.zaloNotificationSentAt = new Date().toISOString();
+      DataStore.saveUsers(users);
+      DataStore.activateUser(pendingActivationUserId);
+      DataStore.addAuditLog(
+        'KÍCH_HOẠT_TÀI_KHOẢN_VÀ_GỬI_ZALO',
+        `Tài khoản cư dân: ${u.fullName}`,
+        `Đã kích hoạt tài khoản ${u.email} và ghi nhận gửi thông báo chào mừng đến Zalo ${u.zaloPhone || u.phone || 'N/A'}.`
+      );
+
+      closeModal('activate-zalo-modal');
+      pendingActivationUserId = null;
+      showToast(`🎉 Đã kích hoạt tài khoản và gửi thông báo Zalo cho ${u.fullName}.`);
       renderUsersTable();
     }
 
@@ -401,20 +510,41 @@
       if (!modal || !form) return;
 
       form.reset();
+      const buildingSelect = document.getElementById('usr-building');
+      if (buildingSelect) {
+        const buildings = typeof DataStore !== 'undefined' ? DataStore.getBuildings() : [];
+        buildingSelect.innerHTML = '<option value="">-- Chọn cơ sở phụ trách --</option>' + buildings
+          .filter(b => b.status === 'Active' || b.status === 'ACTIVE')
+          .map(b => `<option value="${b.id}">${b.name} (${b.code})</option>`).join('');
+        buildingSelect.required = !user;
+      }
       if (user) {
         titleEl.innerHTML = '<i data-lucide="edit-3" class="w-5 h-5 text-[#0F766E]"></i><span>Chỉnh Sửa Tài Khoản</span>';
         document.getElementById('usr-id').value = user.id;
         document.getElementById('usr-fullName').value = user.fullName;
         document.getElementById('usr-email').value = user.email;
         document.getElementById('usr-phone').value = user.phone;
+        document.getElementById('usr-zalo').value = user.zaloPhone || user.phone || '';
         document.getElementById('usr-role').value = user.role;
-        document.getElementById('usr-title').value = user.title || '';
-        document.getElementById('usr-scope').value = user.scope || 'Toàn bộ 3 cơ sở';
+        if (!['MANAGER', 'STAFF'].includes(user.role)) {
+          const legacyRole = document.createElement('option');
+          legacyRole.value = user.role;
+          legacyRole.textContent = `${user.role} (Tài khoản hiện có)`;
+          document.getElementById('usr-role').appendChild(legacyRole);
+          document.getElementById('usr-role').value = user.role;
+        }
+        if (buildingSelect) buildingSelect.value = user.building || '';
+        if (buildingSelect && !buildingSelect.value && user.scope) {
+          const match = [...buildingSelect.options].find(option => option.textContent.startsWith(user.scope));
+          if (match) buildingSelect.value = match.value;
+        }
         document.getElementById('usr-status').value = user.status || 'ACTIVE';
       } else {
         titleEl.innerHTML = '<i data-lucide="user-plus" class="w-5 h-5 text-[#0F766E]"></i><span>Thêm Tài Khoản Mới</span>';
         document.getElementById('usr-id').value = '';
-        document.getElementById('usr-scope').value = 'Toàn bộ 3 cơ sở';
+        document.getElementById('usr-role').value = 'MANAGER';
+        document.getElementById('usr-zalo').value = '';
+        if (buildingSelect) buildingSelect.value = '';
         document.getElementById('usr-status').value = 'ACTIVE';
       }
       modal.classList.add('active');
@@ -429,22 +559,59 @@
     function handleSaveUser(e) {
       e.preventDefault();
       const id = document.getElementById('usr-id').value;
+      const role = document.getElementById('usr-role').value;
+      const buildingSelect = document.getElementById('usr-building');
+      const building = buildingSelect?.value || '';
+      const scope = buildingSelect?.selectedOptions?.[0]?.textContent || '';
+      if (!id && !['MANAGER', 'STAFF'].includes(role)) {
+        showToast('Chỉ được tạo tài khoản Manager hoặc Staff.', 'error');
+        return;
+      }
+      if (!id && !building) {
+        showToast('Vui lòng chọn cơ sở phụ trách.', 'error');
+        return;
+      }
       const data = {
         fullName: document.getElementById('usr-fullName').value.trim(),
         email: document.getElementById('usr-email').value.trim(),
         phone: document.getElementById('usr-phone').value.trim(),
-        role: document.getElementById('usr-role').value,
-        title: document.getElementById('usr-title').value.trim(),
-        scope: document.getElementById('usr-scope').value.trim(),
+        zaloPhone: document.getElementById('usr-zalo').value.trim(),
+        role,
+        scope,
+        building,
         status: document.getElementById('usr-status').value
       };
 
       if (id) {
+        const existingUser = DataStore.getUsers().find(u => u.id === id);
+        if (existingUser && existingUser.status === 'INACTIVE') {
+          showToast('Tài khoản đang chờ duyệt chỉ được phép thực hiện thao tác Duyệt Active.', 'error');
+          return;
+        }
         DataStore.updateUser(id, data);
         showToast(`Đã cập nhật thông tin tài khoản ${data.fullName}`);
       } else {
-        DataStore.addUser(data);
-        showToast(`Đã tạo thành công tài khoản [${data.role}] cho ${data.fullName}`);
+        const temporaryPassword = `StayHub@${Math.floor(1000 + Math.random() * 9000)}`;
+        const createdUser = DataStore.addUser({ ...data, initialPassword: temporaryPassword });
+        document.getElementById('created-account-username').textContent = createdUser.email;
+        document.getElementById('created-account-password').textContent = temporaryPassword;
+        document.getElementById('created-account-building').textContent = createdUser.scope;
+        document.getElementById('created-account-zalo').textContent = createdUser.zaloPhone;
+        document.getElementById('created-account-zalo-message').textContent = `Chào mừng bạn đến với StayHub! Tài khoản: ${createdUser.email}. Mật khẩu tạm: ${temporaryPassword}. Cơ sở làm việc: ${createdUser.scope}. Vui lòng đổi mật khẩu ngay trong lần đăng nhập đầu tiên vì chính sách bảo mật.`;
+        document.getElementById('created-account-zalo-status').textContent = 'Chưa gửi thông báo';
+        document.getElementById('created-account-zalo-status').className = 'mt-2 font-semibold text-amber-700';
+        const sendButton = document.getElementById('send-created-account-zalo');
+        if (sendButton) {
+          sendButton.disabled = false;
+          sendButton.textContent = 'Gửi thông báo Zalo';
+          sendButton.className = 'px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold';
+        }
+        createdAccountUserId = createdUser.id;
+        createdAccountNotificationSent = false;
+        closeUserModal();
+        renderUsersTable();
+        openModal('create-account-success-modal');
+        return;
       }
 
       closeUserModal();
@@ -454,6 +621,10 @@
     function editUser(id) {
       const users = DataStore.getUsers();
       const user = users.find(u => u.id === id);
+      if (user && user.status === 'INACTIVE') {
+        showToast('Tài khoản đang chờ duyệt chưa được phép chỉnh sửa.', 'error');
+        return;
+      }
       if (user) {
         openUserModal(user);
       }
@@ -472,6 +643,10 @@
       const users = DataStore.getUsers();
       const u = users.find(x => x.id === id);
       if (!u) return;
+      if (u.status === 'INACTIVE') {
+        showToast('Tài khoản đang chờ duyệt chưa được phép cấp lại mật khẩu.', 'error');
+        return;
+      }
 
       const tempPass = DataStore.resetUserPassword(id);
       document.getElementById('reset-pass-user-info').innerText = `Tài khoản: ${u.fullName} (${u.email})`;
@@ -486,6 +661,53 @@
       }).catch(() => {
         showToast(`Mật khẩu tạm: ${pass}`);
       });
+    }
+
+    function copyCreatedAccountPassword() {
+      const pass = document.getElementById('created-account-password')?.textContent || '';
+      if (!pass) return;
+      navigator.clipboard.writeText(pass).then(() => {
+        showToast('Đã sao chép mật khẩu tạm vào bộ nhớ tạm!');
+      }).catch(() => {
+        showToast(`Mật khẩu tạm: ${pass}`);
+      });
+    }
+
+    function closeCreatedAccountSuccessModal() {
+      if (!createdAccountNotificationSent) {
+        showToast('Vui lòng gửi thông báo Zalo trước khi đóng popup.', 'error');
+        return;
+      }
+      closeModal('create-account-success-modal');
+      createdAccountUserId = null;
+    }
+
+    function sendCreatedAccountZaloNotification() {
+      if (!createdAccountUserId) return;
+      const users = DataStore.getUsers();
+      const user = users.find(item => item.id === createdAccountUserId);
+      if (!user) return;
+      user.zaloNotificationStatus = 'SENT';
+      user.zaloNotificationSentAt = new Date().toISOString();
+      DataStore.saveUsers(users);
+      DataStore.addAuditLog(
+        'TẠO_TÀI_KHOẢN_VÀ_GỬI_ZALO',
+        `Tài khoản ${user.fullName}`,
+        `Đã gửi thông báo chào mừng đến Zalo ${user.zaloPhone || user.phone} gồm tên tài khoản, mật khẩu tạm, cơ sở làm việc và yêu cầu đổi mật khẩu.`
+      );
+      createdAccountNotificationSent = true;
+      const status = document.getElementById('created-account-zalo-status');
+      if (status) {
+        status.textContent = `Đã gửi thông báo đến Zalo ${user.zaloPhone || user.phone}`;
+        status.className = 'mt-2 font-semibold text-emerald-700';
+      }
+      const sendButton = document.getElementById('send-created-account-zalo');
+      if (sendButton) {
+        sendButton.disabled = true;
+        sendButton.textContent = 'Đã gửi Zalo';
+        sendButton.className = 'px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold cursor-not-allowed';
+      }
+      showToast(`Đã gửi thông báo Zalo cho ${user.fullName}.`);
     }
 
     registerPage('users.html', () => {

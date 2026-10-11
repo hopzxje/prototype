@@ -165,14 +165,14 @@ const INITIAL_RESIDENTS = [
 ];
 
 const INITIAL_ASSET_TYPES = [
-  { id: 'at-ac', code: 'AC', name: 'Điều hòa không khí', defaultBrand: 'Daikin / Panasonic', unit: 'Cái', lifespanMonths: 60, icon: 'wind' },
-  { id: 'at-fridge', code: 'FRIDGE', name: 'Tủ lạnh', defaultBrand: 'Toshiba / Aqua 180L', unit: 'Cái', lifespanMonths: 72, icon: 'refrigerator' },
-  { id: 'at-water-heater', code: 'WATER_HEATER', name: 'Bình nóng lạnh', defaultBrand: 'Ariston 30L chống giật', unit: 'Cái', lifespanMonths: 48, icon: 'flame' },
-  { id: 'at-bed', code: 'BED', name: 'Giường nệm cao cấp', defaultBrand: 'Khung gỗ sồi + Nệm cao su 1m6', unit: 'Bộ', lifespanMonths: 84, icon: 'bed' },
-  { id: 'at-wardrobe', code: 'WARDROBE', name: 'Tủ quần áo', defaultBrand: 'Gỗ MDF chống ẩm 2 cánh', unit: 'Cái', lifespanMonths: 60, icon: 'archive' },
-  { id: 'at-desk', code: 'DESK_CHAIR', name: 'Bàn ghế làm việc', defaultBrand: 'Bàn gỗ 1m2 + Ghế xoay', unit: 'Bộ', lifespanMonths: 36, icon: 'briefcase' },
-  { id: 'at-wm', code: 'WASHING_MACHINE', name: 'Máy giặt lồng ngang', defaultBrand: 'Electrolux 8.5kg', unit: 'Cái', lifespanMonths: 60, icon: 'disc' },
-  { id: 'at-lock', code: 'SMART_LOCK', name: 'Khóa cửa thông minh', defaultBrand: 'Khóa từ vân tay Kaadas', unit: 'Bộ', lifespanMonths: 48, icon: 'key' }
+  { id: 'at-ac', code: 'AC', name: 'Điều hòa không khí', defaultBrand: 'Daikin 1.5 HP', unit: 'Cái', lifespanMonths: 60, icon: 'wind', assetClass: 'FIXED', allowMultiplePerRoom: false },
+  { id: 'at-fridge', code: 'FRIDGE', name: 'Tủ lạnh', defaultBrand: 'Toshiba 180L', unit: 'Cái', lifespanMonths: 72, icon: 'refrigerator', assetClass: 'FIXED', allowMultiplePerRoom: false },
+  { id: 'at-water-heater', code: 'WATER_HEATER', name: 'Bình nóng lạnh', defaultBrand: 'Ariston 30L chống giật', unit: 'Cái', lifespanMonths: 48, icon: 'flame', assetClass: 'FIXED', allowMultiplePerRoom: false },
+  { id: 'at-bed', code: 'BED', name: 'Giường nệm cao cấp', defaultBrand: 'Việt Á Luxury 1m6', unit: 'Bộ', lifespanMonths: 84, icon: 'bed', assetClass: 'EQUIPMENT', allowMultiplePerRoom: true },
+  { id: 'at-wardrobe', code: 'WARDROBE', name: 'Tủ quần áo', defaultBrand: 'An Cường MDF 2 cánh', unit: 'Cái', lifespanMonths: 60, icon: 'archive', assetClass: 'EQUIPMENT', allowMultiplePerRoom: true },
+  { id: 'at-desk', code: 'DESK_CHAIR', name: 'Bàn ghế làm việc', defaultBrand: 'Hòa Phát Ergonomic', unit: 'Bộ', lifespanMonths: 36, icon: 'briefcase', assetClass: 'EQUIPMENT', allowMultiplePerRoom: true },
+  { id: 'at-wm', code: 'WASHING_MACHINE', name: 'Máy giặt lồng ngang', defaultBrand: 'Electrolux 8.5kg', unit: 'Cái', lifespanMonths: 60, icon: 'disc', assetClass: 'FIXED', allowMultiplePerRoom: false },
+  { id: 'at-lock', code: 'SMART_LOCK', name: 'Khóa cửa thông minh', defaultBrand: 'Kaadas K9', unit: 'Bộ', lifespanMonths: 48, icon: 'key', assetClass: 'FIXED', allowMultiplePerRoom: false }
 ];
 
 const INITIAL_ASSETS = [
@@ -255,6 +255,210 @@ const INITIAL_ASSETS = [
     condition: 'Tốt',
     assignedAt: '15/01/2025',
     assignedBy: 'Phạm Tuấn Anh'
+  },
+  // Room P101 Assets
+  {
+    id: 'ast-ac-101',
+    code: 'AC-CENTRAL-101',
+    typeCode: 'AC',
+    typeName: 'Điều hòa không khí',
+    name: 'Điều hòa Inverter Daikin 1.5 HP',
+    brand: 'Daikin',
+    model: 'FTKQ35SVMV',
+    price: 11500000,
+    purchaseDate: '2025-01-10',
+    warrantyMonths: 24,
+    buildingId: 'bld-1',
+    roomId: 'rm-101',
+    roomNumber: 'P101',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/02/2025',
+    assignedBy: 'Trần Minh Đức'
+  },
+  {
+    id: 'ast-fridge-101',
+    code: 'FRIDGE-CENTRAL-101',
+    typeCode: 'FRIDGE',
+    typeName: 'Tủ lạnh',
+    name: 'Tủ lạnh Panasonic Inverter 188L',
+    brand: 'Panasonic',
+    model: 'NR-BA229PKVN',
+    price: 6200000,
+    purchaseDate: '2025-01-10',
+    warrantyMonths: 24,
+    buildingId: 'bld-1',
+    roomId: 'rm-101',
+    roomNumber: 'P101',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/02/2025',
+    assignedBy: 'Trần Minh Đức'
+  },
+  {
+    id: 'ast-wh-101',
+    code: 'WH-CENTRAL-101',
+    typeCode: 'WATER_HEATER',
+    typeName: 'Bình nóng lạnh',
+    name: 'Bình nóng lạnh Ariston 30L chống giật',
+    brand: 'Ariston',
+    model: 'AN2 30 LUX',
+    price: 3600000,
+    purchaseDate: '2025-01-10',
+    warrantyMonths: 36,
+    buildingId: 'bld-1',
+    roomId: 'rm-101',
+    roomNumber: 'P101',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/02/2025',
+    assignedBy: 'Trần Minh Đức'
+  },
+  {
+    id: 'ast-bed-101',
+    code: 'BED-CENTRAL-101',
+    typeCode: 'BED',
+    typeName: 'Giường nệm cao cấp',
+    name: 'Giường nệm cao su non 1m6x2m',
+    brand: 'Việt Á Luxury',
+    model: 'VA-1620',
+    price: 7200000,
+    purchaseDate: '2025-01-10',
+    warrantyMonths: 36,
+    buildingId: 'bld-1',
+    roomId: 'rm-101',
+    roomNumber: 'P101',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/02/2025',
+    assignedBy: 'Trần Minh Đức'
+  },
+  // Room P102 Assets
+  {
+    id: 'ast-ac-102',
+    code: 'AC-CENTRAL-102',
+    typeCode: 'AC',
+    typeName: 'Điều hòa không khí',
+    name: 'Điều hòa Casper Inverter 1.0 HP',
+    brand: 'Casper',
+    model: 'GC-09IS33',
+    price: 7500000,
+    purchaseDate: '2025-02-15',
+    warrantyMonths: 24,
+    buildingId: 'bld-1',
+    roomId: 'rm-102',
+    roomNumber: 'P102',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/03/2025',
+    assignedBy: 'Phạm Tuấn Anh'
+  },
+  {
+    id: 'ast-fridge-102',
+    code: 'FRIDGE-CENTRAL-102',
+    typeCode: 'FRIDGE',
+    typeName: 'Tủ lạnh',
+    name: 'Tủ lạnh Toshiba Inverter 180L',
+    brand: 'Toshiba',
+    model: 'GR-B22VU',
+    price: 5800000,
+    purchaseDate: '2025-02-15',
+    warrantyMonths: 24,
+    buildingId: 'bld-1',
+    roomId: 'rm-102',
+    roomNumber: 'P102',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/03/2025',
+    assignedBy: 'Phạm Tuấn Anh'
+  },
+  {
+    id: 'ast-wm-102',
+    code: 'WM-CENTRAL-102',
+    typeCode: 'WASHING_MACHINE',
+    typeName: 'Máy giặt lồng ngang',
+    name: 'Máy giặt Electrolux UltimateCare 8.5kg',
+    brand: 'Electrolux',
+    model: 'EWF85743',
+    price: 8900000,
+    purchaseDate: '2025-02-15',
+    warrantyMonths: 24,
+    buildingId: 'bld-1',
+    roomId: 'rm-102',
+    roomNumber: 'P102',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/03/2025',
+    assignedBy: 'Phạm Tuấn Anh'
+  },
+  // Room P104 Assets
+  {
+    id: 'ast-ac-104',
+    code: 'AC-CENTRAL-104',
+    typeCode: 'AC',
+    typeName: 'Điều hòa không khí',
+    name: 'Điều hòa Inverter Daikin 1.5 HP',
+    brand: 'Daikin',
+    model: 'FTKQ35SVMV',
+    price: 11500000,
+    purchaseDate: '2025-01-10',
+    warrantyMonths: 24,
+    buildingId: 'bld-1',
+    roomId: 'rm-104',
+    roomNumber: 'P104',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/01/2026',
+    assignedBy: 'Trần Minh Đức'
+  },
+  {
+    id: 'ast-fridge-104',
+    code: 'FRIDGE-CENTRAL-104',
+    typeCode: 'FRIDGE',
+    typeName: 'Tủ lạnh',
+    name: 'Tủ lạnh Sharp 165L',
+    brand: 'Sharp',
+    model: 'SJ-X176E-SL',
+    price: 5100000,
+    purchaseDate: '2025-01-10',
+    warrantyMonths: 24,
+    buildingId: 'bld-1',
+    roomId: 'rm-104',
+    roomNumber: 'P104',
+    status: 'ACTIVE',
+    allocationStatus: 'ASSIGNED',
+    condition: 'Tốt',
+    assignedAt: '01/01/2026',
+    assignedBy: 'Trần Minh Đức'
+  },
+  // Additional In-stock items for allocation
+  {
+    id: 'ast-desk-stock-01',
+    code: 'DESK-STOCK-001',
+    typeCode: 'DESK_CHAIR',
+    typeName: 'Bàn ghế làm việc',
+    name: 'Bàn làm việc gỗ sồi 1m2 + Ghế xoay công thái học',
+    brand: 'Hòa Phát Ergonomic',
+    model: 'HP-ERGO12',
+    price: 3200000,
+    purchaseDate: '2026-03-15',
+    warrantyMonths: 24,
+    buildingId: 'bld-1',
+    roomId: null,
+    roomNumber: 'Kho thiết bị',
+    status: 'ACTIVE',
+    allocationStatus: 'IN_STOCK',
+    condition: 'Mới 100%',
+    assignedAt: null,
+    assignedBy: null
   },
   {
     id: 'ast-ac-stock-01',
@@ -417,35 +621,433 @@ const INITIAL_SYSTEM_CONFIG = {
 };
 
 const INITIAL_BUILDINGS = [
-  { id: 'bld-1', code: 'SH-CENTRAL', name: 'StayHub Central - Quận 1', address: '95 Pasteur, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh', floors: 5, totalRooms: 12, manager: 'Trần Minh Đức', phone: '0912345678', status: 'Active', elecRate: 3500, waterRate: 25000, serviceFee: 150000 },
-  { id: 'bld-2', code: 'SH-RIVERSIDE', name: 'StayHub Riverside - Tây Hồ', address: '12 Quảng An, Phường Quảng An, Quận Tây Hồ, Hà Nội', floors: 3, totalRooms: 12, manager: 'Lê Hải Yến', phone: '0918765432', status: 'Active', elecRate: 3800, waterRate: 28000, serviceFee: 180000 },
-  { id: 'bld-3', code: 'SH-ECO', name: 'StayHub Eco - Cầu Giấy', address: '45 Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, Hà Nội', floors: 4, totalRooms: 12, manager: 'Trần Minh Đức', phone: '0912345678', status: 'Active', elecRate: 3600, waterRate: 26000, serviceFee: 160000 }
+  { id: 'bld-1', code: 'SH-CENTRAL', name: 'StayHub Central - Quận 1', address: '95 Pasteur, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh', floors: 5, roomsPerFloor: 4, totalRooms: 20, manager: 'Trần Minh Đức', phone: '0912345678', status: 'Active', elecRate: 3500, waterRate: 25000, serviceFee: 150000 },
+  { id: 'bld-2', code: 'SH-RIVERSIDE', name: 'StayHub Riverside - Tây Hồ', address: '12 Quảng An, Phường Quảng An, Quận Tây Hồ, Hà Nội', floors: 3, roomsPerFloor: 4, totalRooms: 12, manager: 'Lê Hải Yến', phone: '0918765432', status: 'Active', elecRate: 3800, waterRate: 28000, serviceFee: 180000 },
+  { id: 'bld-3', code: 'SH-ECO', name: 'StayHub Eco - Cầu Giấy', address: '45 Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, Hà Nội', floors: 4, roomsPerFloor: 4, totalRooms: 16, manager: 'Trần Minh Đức', phone: '0912345678', status: 'Active', elecRate: 3600, waterRate: 26000, serviceFee: 160000 }
 ];
 
 const INITIAL_ROOMS = [
   // Building 1
-  { id: 'rm-101', buildingId: 'bld-1', roomNumber: 'P101', floor: 1, type: 'Studio', area: 28, price: 6500000, deposit: 6500000, status: 'OCCUPIED', tenant: 'Nguyễn Văn Hùng', phone: '0901112233' },
-  { id: 'rm-102', buildingId: 'bld-1', roomNumber: 'P102', floor: 1, type: '1 Phòng ngủ', area: 35, price: 7500000, deposit: 7500000, status: 'OCCUPIED', tenant: 'Trần Thị Thu Thảo', phone: '0902223344' },
-  { id: 'rm-103', buildingId: 'bld-1', roomNumber: 'P103', floor: 1, type: 'Studio', area: 26, price: 6000000, deposit: 6000000, status: 'AVAILABLE', tenant: null, phone: null },
-  { id: 'rm-104', buildingId: 'bld-1', roomNumber: 'P104', floor: 1, type: 'Studio', area: 30, price: 6800000, deposit: 6800000, status: 'OCCUPIED', tenant: 'Hoàng Kim Long', phone: '0903334455' },
-  { id: 'rm-201', buildingId: 'bld-1', roomNumber: 'P201', floor: 2, type: 'Duplex Gác xép', area: 40, price: 8500000, deposit: 8500000, status: 'OCCUPIED', tenant: 'Lê Văn An', phone: '0904445566' },
-  { id: 'rm-202', buildingId: 'bld-1', roomNumber: 'P202', floor: 2, type: 'Studio Ban công', area: 32, price: 7200000, deposit: 7200000, status: 'MAINTENANCE', tenant: null, phone: null },
-  { id: 'rm-203', buildingId: 'bld-1', roomNumber: 'P203', floor: 2, type: 'Studio', area: 28, price: 6500000, deposit: 6500000, status: 'OCCUPIED', tenant: 'Phan Minh Tuấn', phone: '0905556677' },
-  { id: 'rm-204', buildingId: 'bld-1', roomNumber: 'P204', floor: 2, type: '1 Phòng ngủ', area: 38, price: 8000000, deposit: 8000000, status: 'OCCUPIED', tenant: 'Đỗ Thùy Trang', phone: '0906667788' },
-  { id: 'rm-301', buildingId: 'bld-1', roomNumber: 'P301', floor: 3, type: 'Penthouse mini', area: 48, price: 9500000, deposit: 9500000, status: 'OCCUPIED', tenant: 'Vũ Đức Nam', phone: '0907778899' },
-  { id: 'rm-302', buildingId: 'bld-1', roomNumber: 'P302', floor: 3, type: 'Studio', area: 30, price: 6800000, deposit: 6800000, status: 'RESERVED', tenant: 'Bùi Thị Hà', phone: '0908889900' },
-  { id: 'rm-303', buildingId: 'bld-1', roomNumber: 'P303', floor: 3, type: '1 Phòng ngủ', area: 36, price: 7800000, deposit: 7800000, status: 'OCCUPIED', tenant: 'Ngô Quốc Bảo', phone: '0909990011' },
-  { id: 'rm-304', buildingId: 'bld-1', roomNumber: 'P304', floor: 3, type: 'Studio', area: 28, price: 6500000, deposit: 6500000, status: 'AVAILABLE', tenant: null, phone: null },
+  {
+    id: 'rm-101',
+    buildingId: 'bld-1',
+    roomNumber: 'P101',
+    floor: 1,
+    type: 'Studio',
+    area: 28,
+    price: 6500000,
+    deposit: 6500000,
+    status: 'OCCUPIED',
+    tenant: 'Nguyễn Văn Hùng',
+    phone: '0901112233',
+    email: 'nguyenvanhung@gmail.com',
+    cccd: '001200001234',
+    photos: [
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Daikin', 'Tủ lạnh Panasonic', 'Bình nóng lạnh', 'Giường nệm 1m6'],
+    coResidents: [
+      { name: 'Nguyễn Thị Mai', phone: '0901999888', relation: 'Vợ/Bạn cùng phòng' }
+    ],
+    description: 'Căn hộ Studio tầng 1, ban công đón nắng sớm, đầy đủ trang thiết bị cao cấp.'
+  },
+  {
+    id: 'rm-102',
+    buildingId: 'bld-1',
+    roomNumber: 'P102',
+    floor: 1,
+    type: '1 Phòng ngủ',
+    area: 35,
+    price: 7500000,
+    deposit: 7500000,
+    status: 'OCCUPIED',
+    tenant: 'Trần Thị Thu Thảo',
+    phone: '0902223344',
+    email: 'thuthao@gmail.com',
+    cccd: '001202008899',
+    photos: [
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Daikin', 'Tủ lạnh Toshiba', 'Máy giặt Electrolux', 'Giường gỗ sồi 1m8'],
+    coResidents: [],
+    description: 'Căn hộ 1 phòng ngủ riêng biệt, phòng khách rộng rãi, bếp thông minh.'
+  },
+  {
+    id: 'rm-103',
+    buildingId: 'bld-1',
+    roomNumber: 'P103',
+    floor: 1,
+    type: 'Studio',
+    area: 26,
+    price: 6000000,
+    deposit: 6000000,
+    status: 'AVAILABLE',
+    tenant: null,
+    phone: null,
+    email: null,
+    cccd: null,
+    photos: [
+      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Inverter', 'Bình nóng lạnh', 'Tủ quần áo 2 cánh', 'Giường nệm cao su'],
+    coResidents: [],
+    description: 'Phòng trống đã dọn dẹp vệ sinh và kiểm tra hệ thống điện nước, sẵn sàng bàn giao.'
+  },
+  {
+    id: 'rm-104',
+    buildingId: 'bld-1',
+    roomNumber: 'P104',
+    floor: 1,
+    type: 'Studio',
+    area: 30,
+    price: 6800000,
+    deposit: 6800000,
+    status: 'OCCUPIED',
+    tenant: 'Hoàng Kim Long',
+    phone: '0903334455',
+    email: 'hoangkimlong@gmail.com',
+    cccd: '001201004321',
+    photos: [
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Daikin', 'Tủ lạnh Toshiba 180L', 'Bình nóng lạnh Ariston', 'Giường nệm 1m6'],
+    coResidents: [],
+    description: 'Căn hộ Studio căn góc, 2 cửa sổ thoáng gió, view sân vườn yên tĩnh.'
+  },
+  {
+    id: 'rm-201',
+    buildingId: 'bld-1',
+    roomNumber: 'P201',
+    floor: 2,
+    type: 'Duplex Gác xép',
+    area: 40,
+    price: 8500000,
+    deposit: 8500000,
+    status: 'OCCUPIED',
+    tenant: 'Lê Văn An',
+    phone: '0904445566',
+    email: 'levanan@gmail.com',
+    cccd: '001201004567',
+    photos: [
+      'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Inverter Daikin', 'Tủ lạnh Toshiba 180L', 'Bình nóng lạnh Ariston 30L', 'Giường nệm cao su non'],
+    coResidents: [],
+    description: 'Căn hộ Duplex gác xép trần cao 4m2, sàn gỗ công nghiệp, nội thất Bắc Âu.'
+  },
+  {
+    id: 'rm-202',
+    buildingId: 'bld-1',
+    roomNumber: 'P202',
+    floor: 2,
+    type: 'Studio Ban công',
+    area: 32,
+    price: 7200000,
+    deposit: 7200000,
+    status: 'MAINTENANCE',
+    tenant: null,
+    phone: null,
+    email: null,
+    cccd: null,
+    photos: [
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa', 'Tủ lạnh', 'Bình nóng lạnh', 'Ban công rộng'],
+    coResidents: [],
+    description: 'Phòng đang được kỹ thuật bảo trì điều hòa và sơn lại tường.'
+  },
+  {
+    id: 'rm-203',
+    buildingId: 'bld-1',
+    roomNumber: 'P203',
+    floor: 2,
+    type: 'Studio',
+    area: 28,
+    price: 6500000,
+    deposit: 6500000,
+    status: 'OCCUPIED',
+    tenant: 'Phan Minh Tuấn',
+    phone: '0905556677',
+    email: 'phanminhtuan@gmail.com',
+    cccd: '001201007890',
+    photos: [
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Daikin', 'Tủ lạnh 180L', 'Bình nóng lạnh', 'Giường nệm 1m6'],
+    coResidents: [],
+    description: 'Căn hộ Studio thoáng đãng, ánh sáng tự nhiên ngập tràn.'
+  },
+  {
+    id: 'rm-204',
+    buildingId: 'bld-1',
+    roomNumber: 'P204',
+    floor: 2,
+    type: '1 Phòng ngủ',
+    area: 38,
+    price: 8000000,
+    deposit: 8000000,
+    status: 'OCCUPIED',
+    tenant: 'Đỗ Thùy Trang',
+    phone: '0906667788',
+    email: 'dothuytrang@gmail.com',
+    cccd: '001201008901',
+    photos: [
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Daikin', 'Tủ lạnh Toshiba 180L', 'Bình nóng lạnh', 'Máy giặt riêng'],
+    coResidents: [],
+    description: 'Căn hộ 1 phòng ngủ cao cấp có khu giặt phơi riêng biệt.'
+  },
+  {
+    id: 'rm-301',
+    buildingId: 'bld-1',
+    roomNumber: 'P301',
+    floor: 3,
+    type: 'Penthouse mini',
+    area: 48,
+    price: 9500000,
+    deposit: 9500000,
+    status: 'OCCUPIED',
+    tenant: 'Vũ Đức Nam',
+    phone: '0907778899',
+    email: 'ducnam@gmail.com',
+    cccd: '001201009988',
+    photos: [
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa 2 chiều 2.0HP', 'Tủ lạnh side-by-side', 'Bồn tắm nằm', 'Sân thượng ngắm cảnh'],
+    coResidents: [],
+    description: 'Căn hộ Penthouse mini tầng cao view toàn cảnh thành phố, ban công rộng.'
+  },
+  {
+    id: 'rm-302',
+    buildingId: 'bld-1',
+    roomNumber: 'P302',
+    floor: 3,
+    type: 'Studio',
+    area: 30,
+    price: 6800000,
+    deposit: 6800000,
+    status: 'RESERVED',
+    tenant: 'Bùi Thị Hà',
+    phone: '0908889900',
+    email: 'buithiha@gmail.com',
+    cccd: '001201002345',
+    photos: [
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Daikin', 'Tủ lạnh Toshiba 180L', 'Bình nóng lạnh', 'Khóa từ Kaadas'],
+    coResidents: [],
+    description: 'Đã cọc giữ chỗ, dự kiến nhận phòng vào 20/10/2026.'
+  },
+  {
+    id: 'rm-303',
+    buildingId: 'bld-1',
+    roomNumber: 'P303',
+    floor: 3,
+    type: '1 Phòng ngủ',
+    area: 36,
+    price: 7800000,
+    deposit: 7800000,
+    status: 'OCCUPIED',
+    tenant: 'Ngô Quốc Bảo',
+    phone: '0909990011',
+    email: 'ngoquocbao@gmail.com',
+    cccd: '001201003456',
+    photos: [
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Inverter', 'Tủ lạnh 180L', 'Bình nóng lạnh', 'Giường nệm cao su'],
+    coResidents: [],
+    description: 'Căn hộ 1 phòng ngủ yên tĩnh, cách âm tốt, phù hợp làm việc tại nhà.'
+  },
+  {
+    id: 'rm-304',
+    buildingId: 'bld-1',
+    roomNumber: 'P304',
+    floor: 3,
+    type: 'Studio',
+    area: 28,
+    price: 6500000,
+    deposit: 6500000,
+    status: 'AVAILABLE',
+    tenant: null,
+    phone: null,
+    email: null,
+    cccd: null,
+    photos: [
+      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Inverter', 'Tủ lạnh', 'Bình nóng lạnh', 'Giường nệm 1m6'],
+    coResidents: [],
+    description: 'Phòng trống tầng 3, ban công thoáng mát, sẵn sàng ký hợp đồng nhận phòng ngay.'
+  },
 
   // Building 2
-  { id: 'rm-b2-101', buildingId: 'bld-2', roomNumber: 'P101', floor: 1, type: 'View Hồ Tây', area: 35, price: 8500000, deposit: 8500000, status: 'OCCUPIED', tenant: 'Hà Kiều Oanh', phone: '0911223344' },
-  { id: 'rm-b2-102', buildingId: 'bld-2', roomNumber: 'P102', floor: 1, type: 'Studio', area: 30, price: 7200000, deposit: 7200000, status: 'OCCUPIED', tenant: 'Lê Hoàng Hải', phone: '0912233445' },
-  { id: 'rm-b2-201', buildingId: 'bld-2', roomNumber: 'P201', floor: 2, type: '1 PN View Hồ', area: 42, price: 9800000, deposit: 9800000, status: 'OCCUPIED', tenant: 'Đinh Tiến Đạt', phone: '0913344556' },
-  { id: 'rm-b2-202', buildingId: 'bld-2', roomNumber: 'P202', floor: 2, type: 'Studio', area: 30, price: 7200000, deposit: 7200000, status: 'AVAILABLE', tenant: null, phone: null },
+  {
+    id: 'rm-b2-101',
+    buildingId: 'bld-2',
+    roomNumber: 'P101',
+    floor: 1,
+    type: 'View Hồ Tây',
+    area: 35,
+    price: 8500000,
+    deposit: 8500000,
+    status: 'OCCUPIED',
+    tenant: 'Hà Kiều Oanh',
+    phone: '0911223344',
+    email: 'hakieuoanh@gmail.com',
+    cccd: '001201004433',
+    photos: [
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa 2 chiều', 'Tủ lạnh 200L', 'Bình nóng lạnh', 'View trực diện Hồ Tây'],
+    coResidents: [],
+    description: 'Căn hộ view trực diện mặt hồ thoáng mát, không gian sống trong lành bậc nhất.'
+  },
+  {
+    id: 'rm-b2-102',
+    buildingId: 'bld-2',
+    roomNumber: 'P102',
+    floor: 1,
+    type: 'Studio',
+    area: 30,
+    price: 7200000,
+    deposit: 7200000,
+    status: 'OCCUPIED',
+    tenant: 'Lê Hoàng Hải',
+    phone: '0912233445',
+    email: 'hoanghai@gmail.com',
+    cccd: '001201005544',
+    photos: [
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Daikin', 'Tủ lạnh Toshiba 180L', 'Bình nóng lạnh', 'Giường nệm cao su non'],
+    coResidents: [],
+    description: 'Studio tiện nghi ấm cúng, thiết kế tối giản phong cách Nhật Bản.'
+  },
+  {
+    id: 'rm-b2-201',
+    buildingId: 'bld-2',
+    roomNumber: 'P201',
+    floor: 2,
+    type: '1 PN View Hồ',
+    area: 42,
+    price: 9800000,
+    deposit: 9800000,
+    status: 'OCCUPIED',
+    tenant: 'Đinh Tiến Đạt',
+    phone: '0913344556',
+    email: 'tiendat@gmail.com',
+    cccd: '001201006677',
+    photos: [
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa 2 chiều', 'Tủ lạnh 2 cánh', 'Máy giặt sấy', 'Bồn tắm view hồ'],
+    coResidents: [],
+    description: 'Căn hộ 1 phòng ngủ cao cấp ban công ngắm hoàng hôn Hồ Tây tuyệt đẹp.'
+  },
+  {
+    id: 'rm-b2-202',
+    buildingId: 'bld-2',
+    roomNumber: 'P202',
+    floor: 2,
+    type: 'Studio',
+    area: 30,
+    price: 7200000,
+    deposit: 7200000,
+    status: 'AVAILABLE',
+    tenant: null,
+    phone: null,
+    email: null,
+    cccd: null,
+    photos: [
+      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa', 'Tủ lạnh', 'Bình nóng lạnh', 'Giường nệm 1m6'],
+    coResidents: [],
+    description: 'Phòng trống tầng 2 cơ sở Riverside Tây Hồ, đã nghiệm thu vệ sinh chuẩn bị đón khách.'
+  },
 
   // Building 3
-  { id: 'rm-b3-101', buildingId: 'bld-3', roomNumber: 'P101', floor: 1, type: 'Studio Hiện đại', area: 28, price: 6200000, deposit: 6200000, status: 'OCCUPIED', tenant: 'Võ Minh Thắng', phone: '0922334455' },
-  { id: 'rm-b3-102', buildingId: 'bld-3', roomNumber: 'P102', floor: 1, type: '1 Phòng ngủ', area: 36, price: 7200000, deposit: 7200000, status: 'OCCUPIED', tenant: 'Mai Thanh Tâm', phone: '0923344556' }
+  {
+    id: 'rm-b3-101',
+    buildingId: 'bld-3',
+    roomNumber: 'P101',
+    floor: 1,
+    type: 'Studio Hiện đại',
+    area: 28,
+    price: 6200000,
+    deposit: 6200000,
+    status: 'OCCUPIED',
+    tenant: 'Võ Minh Thắng',
+    phone: '0922334455',
+    email: 'minhthang@gmail.com',
+    cccd: '001201006655',
+    photos: [
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa Inverter', 'Tủ lạnh', 'Bình nóng lạnh', 'Bàn ghế làm việc'],
+    coResidents: [],
+    description: 'Căn hộ Studio tiện lợi, gần trung tâm văn phòng Duy Tân Cầu Giấy.'
+  },
+  {
+    id: 'rm-b3-102',
+    buildingId: 'bld-3',
+    roomNumber: 'P102',
+    floor: 1,
+    type: '1 Phòng ngủ',
+    area: 36,
+    price: 7200000,
+    deposit: 7200000,
+    status: 'OCCUPIED',
+    tenant: 'Mai Thanh Tâm',
+    phone: '0923344556',
+    email: 'thanhtam@gmail.com',
+    cccd: '001201007788',
+    photos: [
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80'
+    ],
+    amenities: ['Điều hòa 1.5HP', 'Tủ lạnh 180L', 'Bình nóng lạnh', 'Máy giặt riêng'],
+    coResidents: [],
+    description: 'Căn hộ 1PN phân khu riêng biệt, bếp thoáng, phòng ngủ yên tĩnh.'
+  }
 ];
 
 const DEFAULT_CONTRACT_CONTENT = `ĐIỀU 1: ĐỐI TƯỢNG VÀ MỤC ĐÍCH HỢP ĐỒNG
@@ -494,11 +1096,27 @@ const DEFAULT_CONTRACT_TEMPLATE = {
 };
 
 const INITIAL_CONTRACTS = [
-  { id: 'ct-001', code: 'HD-2025-001', room: 'P201', building: 'StayHub Central - Ba Đình', tenant: 'Lê Văn An', phone: '0904445566', cccd: '001201004567', startDate: '2025-01-01', endDate: '2026-12-31', rent: 8500000, deposit: 8500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
-  { id: 'ct-002', code: 'HD-2025-002', room: 'P101', building: 'StayHub Central - Ba Đình', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', cccd: '001200001234', startDate: '2025-02-01', endDate: '2026-02-01', rent: 6500000, deposit: 6500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
-  { id: 'ct-003', code: 'HD-2025-003', room: 'P102', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', cccd: '001202008899', startDate: '2025-03-01', endDate: '2026-03-01', rent: 7500000, deposit: 7500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
-  { id: 'ct-004', code: 'HD-2025-004', room: 'P301', building: 'StayHub Central - Ba Đình', tenant: 'Vũ Đức Nam', phone: '0907778899', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-01', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
-  { id: 'ct-005', code: 'HD-2025-112', room: 'P402', building: 'StayHub Central - Ba Đình', tenant: 'Trần Thu Trang', phone: '0908889900', startDate: '2025-01-01', endDate: '2026-09-30', rent: 10000000, deposit: 10000000, status: 'EXPIRED', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } }
+  // Cơ sở 1: StayHub Central - Quận 1
+  { id: 'ct-006', code: 'HD-2026-088', buildingId: 'bld-1', room: 'P103', building: 'StayHub Central - Quận 1', tenant: 'Hoàng Minh Tuấn', phone: '0988776655', email: 'hoangminhtuan@gmail.com', cccd: '001201009876', startDate: '2026-11-01', endDate: '2027-11-01', rent: 7000000, deposit: 7000000, status: 'RESERVED', submittedAt: '2026-10-08T08:30:00Z', staffName: 'Phạm Tuấn Anh (Staff)', managerName: 'Trần Minh Đức', templateVersion: 'v2.0', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-001', code: 'HD-2025-001', buildingId: 'bld-1', room: 'P201', building: 'StayHub Central - Quận 1', tenant: 'Lê Văn An', phone: '0904445566', email: 'levanan@gmail.com', cccd: '001201004567', startDate: '2025-01-01', endDate: '2026-12-31', rent: 8500000, deposit: 8500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-002', code: 'HD-2025-002', buildingId: 'bld-1', room: 'P101', building: 'StayHub Central - Quận 1', tenant: 'Nguyễn Văn Hùng', phone: '0901112233', email: 'nguyenvanhung@gmail.com', cccd: '001200001234', startDate: '2025-02-01', endDate: '2026-11-15', rent: 6500000, deposit: 6500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-003', code: 'HD-2025-003', buildingId: 'bld-1', room: 'P102', building: 'StayHub Central - Quận 1', tenant: 'Trần Thị Thu Thảo', phone: '0902223344', email: 'thuthao@gmail.com', cccd: '001202008899', startDate: '2025-03-01', endDate: '2027-03-01', rent: 7500000, deposit: 7500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-004', code: 'HD-2025-004', buildingId: 'bld-1', room: 'P301', building: 'StayHub Central - Quận 1', tenant: 'Vũ Đức Nam', phone: '0907778899', email: 'ducnam@gmail.com', cccd: '001201009988', startDate: '2025-04-01', endDate: '2026-10-31', rent: 9500000, deposit: 9500000, status: 'EXPIRING_SOON', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-007', code: 'HD-2026-004', buildingId: 'bld-1', room: 'P104', building: 'StayHub Central - Quận 1', tenant: 'Hoàng Kim Long', phone: '0903334455', email: 'hoangkimlong@gmail.com', cccd: '001201004321', startDate: '2026-01-01', endDate: '2027-01-01', rent: 6800000, deposit: 6800000, status: 'ACTIVE', templateVersion: 'v2.0', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-008', code: 'HD-2026-008', buildingId: 'bld-1', room: 'P302', building: 'StayHub Central - Quận 1', tenant: 'Bùi Thị Hà', phone: '0908889900', email: 'buithiha@gmail.com', cccd: '001201002345', startDate: '2026-10-20', endDate: '2027-10-20', rent: 6800000, deposit: 6800000, status: 'RESERVED', templateVersion: 'v2.0', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-009', code: 'HD-2025-009', buildingId: 'bld-1', room: 'P203', building: 'StayHub Central - Quận 1', tenant: 'Phan Minh Tuấn', phone: '0905556677', email: 'phanminhtuan@gmail.com', cccd: '001201007890', startDate: '2025-06-01', endDate: '2026-12-01', rent: 6500000, deposit: 6500000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-010', code: 'HD-2025-010', buildingId: 'bld-1', room: 'P204', building: 'StayHub Central - Quận 1', tenant: 'Đỗ Thùy Trang', phone: '0906667788', email: 'dothuytrang@gmail.com', cccd: '001201008901', startDate: '2025-08-01', endDate: '2027-02-01', rent: 8000000, deposit: 8000000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-011', code: 'HD-2025-011', buildingId: 'bld-1', room: 'P303', building: 'StayHub Central - Quận 1', tenant: 'Ngô Quốc Bảo', phone: '0909990011', email: 'ngoquocbao@gmail.com', cccd: '001201003456', startDate: '2025-05-01', endDate: '2027-05-01', rent: 7800000, deposit: 7800000, status: 'ACTIVE', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-005', code: 'HD-2025-112', buildingId: 'bld-1', room: 'P402', building: 'StayHub Central - Quận 1', tenant: 'Trần Thu Trang', phone: '0908889900', email: 'thutrang@gmail.com', cccd: '001201007766', startDate: '2025-01-01', endDate: '2026-09-30', rent: 10000000, deposit: 10000000, status: 'EXPIRED', templateVersion: 'v1.0 (Bản gốc)', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+
+  // Cơ sở 2: StayHub Riverside - Tây Hồ
+  { id: 'ct-b2-001', code: 'HD-2026-201', buildingId: 'bld-2', room: 'P101', building: 'StayHub Riverside - Tây Hồ', tenant: 'Hà Kiều Oanh', phone: '0911223344', email: 'hakieuoanh@gmail.com', cccd: '001201004433', startDate: '2026-01-01', endDate: '2027-01-01', rent: 8500000, deposit: 8500000, status: 'ACTIVE', templateVersion: 'v2.0', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-b2-002', code: 'HD-2026-202', buildingId: 'bld-2', room: 'P102', building: 'StayHub Riverside - Tây Hồ', tenant: 'Lê Hoàng Hải', phone: '0912233445', email: 'hoanghai@gmail.com', cccd: '001201005544', startDate: '2026-02-01', endDate: '2027-02-01', rent: 7200000, deposit: 7200000, status: 'ACTIVE', templateVersion: 'v2.0', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-b2-003', code: 'HD-2026-203', buildingId: 'bld-2', room: 'P201', building: 'StayHub Riverside - Tây Hồ', tenant: 'Đinh Tiến Đạt', phone: '0913344556', email: 'tiendat@gmail.com', cccd: '001201006677', startDate: '2026-03-01', endDate: '2027-03-01', rent: 9800000, deposit: 9800000, status: 'EXPIRING_SOON', templateVersion: 'v2.0', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+
+  // Cơ sở 3: StayHub Eco - Cầu Giấy
+  { id: 'ct-b3-001', code: 'HD-2026-301', buildingId: 'bld-3', room: 'P101', building: 'StayHub Eco - Cầu Giấy', tenant: 'Võ Minh Thắng', phone: '0922334455', email: 'minhthang@gmail.com', cccd: '001201006655', startDate: '2026-03-01', endDate: '2027-03-01', rent: 6200000, deposit: 6200000, status: 'ACTIVE', templateVersion: 'v2.0', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } },
+  { id: 'ct-b3-002', code: 'HD-2026-302', buildingId: 'bld-3', room: 'P102', building: 'StayHub Eco - Cầu Giấy', tenant: 'Mai Thanh Tâm', phone: '0923344556', email: 'thanhtam@gmail.com', cccd: '001201007788', startDate: '2026-04-01', endDate: '2027-04-01', rent: 7200000, deposit: 7200000, status: 'ACTIVE', templateVersion: 'v2.0', customTerms: { ...DEFAULT_CONTRACT_TEMPLATE } }
 ];
 
 const INITIAL_INVOICES = [
@@ -1236,11 +1854,20 @@ const DataStore = {
     }
     if (!localStorage.getItem(STORAGE_KEYS.CONTRACTS)) {
       localStorage.setItem(STORAGE_KEYS.CONTRACTS, JSON.stringify(INITIAL_CONTRACTS));
+    } else {
+      try {
+        const storedContracts = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTRACTS) || '[]');
+        if (!storedContracts.some(c => c.id === 'ct-006')) {
+          storedContracts.unshift(INITIAL_CONTRACTS[0]);
+          localStorage.setItem(STORAGE_KEYS.CONTRACTS, JSON.stringify(storedContracts));
+        }
+      } catch (e) {}
     }
     if (!localStorage.getItem(STORAGE_KEYS.INVOICES)) {
       localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(INITIAL_INVOICES));
     }
     this.migrateResidentDemoInvoices();
+    this.migrateUniformAssetBrands();
     if (!localStorage.getItem(STORAGE_KEYS.CHECKOUT)) {
       localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(INITIAL_CHECKOUT_REQUESTS));
     }
@@ -1322,6 +1949,8 @@ const DataStore = {
     }
     return list.map(b => ({
       ...b,
+      floors: Number(b.floors) || 5,
+      roomsPerFloor: Number(b.roomsPerFloor) || (typeof INITIAL_BUILDINGS !== 'undefined' ? (INITIAL_BUILDINGS.find(ib => ib.id === b.id)?.roomsPerFloor || 4) : 4),
       status: b.status || 'Active',
       elecRate: b.elecRate || (b.id === 'bld-2' ? 3800 : b.id === 'bld-3' ? 3600 : 3500),
       waterRate: b.waterRate || (b.id === 'bld-2' ? 28000 : b.id === 'bld-3' ? 26000 : 25000),
@@ -1406,7 +2035,73 @@ const DataStore = {
   },
 
   getRooms() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.ROOMS) || '[]');
+    const raw = localStorage.getItem(STORAGE_KEYS.ROOMS);
+    let list = raw ? JSON.parse(raw) : INITIAL_ROOMS;
+    let modified = false;
+
+    // Helper for fallback photos if a room has none
+    const getFallbackPhotos = (type) => {
+      const t = (type || '').toLowerCase();
+      if (t.includes('duplex') || t.includes('gác')) {
+        return [
+          'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+        ];
+      } else if (t.includes('1 phòng') || t.includes('1 pn') || t.includes('2 phòng')) {
+        return [
+          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80'
+        ];
+      } else if (t.includes('penthouse')) {
+        return [
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'
+        ];
+      } else if (t.includes('hồ')) {
+        return [
+          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+        ];
+      }
+      return [
+        'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
+      ];
+    };
+
+    list = list.map(room => {
+      if (!room.photos || !Array.isArray(room.photos) || room.photos.length === 0) {
+        room.photos = getFallbackPhotos(room.type);
+        modified = true;
+      }
+      if (!room.amenities || !Array.isArray(room.amenities)) {
+        room.amenities = ['Điều hòa Inverter', 'Tủ lạnh', 'Bình nóng lạnh', 'Giường nệm cao cấp'];
+        modified = true;
+      }
+      if (!room.coResidents) {
+        room.coResidents = [];
+        modified = true;
+      }
+      return room;
+    });
+
+    // Trạng thái vận hành phải phản ánh lịch hợp đồng tại thời điểm hiện tại.
+    // Không ghi đè trạng thái dẫn xuất vào localStorage: trạng thái sẽ tự chuyển theo ngày.
+    const normalizedRooms = list;
+
+    if (modified || !raw) {
+      localStorage.setItem(STORAGE_KEYS.ROOMS, JSON.stringify(normalizedRooms));
+    }
+
+    return normalizedRooms.map(room => ({
+      ...room,
+      status: this.getEffectiveRoomStatus(room)
+    }));
   },
 
   saveRooms(rooms) {
@@ -1440,12 +2135,12 @@ const DataStore = {
     const target = rooms.find(r => r.id === roomId);
     if (!target) return { success: false, error: 'Không tìm thấy phòng trong hệ thống!' };
 
-    // Kiểm tra an toàn: Không cho xóa nếu đang có khách thuê và chưa force
-    if (target.status === 'OCCUPIED' && target.tenant && !force) {
+    // Kiểm tra an toàn: Không cho xóa nếu đang có khách thuê hoặc đã cọc và chưa force
+    if (((target.status === 'OCCUPIED' && target.tenant) || target.status === 'RESERVED') && !force) {
       return {
         success: false,
         isOccupied: true,
-        error: `Không thể xóa phòng ${target.roomNumber} vì đang có khách thuê (${target.tenant}). Vui lòng hoàn tất trả phòng hoặc thanh lý hợp đồng trước khi xóa!`
+        error: `Không thể xóa phòng ${target.roomNumber} vì đang ở trạng thái [${target.status === 'OCCUPIED' ? 'Đang thuê' : 'Đã cọc'}]. Vui lòng hoàn tất trả phòng hoặc thanh lý hợp đồng trước khi xóa!`
       };
     }
 
@@ -1463,7 +2158,37 @@ const DataStore = {
   },
 
   getContracts() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTRACTS) || '[]');
+    const raw = localStorage.getItem(STORAGE_KEYS.CONTRACTS);
+    let list = raw ? JSON.parse(raw) : INITIAL_CONTRACTS;
+    let modified = false;
+
+    // Chuẩn hóa và gán đúng buildingId cho từng hợp đồng
+    list = list.map(c => {
+      let bldId = c.buildingId;
+      if (!bldId) {
+        const b = (c.building || '').toLowerCase();
+        if (b.includes('eco') || b.includes('cầu giấy')) bldId = 'bld-3';
+        else if (b.includes('riverside') || b.includes('tây hồ')) bldId = 'bld-2';
+        else bldId = 'bld-1';
+        modified = true;
+      }
+      return { ...c, buildingId: bldId };
+    });
+
+    // Bổ sung các hợp đồng mẫu cho cơ sở 2 và 3 nếu chưa có trong danh sách
+    if (typeof INITIAL_CONTRACTS !== 'undefined') {
+      INITIAL_CONTRACTS.forEach(ic => {
+        if (!list.some(sc => sc.id === ic.id)) {
+          list.push(ic);
+          modified = true;
+        }
+      });
+    }
+
+    if (modified || !raw) {
+      localStorage.setItem(STORAGE_KEYS.CONTRACTS, JSON.stringify(list));
+    }
+    return list;
   },
 
   saveContracts(contracts) {
@@ -1518,6 +2243,86 @@ const DataStore = {
 
   getResidentInvoices(user = DataStore.getUser()) {
     return this.getInvoices().filter(invoice => this.isResidentInvoice(invoice, user));
+  },
+
+  migrateUniformAssetBrands() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.ASSETS);
+      if (!raw) return;
+      let assets = JSON.parse(raw);
+      let changed = false;
+
+      assets = assets.map(a => {
+        if (a.typeCode === 'AC') {
+          if (a.name !== 'Điều hòa Inverter Daikin 1.5 HP' || a.brand !== 'Daikin' || a.model !== 'FTKQ35SVMV') {
+            changed = true;
+            return {
+              ...a,
+              brand: 'Daikin',
+              name: 'Điều hòa Inverter Daikin 1.5 HP',
+              model: 'FTKQ35SVMV',
+              price: 11500000,
+              warrantyMonths: 24
+            };
+          }
+        } else if (a.typeCode === 'FRIDGE') {
+          if (a.name !== 'Tủ lạnh Toshiba Inverter 180L' || a.brand !== 'Toshiba' || a.model !== 'GR-B22VU(UKG)') {
+            changed = true;
+            return {
+              ...a,
+              brand: 'Toshiba',
+              name: 'Tủ lạnh Toshiba Inverter 180L',
+              model: 'GR-B22VU(UKG)',
+              price: 5800000,
+              warrantyMonths: 24
+            };
+          }
+        } else if (a.typeCode === 'WATER_HEATER') {
+          if (a.name !== 'Bình nóng lạnh Ariston 30L chống giật' || a.brand !== 'Ariston' || a.model !== 'AN2 30 LUX') {
+            changed = true;
+            return {
+              ...a,
+              brand: 'Ariston',
+              name: 'Bình nóng lạnh Ariston 30L chống giật',
+              model: 'AN2 30 LUX',
+              price: 3600000,
+              warrantyMonths: 36
+            };
+          }
+        } else if (a.typeCode === 'BED') {
+          if (a.brand !== 'Việt Á Luxury') {
+            changed = true;
+            return {
+              ...a,
+              brand: 'Việt Á Luxury',
+              name: 'Giường nệm cao su non 1m6x2m',
+              model: 'VA-1620',
+              price: 7200000,
+              warrantyMonths: 36
+            };
+          }
+        } else if (a.typeCode === 'WASHING_MACHINE') {
+          if (a.brand !== 'Electrolux') {
+            changed = true;
+            return {
+              ...a,
+              brand: 'Electrolux',
+              name: 'Máy giặt Electrolux UltimateCare 8.5kg',
+              model: 'EWF85743',
+              price: 8900000,
+              warrantyMonths: 24
+            };
+          }
+        }
+        return a;
+      });
+
+      if (changed) {
+        localStorage.setItem(STORAGE_KEYS.ASSETS, JSON.stringify(assets));
+      }
+    } catch (e) {
+      console.warn('migrateUniformAssetBrands error:', e);
+    }
   },
 
   migrateResidentDemoInvoices() {
@@ -1603,7 +2408,16 @@ const DataStore = {
     if (!raw) return INITIAL_ASSET_TYPES;
     try {
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_ASSET_TYPES;
+      if (!Array.isArray(parsed) || parsed.length === 0) return INITIAL_ASSET_TYPES;
+      return parsed.map(type => {
+        const defaults = INITIAL_ASSET_TYPES.find(item => item.code === type.code);
+        return {
+          ...(defaults || {}),
+          ...type,
+          assetClass: type.assetClass ?? defaults?.assetClass ?? (type.allowMultiplePerRoom ? 'EQUIPMENT' : 'FIXED'),
+          allowMultiplePerRoom: type.allowMultiplePerRoom ?? defaults?.allowMultiplePerRoom ?? false
+        };
+      });
     } catch (e) {
       return INITIAL_ASSET_TYPES;
     }
@@ -1613,15 +2427,196 @@ const DataStore = {
     localStorage.setItem(STORAGE_KEYS.ASSET_TYPES, JSON.stringify(types));
   },
 
+  createAssetType({ name, defaultBrand = '', unit = 'Cái', lifespanMonths = 60, assetClass = 'FIXED', allowMultiplePerRoom = false }) {
+    const cleanName = String(name || '').trim();
+    if (!cleanName) return { success: false, error: 'Vui lòng nhập tên loại thiết bị.' };
+
+    const types = this.getAssetTypes();
+    const existing = types.find(t => t.name.toLowerCase() === cleanName.toLowerCase());
+    if (existing) return { success: true, type: existing, existed: true };
+
+    const normalized = cleanName.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toUpperCase().replace(/Đ/g, 'D').replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 24) || 'ASSET';
+    let code = normalized;
+    let suffix = 2;
+    while (types.some(t => t.code === code)) code = `${normalized}_${suffix++}`;
+
+    const type = {
+      id: `at-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      code,
+      name: cleanName,
+      defaultBrand: String(defaultBrand || '').trim(),
+      unit,
+      lifespanMonths: parseInt(lifespanMonths, 10) || 60,
+      icon: 'package',
+      assetClass,
+      allowMultiplePerRoom: assetClass !== 'FIXED' || Boolean(allowMultiplePerRoom)
+    };
+    types.push(type);
+    this.saveAssetTypes(types);
+    return { success: true, type, existed: false };
+  },
+
+  getAssetCodePrefix(typeCode, buildingId) {
+    const building = this.getBuildings().find(b => b.id === buildingId);
+    const buildingCode = (building?.code || buildingId || 'STAYHUB').replace(/^SH[-_]/i, '').replace(/[^A-Z0-9]+/gi, '-').toUpperCase();
+    return `${String(typeCode || 'ASSET').toUpperCase()}-${buildingCode}`;
+  },
+
+  getNextAssetSequence(typeCode, buildingId, assets = this.getAssets()) {
+    const prefix = this.getAssetCodePrefix(typeCode, buildingId);
+    const used = assets.map(a => String(a.code || '').toUpperCase())
+      .map(code => code.match(new RegExp(`^${prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-(\\d+)$`)))
+      .filter(Boolean).map(match => parseInt(match[1], 10));
+    return used.length ? Math.max(...used) + 1 : 1;
+  },
+
   getAssets() {
     const raw = localStorage.getItem(STORAGE_KEYS.ASSETS);
-    if (!raw) return INITIAL_ASSETS;
-    try {
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_ASSETS;
-    } catch (e) {
-      return INITIAL_ASSETS;
+    let list = raw ? JSON.parse(raw) : INITIAL_ASSETS;
+    let modified = false;
+    if (typeof INITIAL_ASSETS !== 'undefined') {
+      INITIAL_ASSETS.forEach(ia => {
+        if (!list.some(sa => sa.id === ia.id)) {
+          list.push(ia);
+          modified = true;
+        }
+      });
     }
+    if (modified || !raw) {
+      localStorage.setItem(STORAGE_KEYS.ASSETS, JSON.stringify(list));
+    }
+    return list;
+  },
+
+  getAssetsByRoom(roomId) {
+    if (!roomId) return [];
+    const assets = this.getAssets();
+    return assets.filter(a => a.roomId === roomId && a.allocationStatus === 'ASSIGNED');
+  },
+
+  getRequiredAssetTypeCodesForRoom(room) {
+    if (!room) return [];
+    const type = (room.type || '').toLowerCase();
+    const required = ['AC', 'FRIDGE', 'WATER_HEATER', 'BED', 'WARDROBE', 'SMART_LOCK'];
+    if (type.includes('1 phòng') || type.includes('duplex') || type.includes('2 phòng')) {
+      required.push('WASHING_MACHINE');
+    }
+    return required;
+  },
+
+  getMissingAssetTypesForRoom(roomId) {
+    const room = this.getRooms().find(r => r.id === roomId);
+    if (!room) return [];
+    const installedCodes = new Set(this.getAssetsByRoom(roomId).map(a => a.typeCode));
+    const stock = this.getAvailableAssetsForBuilding(room.buildingId);
+    return this.getRequiredAssetTypeCodesForRoom(room)
+      .filter(typeCode => !installedCodes.has(typeCode))
+      .map(typeCode => {
+        const typeInfo = INITIAL_ASSET_TYPES.find(t => t.code === typeCode) || { code: typeCode, name: 'Thiết bị' };
+        return {
+          ...typeInfo,
+          availableCount: stock.filter(a => a.typeCode === typeCode).length
+        };
+      });
+  },
+
+  getAvailableAssetsForBuilding(buildingId) {
+    const assets = this.getAssets();
+    return assets.filter(a => {
+      const matchBld = (!buildingId || buildingId === 'ALL') ? true : a.buildingId === buildingId;
+      return matchBld && a.allocationStatus === 'IN_STOCK';
+    });
+  },
+
+  /**
+   * Trạng thái hiệu lực của phòng tại một thời điểm.
+   * - MAINTENANCE luôn được ưu tiên.
+   * - Hợp đồng đang trong kỳ thuê => OCCUPIED.
+   * - Hợp đồng đã ký nhưng chưa tới ngày bắt đầu => RESERVED (sắp thuê/đã cọc).
+   * - Phòng OCCUPIED thủ công vẫn được giữ để không làm mất dữ liệu cũ chưa gắn HĐ.
+   */
+  getEffectiveRoomStatus(room, asOf = new Date()) {
+    if (!room) return 'AVAILABLE';
+    if (room.status === 'MAINTENANCE') return 'MAINTENANCE';
+
+    const roomNumber = room.roomNumber;
+    const contracts = this.getContracts().filter(c => {
+      const sameRoom = c.roomId === room.id || c.room === roomNumber;
+      return sameRoom && c.buildingId === room.buildingId && !['CANCELLED', 'TERMINATED'].includes(c.status);
+    });
+
+    const now = asOf instanceof Date ? asOf : new Date(asOf);
+    const active = contracts.find(c => {
+      const start = new Date(c.startDate);
+      const end = new Date(c.endDate);
+      return ['ACTIVE', 'EXPIRING_SOON'].includes(c.status) && start <= now && end >= now;
+    });
+    if (active) return 'OCCUPIED';
+
+    const upcoming = contracts.find(c => {
+      const start = new Date(c.startDate);
+      return ['ACTIVE', 'EXPIRING_SOON', 'RESERVED'].includes(c.status) && start > now;
+    });
+    if (upcoming) return 'RESERVED';
+
+    return room.status || 'AVAILABLE';
+  },
+
+  getRoomContractSchedule(roomId, roomNumber, buildingId) {
+    const contracts = this.getContracts();
+    return contracts.filter(c => {
+      const matchRoom = (c.roomId === roomId || c.room === roomNumber);
+      const matchBld = (!buildingId || buildingId === 'ALL') ? true : c.buildingId === buildingId;
+      return matchRoom && matchBld && c.status !== 'CANCELLED';
+    }).sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+  },
+
+  findVacantRoomsByDateRange(buildingId, queryStartStr, queryEndStr) {
+    const qStart = new Date(queryStartStr);
+    const qEnd = new Date(queryEndStr);
+    const allRooms = this.getRooms().filter(r => (!buildingId || buildingId === 'ALL') ? true : r.buildingId === buildingId);
+    const contracts = this.getContracts();
+
+    return allRooms.filter(room => {
+      if (room.status === 'MAINTENANCE') return false;
+
+      const hasConflict = contracts.some(c => {
+        const isSameRoom = (c.buildingId === room.buildingId && (c.room === room.roomNumber || c.roomId === room.id));
+        const isEffective = ['ACTIVE', 'EXPIRING_SOON', 'RESERVED'].includes(c.status);
+        if (!isSameRoom || !isEffective) return false;
+
+        const cStart = new Date(c.startDate);
+        const cEnd = new Date(c.endDate);
+        const overlapStart = qStart > cStart ? qStart : cStart;
+        const overlapEnd = qEnd < cEnd ? qEnd : cEnd;
+        return overlapStart <= overlapEnd;
+      });
+
+      return !hasConflict;
+    });
+  },
+
+  getUpcomingVacancies(buildingId, daysAhead = 30) {
+    const now = new Date();
+    const future = new Date();
+    future.setDate(future.getDate() + daysAhead);
+    const contracts = this.getContracts();
+    const rooms = this.getRooms().filter(r => (!buildingId || buildingId === 'ALL') ? true : r.buildingId === buildingId);
+
+    return contracts.filter(c => {
+      const matchBld = (!buildingId || buildingId === 'ALL') ? true : c.buildingId === buildingId;
+      if (!matchBld || (c.status !== 'EXPIRING_SOON' && c.status !== 'ACTIVE')) return false;
+      const endD = new Date(c.endDate);
+      return endD >= now && endD <= future;
+    }).map(c => {
+      const room = rooms.find(r => r.roomNumber === c.room && r.buildingId === c.buildingId);
+      return {
+        contract: c,
+        room: room,
+        daysLeft: Math.ceil((new Date(c.endDate) - now) / (1000 * 60 * 60 * 24))
+      };
+    });
   },
 
   saveAssets(assets) {
@@ -1644,10 +2639,8 @@ const DataStore = {
   },
 
   createAsset(assetData) {
+    const qty = Math.max(1, parseInt(assetData.quantity) || 1);
     // 1. Validate data (Kiểm tra dữ liệu bắt buộc)
-    if (!assetData.code || !assetData.code.trim()) {
-      return { success: false, field: 'code', error: 'Vui lòng nhập Mã tài sản định danh.' };
-    }
     if (!assetData.typeCode) {
       return { success: false, field: 'typeCode', error: 'Vui lòng chọn Loại tài sản (Asset Type).' };
     }
@@ -1658,56 +2651,140 @@ const DataStore = {
       return { success: false, field: 'buildingId', error: 'Vui lòng chọn Cơ sở / Tòa nhà quản lý.' };
     }
 
-    const cleanCode = assetData.code.trim().toUpperCase();
+    const autoGenerateCode = !assetData.code || !assetData.code.trim();
+    const cleanCode = autoGenerateCode
+      ? this.getAssetCodePrefix(assetData.typeCode, assetData.buildingId)
+      : assetData.code.trim().toUpperCase();
     const assets = this.getAssets();
 
-    // 2. Duplicate data check (Kiểm tra trùng lặp mã tài sản)
-    const duplicate = assets.find(a => a.code.toUpperCase() === cleanCode);
-    if (duplicate) {
-      return {
-        success: false,
-        isDuplicate: true,
-        field: 'code',
-        error: `Trùng lặp dữ liệu: Mã tài sản "${cleanCode}" đã tồn tại trong hệ thống (Tên: ${duplicate.name}, Vị trí: ${duplicate.roomNumber || 'Kho'}). Vui lòng nhập lại mã khác!`
-      };
+    // 2. Duplicate data check (Kiểm tra trùng lặp mã tài sản ban đầu nếu chỉ tạo 1)
+    if (qty === 1) {
+      const duplicate = assets.find(a => a.code.toUpperCase() === cleanCode);
+      if (duplicate) {
+        return {
+          success: false,
+          isDuplicate: true,
+          field: 'code',
+          error: `Trùng lặp dữ liệu: Mã tài sản "${cleanCode}" đã tồn tại trong hệ thống (Tên: ${duplicate.name}, Vị trí: ${duplicate.roomNumber || 'Kho'}). Vui lòng nhập lại mã khác!`
+        };
+      }
     }
 
     // 3. Save asset with status = Active (hoặc IN_STOCK)
     const assetTypes = this.getAssetTypes();
     const typeInfo = assetTypes.find(t => t.code === assetData.typeCode) || {};
+    const createdAssets = [];
+    const now = Date.now();
+    let nextSequence = autoGenerateCode ? this.getNextAssetSequence(assetData.typeCode, assetData.buildingId, assets) : null;
 
-    const newAsset = {
-      id: 'ast-' + Date.now(),
-      code: cleanCode,
-      typeCode: assetData.typeCode,
-      typeName: typeInfo.name || assetData.typeName || 'Thiết bị',
-      name: assetData.name.trim(),
-      brand: assetData.brand ? assetData.brand.trim() : (typeInfo.defaultBrand || 'Tiêu chuẩn'),
-      model: assetData.model ? assetData.model.trim() : '',
-      price: parseInt(assetData.price) || 0,
-      purchaseDate: assetData.purchaseDate || new Date().toISOString().split('T')[0],
-      warrantyMonths: parseInt(assetData.warrantyMonths) || 24,
-      buildingId: assetData.buildingId,
-      roomId: null,
-      roomNumber: 'Kho thiết bị',
-      status: 'ACTIVE',
-      allocationStatus: 'IN_STOCK',
-      condition: assetData.condition || 'Mới 100%',
-      createdAt: new Date().toISOString()
-    };
+    for (let i = 1; i <= qty; i++) {
+      let itemCode = autoGenerateCode
+        ? `${cleanCode}-${String(nextSequence++).padStart(3, '0')}`
+        : cleanCode;
+      if (!autoGenerateCode && qty > 1) {
+        let suffix = i;
+        itemCode = `${cleanCode}-${String(suffix).padStart(2, '0')}`;
+        while (assets.some(a => a.code.toUpperCase() === itemCode) || createdAssets.some(a => a.code.toUpperCase() === itemCode)) {
+          suffix++;
+          itemCode = `${cleanCode}-${String(suffix).padStart(2, '0')}`;
+        }
+      }
 
-    assets.unshift(newAsset);
+      const newAsset = {
+        id: `ast-${now}-${Math.random().toString(36).slice(2, 8)}-${i}`,
+        code: itemCode,
+        typeCode: assetData.typeCode,
+        typeName: typeInfo.name || assetData.typeName || 'Thiết bị',
+        name: assetData.name.trim(),
+        brand: assetData.brand ? assetData.brand.trim() : (typeInfo.defaultBrand || 'Tiêu chuẩn'),
+        model: assetData.model ? assetData.model.trim() : '',
+        specifications: assetData.specifications ? assetData.specifications.trim() : '',
+        price: parseInt(assetData.price) || 0,
+        purchaseDate: assetData.purchaseDate || new Date().toISOString().split('T')[0],
+        warrantyMonths: parseInt(assetData.warrantyMonths) || 24,
+        buildingId: assetData.buildingId,
+        roomId: null,
+        roomNumber: 'Kho thiết bị',
+        status: 'ACTIVE',
+        allocationStatus: 'IN_STOCK',
+        condition: assetData.condition || 'Mới 100%',
+        createdAt: new Date().toISOString()
+      };
+      createdAssets.push(newAsset);
+    }
+
+    assets.unshift(...createdAssets);
     this.saveAssets(assets);
 
     // 4. Log activity (Ghi nhật ký kiểm toán hệ thống)
     const user = this.getUser();
+    const buildings = this.getBuildings();
+    const bld = buildings.find(b => b.id === assetData.buildingId);
     this.addAuditLog(
-      'TẠO_TÀI_SẢN_MỚI',
-      `Tài sản: ${newAsset.code}`,
-      `Người dùng ${user.fullName || 'Nhân sự'} đã tạo mới tài sản [${newAsset.code}] - ${newAsset.name} (Loại: ${newAsset.typeName}) với trạng thái ACTIVE trong kho.`
+      'NHẬP_KHO_TÀI_SẢN',
+      `Tài sản: ${cleanCode} - SL: ${qty}`,
+      `Quản lý / Nhân viên ${user.fullName || 'Trần Minh Đức'} (${user.role || 'MANAGER'}) đã nhập ${qty} sản phẩm [${assetData.name}] vào kho cơ sở ${bld ? bld.name : ''}.`
     );
 
-    return { success: true, asset: newAsset };
+    return { success: true, asset: createdAssets[0], totalCreated: qty, assets: createdAssets };
+  },
+
+  restockAsset(assetId, quantity, customPrice = null, notes = '', condition = 'Mới 100%') {
+    const qty = Math.max(1, parseInt(quantity) || 1);
+    const assets = this.getAssets();
+    const sourceAsset = assets.find(a => a.id === assetId);
+    if (!sourceAsset) {
+      return { success: false, error: 'Không tìm thấy thông tin thiết bị gốc.' };
+    }
+
+    const rawCode = sourceAsset.code.replace(/-\d+$/, '');
+    const newItems = [];
+    const now = Date.now();
+
+    for (let i = 1; i <= qty; i++) {
+      let itemCode = '';
+      let suffix = i;
+      while (true) {
+        itemCode = `${rawCode}-${String(suffix).padStart(2, '0')}`;
+        if (!assets.some(a => a.code.toUpperCase() === itemCode) && !newItems.some(a => a.code.toUpperCase() === itemCode)) {
+          break;
+        }
+        suffix++;
+      }
+
+      const item = {
+        ...sourceAsset,
+        id: 'ast-' + now + '-' + i,
+        code: itemCode,
+        price: customPrice !== null && !isNaN(customPrice) ? parseInt(customPrice) : sourceAsset.price,
+        purchaseDate: new Date().toISOString().split('T')[0],
+        roomId: null,
+        roomNumber: 'Kho thiết bị',
+        status: 'ACTIVE',
+        allocationStatus: 'IN_STOCK',
+        condition: condition || 'Mới 100%',
+        assignedAt: null,
+        assignedBy: null,
+        notes: notes || 'Nhập thêm số lượng vào kho',
+        createdAt: new Date().toISOString()
+      };
+      newItems.push(item);
+    }
+
+    assets.unshift(...newItems);
+    this.saveAssets(assets);
+
+    const user = this.getUser();
+    const buildings = this.getBuildings();
+    const bld = buildings.find(b => b.id === sourceAsset.buildingId);
+
+    this.addAuditLog(
+      'NHẬP_THÊM_SỐ_LƯỢNG',
+      `Tài sản: ${sourceAsset.name} - Thêm: ${qty} cái`,
+      `Quản lý ${user.fullName || 'Trần Minh Đức'} đã nhập bổ sung ${qty} sản phẩm ${sourceAsset.name} vào kho cơ sở ${bld ? bld.name : ''}.`
+    );
+
+    return { success: true, count: qty, items: newItems, source: sourceAsset };
   },
 
   assignAssetToRoom({ assetId, buildingId, roomId, roomNumber, notes }) {
@@ -1722,6 +2799,20 @@ const DataStore = {
     const targetAsset = assets.find(a => a.id === assetId);
     if (!targetAsset) {
       return { success: false, error: 'Không tìm thấy tài sản trong kho.' };
+    }
+
+    if (targetAsset.allocationStatus !== 'IN_STOCK') {
+      return { success: false, error: 'Thiết bị này không còn trong kho dự phòng.' };
+    }
+
+    const typeInfo = this.getAssetTypes().find(t => t.code === targetAsset.typeCode);
+    const existingInRoom = assets.some(a =>
+      a.roomId === roomId &&
+      a.allocationStatus === 'ASSIGNED' &&
+      a.typeCode === targetAsset.typeCode
+    );
+    if (existingInRoom && !(typeInfo && typeInfo.allowMultiplePerRoom)) {
+      return { success: false, error: `Phòng ${roomNumber} đã có thiết bị loại [${targetAsset.typeName || targetAsset.typeCode}].` };
     }
 
     const user = this.getUser();
@@ -1770,6 +2861,47 @@ const DataStore = {
     return { success: true, assignment: newAssignment, asset: targetAsset };
   },
 
+  bulkAssignAssetsToRooms({ buildingId, typeCode, roomIds = [], notes }) {
+    if (!buildingId || !typeCode || !Array.isArray(roomIds) || roomIds.length === 0) {
+      return { success: false, error: 'Vui lòng chọn loại thiết bị và ít nhất một phòng.' };
+    }
+
+    const rooms = this.getRooms().filter(r => r.buildingId === buildingId && roomIds.includes(r.id));
+    const availableAssets = this.getAvailableAssetsForBuilding(buildingId)
+      .filter(a => a.typeCode === typeCode);
+    const assigned = [];
+    const skipped = [];
+
+    rooms.forEach(room => {
+      const typeInfo = this.getAssetTypes().find(t => t.code === typeCode);
+      const hasSameType = this.getAssetsByRoom(room.id).some(a => a.typeCode === typeCode);
+      if (hasSameType && !(typeInfo && typeInfo.allowMultiplePerRoom)) {
+        skipped.push({ room, reason: 'Phòng đã có thiết bị loại này.' });
+        return;
+      }
+      if (room.status === 'MAINTENANCE') {
+        skipped.push({ room, reason: 'Phòng đang bảo trì.' });
+        return;
+      }
+      const asset = availableAssets.shift();
+      if (!asset) {
+        skipped.push({ room, reason: 'Kho không còn đủ thiết bị.' });
+        return;
+      }
+      const result = this.assignAssetToRoom({
+        assetId: asset.id,
+        buildingId,
+        roomId: room.id,
+        roomNumber: room.roomNumber,
+        notes: notes || 'Gán thiết bị hàng loạt'
+      });
+      if (result.success) assigned.push({ room, asset: result.asset });
+      else skipped.push({ room, reason: result.error });
+    });
+
+    return { success: assigned.length > 0, assigned, skipped, typeCode };
+  },
+
   unassignAsset(assetId) {
     const assets = this.getAssets();
     const target = assets.find(a => a.id === assetId);
@@ -1794,6 +2926,52 @@ const DataStore = {
     return { success: true, asset: target };
   },
 
+  transferAssetToRoom({ assetId, roomId, notes = '' }) {
+    const assets = this.getAssets();
+    const target = assets.find(asset => asset.id === assetId);
+    const room = this.getRooms().find(item => item.id === roomId);
+    if (!target) return { success: false, error: 'Không tìm thấy tài sản.' };
+    if (!room) return { success: false, error: 'Không tìm thấy phòng mới.' };
+    if (target.allocationStatus !== 'ASSIGNED') return { success: false, error: 'Chỉ có thể chuyển thiết bị đang được gán trong phòng.' };
+
+    const typeInfo = this.getAssetTypes().find(type => type.code === target.typeCode);
+    const duplicate = this.getAssetsByRoom(room.id).some(asset => asset.typeCode === target.typeCode);
+    if (duplicate && !(typeInfo && typeInfo.allowMultiplePerRoom)) {
+      return { success: false, error: `Phòng ${room.roomNumber} đã có thiết bị loại ${target.typeName || target.typeCode}.` };
+    }
+
+    const oldRoom = target.roomNumber;
+    target.roomId = room.id;
+    target.roomNumber = room.roomNumber;
+    target.buildingId = room.buildingId;
+    target.assignedAt = new Date().toLocaleDateString('vi-VN');
+    target.assignedBy = this.getUser().fullName || 'Nhân sự StayHub';
+    if (notes) target.conditionNotes = notes;
+    this.saveAssets(assets);
+
+    const assignments = this.getAssetAssignments();
+    assignments.unshift({
+      id: 'asg-' + Date.now(),
+      assetId: target.id,
+      assetCode: target.code,
+      assetName: target.name,
+      typeCode: target.typeCode,
+      typeName: target.typeName,
+      buildingId: target.buildingId,
+      roomId: room.id,
+      roomNumber: room.roomNumber,
+      assignedDate: target.assignedAt,
+      assignedAt: target.assignedAt,
+      assignedBy: target.assignedBy,
+      notes: notes || `Chuyển từ phòng ${oldRoom}`,
+      status: 'ACTIVE',
+      action: 'TRANSFER'
+    });
+    this.saveAssetAssignments(assignments);
+    this.addAuditLog('CHUYEN_PHONG_TAI_SAN', `Tài sản: ${target.code}`, `Chuyển thiết bị [${target.code}] từ phòng ${oldRoom} sang phòng ${room.roomNumber}.`);
+    return { success: true, asset: target, oldRoom, room };
+  },
+
   getUsers() {
     const raw = localStorage.getItem(STORAGE_KEYS.USERS);
     if (!raw) return INITIAL_USERS;
@@ -1816,12 +2994,13 @@ const DataStore = {
       fullName: userData.fullName || 'Người dùng mới',
       email: userData.email || '',
       phone: userData.phone || '',
+      zaloPhone: userData.zaloPhone || userData.phone || '',
       role: userData.role || 'STAFF',
       scope: userData.scope || 'Toàn bộ 3 cơ sở',
       status: userData.status || 'ACTIVE',
       initialPassword: userData.initialPassword || null,
       avatar: userData.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
-      title: userData.title || 'Nhân sự StayHub',
+      title: userData.title || '',
       cccd: userData.cccd || '',
       room: userData.room || '',
       building: userData.building || '',

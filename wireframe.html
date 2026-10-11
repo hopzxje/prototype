@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="vi" data-mau="xam" data-nhan="cham">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - Quản Lý Tài Sản & Thiết Bị (StayHub)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bg-[#f8fafc] text-[#0f172a] font-sans antialiased min-h-screen flex flex-col" data-gon="0" data-bolap="0">
+
+  <!-- ===================================================================
+       THANH CÔNG CỤ WIREFRAME (THEO QUY CHUẨN DESIGN PROCESS)
+       =================================================================== -->
+  <nav class="wf-bar" aria-label="Wireframe Tooling">
+    <div class="wf-group">
+      <span class="wf-label font-bold text-slate-800 text-xs">Phương án:</span>
+      <span class="wf-set" data-wf-param="v">
+        <a data-value="a" title="A · 3 Không gian tác vụ (Khuyên dùng)" data-recommended>A</a>
+        <a data-value="b" title="B · Master / Detail chia đôi màn hình">B</a>
+        <a data-value="c" title="C · Kanban vòng đời trạng thái">C</a>
+      </span>
+    </div>
+
+    <span class="wf-set wf-flags">
+      <a data-wf-toggle="gon" data-on="1" data-off="0">Gọn chữ</a>
+      <a data-wf-toggle="bolap" data-on="1" data-off="0">Bỏ lặp</a>
+    </span>
+
+    <a class="wf-switch" data-wf-toggle="mau" data-on="mau" data-off="xam" role="switch">
+      Màu <i></i>
+    </a>
+
+    <span class="wf-set" data-wf-param="nhan">
+      <a data-value="cham" aria-label="Chàm"><i></i></a>
+      <a data-value="ngoc" aria-label="Xanh ngọc"><i></i></a>
+      <a data-value="cam" aria-label="Cam"><i></i></a>
+    </span>
+
+    <span class="wf-set" data-wf-param="kho">
+      <a data-value="desktop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Desktop
+      </a>
+      <a data-value="mobile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+        Mobile
+      </a>
+    </span>
+
+    <details class="wf-menu">
+      <summary>
+        <span>Trạng thái:</span>
+        <b data-wf-current="tt">Có dữ liệu</b>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="wf-popover" data-wf-param="tt">
+        <a data-value="du-lieu">Có dữ liệu</a>
+        <a data-value="dang-tai">Đang tải</a>
+        <a data-value="rong">Rỗng</a>
+        <a data-value="loi">Lỗi kết nối</a>
+      </div>
+    </details>
+  </nav>
+
+  <!-- ===================================================================
+       KHUNG LÝ DO & ĐÁNH GIÁ (THEO QUY CHUẨN DESIGN PROCESS)
+       =================================================================== -->
+  <details class="wf-reason" data-wf-reason open>
+    <summary>
+      <span class="wf-reason-name" id="reason-title">A · 3 Không gian tác vụ (Kho chủng loại, Phân bổ phòng, Biên bản)</span>
+      <span class="wf-reason-tag" id="reason-tag">Khuyên dùng</span>
+      <span class="wf-reason-why" id="reason-why">Phù hợp nhất với vận hành thực tế: quản lý số lượng tồn theo chủng loại, phân bổ phòng trực quan, và lưu nhật ký.</span>
+      <span class="wf-reason-toggle">
+        <span>Ưu, nhược</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </span>
+    </summary>
+    <div class="wf-reason-body">
+      <div class="wf-reason-cols" id="reason-details">
+        <!-- Rendered dynamically depending on Option A, B, or C -->
+      </div>
+      <div class="wf-reason-tips">
+        <h3>Gợi ý phản hồi nhanh:</h3>
+        <button type="button" data-copy="Chọn phương án A (Khuyên dùng)">Chọn phương án A<svg data-icon="chep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg data-icon="da-chep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></button>
+        <button type="button" data-copy="Chọn phương án B (Master/Detail)">Chọn phương án B<svg data-icon="chep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg data-icon="da-chep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></button>
+        <button type="button" data-copy="Chọn phương án C (Kanban vòng đời)">Chọn phương án C<svg data-icon="chep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg data-icon="da-chep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></button>
+        <button type="button" data-copy="Bật Gọn chữ và Bỏ lặp">Bật Gọn chữ & Bỏ lặp<svg data-icon="chep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg data-icon="da-chep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></button>
+      </div>
+    </div>
+  </details>
+
+  <!-- ===================================================================
+       VÙNG NỘI DUNG THIẾT KẾ WIREFRAME CHÍNH (#wf-design)
+       =================================================================== -->
+  <main id="wf-design" class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+    <!-- Dựng động phương án A, B, hoặc C theo URL param '?v=' -->
+  </main>
+
+  <!-- ===================================================================
+       STYLESHEET WIREFRAME & THEME TOKENS
+       =================================================================== -->
+  <style>
+    :root {
+      --primary: #0F766E;
+      --primary-hover: #115E59;
+      --primary-light: #f0fdfa;
+      --border-focus: var(--primary);
+      --ring-focus: rgba(15, 118, 110, 0.2);
+    }
+
+    /* Nấc Xám */
+    :root[data-mau="xam"] {
+      --primary: #334155;
+      --primary-hover: #1e293b;
+      --primary-light: #f1f5f9;
+      --border-focus: #475569;
+      --ring-focus: rgba(51, 65, 85, 0.15);
+    }
+
+    /* Nấc Màu: Chàm / Xanh ngọc / Cam */
+    :root:not([data-mau="xam"])[data-nhan="cham"] {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --border-focus: #4f46e5;
+      --ring-focus: rgba(79, 70, 229, 0.2);
+    }
+    :root:not([data-mau="xam"])[data-nhan="ngoc"] {
+      --primary: #0F766E;
+      --primary-hover: #115E59;
+      --primary-light: #f0fdfa;
+      --border-focus: #0F766E;
+      --ring-focus: rgba(15, 118, 110, 0.2);
+    }
+    :root:not([data-mau="xam"])[data-nhan="cam"] {
+      --primary: #ea580c;
+      --primary-hover: #c2410c;
+      --primary-light: #fff7ed;
+      --border-focus: #ea580c;
+      --ring-focus: rgba(234, 88, 12, 0.2);
+    }
+
+    /* Toolbar quy chuẩn */
+    .wf-bar { position: relative; z-index: 50; display: flex; align-items: center; gap: 20px; height: 56px;
+      padding: 0 16px; overflow-x: auto; white-space: nowrap; background: #fff; border-bottom: 1px solid #e2e8f0;
+      color: #64748b; font: 13px/1 system-ui, -apple-system, sans-serif; }
+    .wf-bar *, .wf-reason * { box-sizing: border-box; }
+    .wf-group { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .wf-set { display: flex; align-items: center; gap: 2px; flex-shrink: 0; padding: 3px; border-radius: 8px; background: #f1f5f9; }
+    .wf-set a { position: relative; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px;
+      border-radius: 6px; color: #64748b; text-decoration: none; cursor: pointer; }
+    .wf-set a:hover { color: #0f172a; }
+    .wf-switch { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; color: #64748b; text-decoration: none; cursor: pointer; }
+    .wf-switch i { position: relative; width: 34px; height: 18px; border-radius: 9px; background: #cbd5e1; transition: background .15s; }
+    .wf-switch i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / .2); transition: translate .15s; }
+    .wf-switch[aria-checked="true"] i { background: var(--primary); }
+    .wf-switch[aria-checked="true"] i::after { translate: 16px 0; }
+    .wf-set a[aria-current="page"], .wf-flags a[aria-pressed="true"] { background: #fff; color: #0f172a; font-weight: 600;
+      box-shadow: 0 1px 2px rgb(0 0 0 / .08), 0 0 0 1px rgb(0 0 0 / .04); }
+    .wf-bar svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .wf-flags a::before { content: ""; width: 11px; height: 11px; border: 1.5px solid #94a3b8; border-radius: 2px; }
+    .wf-flags a[aria-pressed="true"]::before { border-color: #0f172a; background: #0f172a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 9px no-repeat; }
+
+    body[data-gon="1"] [data-wf-gon] { display: none !important; }
+    body[data-bolap="1"] [data-wf-lap] { display: none !important; }
+
+    [data-wf-param="v"] a { justify-content: center; min-width: 32px; padding: 0 10px; font-weight: 700; }
+    [data-wf-param="v"] a[data-recommended]::after { content: ""; position: absolute; top: 4px; right: 4px;
+      width: 5px; height: 5px; border-radius: 50%; background: #0F766E; }
+    [data-wf-param="nhan"] a { padding: 0 8px; }
+    [data-wf-param="nhan"] i { width: 14px; height: 14px; border-radius: 50%; background: currentColor; }
+    [data-wf-param="nhan"] a[data-value="cham"] { color: #4f46e5; }
+    [data-wf-param="nhan"] a[data-value="ngoc"] { color: #0F766E; }
+    [data-wf-param="nhan"] a[data-value="cam"] { color: #ea580c; }
+
+    .wf-menu summary { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 6px;
+      cursor: pointer; list-style: none; }
+    .wf-menu summary::-webkit-details-marker { display: none; }
+    .wf-menu summary:hover, .wf-menu[open] summary { background: #f1f5f9; }
+    .wf-menu b { color: #0f172a; font-weight: 600; }
+    .wf-popover { position: fixed; z-index: 60; display: grid; min-width: 160px; padding: 4px; background: #fff;
+      border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / .08); }
+    .wf-popover a { display: flex; align-items: center; height: 32px; padding: 0 10px; border-radius: 5px; color: #334155; text-decoration: none; cursor: pointer; }
+    .wf-popover a:hover, .wf-popover a[aria-current="page"] { background: #f1f5f9; color: #0f172a; font-weight: 600; }
+
+    .wf-reason { border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #334155; font: 13px/1.5 system-ui, -apple-system, sans-serif; }
+    .wf-reason summary { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; min-height: 44px; padding: 8px 16px;
+      cursor: pointer; list-style: none; }
+    .wf-reason summary::-webkit-details-marker { display: none; }
+    .wf-reason-name { color: #0f172a; font-weight: 700; }
+    .wf-reason-tag { padding: 2px 8px; border-radius: 6px; background: #ccfbf1; color: #0f766e; font-size: 11px; font-weight: 700; }
+    .wf-reason-why { flex: 1; min-width: 0; color: #475569; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .wf-reason[open] .wf-reason-why { white-space: normal; }
+    .wf-reason-toggle { display: inline-flex; align-items: center; gap: 4px; height: 26px; margin-left: auto;
+      padding: 0 8px; border-radius: 6px; color: #0f172a; font-weight: 600; }
+    .wf-reason summary:hover .wf-reason-toggle { background: #e2e8f0; }
+    .wf-reason-toggle svg { width: 14px; height: 14px; transition: rotate .15s; }
+    .wf-reason[open] .wf-reason-toggle svg { rotate: 180deg; }
+    .wf-reason-body { display: grid; gap: 14px; padding: 4px 16px 16px; }
+    .wf-reason-cols { display: grid; max-width: 1120px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 24px; }
+    .wf-reason h3 { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; color: #0f172a; font-size: 12px; font-weight: 700; }
+    .wf-reason h3 i { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; }
+    .wf-reason h3 i[data-tone="uu"] { background: #10b981; }
+    .wf-reason h3 i[data-tone="nhuoc"] { background: #f59e0b; }
+    .wf-reason ul { display: grid; gap: 3px; margin: 0; padding-left: 16px; }
+    .wf-reason-tips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid #e2e8f0; }
+    .wf-reason-tips h3 { margin: 0 6px 0 0; }
+    .wf-reason-tips button { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px; border: 1px solid #cbd5e1;
+      border-radius: 6px; background: #fff; color: #1e293b; font-size: 12px; font-weight: 500; cursor: pointer; }
+    .wf-reason-tips button:hover { background: #f1f5f9; border-color: #94a3b8; }
+    .wf-reason-tips button svg { width: 13px; height: 13px; color: #64748b; }
+    .wf-reason-tips button [data-icon="da-chep"] { display: none; }
+    .wf-reason-tips button[data-copied] [data-icon="chep"] { display: none; }
+    .wf-reason-tips button[data-copied] [data-icon="da-chep"] { display: block; color: #10b981; }
+
+    /* Đánh số khối data-wf-block */
+    [data-wf-block] { position: relative; }
+    [data-wf-block]::before { content: attr(data-wf-block); position: absolute; top: 4px; left: 4px; z-index: 10;
+      display: grid; place-items: center; width: 18px; height: 18px; border-radius: 9px; background: #0f172a; color: #fff; font-size: 10.5px; font-weight: 700; }
+    [data-wf-block][data-wf-block-out]::before { top: auto; bottom: 100%; margin-bottom: 2px; }
+
+    /* Dynamic Primary Accent Styles */
+    .btn-primary {
+      background-color: var(--primary) !important;
+      color: #ffffff !important;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover) !important;
+    }
+    .text-primary {
+      color: var(--primary) !important;
+    }
+    .border-primary {
+      border-color: var(--primary) !important;
+    }
+    .bg-primary-light {
+      background-color: var(--primary-light) !important;
+    }
+    .tab-active {
+      border-bottom: 2px solid var(--primary) !important;
+      color: var(--primary) !important;
+      font-weight: 700 !important;
+    }
+  </style>
+
+  <!-- ===================================================================
+       SCRIPT ĐIỀU KHIỂN WIREFRAME INTERACTIVE
+       =================================================================== -->
+  <script>
+    const params = new URLSearchParams(location.search);
+    const state = {
+      v: params.get('v') || 'a',
+      gon: params.get('gon') || '0',
+      bolap: params.get('bolap') || '0',
+      mau: params.get('mau') || 'xam',
+      nhan: params.get('nhan') || 'cham',
+      kho: params.get('kho') || 'desktop',
+      tt: params.get('tt') || 'du-lieu',
+      uu: params.get('uu') || '1'
+    };
+
+    document.body.dataset.gon = state.gon;
+    document.body.dataset.bolap = state.bolap;
+    document.documentElement.dataset.mau = state.mau;
+    document.documentElement.dataset.nhan = state.nhan;
+
+    const linkTo = (changes) => `?${new URLSearchParams({ ...state, ...changes })}`;
+
+    function updateToolbar() {
+      // Active states for links
+      for (const set of document.querySelectorAll('[data-wf-param]')) {
+        const param = set.dataset.wfParam;
+        for (const link of set.querySelectorAll('a')) {
+          link.href = linkTo({ [param]: link.dataset.value });
+          if (state[param] === link.dataset.value) {
+            link.setAttribute('aria-current', 'page');
+            const lbl = document.querySelector(`[data-wf-current="${param}"]`);
+            if (lbl) lbl.textContent = link.textContent.trim();
+          } else {
+            link.removeAttribute('aria-current');
+          }
+        }
+      }
+
+      // Toggles (Gọn chữ, Bỏ lặp)
+      for (const toggle of document.querySelectorAll('[data-wf-toggle]')) {
+        const param = toggle.dataset.wfToggle;
+        const isOn = state[param] === toggle.dataset.on;
+        toggle.setAttribute(toggle.getAttribute('role') === 'switch' ? 'aria-checked' : 'aria-pressed', String(isOn));
+        toggle.href = linkTo({ [param]: isOn ? toggle.dataset.off : toggle.dataset.on });
+      }
+    }
+
+    // Render wireframe options and rationale
+    function renderContent() {
+      const designEl = document.getElementById('wf-design');
+      const detailsEl = document.getElementById('reason-details');
+      const titleEl = document.getElementById('reason-title');
+      const tagEl = document.getElementById('reason-tag');
+      const whyEl = document.getElementById('reason-why');
+
+      // Update rationale text based on Option
+      if (state.v === 'a') {
+        titleEl.textContent = 'A · 3 Không gian tác vụ: Kho Chủng Loại, Phân Bổ Phòng, Biên Bản';
+        tagEl.textContent = 'Khuyên dùng';
+        tagEl.className = 'wf-reason-tag bg-teal-100 text-teal-800';
+        whyEl.textContent = 'Phân tách đúng trách nhiệm nghiệp vụ: Quản lý tổng tồn kho theo mẫu & Gán/thu hồi thiết bị theo từng căn hộ.';
+        detailsEl.innerHTML = `
+          <section>
+            <h3><i data-tone="uu"></i>Ưu điểm nổi bật</h3>
+            <ul>
+              <li>Nhìn thấy ngay số lượng tồn theo chủng loại (Điều hòa: 12 tổng / 2 kho / 10 phòng).</li>
+              <li>Thao tác nhập thêm "+ SL" trực tiếp tại từng dòng hoặc nút nổi đầu trang.</li>
+              <li>Tab căn hộ hiển thị danh sách thẻ phòng trực quan, bấm 1 chạm để xem thiết bị đã lắp.</li>
+            </ul>
+          </section>
+          <section>
+            <h3><i data-tone="nhuoc"></i>Đánh đổi</h3>
+            <ul>
+              <li>Cần chia làm 3 tab chuyên biệt nên người dùng cần bấm chuyển tab khi đổi mục đích tác vụ.</li>
+            </ul>
+          </section>
+          <section>
+            <h3><i></i>Phù hợp nhất khi</h3>
+            <p>Hệ thống có nhiều phòng (20-100 phòng) và cần kiểm soát chặt chẽ số lượng thiết bị tồn kho theo từng loại.</p>
+          </section>
+        `;
+      } else if (state.v === 'b') {
+        titleEl.textContent = 'B · Master / Detail chia đôi màn hình (Split Panel)';
+        tagEl.textContent = 'Tra cứu nhanh';
+        tagEl.className = 'wf-reason-tag bg-blue-100 text-blue-800';
+        whyEl.textContent = 'Dành cho nhân viên kiểm kê: Bấm chọn bất kỳ thiết bị nào ở cột trái, cột phải bung ngay toàn bộ hồ sơ chi tiết.';
+        detailsEl.innerHTML = `
+          <section>
+            <h3><i data-tone="uu"></i>Ưu điểm nổi bật</h3>
+            <ul>
+              <li>Không cần mở modal hay đổi trang để xem chi tiết thiết bị, bảo hành và phòng đang dùng.</li>
+              <li>Thao tác nhanh cho việc kiểm kê và đối soát hàng loạt.</li>
+            </ul>
+          </section>
+          <section>
+            <h3><i data-tone="nhuoc"></i>Đánh đổi</h3>
+            <ul>
+              <li>Bảng dữ liệu bên trái bị thu hẹp ngang (còn ~60%), trên màn hình nhỏ/laptop hẹp có thể phải cuộn ngang.</li>
+            </ul>
+          </section>
+          <section>
+            <h3><i></i>Phù hợp nhất khi</h3>
+            <p>Người dùng làm việc trên màn hình lớn và thường xuyên xem chi tiết từng cá thể tài sản.</p>
+          </section>
+        `;
+      } else {
+        titleEl.textContent = 'C · Kanban Trực Quan Theo Vòng Đời Trạng Thái (Lifecycle Columns)';
+        tagEl.textContent = 'Trực quan hóa';
+        tagEl.className = 'wf-reason-tag bg-purple-100 text-purple-800';
+        whyEl.textContent = 'Phân loại tài sản thành 3 làn: Sẵn sàng trong kho / Đang dùng tại phòng / Đang bảo trì sửa chữa.';
+        detailsEl.innerHTML = `
+          <section>
+            <h3><i data-tone="uu"></i>Ưu điểm nổi bật</h3>
+            <ul>
+              <li>Rất trực quan theo luồng vận hành thực tế: biết ngay kho có gì, phòng nào đang dùng, món nào đang hỏng.</li>
+              <li>Thao tác di chuyển hoặc chuyển trạng thái thiết bị tức thì.</li>
+            </ul>
+          </section>
+          <section>
+            <h3><i data-tone="nhuoc"></i>Đánh đổi</h3>
+            <ul>
+              <li>Khi có hàng trăm thiết bị, các cột kanban dài và khó lọc theo các tiêu chí phức tạp.</li>
+            </ul>
+          </section>
+          <section>
+            <h3><i></i>Phù hợp nhất khi</h3>
+            <p>Cơ sở quy mô vừa và nhỏ (dưới 30 phòng), ưu tiên cái nhìn tổng quan trực quan.</p>
+          </section>
+        `;
+      }
+
+      // Check state for Loading, Empty, or Error
+      if (state.tt === 'dang-tai') {
+        designEl.innerHTML = renderSkeleton();
+        return;
+      }
+      if (state.tt === 'rong') {
+        designEl.innerHTML = renderEmptyState();
+        return;
+      }
+      if (state.tt === 'loi') {
+        designEl.innerHTML = renderErrorState();
+        return;
+      }
+
+      // Render actual Data based on Option A, B, or C
+      if (state.v === 'a') {
+        designEl.innerHTML = renderOptionA();
+      } else if (state.v === 'b') {
+        designEl.innerHTML = renderOptionB();
+      } else {
+        designEl.innerHTML = renderOptionC();
+      }
+
+      if (window.lucide) lucide.createIcons();
+      requestAnimationFrame(() => placeBlockNumbers());
+    }
+
+    // =========================================================================
+    // OPTION A: 3 KHÔNG GIAN TÁC VỤ (KHUYÊN DÙNG)
+    // =========================================================================
+    function renderOptionA() {
+      return `
+        <!-- Khối 1: Header tinh gọn & Hành động trọng tâm -->
+        <div data-wf-block="1" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-teal-50 text-[#0F766E] flex items-center justify-center font-bold">
+                <i data-lucide="package" class="w-4 h-4"></i>
+              </span>
+              <h1 class="text-lg font-bold text-slate-900">Quản Lý Tài Sản & Thiết Bị Căn Hộ</h1>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">28 Tài sản</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1" data-wf-gon>Quản lý danh mục thiết bị, số lượng tồn kho và phân bổ theo từng căn hộ StayHub</p>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button class="px-3.5 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors flex items-center gap-1.5 cursor-pointer">
+              <i data-lucide="corner-down-right" class="w-4 h-4 text-amber-600"></i>
+              <span>Gán Thiết Bị Vào Phòng</span>
+            </button>
+            <button class="px-4 py-2 btn-primary rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>+ Nhập Kho / Thêm Số Lượng</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Khối 2: Dải 4 KPI Cards số liệu tồn kho thông minh -->
+        <div data-wf-block="2" class="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tổng tài sản</span>
+              <span class="p-1.5 rounded-lg bg-teal-50 text-teal-700"><i data-lucide="boxes" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2 mt-1">
+              <h2 class="text-2xl font-black text-slate-900">28</h2>
+              <span class="text-xs text-slate-400 font-medium">thiết bị</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1" data-wf-gon>8 chủng loại thiết bị</p>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Đang trang bị</span>
+              <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700"><i data-lucide="check-circle" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2 mt-1">
+              <h2 class="text-2xl font-black text-emerald-600">22</h2>
+              <span class="text-xs text-emerald-700 font-medium">tại 9 phòng</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1" data-wf-gon>Tỷ lệ sử dụng 78.5%</p>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tồn kho sẵn sàng</span>
+              <span class="p-1.5 rounded-lg bg-amber-50 text-amber-700"><i data-lucide="warehouse" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2 mt-1">
+              <h2 class="text-2xl font-black text-amber-600">6</h2>
+              <span class="text-xs text-amber-700 font-medium">chưa gán</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1" data-wf-gon>Sẵn sàng trang bị phòng mới</p>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Cần bổ sung / BH</span>
+              <span class="p-1.5 rounded-lg bg-rose-50 text-rose-600"><i data-lucide="alert-circle" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2 mt-1">
+              <h2 class="text-2xl font-black text-rose-600">1</h2>
+              <span class="text-xs text-rose-700 font-medium">cần thay thế</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1" data-wf-gon>Máy giặt báo lỗi bơm</p>
+          </div>
+        </div>
+
+        <!-- Khối 3: Thanh chuyển Tab không gian tác vụ + Bộ lọc -->
+        <div data-wf-block="3" class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-b border-slate-200 px-4 pt-2 gap-3">
+            <div class="flex items-center gap-6 overflow-x-auto">
+              <button class="pb-3 text-xs font-bold tab-active flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="layers" class="w-4 h-4"></i>
+                <span>1. Kho & Chủng Loại Mẫu (Stock & Catalog)</span>
+                <span class="px-1.5 py-0.2 rounded text-[10.5px] bg-teal-50 text-[#0F766E]">8 loại</span>
+              </button>
+              <button class="pb-3 text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="home" class="w-4 h-4"></i>
+                <span>2. Bố Trí Theo Căn Hộ (Room Grid)</span>
+                <span class="px-1.5 py-0.2 rounded text-[10.5px] bg-slate-100 text-slate-600">12 phòng</span>
+              </button>
+              <button class="pb-3 text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="history" class="w-4 h-4"></i>
+                <span>3. Nhật Ký Bàn Giao & Thu Hồi</span>
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2 pb-2 sm:pb-0">
+              <div class="relative">
+                <input type="text" placeholder="Tìm tên thiết bị, mã..." class="bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 w-48 sm:w-60 focus:outline-teal-600">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+              </div>
+              <select class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 font-medium">
+                <option>StayHub Central - Quận 1</option>
+                <option>StayHub Riverside - Tây Hồ</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Khối 4: Bảng danh mục Chủng loại thiết bị (Catalog Table) -->
+          <div data-wf-block="4" class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50/80 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">Chủng loại thiết bị</th>
+                  <th class="p-3.5" data-wf-lap>Hãng / Model chuẩn</th>
+                  <th class="p-3.5 text-center">Tổng số lượng</th>
+                  <th class="p-3.5 text-center">Đang dùng</th>
+                  <th class="p-3.5 text-center">Tồn trong kho</th>
+                  <th class="p-3.5" data-wf-gon>Đơn giá nhập</th>
+                  <th class="p-3.5">Trạng thái kho</th>
+                  <th class="p-3.5 text-right">Thao tác nhanh</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 font-medium">
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="p-3.5">
+                    <div class="flex items-center gap-2.5">
+                      <span class="w-7 h-7 rounded-lg bg-teal-50 text-[#0F766E] flex items-center justify-center font-bold text-xs"><i data-lucide="wind" class="w-4 h-4"></i></span>
+                      <div>
+                        <span class="font-bold text-slate-900 block">Điều hòa không khí (AC)</span>
+                        <span class="text-[11px] text-slate-400" data-wf-gon>Mã loại: AC • Bảo hành 24T</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-3.5 text-slate-600" data-wf-lap>Daikin Inverter 1.5 HP (FTKQ35)</td>
+                  <td class="p-3.5 text-center font-black text-slate-900 text-sm">6</td>
+                  <td class="p-3.5 text-center font-bold text-emerald-700">4 cái</td>
+                  <td class="p-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">2 cái</span>
+                  </td>
+                  <td class="p-3.5 text-slate-700 font-mono" data-wf-gon>11.500.000 đ</td>
+                  <td class="p-3.5">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                      <i data-lucide="check" class="w-3 h-3"></i> Đủ kho
+                    </span>
+                  </td>
+                  <td class="p-3.5 text-right">
+                    <div class="inline-flex items-center gap-1.5 justify-end">
+                      <button class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded text-xs font-bold transition-colors cursor-pointer flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>+ Thêm SL</span>
+                      </button>
+                      <button class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded text-xs font-medium cursor-pointer">Chi tiết</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="p-3.5">
+                    <div class="flex items-center gap-2.5">
+                      <span class="w-7 h-7 rounded-lg bg-teal-50 text-[#0F766E] flex items-center justify-center font-bold text-xs"><i data-lucide="refrigerator" class="w-4 h-4"></i></span>
+                      <div>
+                        <span class="font-bold text-slate-900 block">Tủ lạnh 2 cánh (FRIDGE)</span>
+                        <span class="text-[11px] text-slate-400" data-wf-gon>Mã loại: FRIDGE • Bảo hành 24T</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-3.5 text-slate-600" data-wf-lap>Toshiba Inverter 180L (GR-B22V)</td>
+                  <td class="p-3.5 text-center font-black text-slate-900 text-sm">5</td>
+                  <td class="p-3.5 text-center font-bold text-emerald-700">4 cái</td>
+                  <td class="p-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">1 cái</span>
+                  </td>
+                  <td class="p-3.5 text-slate-700 font-mono" data-wf-gon>5.800.000 đ</td>
+                  <td class="p-3.5">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                      <i data-lucide="alert-triangle" class="w-3 h-3"></i> Sắp hết
+                    </span>
+                  </td>
+                  <td class="p-3.5 text-right">
+                    <div class="inline-flex items-center gap-1.5 justify-end">
+                      <button class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded text-xs font-bold transition-colors cursor-pointer flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>+ Thêm SL</span>
+                      </button>
+                      <button class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded text-xs font-medium cursor-pointer">Chi tiết</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="p-3.5">
+                    <div class="flex items-center gap-2.5">
+                      <span class="w-7 h-7 rounded-lg bg-teal-50 text-[#0F766E] flex items-center justify-center font-bold text-xs"><i data-lucide="disc" class="w-4 h-4"></i></span>
+                      <div>
+                        <span class="font-bold text-slate-900 block">Máy giặt lồng ngang (WM)</span>
+                        <span class="text-[11px] text-slate-400" data-wf-gon>Mã loại: WASHING_MACHINE • Bảo hành 24T</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-3.5 text-slate-600" data-wf-lap>Electrolux UltimateCare 8.5kg</td>
+                  <td class="p-3.5 text-center font-black text-slate-900 text-sm">4</td>
+                  <td class="p-3.5 text-center font-bold text-emerald-700">3 cái</td>
+                  <td class="p-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">1 cái</span>
+                  </td>
+                  <td class="p-3.5 text-slate-700 font-mono" data-wf-gon>8.900.000 đ</td>
+                  <td class="p-3.5">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+                      <i data-lucide="wrench" class="w-3 h-3"></i> 1 đang bảo trì
+                    </span>
+                  </td>
+                  <td class="p-3.5 text-right">
+                    <div class="inline-flex items-center gap-1.5 justify-end">
+                      <button class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded text-xs font-bold transition-colors cursor-pointer flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>+ Thêm SL</span>
+                      </button>
+                      <button class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded text-xs font-medium cursor-pointer">Chi tiết</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="p-3.5">
+                    <div class="flex items-center gap-2.5">
+                      <span class="w-7 h-7 rounded-lg bg-teal-50 text-[#0F766E] flex items-center justify-center font-bold text-xs"><i data-lucide="key" class="w-4 h-4"></i></span>
+                      <div>
+                        <span class="font-bold text-slate-900 block">Khóa từ thông minh (SMART_LOCK)</span>
+                        <span class="text-[11px] text-slate-400" data-wf-gon>Mã loại: SMART_LOCK • Bảo hành 36T</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-3.5 text-slate-600" data-wf-lap>Khóa từ vân tay Kaadas K9</td>
+                  <td class="p-3.5 text-center font-black text-slate-900 text-sm">6</td>
+                  <td class="p-3.5 text-center font-bold text-emerald-700">5 cái</td>
+                  <td class="p-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">1 cái</span>
+                  </td>
+                  <td class="p-3.5 text-slate-700 font-mono" data-wf-gon>6.500.000 đ</td>
+                  <td class="p-3.5">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                      <i data-lucide="check" class="w-3 h-3"></i> Đủ kho
+                    </span>
+                  </td>
+                  <td class="p-3.5 text-right">
+                    <div class="inline-flex items-center gap-1.5 justify-end">
+                      <button class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded text-xs font-bold transition-colors cursor-pointer flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>+ Thêm SL</span>
+                      </button>
+                      <button class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded text-xs font-medium cursor-pointer">Chi tiết</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Khối 5: Danh sách nhanh các thiết bị đang có sẵn trong kho cần gán phòng -->
+          <div data-wf-block="5" class="p-4 bg-slate-50 border-t border-slate-200">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="warehouse" class="w-4 h-4 text-amber-600"></i>
+                <span class="font-bold text-xs text-slate-900">Thiết bị đang có sẵn trong kho lưu trữ (Sẵn sàng gán phòng):</span>
+              </div>
+              <span class="text-xs text-slate-500 font-medium">6 thiết bị chưa gán</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between">
+                <div>
+                  <span class="font-mono text-xs font-bold text-[#0F766E]">AC-STOCK-001</span>
+                  <p class="text-xs font-semibold text-slate-800">Điều hòa Panasonic Inverter</p>
+                  <span class="text-[10.5px] text-slate-400">Nguyên hộp mới 100%</span>
+                </div>
+                <button class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded text-xs font-bold cursor-pointer">Gán phòng</button>
+              </div>
+
+              <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between">
+                <div>
+                  <span class="font-mono text-xs font-bold text-[#0F766E]">FRIDGE-STOCK-001</span>
+                  <p class="text-xs font-semibold text-slate-800">Tủ lạnh Toshiba 180L</p>
+                  <span class="text-[10.5px] text-slate-400">Nguyên hộp mới 100%</span>
+                </div>
+                <button class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded text-xs font-bold cursor-pointer">Gán phòng</button>
+              </div>
+
+              <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between">
+                <div>
+                  <span class="font-mono text-xs font-bold text-[#0F766E]">WM-STOCK-001</span>
+                  <p class="text-xs font-semibold text-slate-800">Máy giặt Electrolux 8.5kg</p>
+                  <span class="text-[10.5px] text-slate-400">Kho cơ sở 1</span>
+                </div>
+                <button class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded text-xs font-bold cursor-pointer">Gán phòng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // OPTION B: MASTER / DETAIL CHIA ĐÔI MÀN HÌNH (SPLIT VIEW)
+    // =========================================================================
+    function renderOptionB() {
+      return `
+        <!-- Khối 1: Header hành động -->
+        <div data-wf-block="1" class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200">
+          <div>
+            <h1 class="text-lg font-bold text-slate-900">Quản Lý Toàn Bộ Thiết Bị (Master / Detail)</h1>
+            <p class="text-xs text-slate-500 mt-0.5">Chọn bất kỳ dòng nào bên trái để xem và thao tác hồ sơ chi tiết bên phải</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="px-3.5 py-2 btn-primary rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>+ Nhập Thiết Bị Mới</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Master / Detail Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <!-- Khối 6: Cột trái (Master Table - 7 cols) -->
+          <div data-wf-block="6" class="lg:col-span-7 bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col">
+            <div class="p-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/60">
+              <div class="relative flex-1 max-w-xs">
+                <input type="text" placeholder="Tìm kiếm nhanh thiết bị..." class="w-full bg-white border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-600">28 bản ghi</span>
+            </div>
+
+            <div class="overflow-x-auto max-h-[560px] overflow-y-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-semibold sticky top-0 border-b border-slate-200">
+                  <tr>
+                    <th class="p-3">Mã định danh</th>
+                    <th class="p-3">Tên thiết bị</th>
+                    <th class="p-3">Vị trí</th>
+                    <th class="p-3">Tình trạng</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                  <tr class="bg-teal-50/50 hover:bg-teal-50 transition-colors cursor-pointer border-l-4 border-l-[#0F766E]" aria-current="page">
+                    <td class="p-3 font-mono font-bold text-[#0F766E]">AC-CENTRAL-201</td>
+                    <td class="p-3 font-bold text-slate-900">Điều hòa Daikin Inverter 1.5 HP</td>
+                    <td class="p-3 font-bold text-emerald-700">Phòng P201</td>
+                    <td class="p-3"><span class="badge badge-success text-[10px]">Đang dùng</span></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50 transition-colors cursor-pointer">
+                    <td class="p-3 font-mono font-bold text-slate-800">AC-STOCK-001</td>
+                    <td class="p-3 text-slate-800">Điều hòa Panasonic Inverter</td>
+                    <td class="p-3 text-amber-700 font-bold">Kho thiết bị</td>
+                    <td class="p-3"><span class="badge badge-warning text-[10px]">Tồn kho</span></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50 transition-colors cursor-pointer">
+                    <td class="p-3 font-mono font-bold text-slate-800">FRIDGE-CENTRAL-201</td>
+                    <td class="p-3 text-slate-800">Tủ lạnh Toshiba Inverter 180L</td>
+                    <td class="p-3 font-bold text-emerald-700">Phòng P201</td>
+                    <td class="p-3"><span class="badge badge-success text-[10px]">Đang dùng</span></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50 transition-colors cursor-pointer">
+                    <td class="p-3 font-mono font-bold text-slate-800">WM-STOCK-001</td>
+                    <td class="p-3 text-slate-800">Máy giặt Electrolux 8.5kg</td>
+                    <td class="p-3 text-amber-700 font-bold">Kho thiết bị</td>
+                    <td class="p-3"><span class="badge badge-warning text-[10px]">Tồn kho</span></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50 transition-colors cursor-pointer">
+                    <td class="p-3 font-mono font-bold text-slate-800">LOCK-CENTRAL-101</td>
+                    <td class="p-3 text-slate-800">Khóa từ vân tay Kaadas K9</td>
+                    <td class="p-3 font-bold text-emerald-700">Phòng P101</td>
+                    <td class="p-3"><span class="badge badge-success text-[10px]">Đang dùng</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Khối 7: Cột phải (Detail Panel - 5 cols) -->
+          <div data-wf-block="7" class="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+            <div class="flex items-start justify-between border-b border-slate-200 pb-3">
+              <div>
+                <span class="text-xs font-mono font-bold text-[#0F766E] px-2 py-0.5 rounded bg-teal-50 border border-teal-200">AC-CENTRAL-201</span>
+                <h2 class="text-base font-bold text-slate-900 mt-1">Điều hòa Inverter Daikin 1.5 HP</h2>
+                <p class="text-xs text-slate-500">Model: FTKQ35SVMV • Xuất xứ: Thái Lan</p>
+              </div>
+              <span class="badge badge-success">Đang sử dụng</span>
+            </div>
+
+            <!-- Thuộc tính chi tiết -->
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div class="p-2.5 bg-slate-50 rounded-lg">
+                <span class="text-slate-400 block text-[10.5px]">Vị trí hiện tại:</span>
+                <span class="font-bold text-slate-900 text-sm">Phòng P201 (Cơ sở 1)</span>
+              </div>
+              <div class="p-2.5 bg-slate-50 rounded-lg">
+                <span class="text-slate-400 block text-[10.5px]">Nguyên giá:</span>
+                <span class="font-bold text-slate-900 text-sm font-mono">11.500.000 đ</span>
+              </div>
+              <div class="p-2.5 bg-slate-50 rounded-lg">
+                <span class="text-slate-400 block text-[10.5px]">Thời hạn bảo hành:</span>
+                <span class="font-bold text-slate-800">24 tháng (còn 14 tháng)</span>
+              </div>
+              <div class="p-2.5 bg-slate-50 rounded-lg">
+                <span class="text-slate-400 block text-[10.5px]">Tình trạng kỹ thuật:</span>
+                <span class="font-bold text-emerald-700">Tốt, làm lạnh sâu</span>
+              </div>
+            </div>
+
+            <!-- Lịch sử điều chuyển -->
+            <div>
+              <h3 class="text-xs font-bold text-slate-700 mb-2">Lịch sử điều chuyển & bàn giao:</h3>
+              <div class="space-y-2 text-xs">
+                <div class="p-2 bg-slate-50 rounded border border-slate-200 flex justify-between">
+                  <span>15/01/2025: Bàn giao phòng P201 (Lê Văn An)</span>
+                  <span class="text-slate-400">Phạm Tuấn Anh</span>
+                </div>
+                <div class="p-2 bg-slate-50 rounded border border-slate-200 flex justify-between">
+                  <span>10/01/2025: Nhập kho mới từ NPP Daikin</span>
+                  <span class="text-slate-400">Trần Minh Đức</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hành động ngữ cảnh -->
+            <div class="pt-3 border-t border-slate-200 flex items-center gap-2">
+              <button class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg font-semibold text-xs text-slate-700 cursor-pointer">Thu hồi về kho</button>
+              <button class="flex-1 py-2 btn-primary rounded-lg font-bold text-xs text-white cursor-pointer">+ Nhập thêm mẫu này</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // OPTION C: KANBAN BOARD THEO VÒNG ĐỜI TRẠNG THÁI
+    // =========================================================================
+    function renderOptionC() {
+      return `
+        <!-- Khối 1: Header hành động -->
+        <div data-wf-block="1" class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200">
+          <div>
+            <h1 class="text-lg font-bold text-slate-900">Vòng Đời Thiết Bị (Asset Kanban Lifecycle)</h1>
+            <p class="text-xs text-slate-500 mt-0.5">Theo dõi và kéo thả tài sản theo từng giai đoạn vòng đời hoạt động</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="px-3.5 py-2 btn-primary rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>+ Nhập Thêm Thiết Bị</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Khối 8: 3 Cột Kanban -->
+        <div data-wf-block="8" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Cột 1: Trong kho sẵn sàng -->
+          <div class="bg-slate-100/70 p-4 rounded-xl border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                <h2 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Trong Kho Sẵn Sàng</h2>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200">6 cái</span>
+            </div>
+
+            <div class="space-y-2.5">
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs hover:border-teal-400 transition-all cursor-pointer">
+                <span class="font-mono text-[10.5px] font-bold text-[#0F766E] bg-teal-50 px-1.5 py-0.5 rounded">AC-STOCK-001</span>
+                <h3 class="font-bold text-xs text-slate-900 mt-1">Điều hòa Panasonic Inverter 1.5 HP</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Kho cơ sở 1 • Mới 100%</p>
+                <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
+                  <span class="font-mono font-bold text-xs text-slate-800">12.200.000 đ</span>
+                  <button class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded text-[11px] font-bold">Gán phòng</button>
+                </div>
+              </div>
+
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs hover:border-teal-400 transition-all cursor-pointer">
+                <span class="font-mono text-[10.5px] font-bold text-[#0F766E] bg-teal-50 px-1.5 py-0.5 rounded">FRIDGE-STOCK-001</span>
+                <h3 class="font-bold text-xs text-slate-900 mt-1">Tủ lạnh Toshiba 180L</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Kho cơ sở 1 • Mới 100%</p>
+                <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
+                  <span class="font-mono font-bold text-xs text-slate-800">5.800.000 đ</span>
+                  <button class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded text-[11px] font-bold">Gán phòng</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột 2: Đang trang bị tại phòng -->
+          <div class="bg-slate-100/70 p-4 rounded-xl border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <h2 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Đang Trang Bị Căn Hộ</h2>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200">22 cái</span>
+            </div>
+
+            <div class="space-y-2.5">
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-xs text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Phòng P201</span>
+                  <span class="text-[11px] text-slate-400">Lê Văn An</span>
+                </div>
+                <h3 class="font-bold text-xs text-slate-900 mt-2">Điều hòa Inverter Daikin (AC-201)</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Lắp đặt: 15/01/2025 • Còn 14T BH</p>
+                <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-end">
+                  <button class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[11px] font-semibold">Thu hồi về kho</button>
+                </div>
+              </div>
+
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-xs text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Phòng P101</span>
+                  <span class="text-[11px] text-slate-400">Nguyễn Văn Hùng</span>
+                </div>
+                <h3 class="font-bold text-xs text-slate-900 mt-2">Khóa Kaadas K9 (LOCK-101)</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Hoạt động bình thường</p>
+                <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-end">
+                  <button class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[11px] font-semibold">Thu hồi về kho</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột 3: Bảo trì & Hư hỏng -->
+          <div class="bg-slate-100/70 p-4 rounded-xl border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <h2 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Bảo Trì / Hư Hỏng</h2>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200">1 cái</span>
+            </div>
+
+            <div class="space-y-2.5">
+              <div class="bg-white p-3.5 rounded-xl border border-rose-200 shadow-xs">
+                <span class="font-mono text-[10.5px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded">WM-MAINT-001</span>
+                <h3 class="font-bold text-xs text-slate-900 mt-1">Máy giặt Electrolux 8.5kg</h3>
+                <p class="text-[11px] text-rose-600 mt-0.5">Báo lỗi E20 - Bơm xả không hoạt động</p>
+                <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
+                  <span class="text-[11px] text-slate-500">Đã gửi bảo hành hãng</span>
+                  <button class="px-2 py-1 bg-teal-50 hover:bg-teal-100 text-[#0F766E] border border-teal-200 rounded text-[11px] font-bold">Cập nhật</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // TRẠNG THÁI KHÁC: SKELETON, RỖNG, LỖI
+    // =========================================================================
+    function renderSkeleton() {
+      return `
+        <div class="space-y-4 animate-pulse">
+          <div class="h-16 bg-slate-200 rounded-xl"></div>
+          <div class="grid grid-cols-4 gap-4">
+            <div class="h-24 bg-slate-200 rounded-xl"></div>
+            <div class="h-24 bg-slate-200 rounded-xl"></div>
+            <div class="h-24 bg-slate-200 rounded-xl"></div>
+            <div class="h-24 bg-slate-200 rounded-xl"></div>
+          </div>
+          <div class="h-96 bg-slate-200 rounded-xl"></div>
+        </div>
+      `;
+    }
+
+    function renderEmptyState() {
+      return `
+        <div class="p-12 text-center bg-white rounded-xl border border-slate-200 max-w-lg mx-auto space-y-3">
+          <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+            <i data-lucide="package-open" class="w-6 h-6"></i>
+          </div>
+          <h2 class="text-base font-bold text-slate-900">Chưa có thiết bị nào trong cơ sở này</h2>
+          <p class="text-xs text-slate-500">Hãy bắt đầu bằng cách tạo thiết bị đầu tiên hoặc nhập hàng loạt thiết bị vào kho.</p>
+          <button class="px-4 py-2 btn-primary rounded-lg text-xs font-bold cursor-pointer">+ Nhập Lô Thiết Bị Đầu Tiên</button>
+        </div>
+      `;
+    }
+
+    function renderErrorState() {
+      return `
+        <div class="p-12 text-center bg-white rounded-xl border border-rose-200 max-w-lg mx-auto space-y-3">
+          <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-600 mx-auto flex items-center justify-center">
+            <i data-lucide="wifi-off" class="w-6 h-6"></i>
+          </div>
+          <h2 class="text-base font-bold text-slate-900">Không thể tải dữ liệu thiết bị</h2>
+          <p class="text-xs text-slate-500">Đã xảy ra lỗi khi kết nối tới kho dữ liệu LocalStorage. Vui lòng thử lại.</p>
+          <button onclick="location.reload()" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold cursor-pointer">Tải Lại Trang</button>
+        </div>
+      `;
+    }
+
+    // Number block positioning
+    function placeBlockNumbers() {
+      const isOverlap = (first, second) => first.left < second.right && first.right > second.left && first.top < second.bottom && first.bottom > second.top;
+      for (const block of document.querySelectorAll('[data-wf-block]')) {
+        const blockRect = block.getBoundingClientRect();
+        const numberRect = { left: blockRect.left + 4, top: blockRect.top + 4, right: blockRect.left + 22, bottom: blockRect.top + 22 };
+        const contentRects = [...block.querySelectorAll('svg, img')].map(node => node.getBoundingClientRect());
+        block.toggleAttribute('data-wf-block-out', contentRects.some(rect => rect.width > 0 && isOverlap(rect, numberRect)));
+      }
+    }
+
+    // Clipboard tips
+    for (const button of document.querySelectorAll('[data-copy]')) {
+      button.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(button.dataset.copy);
+        button.setAttribute('data-copied', '');
+        setTimeout(() => button.removeAttribute('data-copied'), 1500);
+      });
+    }
+
+    updateToolbar();
+    renderContent();
+  </script>
+</body>
+</html>

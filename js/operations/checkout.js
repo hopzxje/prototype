@@ -59,7 +59,7 @@ function getPaidRentAdvance(request, actualCheckoutDate = request?.actualCheckou
   if (!Number.isFinite(checkoutTime)) return { grossUnusedRent: 0, chargesOffset: 0, refundAmount: 0, periods: [] };
   const invoices = DataStore.getInvoices().filter(invoice =>
     invoice.status === 'PAID' && Number(invoice.rent) > 0 && invoice.room === request.room
-    && (!request.building || invoice.building === request.building)
+    && (!request.building || !invoice.building || invoice.building === request.building || invoice.building.split(' - ')[0] === request.building.split(' - ')[0])
     && (request.residentId && invoice.residentId
       ? invoice.residentId === request.residentId
       : !request.tenant || invoice.tenant === request.tenant)

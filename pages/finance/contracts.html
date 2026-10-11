@@ -39,9 +39,11 @@
       line-height: 1.55;
       color: #0f172a;
     }
+
     .contract-paper p {
       margin-bottom: 2px;
     }
+
     .contract-paper h1,
     .contract-paper h2,
     .contract-paper h3,
@@ -66,30 +68,69 @@
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
-        <!-- Top Header & Action -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-bold text-slate-900">Quản lý Hợp đồng Thuê căn hộ</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Theo dõi thời hạn, tiền cọc, thông tin pháp lý cư dân và tự động
-              cảnh báo hết hạn</p>
+        <!-- Top action -->
+        <div class="flex justify-end">
+          <div id="contract-top-action-container"><!-- Rendered by checkContractRoleAccess() --></div>
+        </div>
+
+        <!-- Banner cảnh báo Hợp đồng chờ Quản lý phê duyệt -->
+        <div id="pending-contracts-alert"
+          class="hidden p-4 bg-amber-50 border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+              <i data-lucide="clock" class="w-5 h-5 text-amber-700"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-amber-950 text-xs sm:text-sm">Có <span id="alert-pending-ct-count"
+                  class="font-extrabold text-amber-900">0</span> hợp đồng thuê mới đang chờ Quản lý cơ sở kiểm tra & phê
+                duyệt</h4>
+              <p class="text-[11.5px] text-amber-800 mt-0.5">Quản lý cần mở xem chi tiết để quyết định <strong>Đồng
+                  ý</strong> (hệ thống sẽ tạo tài khoản cư dân) hoặc <strong>Từ chối</strong> kèm lý do.</p>
+            </div>
           </div>
-          <!-- Nút Tạo hợp đồng mới -->
-          <div id="contract-top-action-container">
-            <!-- Rendered by checkContractRoleAccess() -->
-          </div>
+          <button type="button" onclick="filterContracts('PENDING_APPROVAL')"
+            class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors shrink-0 cursor-pointer shadow-xs">
+            Xem danh sách chờ duyệt
+          </button>
         </div>
 
         <!-- Contracts Table -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <div
+            class="p-4 border-b border-slate-200 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             <div class="flex items-center gap-2">
               <i data-lucide="file-text" class="w-5 h-5 text-teal-600"></i>
               <h3 class="font-bold text-slate-900 text-sm">Danh Sách Hợp Đồng</h3>
             </div>
-            <div class="flex items-center gap-3">
-              <input type="text" id="contract-search" oninput="renderContracts()"
-                placeholder="Tìm số phòng, tên khách, mã HĐ..."
-                class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal-600 w-60">
+
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Filter chips trạng thái -->
+              <div class="flex items-center gap-1.5 overflow-x-auto" id="contract-filter-chips">
+                <button type="button" onclick="filterContracts('ALL')" id="ct-filter-all"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#0F766E] text-white shadow-xs cursor-pointer">
+                  Tất cả (<span id="count-ct-all">0</span>)
+                </button>
+                <button type="button" onclick="filterContracts('PENDING_APPROVAL')" id="ct-filter-pending"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 flex items-center gap-1 cursor-pointer">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                  <span>Chờ duyệt (<span id="count-ct-pending">0</span>)</span>
+                </button>
+                <button type="button" onclick="filterContracts('ACTIVE')" id="ct-filter-active"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer">
+                  Hiệu lực (<span id="count-ct-active">0</span>)
+                </button>
+                <button type="button" onclick="filterContracts('REJECTED')" id="ct-filter-rejected"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer">
+                  Từ chối (<span id="count-ct-rejected">0</span>)
+                </button>
+              </div>
+
+              <!-- Search box -->
+              <div class="relative flex-1 sm:w-56">
+                <input type="text" id="contract-search" oninput="renderContracts()"
+                  placeholder="Tìm phòng, tên khách, mã HĐ..."
+                  class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal-600">
+              </div>
             </div>
           </div>
 
@@ -239,23 +280,37 @@
               <label class="block font-semibold text-slate-700 mb-1">Số điện thoại liên hệ <span
                   class="text-red-500">*</span></label>
               <input type="text" id="new-ct-phone" placeholder="VD: 0988776655" required
+                oninput="syncTenantZaloNumber()"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-900 focus:bg-white focus:outline-teal-600">
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="md:col-span-2">
-              <label class="block font-semibold text-slate-700 mb-1">Địa chỉ thường trú / Hộ khẩu <span
-                  class="text-red-500">*</span></label>
-              <input type="text" id="new-ct-address" placeholder="VD: Số 42 Đường Đinh Tiên Hoàng, TP. Ninh Bình"
-                value="Số 42 Đường Đinh Tiên Hoàng, TP. Ninh Bình" required
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800 focus:bg-white focus:outline-teal-600">
-            </div>
             <div>
-              <label class="block font-semibold text-slate-700 mb-1">Email gửi thông báo</label>
-              <input type="email" id="new-ct-email" placeholder="VD: hoangtuan@gmail.com" value="hoangtuan@gmail.com"
+              <label class="block font-semibold text-slate-700 mb-1">Số Zalo <span class="text-red-500">*</span></label>
+              <input type="text" id="new-ct-zalo-phone" placeholder="VD: 0988776655" required inputmode="numeric"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800 focus:bg-white focus:outline-teal-600">
+              <label class="flex items-center gap-1.5 mt-1.5 text-[11px] text-slate-500 cursor-pointer">
+                <input type="checkbox" id="new-ct-zalo-same" checked onchange="syncTenantZaloNumber()"
+                  class="accent-teal-600">
+                <span>Số liên hệ cũng là số Zalo</span>
+              </label>
             </div>
+            <div class="md:col-span-2">
+              <label class="block font-semibold text-slate-700 mb-1">Email gửi thông báo (Tên đăng nhập hệ thống) <span
+                  class="text-red-500">*</span></label>
+              <input type="email" id="new-ct-email" placeholder="VD: hoangtuan@gmail.com" value="hoangtuan@gmail.com"
+                required
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800 font-medium focus:bg-white focus:outline-teal-600">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Địa chỉ thường trú / Hộ khẩu <span
+                class="text-red-500">*</span></label>
+            <input type="text" id="new-ct-address" placeholder="VD: Số 42 Đường Đinh Tiên Hoàng, TP. Ninh Bình"
+              value="Số 42 Đường Đinh Tiên Hoàng, TP. Ninh Bình" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800 focus:bg-white focus:outline-teal-600">
           </div>
         </div>
 
@@ -357,10 +412,10 @@
               <i data-lucide="printer" class="w-3.5 h-3.5"></i>
               <span>In Hợp Đồng</span>
             </button>
-            <button type="button" onclick="confirmAndSaveContract()"
-              class="flex items-center gap-1.5 px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold shadow-md">
-              <i data-lucide="check-check" class="w-4 h-4"></i>
-              <span>Ký & Xác Nhận Lưu Hợp Đồng</span>
+            <button type="button" onclick="submitContractForApproval()"
+              class="flex items-center gap-2 px-5 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-lg text-xs font-bold shadow-md cursor-pointer transition-colors">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>Gửi Hợp Đồng</span>
             </button>
           </div>
         </div>
@@ -394,16 +449,64 @@
       </div>
 
       <div class="p-6 overflow-y-auto bg-slate-100 flex-1">
+        <div id="view-ct-banner-slot" class="max-w-3xl w-full mx-auto"></div>
         <div id="view-contract-paper"
           class="contract-paper max-w-3xl w-full mx-auto bg-white p-10 md:p-14 shadow-lg border border-slate-300 text-slate-900 rounded-sm space-y-2.5 text-[13px]">
           <!-- Rendered dynamically -->
         </div>
       </div>
 
-      <div class="p-4 bg-white border-t border-slate-200 flex items-center justify-end shrink-0">
+      <div id="view-ct-footer"
+        class="p-4 bg-white border-t border-slate-200 flex items-center justify-between shrink-0">
         <button type="button" onclick="closeModal('viewFullContractModal')"
-          class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50">
+          class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">
           Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Từ Chối Phê Duyệt Hợp Đồng (Bắt buộc viết lý do) -->
+  <div id="rejectContractModal" class="modal-backdrop">
+    <div class="modal-content max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-sm font-bold text-rose-700 flex items-center gap-2">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-rose-600"></i>
+          <span>Từ Chối Phê Duyệt Hợp Đồng</span>
+        </h3>
+        <button type="button" onclick="closeModal('rejectContractModal')"
+          class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="bg-rose-50/70 border border-rose-200/80 rounded-xl p-3 text-xs space-y-1">
+        <p class="text-slate-600">Mã hợp đồng: <strong id="reject-modal-code"
+            class="text-slate-900 font-mono">HD-2026-101</strong></p>
+        <p class="text-slate-600">Khách thuê: <strong id="reject-modal-tenant" class="text-slate-900">Hoàng Văn
+            Tuấn</strong> (<span id="reject-modal-room">P101</span>)</p>
+      </div>
+
+      <div class="space-y-1.5 text-xs">
+        <label for="reject-reason-input" class="block font-bold text-slate-800">
+          Lý do từ chối phê duyệt <span class="text-rose-600">*</span>
+        </label>
+        <textarea id="reject-reason-input" rows="4" required
+          placeholder="Nhập chi tiết lý do từ chối (Ví dụ: Sai mức tiền cọc bảo đảm, thông tin CCCD chưa trùng khớp, cần kiểm tra lại lịch nhận phòng...)"
+          class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:bg-white focus:outline-rose-600 focus:border-rose-400 leading-relaxed"></textarea>
+        <p class="text-[11px] text-slate-500 italic">Lý do này sẽ được ghi nhận và hiển thị công khai trên hồ sơ hợp
+          đồng.</p>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeModal('rejectContractModal')"
+          class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">
+          Hủy bỏ
+        </button>
+        <button type="button" onclick="confirmRejectContract()"
+          class="flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors cursor-pointer">
+          <i data-lucide="ban" class="w-4 h-4"></i>
+          <span>Xác Nhận Từ Chối</span>
         </button>
       </div>
     </div>
@@ -518,68 +621,7 @@
     </div>
   </div>
 
-  <!-- Modal: Thông Báo Tự Động Khởi Tạo Tài Khoản Cư Dân (INACTIVE) -->
-  <div id="createdAccountInfoModal" class="modal-backdrop">
-    <div class="modal-content max-w-md w-full p-6 text-center space-y-4">
-      <div class="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-200 text-[#0F766E] flex items-center justify-center mx-auto shadow-sm">
-        <i data-lucide="user-plus" class="w-7 h-7"></i>
-      </div>
-      <div>
-        <h3 class="text-base font-bold text-slate-900">Khởi Tạo Tài Khoản Cư Dân Thành Công</h3>
-        <p class="text-xs text-slate-500 mt-1">Hệ thống đã tự động trích xuất thông tin khách hàng để tạo tài khoản đăng nhập</p>
-      </div>
 
-      <!-- Khung thông tin tài khoản -->
-      <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-left space-y-2 text-xs">
-        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-          <span class="text-slate-500">Khách thuê:</span>
-          <span class="font-bold text-slate-900" id="acc-modal-tenant">Nguyễn Văn A</span>
-        </div>
-        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-          <span class="text-slate-500">Phòng & Mã HĐ:</span>
-          <span class="font-bold text-teal-800"><span id="acc-modal-room">P101</span> • <span id="acc-modal-code" class="font-mono">HD-2026-101</span></span>
-        </div>
-        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-          <span class="text-slate-500">Tên đăng nhập (SĐT / Email):</span>
-          <span class="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200" id="acc-modal-username">0988776655</span>
-        </div>
-        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-          <span class="text-slate-500">Mật khẩu khởi tạo:</span>
-          <span class="font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200" id="acc-modal-password">StayHub@6655</span>
-        </div>
-        <div class="flex items-center justify-between pt-1">
-          <span class="text-slate-500 font-semibold">Trạng thái tài khoản:</span>
-          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-300">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-            INACTIVE (Chờ Admin duyệt access)
-          </span>
-        </div>
-      </div>
-
-      <!-- Cảnh báo quy trình phân quyền -->
-      <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-[11.5px] text-amber-900 flex items-start gap-2.5 shadow-xs">
-        <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
-        <div class="leading-relaxed">
-          <p class="font-bold text-amber-950">Quy trình cấp quyền truy cập hệ thống:</p>
-          <p class="text-slate-700 mt-0.5">Tài khoản vừa tạo đang ở trạng thái <strong>INACTIVE</strong>. Quản trị viên (<strong>Admin</strong>) sẽ truy cập mục <em>Quản trị Tài khoản</em> để bấm <strong>"Duyệt Active"</strong> chuyển sang <strong>ACTIVE</strong> trước khi cư dân có thể đăng nhập.</p>
-        </div>
-      </div>
-
-      <div class="pt-2 flex flex-col sm:flex-row items-center gap-2">
-        <button type="button" onclick="copyResidentCredentials()" class="w-full sm:w-auto px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-1.5 border border-slate-200">
-          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-          <span>Sao chép</span>
-        </button>
-        <button type="button" onclick="goToAdminApproval()" class="w-full sm:flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-1.5">
-          <i data-lucide="shield-check" class="w-4 h-4"></i>
-          <span>Đến Quản Trị Duyệt (Admin)</span>
-        </button>
-        <button type="button" onclick="closeModal('createdAccountInfoModal')" class="w-full sm:w-auto px-4 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-bold transition-colors cursor-pointer">
-          Hoàn tất
-        </button>
-      </div>
-    </div>
-  </div>
 
   <script data-stayhub-page="contracts.html">
     let currentContractDraft = null;
@@ -595,15 +637,7 @@
         return;
       }
 
-      if (role === 'MANAGER') {
-        // Manager chỉ quản lý biểu mẫu hợp đồng mẫu, không tạo hợp đồng trực tiếp
-        container.innerHTML = `
-          <button onclick="openContractTemplateModal()" class="flex items-center gap-2 px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer">
-            <i data-lucide="file-cog" class="w-4 h-4 text-amber-700"></i>
-            <span>Hợp Đồng Mẫu</span>
-          </button>
-        `;
-      } else if (role === 'ADMIN') {
+      if (role === 'MANAGER' || role === 'ADMIN') {
         container.innerHTML = `
           <div class="flex items-center gap-2.5">
             <button onclick="openContractTemplateModal()" class="flex items-center gap-2 px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer">
@@ -633,10 +667,6 @@
       const role = DataStore.getRole();
       if (role === 'RESIDENT') {
         showToast('Tài khoản cư dân không có quyền tạo hợp đồng.', 'error');
-        return;
-      }
-      if (role === 'MANAGER') {
-        showToast('Tài khoản Quản lý (Manager) chỉ quản trị biểu mẫu hợp đồng. Chức năng tạo hợp đồng dành cho Nhân viên (Staff).', 'warning');
         return;
       }
 
@@ -670,6 +700,7 @@
 
         // Cập nhật danh sách phòng trống và thông tin cơ sở (Manager, Hotline)
         onContractBuildingChange();
+        syncTenantZaloNumber();
 
         // Reset về Tab 1 (Form) và pre-fill sẵn văn bản hợp đồng mẫu
         switchContractTab('form');
@@ -703,8 +734,9 @@
         roomSelect.innerHTML = '<option value="">-- Cơ sở này hiện không còn phòng trống --</option>';
       } else {
         roomSelect.innerHTML = rooms.map(r => `
-          <option value="${r.roomNumber}" data-price="${r.price}" data-floor="${r.floor}" data-area="${r.area}" data-type="${r.type}">
-            Phòng ${r.roomNumber} (Tầng ${r.floor} • ${r.area}m² • ${formatVND(r.price)})
+          <option value="${r.roomNumber}" data-price="${r.price}" data-floor="${r.floor}" data-area="${r.area}" data-type="${r.type}"
+            title="Phòng ${r.roomNumber} · Tầng ${r.floor} · ${r.area} m² · ${formatVND(r.price)}/tháng">
+            ${r.roomNumber} · Tầng ${r.floor} · ${r.area} m²
           </option>
         `).join('');
       }
@@ -718,6 +750,7 @@
       if (!roomSelect || roomSelect.selectedIndex < 0) return;
       const selectedOpt = roomSelect.options[roomSelect.selectedIndex];
       if (selectedOpt && selectedOpt.dataset.price) {
+        roomSelect.title = `Phòng ${selectedOpt.value} · Tầng ${selectedOpt.dataset.floor} · ${selectedOpt.dataset.area} m² · ${formatVND(selectedOpt.dataset.price)}/tháng`;
         const price = parseInt(selectedOpt.dataset.price);
         const rentEl = document.getElementById('new-ct-rent');
         const depEl = document.getElementById('new-ct-deposit');
@@ -774,6 +807,21 @@
     }
 
     // Đọc toàn bộ textbox và tạo đối tượng dự thảo Hợp đồng
+    function syncTenantZaloNumber() {
+      const phoneInput = document.getElementById('new-ct-phone');
+      const zaloInput = document.getElementById('new-ct-zalo-phone');
+      const sameCheckbox = document.getElementById('new-ct-zalo-same');
+      if (!phoneInput || !zaloInput || !sameCheckbox) return;
+      if (sameCheckbox.checked) {
+        zaloInput.value = phoneInput.value;
+        zaloInput.disabled = true;
+        zaloInput.classList.add('opacity-60', 'cursor-not-allowed');
+      } else {
+        zaloInput.disabled = false;
+        zaloInput.classList.remove('opacity-60', 'cursor-not-allowed');
+      }
+    }
+
     function renderContractPreviewPaper() {
       const roomSelect = document.getElementById('new-ct-room');
       const roomNum = (roomSelect && roomSelect.value) ? roomSelect.value : 'P101';
@@ -781,6 +829,9 @@
       const tenant = (tenantInput && tenantInput.value.trim()) ? tenantInput.value.trim() : 'Nguyễn Văn A';
       const phoneInput = document.getElementById('new-ct-phone');
       const phone = (phoneInput && phoneInput.value.trim()) ? phoneInput.value.trim() : '0988776655';
+      const zaloInput = document.getElementById('new-ct-zalo-phone');
+      const zaloSame = document.getElementById('new-ct-zalo-same')?.checked;
+      const zaloPhone = zaloSame ? phone : ((zaloInput && zaloInput.value.trim()) || '');
       const cccdInput = document.getElementById('new-ct-cccd');
       const cccd = (cccdInput && cccdInput.value.trim()) ? cccdInput.value.trim() : '001201009876';
       const addressInput = document.getElementById('new-ct-address');
@@ -842,6 +893,7 @@
         cccdDate,
         cccdPlace,
         phone,
+        zaloPhone,
         email,
         address,
         occupants,
@@ -1012,6 +1064,7 @@
         cccdDate: '10/05/2021',
         cccdPlace: 'Cục Cảnh sát QLHC về TTXH',
         phone: '0988776655',
+        zaloPhone: '0988776655',
         email: 'khachhang.mau@stayhub.vn',
         address: '45 Duy Tân, Cầu Giấy, Hà Nội',
         occupants: '2',
@@ -1169,7 +1222,7 @@
             <p>- <strong>Ông / Bà:</strong> <strong>${d.tenant}</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>Sinh ngày:</strong> ${d.dob}</p>
             <p>- <strong>Số CCCD / Hộ chiếu:</strong> <strong>${d.cccd}</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>Ngày cấp:</strong> ${d.cccdDate} &nbsp;&nbsp;&nbsp;&nbsp; <strong>Nơi cấp:</strong> ${d.cccdPlace}</p>
             <p>- <strong>Địa chỉ thường trú / Hộ khẩu:</strong> ${d.address}</p>
-            <p>- <strong>Số điện thoại:</strong> <strong>${d.phone}</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>Email:</strong> ${d.email}</p>
+            <p>- <strong>Số điện thoại:</strong> <strong>${d.phone}</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>Zalo:</strong> ${d.zaloPhone || d.phone} &nbsp;&nbsp;&nbsp;&nbsp; <strong>Email:</strong> ${d.email}</p>
             <p>- <strong>Số người lưu trú tối đa:</strong> <strong>${d.occupants || 2} người</strong></p>
           </div>
         </div>
@@ -1201,34 +1254,70 @@
           <div class="space-y-1">
             <p class="font-bold uppercase">ĐẠI DIỆN BÊN CHO THUÊ (BÊN A)</p>
             <p class="text-[11px] text-slate-600 italic">(Ký, ghi rõ họ tên và đóng dấu)</p>
-            <div class="h-20 flex flex-col items-center justify-center">
-              <span class="text-[10px] font-mono px-2.5 py-1 border border-slate-400 font-bold text-slate-800 bg-white">✓ STAYHUB DIGITAL VERIFIED</span>
-            </div>
-            <p class="font-bold text-slate-900 text-xs">${d.managerName || 'Trần Minh Đức'}</p>
+            <div class="h-20"></div>
             <p class="text-[11px] text-slate-600">Quản lý cơ sở</p>
+            <p class="font-bold text-slate-900 text-xs">${d.managerName || 'Trần Minh Đức'}</p>
           </div>
 
           <div class="space-y-1">
             <p class="font-bold uppercase">ĐẠI DIỆN BÊN THUÊ (BÊN B)</p>
             <p class="text-[11px] text-slate-600 italic">(Ký và ghi rõ họ tên)</p>
-            <div class="h-20 flex flex-col items-center justify-center">
-              <span class="text-xs font-serif italic text-slate-400">Đã xác nhận thỏa thuận</span>
-            </div>
-            <p class="font-bold text-slate-900 text-xs">${d.tenant}</p>
+            <div class="h-20"></div>
             <p class="text-[11px] text-slate-600">Khách thuê</p>
+            <p class="font-bold text-slate-900 text-xs">${d.tenant}</p>
           </div>
         </div>
       `;
     }
 
-    // Xác nhận và Lưu hợp đồng mới vào hệ thống & Tự động tạo tài khoản cư dân (INACTIVE)
-    function confirmAndSaveContract() {
-      if (!currentContractDraft) return;
+    // Biến trạng thái toàn cục cho quản lý hợp đồng
+    let currentContractStatusFilter = 'ALL';
+    let currentReviewContractCode = null;
 
+    // Gửi Hợp Đồng Mới Cho Quản Lý Cơ Sở (Manager) Phê Duyệt
+    function submitContractForApproval() {
+      if (!currentContractDraft) renderContractPreviewPaper();
       const d = currentContractDraft;
+      if (!d) return;
+
+      // 1. Kiểm tra các thông tin bắt buộc
+      const phoneInput = document.getElementById('new-ct-phone');
+      const zaloInput = document.getElementById('new-ct-zalo-phone');
+      const zaloSame = document.getElementById('new-ct-zalo-same')?.checked;
+      const phoneValue = phoneInput ? phoneInput.value.trim() : '';
+      const zaloValue = zaloSame ? phoneValue : (zaloInput ? zaloInput.value.trim() : '');
+      const normalizedZalo = zaloValue.replace(/\D/g, '');
+
+      if (!d.tenant || d.tenant === 'Nguyễn Văn A' || !phoneValue || !d.cccd) {
+        showToast('Vui lòng kiểm tra lại thông tin khách thuê, số điện thoại và CCCD!', 'error');
+        switchContractTab('form');
+        return;
+      }
+
+      if (!/^0\d{9}$/.test(normalizedZalo)) {
+        showToast('Vui lòng nhập số Zalo hợp lệ gồm 10 chữ số để nhận thông báo!', 'error');
+        switchContractTab('form');
+        if (zaloInput && !zaloSame) zaloInput.focus();
+        return;
+      }
+      d.phone = phoneValue;
+      d.zaloPhone = normalizedZalo;
+
+      // 2. Kiểm tra Email (Bắt buộc vì dùng làm Tên đăng nhập hệ thống)
+      const emailInput = document.getElementById('new-ct-email');
+      const emailVal = (emailInput && emailInput.value.trim()) || d.email;
+      if (!emailVal || !emailVal.includes('@') || emailVal === 'Chưa cập nhật') {
+        showToast('Vui lòng nhập Email hợp lệ của khách thuê (dùng làm Tên đăng nhập hệ thống sau khi duyệt)!', 'error');
+        switchContractTab('form');
+        if (emailInput) emailInput.focus();
+        return;
+      }
+      d.email = emailVal.trim().toLowerCase();
+
       const contracts = DataStore.getContracts();
       const activeTemplate = DataStore.getContractTemplate();
       const contractTermsSnapshot = JSON.parse(JSON.stringify(activeTemplate));
+      const currentUser = DataStore.getUser();
 
       const newContract = {
         id: 'ct-' + Date.now(),
@@ -1239,15 +1328,21 @@
         tenant: d.tenant,
         dob: d.dob,
         phone: d.phone,
-        email: d.email,
+        zaloPhone: d.zaloPhone || d.phone,
+        email: d.email, // Tên đăng nhập sẽ lấy email này
         cccd: d.cccd,
+        cccdDate: d.cccdDate,
+        cccdPlace: d.cccdPlace,
         address: d.address,
         startDate: d.startDate,
         endDate: d.endDate,
         rent: d.rent,
         deposit: d.deposit,
         dueDay: d.dueDay,
-        status: 'ACTIVE',
+        status: 'PENDING_APPROVAL', // QUY TRÌNH: Chờ Quản lý duyệt
+        submittedAt: new Date().toISOString(),
+        staffName: (currentUser && currentUser.fullName) || d.staffName || 'Phạm Tuấn Anh (Staff)',
+        managerName: d.managerName || 'Trần Minh Đức',
         templateVersion: activeTemplate.version || 'v2.0',
         customTerms: contractTermsSnapshot,
         fullDetails: {
@@ -1256,151 +1351,42 @@
         }
       };
 
-      // Đóng băng toàn bộ nội dung HTML tại thời điểm ký kết
+      // Đóng băng toàn bộ nội dung HTML tại thời điểm gửi duyệt
       newContract.contractHtmlSnapshot = buildFullContractHTML(newContract.fullDetails, contractTermsSnapshot);
 
       contracts.unshift(newContract);
       DataStore.saveContracts(contracts);
 
-      // Cập nhật trạng thái phòng sang OCCUPIED (Đang thuê)
-      const rooms = DataStore.getRooms();
-      const targetRoom = rooms.find(r => r.buildingId === d.bldId && r.roomNumber === d.room);
-      if (targetRoom) {
-        targetRoom.status = 'OCCUPIED';
-        targetRoom.tenant = d.tenant;
-        targetRoom.phone = d.phone;
-        DataStore.saveRooms(rooms);
-      }
-
-      // Đồng bộ vào danh sách Cư dân lưu trú
-      try {
-        const residents = DataStore.getResidents();
-        const existingResident = residents.find(r => (d.phone && r.phone === d.phone) || (d.cccd && r.cccd === d.cccd));
-        if (!existingResident) {
-          residents.unshift({
-            name: d.tenant,
-            room: d.room,
-            building: d.building,
-            phone: d.phone,
-            cccd: d.cccd,
-            startDate: d.startDate,
-            registered: false
-          });
-          DataStore.saveResidents(residents);
-        }
-      } catch (e) {
-        console.warn('Lỗi đồng bộ residents:', e);
-      }
-
-      // ========================================================================
-      // TỰ ĐỘNG LẤY TOÀN BỘ THÔNG TIN KHÁCH HÀNG ĐỂ TẠO TÀI KHOẢN & MẬT KHẨU
-      // TRẠNG THÁI TÀI KHOẢN: INACTIVE (Cần Quản trị viên/Admin phê duyệt Access)
-      // ========================================================================
-      const phoneClean = (d.phone || '').trim();
-      const last4 = phoneClean.length >= 4 ? phoneClean.slice(-4) : Math.floor(1000 + Math.random() * 9000);
-      const generatedPassword = 'StayHub@' + last4;
-      const userLogin = phoneClean || d.email || `resident_${Date.now()}`;
-      const userEmail = d.email || `${phoneClean || 'khachhang'}@stayhub.vn`;
-
-      const allUsers = DataStore.getUsers();
-      let residentAcc = allUsers.find(u => (phoneClean && u.phone === phoneClean) || (d.email && u.email === d.email));
-
-      if (residentAcc) {
-        residentAcc.fullName = d.tenant;
-        residentAcc.role = 'RESIDENT';
-        residentAcc.status = 'INACTIVE'; // Luôn về INACTIVE để Admin duyệt Access theo đúng nghiệp vụ
-        residentAcc.scope = `${d.room} - ${d.building}`;
-        residentAcc.title = `Cư dân Căn hộ ${d.room}`;
-        residentAcc.phone = phoneClean;
-        residentAcc.email = userEmail;
-        residentAcc.cccd = d.cccd;
-        residentAcc.room = d.room;
-        residentAcc.building = d.building;
-        residentAcc.contractCode = d.code;
-        residentAcc.initialPassword = generatedPassword;
-        residentAcc.updatedAt = new Date().toISOString();
-        DataStore.saveUsers(allUsers);
-      } else {
-        residentAcc = DataStore.addUser({
-          fullName: d.tenant,
-          email: userEmail,
-          phone: phoneClean,
-          cccd: d.cccd,
-          role: 'RESIDENT',
-          scope: `${d.room} - ${d.building}`,
-          status: 'INACTIVE', // YÊU CẦU: Trạng thái ban đầu luôn là INACTIVE
-          initialPassword: generatedPassword,
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
-          title: `Cư dân Căn hộ ${d.room}`,
-          room: d.room,
-          building: d.building,
-          contractCode: d.code
-        });
-      }
-
       // Ghi nhật ký hệ thống kiểm toán (Audit Log)
+      const isManagerCreator = (currentUser && currentUser.role === 'MANAGER');
+      const creatorLabel = isManagerCreator ? 'Quản lý cơ sở' : 'Nhân viên';
       DataStore.addAuditLog(
-        'TẠO_HỢP_ĐỒNG_VÀ_TÀI_KHOẢN',
+        isManagerCreator ? 'TẠO_HỢP_ĐỒNG' : 'GỬI_DUYỆT_HỢP_ĐỒNG',
         `Hợp đồng: ${d.code} (${d.room} - ${d.building})`,
-        `Nhân viên ${d.staffName} đã lập và ký hợp đồng cho khách hàng ${d.tenant}. Hệ thống tự động tạo tài khoản cư dân [INACTIVE] cho SĐT ${phoneClean} (Mật khẩu: ${generatedPassword}). Đang chờ Quản trị viên (Admin) phê duyệt Access sang ACTIVE.`
+        `${creatorLabel} ${newContract.staffName} đã lập hợp đồng ${d.code} cho khách thuê ${d.tenant} (${d.room} - ${d.building}). Trạng thái: Chờ kiểm tra & phê duyệt.`
       );
 
-      // Đổ dữ liệu vào Modal thông báo tài khoản
-      const elTenant = document.getElementById('acc-modal-tenant');
-      const elRoom = document.getElementById('acc-modal-room');
-      const elCode = document.getElementById('acc-modal-code');
-      const elUsername = document.getElementById('acc-modal-username');
-      const elPassword = document.getElementById('acc-modal-password');
-
-      if (elTenant) elTenant.textContent = d.tenant;
-      if (elRoom) elRoom.textContent = d.room;
-      if (elCode) elCode.textContent = d.code;
-      if (elUsername) elUsername.textContent = userLogin;
-      if (elPassword) elPassword.textContent = generatedPassword;
-
       closeModal('createContractModal');
-      showToast(`🎉 Tạo thành công hợp đồng ${d.code} & đã tạo tài khoản cư dân (INACTIVE)!`);
-      renderContracts();
-
-      // Mở modal hiển thị tài khoản vừa tạo
-      setTimeout(() => {
-        openModal('createdAccountInfoModal');
-        if (window.lucide) lucide.createIcons();
-      }, 350);
-    }
-
-    // Điều hướng sang trang Quản trị Người dùng (users.html) và đổi vai trò sang ADMIN để duyệt
-    function goToAdminApproval() {
-      closeModal('createdAccountInfoModal');
-      DataStore.setRole('ADMIN');
-      window.location.href = '../administration/users.html';
-    }
-
-    // Sao chép thông tin tài khoản cư dân vừa tạo
-    function copyResidentCredentials() {
-      const username = document.getElementById('acc-modal-username') ? document.getElementById('acc-modal-username').textContent : '';
-      const password = document.getElementById('acc-modal-password') ? document.getElementById('acc-modal-password').textContent : '';
-      const tenant = document.getElementById('acc-modal-tenant') ? document.getElementById('acc-modal-tenant').textContent : '';
-      const text = `Tài khoản cư dân StayHub (${tenant}):\n- Tên đăng nhập: ${username}\n- Mật khẩu: ${password}\n- Trạng thái: Chờ Admin duyệt Access (INACTIVE)`;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast('📋 Đã sao chép tài khoản & mật khẩu cư dân!');
-        }).catch(() => {
-          alert(text);
-        });
+      if (isManagerCreator) {
+        showToast(`✅ Đã tạo thành công hợp đồng ${d.code}! Quản lý có thể kiểm tra và phê duyệt ngay.`);
       } else {
-        alert(text);
+        showToast(`📩 Đã gửi hợp đồng ${d.code} tới Quản lý (${newContract.managerName}) để kiểm duyệt!`);
       }
+      renderContracts();
     }
 
-    // Xem Hợp đồng đầy đủ của một dòng trong bảng danh sách (Bảo toàn pháp lý: Ưu tiên snapshot của hợp đồng đó)
+    // Xem Hợp đồng đầy đủ & Hiển thị các hành động Duyệt / Từ chối cho Quản lý
     function viewExistingContract(ctCode) {
       const contract = DataStore.getContracts().find(c => c.code === ctCode);
       if (!contract) return;
 
+      currentReviewContractCode = ctCode;
+
       const titleEl = document.getElementById('view-ct-title');
       const subEl = document.getElementById('view-ct-subtitle');
       const paperEl = document.getElementById('view-contract-paper');
+      const bannerSlot = document.getElementById('view-ct-banner-slot');
+      const footerEl = document.getElementById('view-ct-footer');
 
       titleEl.innerText = `Hợp Đồng Thuê Phòng ${contract.room} - Khách thuê: ${contract.tenant}`;
       subEl.innerText = `Mã HĐ: ${contract.code} • Cơ sở: ${contract.building} • Trạng thái: ${contract.status}`;
@@ -1420,8 +1406,8 @@
         building: contract.building,
         bldAddress: bld.address,
         bldPhone: bld.phone || '1900 8899',
-        managerName: bld.manager || 'Trần Minh Đức',
-        staffName: 'Phạm Tuấn Anh (Staff)',
+        managerName: contract.managerName || bld.manager || 'Trần Minh Đức',
+        staffName: contract.staffName || 'Phạm Tuấn Anh (Staff)',
         room: contract.room,
         floor: contract.room.length >= 3 ? contract.room.charAt(1) : '1',
         area: '28',
@@ -1429,13 +1415,14 @@
         tenant: contract.tenant,
         dob: contract.dob || '15/08/1998',
         cccd: contract.cccd,
-        cccdDate: '10/05/2021',
-        cccdPlace: 'Cục Cảnh sát QLHC về TTXH',
+        cccdDate: contract.cccdDate || '10/05/2021',
+        cccdPlace: contract.cccdPlace || 'Cục Cảnh sát QLHC về TTXH',
         phone: contract.phone,
+        zaloPhone: contract.zaloPhone || contract.phone,
         email: contract.email || 'khachthue@stayhub.vn',
         address: contract.address || 'Hà Nội, Việt Nam',
         occupants: '2',
-        duration: '12 tháng',
+        duration: contract.duration || '12 tháng',
         startDate: contract.startDate,
         endDate: contract.endDate,
         rent: contract.rent,
@@ -1446,18 +1433,357 @@
         serviceFee: bld.serviceFee || 150000
       };
 
-      // Chuẩn hóa văn bản: Tự động cập nhật sang định dạng liền mạch chuẩn Word nếu bản cũ bị phân mảnh
+      // 1. Hiển thị Banner trạng thái ở đầu bản xem
+      if (bannerSlot) {
+        if (contract.status === 'PENDING_APPROVAL') {
+          bannerSlot.innerHTML = `
+            <div class="mb-4 p-4 bg-amber-50 border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                  <i data-lucide="clock" class="w-5 h-5 text-amber-700"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-amber-950 text-sm">Hợp đồng đang chờ Quản lý (${contract.managerName || 'Trần Minh Đức'}) kiểm tra & phê duyệt</h4>
+                  <p class="text-[11.5px] text-amber-800 mt-0.5">Nhân viên gửi: <strong>${contract.staffName || 'Staff'}</strong> • Email khách: <strong class="font-mono text-slate-900 bg-amber-100/60 px-1.5 py-0.5 rounded">${contract.email || 'Chưa cập nhật'}</strong> • Ngày gửi: ${new Date(contract.submittedAt || Date.now()).toLocaleDateString('vi-VN')}</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-900 border border-amber-300 shrink-0">
+                Chờ Quản lý duyệt
+              </span>
+            </div>
+          `;
+        } else if (contract.status === 'REJECTED') {
+          bannerSlot.innerHTML = `
+            <div class="mb-4 p-4 bg-rose-50 border border-rose-300 rounded-2xl text-xs space-y-2 shadow-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-rose-900 font-bold text-sm">
+                  <i data-lucide="ban" class="w-4 h-4 text-rose-600"></i>
+                  <span>HỢP ĐỒNG ĐÃ BỊ TỪ CHỐI DUYỆT</span>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-800 border border-rose-300">
+                  ✕ Đã từ chối
+                </span>
+              </div>
+              <p class="text-slate-700">Người từ chối: <strong>${contract.rejectedBy || 'Quản lý cơ sở'}</strong> • Thời gian: ${contract.rejectedAt ? new Date(contract.rejectedAt).toLocaleString('vi-VN') : 'Gần đây'}</p>
+              <div class="p-3 bg-white border border-rose-200 rounded-xl text-rose-950">
+                <span class="font-bold text-rose-800">Lý do từ chối:</span> <em>"${contract.rejectedReason || 'Không có lý do chi tiết'}"</em>
+              </div>
+            </div>
+          `;
+        } else {
+          bannerSlot.innerHTML = '';
+        }
+      }
+
+      // 2. Render nội dung văn bản hợp đồng đầy đủ (Snapshot)
       const terms = contract.customTerms || fullData.customTerms || DEFAULT_CONTRACT_TEMPLATE;
       let contractBodyHTML = contract.contractHtmlSnapshot;
-      if (!contractBodyHTML || contractBodyHTML.includes('border-b border-slate-200') || contractBodyHTML.includes('border-l-4') || contractBodyHTML.includes('bg-slate-50/80')) {
+      if (!contractBodyHTML || contractBodyHTML.includes('border-b border-slate-200') || contractBodyHTML.includes('border-l-4') || contractBodyHTML.includes('bg-slate-50/80') || contractBodyHTML.includes('STAYHUB DIGITAL VERIFIED')) {
         contractBodyHTML = buildFullContractHTML(fullData, terms);
         contract.contractHtmlSnapshot = contractBodyHTML;
       }
-
       paperEl.innerHTML = contractBodyHTML;
+
+      // 3. Render Footer: Nếu hợp đồng PENDING_APPROVAL -> hiển thị nút Từ chối & Đồng ý (CHỈ DÀNH CHO MANAGER / ADMIN)
+      const role = DataStore.getRole();
+      const isManagerOrAdmin = (role === 'MANAGER' || role === 'ADMIN');
+
+      if (footerEl) {
+        if (contract.status === 'PENDING_APPROVAL') {
+          if (isManagerOrAdmin) {
+            footerEl.innerHTML = `
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="closeModal('viewFullContractModal')"
+                  class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">
+                  Đóng
+                </button>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <button type="button" onclick="openRejectContractModal('${contract.code}')"
+                  class="flex items-center gap-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-xs">
+                  <i data-lucide="x-circle" class="w-4 h-4"></i>
+                  <span>Từ Chối Duyệt</span>
+                </button>
+                <button type="button" onclick="approveContract('${contract.code}')"
+                  class="flex items-center gap-1.5 px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold shadow-md transition-colors cursor-pointer">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  <span>Đồng Ý & Phê Duyệt</span>
+                </button>
+              </div>
+            `;
+          } else {
+            // Nhân viên (STAFF): Chỉ xem bản hợp đồng đang chờ duyệt, KHÔNG có quyền duyệt
+            footerEl.innerHTML = `
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200">
+                  <i data-lucide="clock" class="w-4 h-4 text-amber-700"></i>
+                  <span>Đang chờ Quản lý cơ sở phê duyệt</span>
+                </span>
+              </div>
+              <button type="button" onclick="closeModal('viewFullContractModal')"
+                class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">
+                Đóng
+              </button>
+            `;
+          }
+        } else {
+          footerEl.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-500 font-medium">Trạng thái: <strong class="text-slate-800">${contract.status === 'ACTIVE' ? 'Đang hiệu lực' : (contract.status === 'REJECTED' ? 'Đã từ chối' : contract.status)}</strong></span>
+            </div>
+            <button type="button" onclick="closeModal('viewFullContractModal')"
+              class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">
+              Đóng
+            </button>
+          `;
+        }
+      }
 
       openModal('viewFullContractModal');
       lucide.createIcons();
+    }
+
+    // Mở Modal Từ chối hợp đồng (bắt buộc nhập lý do - CHỈ CHO MANAGER / ADMIN)
+    function openRejectContractModal(ctCode) {
+      const role = DataStore.getRole();
+      if (role !== 'MANAGER' && role !== 'ADMIN') {
+        showToast('Tài khoản Nhân viên (Staff) không có quyền từ chối phê duyệt hợp đồng!', 'error');
+        return;
+      }
+
+      const contract = DataStore.getContracts().find(c => c.code === ctCode);
+      if (!contract) return;
+
+      currentReviewContractCode = ctCode;
+      const elCode = document.getElementById('reject-modal-code');
+      const elTenant = document.getElementById('reject-modal-tenant');
+      const elRoom = document.getElementById('reject-modal-room');
+      const reasonInput = document.getElementById('reject-reason-input');
+
+      if (elCode) elCode.textContent = contract.code;
+      if (elTenant) elTenant.textContent = contract.tenant;
+      if (elRoom) elRoom.textContent = contract.room;
+      if (reasonInput) reasonInput.value = '';
+
+      openModal('rejectContractModal');
+      lucide.createIcons();
+      setTimeout(() => {
+        if (reasonInput) reasonInput.focus();
+      }, 200);
+    }
+
+    // Xác nhận Từ chối hợp đồng kèm lý do (CHỈ CHO MANAGER / ADMIN)
+    function confirmRejectContract() {
+      const role = DataStore.getRole();
+      if (role !== 'MANAGER' && role !== 'ADMIN') {
+        showToast('Tài khoản Nhân viên (Staff) không có quyền từ chối phê duyệt hợp đồng!', 'error');
+        return;
+      }
+
+      const reasonInput = document.getElementById('reject-reason-input');
+      const reason = reasonInput ? reasonInput.value.trim() : '';
+
+      if (!reason) {
+        showToast('Vui lòng nhập rõ lý do từ chối phê duyệt hợp đồng!', 'error');
+        if (reasonInput) reasonInput.focus();
+        return;
+      }
+
+      const contracts = DataStore.getContracts();
+      const contract = contracts.find(c => c.code === currentReviewContractCode);
+      if (!contract) return;
+
+      const currentUser = DataStore.getUser();
+      contract.status = 'REJECTED';
+      contract.rejectedReason = reason;
+      contract.rejectedBy = (currentUser && currentUser.fullName) || 'Trần Minh Đức (Quản lý)';
+      contract.rejectedAt = new Date().toISOString();
+
+      DataStore.saveContracts(contracts);
+
+      // Ghi nhật ký kiểm toán (Audit Log)
+      DataStore.addAuditLog(
+        'TỪ_CHỐI_HỢP_ĐỒNG',
+        `Hợp đồng: ${contract.code} (${contract.room})`,
+        `Quản lý ${contract.rejectedBy} đã từ chối phê duyệt hợp đồng của khách thuê ${contract.tenant}. Lý do: "${reason}". Hệ thống không tạo tài khoản cư dân.`
+      );
+
+      closeModal('rejectContractModal');
+      closeModal('viewFullContractModal');
+      showToast(`❌ Đã từ chối phê duyệt hợp đồng ${contract.code}. Lý do đã được ghi nhận.`, 'info');
+      renderContracts();
+    }
+
+    // ========================================================================
+    // QUẢN LÝ ĐỒNG Ý & PHÊ DUYỆT HỢP ĐỒNG (CHỈ DÀNH CHO MANAGER / ADMIN):
+    // Hệ thống mới thực hiện tạo tài khoản cư dân (TÊN ĐĂNG NHẬP = EMAIL)
+    // Trạng thái tài khoản = INACTIVE (Chờ Admin kích hoạt Access)
+    // ========================================================================
+    function approveContract(ctCode) {
+      const role = DataStore.getRole();
+      if (role !== 'MANAGER' && role !== 'ADMIN') {
+        showToast('Tài khoản Nhân viên (Staff) không có quyền phê duyệt hợp đồng! Chỉ Quản lý mới có quyền này.', 'error');
+        return;
+      }
+
+      const contracts = DataStore.getContracts();
+      const contract = contracts.find(c => c.code === ctCode);
+      if (!contract) return;
+
+      const currentUser = DataStore.getUser();
+      contract.status = 'ACTIVE';
+      contract.approvedBy = (currentUser && currentUser.fullName) || 'Trần Minh Đức (Quản lý)';
+      contract.approvedAt = new Date().toISOString();
+      DataStore.saveContracts(contracts);
+
+      // 1. Cập nhật trạng thái phòng sang OCCUPIED (Đang thuê)
+      const rooms = DataStore.getRooms();
+      const targetRoom = rooms.find(r => r.buildingId === contract.buildingId && r.roomNumber === contract.room);
+      if (targetRoom) {
+        targetRoom.status = 'OCCUPIED';
+        targetRoom.tenant = contract.tenant;
+        targetRoom.phone = contract.phone;
+        DataStore.saveRooms(rooms);
+      }
+
+      // 2. Đồng bộ vào danh sách Cư dân lưu trú
+      try {
+        const residents = DataStore.getResidents();
+        const existingResident = residents.find(r => (contract.phone && r.phone === contract.phone) || (contract.cccd && r.cccd === contract.cccd));
+        if (!existingResident) {
+          residents.unshift({
+            name: contract.tenant,
+            room: contract.room,
+            building: contract.building,
+            phone: contract.phone,
+            zaloPhone: contract.zaloPhone || contract.phone,
+            cccd: contract.cccd,
+            startDate: contract.startDate,
+            registered: false
+          });
+          DataStore.saveResidents(residents);
+        }
+      } catch (e) {
+        console.warn('Lỗi đồng bộ residents:', e);
+      }
+
+      // 3. TẠO TÀI KHOẢN CƯ DÂN:
+      // - YÊU CẦU: Tên đăng nhập PHẢI LẤY EMAIL
+      // - YÊU CẦU: Trạng thái tài khoản = INACTIVE (Admin mới thực hiện kích hoạt)
+      const phoneClean = (contract.phone || '').trim();
+      const userEmail = (contract.email || '').trim().toLowerCase() || `${phoneClean || 'khachthue'}@stayhub.vn`;
+      const userLogin = userEmail; // TÊN ĐĂNG NHẬP LẤY EMAIL
+
+      const last4 = phoneClean.length >= 4 ? phoneClean.slice(-4) : Math.floor(1000 + Math.random() * 9000);
+      const generatedPassword = 'StayHub@' + last4;
+
+      const allUsers = DataStore.getUsers();
+      let residentAcc = allUsers.find(u => (userLogin && u.email === userLogin) || (phoneClean && u.phone === phoneClean));
+
+      if (residentAcc) {
+        residentAcc.fullName = contract.tenant;
+        residentAcc.role = 'RESIDENT';
+        residentAcc.status = 'INACTIVE'; // Luôn về INACTIVE để Admin kích hoạt
+        residentAcc.scope = `${contract.room} - ${contract.building}`;
+        residentAcc.title = `Cư dân Căn hộ ${contract.room}`;
+        residentAcc.phone = phoneClean;
+        residentAcc.zaloPhone = contract.zaloPhone || phoneClean;
+        residentAcc.email = userEmail;
+        residentAcc.cccd = contract.cccd;
+        residentAcc.room = contract.room;
+        residentAcc.building = contract.building;
+        residentAcc.contractCode = contract.code;
+        residentAcc.initialPassword = generatedPassword;
+        residentAcc.updatedAt = new Date().toISOString();
+        DataStore.saveUsers(allUsers);
+      } else {
+        residentAcc = DataStore.addUser({
+          fullName: contract.tenant,
+          email: userEmail, // Tên đăng nhập là Email
+          phone: phoneClean,
+          zaloPhone: contract.zaloPhone || phoneClean,
+          cccd: contract.cccd,
+          role: 'RESIDENT',
+          scope: `${contract.room} - ${contract.building}`,
+          status: 'INACTIVE', // YÊU CẦU: Trạng thái ban đầu luôn là INACTIVE để Admin kích hoạt
+          initialPassword: generatedPassword,
+          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+          title: `Cư dân Căn hộ ${contract.room}`,
+          room: contract.room,
+          building: contract.building,
+          contractCode: contract.code
+        });
+      }
+
+      // Ghi nhật ký hệ thống kiểm toán (Audit Log)
+      DataStore.addAuditLog(
+        'PHÊ_DUYỆT_HỢP_ĐỒNG_VÀ_TẠO_TÀI_KHOẢN',
+        `Hợp đồng: ${contract.code} (${contract.room} - ${contract.building})`,
+        `Quản lý ${contract.approvedBy} đã phê duyệt hợp đồng ${contract.code}. Hệ thống tự động tạo tài khoản cư dân [INACTIVE] với Tên đăng nhập (Email): ${userLogin} (Mật khẩu: ${generatedPassword}). Đang chờ Quản trị viên (Admin) kích hoạt.`
+      );
+
+      // Đổ dữ liệu vào Modal thông báo tài khoản
+      const elTenant = document.getElementById('acc-modal-tenant');
+      const elRoom = document.getElementById('acc-modal-room');
+      const elCode = document.getElementById('acc-modal-code');
+      const elUsername = document.getElementById('acc-modal-username');
+      const elPassword = document.getElementById('acc-modal-password');
+
+      if (elTenant) elTenant.textContent = contract.tenant;
+      if (elRoom) elRoom.textContent = contract.room;
+      if (elCode) elCode.textContent = contract.code;
+      if (elUsername) elUsername.textContent = userLogin; // Email
+      if (elPassword) elPassword.textContent = generatedPassword;
+
+      closeModal('viewFullContractModal');
+      showToast(`Đã phê duyệt thành công hợp đồng ${contract.code}! Tài khoản cư dân (${userLogin}) đã được tạo và gửi tới Quản trị viên (Admin) kích hoạt.`);
+      renderContracts();
+    }
+
+    // Chuyển bộ lọc trạng thái hợp đồng (Tất cả, Chờ duyệt, Hiệu lực, Từ chối)
+    function filterContracts(status) {
+      currentContractStatusFilter = status;
+      const statuses = ['ALL', 'PENDING_APPROVAL', 'ACTIVE', 'REJECTED'];
+      statuses.forEach(s => {
+        const btn = document.getElementById(`ct-filter-${s.toLowerCase().replace('_', '-')}`);
+        if (btn) {
+          const isActive = s === status;
+          if (s === 'PENDING_APPROVAL') {
+            btn.className = isActive
+              ? 'px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-600 text-white shadow-xs flex items-center gap-1 cursor-pointer'
+              : 'px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 flex items-center gap-1 cursor-pointer';
+          } else {
+            btn.className = isActive
+              ? 'px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#0F766E] text-white shadow-xs cursor-pointer'
+              : 'px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer';
+          }
+        }
+      });
+      renderContracts();
+    }
+
+    // Điều hướng sang trang Quản trị Người dùng (users.html) và đổi vai trò sang ADMIN để duyệt
+    function goToAdminApproval() {
+      closeModal('createdAccountInfoModal');
+      DataStore.setRole('ADMIN');
+      window.location.href = '../administration/users.html';
+    }
+
+    // Sao chép thông tin tài khoản cư dân vừa tạo
+    function copyResidentCredentials() {
+      const username = document.getElementById('acc-modal-username') ? document.getElementById('acc-modal-username').textContent : '';
+      const password = document.getElementById('acc-modal-password') ? document.getElementById('acc-modal-password').textContent : '';
+      const tenant = document.getElementById('acc-modal-tenant') ? document.getElementById('acc-modal-tenant').textContent : '';
+      const text = `Tài khoản cư dân StayHub (${tenant}):\n- Tên đăng nhập (Email): ${username}\n- Mật khẩu: ${password}\n- Trạng thái: Chờ Admin kích hoạt (INACTIVE)`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('📋 Đã sao chép tài khoản & mật khẩu cư dân!');
+        }).catch(() => {
+          alert(text);
+        });
+      } else {
+        alert(text);
+      }
     }
 
     // In hợp đồng
@@ -1494,29 +1820,90 @@
       printWindow.document.close();
     }
 
+    // Xác định buildingId chính xác của từng hợp đồng
+    function getContractBuildingId(ct) {
+      if (ct.buildingId) return ct.buildingId;
+      if (ct.building) {
+        const b = ct.building.toLowerCase();
+        if (b.includes('eco') || b.includes('cầu giấy')) return 'bld-3';
+        if (b.includes('riverside') || b.includes('tây hồ')) return 'bld-2';
+        if (b.includes('central') || b.includes('quận 1') || b.includes('ba đình')) return 'bld-1';
+      }
+      return 'bld-1';
+    }
+
+    // Kiểm tra hợp đồng có thuộc cơ sở được lọc hay không
+    function contractMatchesBuilding(ct, targetBldId) {
+      if (!targetBldId || targetBldId === 'ALL') return true;
+      return getContractBuildingId(ct) === targetBldId;
+    }
+
     // Render danh sách hợp đồng
-    function renderContracts() {
-      const search = document.getElementById('contract-search').value.toLowerCase();
+    function renderContracts(forcedBldId = null) {
+      const search = (document.getElementById('contract-search')?.value || '').toLowerCase();
       const contracts = DataStore.getContracts();
-      const currentBldId = DataStore.getCurrentBuilding();
-      const currentBld = DataStore.getBuildings().find(b => b.id === currentBldId);
-      const bldNamePart = currentBld ? currentBld.name.split(' - ')[0] : '';
+
+      let currentBldId = forcedBldId || (document.getElementById('building-filter')?.value) || DataStore.getCurrentBuilding();
+      if (!currentBldId) currentBldId = 'ALL';
+
       const tbody = document.getElementById('contracts-tbody');
 
-      let filtered = contracts.filter(ct => {
-        const matchBuilding = currentBldId === 'ALL' || !ct.buildingId || ct.buildingId === currentBldId || (ct.building && ct.building.includes(bldNamePart));
-        const matchSearch = ct.room.toLowerCase().includes(search) ||
-          ct.tenant.toLowerCase().includes(search) ||
-          ct.code.toLowerCase().includes(search);
-        return matchBuilding && matchSearch;
+      // Lọc danh sách hợp đồng thuộc đúng cơ sở đang chọn
+      const contractsForBld = contracts.filter(c => contractMatchesBuilding(c, currentBldId));
+
+      // Đếm số lượng theo trạng thái của cơ sở đang chọn
+      const countAll = contractsForBld.length;
+      const countPending = contractsForBld.filter(c => c.status === 'PENDING_APPROVAL').length;
+      const countActive = contractsForBld.filter(c => c.status === 'ACTIVE').length;
+      const countRejected = contractsForBld.filter(c => c.status === 'REJECTED').length;
+
+      const elCountAll = document.getElementById('count-ct-all');
+      const elCountPending = document.getElementById('count-ct-pending');
+      const elCountActive = document.getElementById('count-ct-active');
+      const elCountRejected = document.getElementById('count-ct-rejected');
+
+      if (elCountAll) elCountAll.innerText = countAll;
+      if (elCountPending) elCountPending.innerText = countPending;
+      if (elCountActive) elCountActive.innerText = countActive;
+      if (elCountRejected) elCountRejected.innerText = countRejected;
+
+      // Banner cảnh báo Quản lý có HĐ chờ duyệt (chỉ báo khi cơ sở đang chọn có HĐ chờ duyệt và role là MANAGER/ADMIN)
+      const alertEl = document.getElementById('pending-contracts-alert');
+      const alertCountEl = document.getElementById('alert-pending-ct-count');
+      const currentRole = DataStore.getRole();
+      const isManagerOrAdmin = (currentRole === 'MANAGER' || currentRole === 'ADMIN');
+
+      if (alertEl) {
+        if (countPending > 0 && isManagerOrAdmin) {
+          alertEl.classList.remove('hidden');
+          if (alertCountEl) alertCountEl.innerText = countPending;
+        } else {
+          alertEl.classList.add('hidden');
+        }
+      }
+
+      let filtered = contractsForBld.filter(ct => {
+        const matchSearch = (ct.room && ct.room.toLowerCase().includes(search)) ||
+          (ct.tenant && ct.tenant.toLowerCase().includes(search)) ||
+          (ct.code && ct.code.toLowerCase().includes(search)) ||
+          (ct.email && ct.email.toLowerCase().includes(search));
+
+        let matchStatus = true;
+        if (currentContractStatusFilter === 'PENDING_APPROVAL') matchStatus = ct.status === 'PENDING_APPROVAL';
+        else if (currentContractStatusFilter === 'ACTIVE') matchStatus = ct.status === 'ACTIVE';
+        else if (currentContractStatusFilter === 'REJECTED') matchStatus = ct.status === 'REJECTED';
+
+        return matchSearch && matchStatus;
       });
+
+      if (!tbody) return;
 
       if (filtered.length === 0) {
         tbody.innerHTML = `
           <tr>
             <td colspan="8" class="p-8 text-center text-slate-400">
               <i data-lucide="file-question" class="w-8 h-8 mx-auto mb-1.5 opacity-50"></i>
-              <p>Không tìm thấy hợp đồng nào phù hợp</p>
+              <p>Không tìm thấy hợp đồng nào phù hợp.</p>
             </td>
           </tr>
         `;
@@ -1525,13 +1912,57 @@
       }
 
       tbody.innerHTML = filtered.map(ct => {
-        let badge = '<span class="badge badge-success">Đang hiệu lực</span>';
-        if (ct.status === 'EXPIRING_SOON') {
-          badge = '<span class="badge badge-warning">Sắp hết hạn</span>';
+        let badge = '<span class="badge badge-success font-semibold">Đang hiệu lực</span>';
+        let actionBtn = `
+          <button onclick="viewExistingContract('${ct.code}')" class="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded font-bold text-[11px] border border-teal-200 transition-colors inline-flex items-center gap-1 shadow-xs cursor-pointer">
+            <span>Xem HĐ</span>
+            <i data-lucide="file-text" class="w-3 h-3"></i>
+          </button>
+        `;
+
+        if (ct.status === 'PENDING_APPROVAL') {
+          badge = `
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-300">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+              Đang chờ duyệt
+            </span>
+          `;
+          if (isManagerOrAdmin) {
+            actionBtn = `
+              <button onclick="viewExistingContract('${ct.code}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-[11px] transition-colors inline-flex items-center gap-1.5 shadow-xs cursor-pointer">
+                <span>Kiểm tra & Duyệt</span>
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              </button>
+            `;
+          } else {
+            // STAFF: Chỉ xem hợp đồng, KHÔNG có nút duyệt
+            actionBtn = `
+              <button onclick="viewExistingContract('${ct.code}')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-bold text-[11px] border border-slate-300 transition-colors inline-flex items-center gap-1 shadow-xs cursor-pointer">
+                <span>Xem HĐ (Chờ duyệt)</span>
+                <i data-lucide="file-text" class="w-3 h-3 text-slate-500"></i>
+              </button>
+            `;
+          }
+        } else if (ct.status === 'REJECTED') {
+          badge = `
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-300">
+              ✕ Đã từ chối
+            </span>
+          `;
+          actionBtn = `
+            <button onclick="viewExistingContract('${ct.code}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded font-bold text-[11px] border border-rose-200 transition-colors inline-flex items-center gap-1 shadow-xs cursor-pointer">
+              <span>Xem HĐ</span>
+              <i data-lucide="file-x" class="w-3 h-3"></i>
+            </button>
+          `;
+        } else if (ct.status === 'EXPIRING_SOON') {
+          badge = '<span class="badge badge-warning font-semibold">Sắp hết hạn</span>';
+        } else if (ct.status === 'EXPIRED') {
+          badge = '<span class="badge badge-neutral font-semibold">Đã hết hạn</span>';
         }
 
         return `
-          <tr class="hover:bg-slate-50 transition-colors">
+          <tr class="hover:bg-slate-50 transition-colors ${ct.status === 'PENDING_APPROVAL' ? 'bg-amber-50/20' : (ct.status === 'REJECTED' ? 'bg-rose-50/20' : '')}">
             <td class="p-3.5 font-mono font-bold text-slate-900">${ct.code}</td>
             <td class="p-3.5">
               <span class="font-bold text-slate-900">${ct.room}</span>
@@ -1539,7 +1970,7 @@
             </td>
             <td class="p-3.5">
               <span class="font-bold text-slate-900">${ct.tenant}</span>
-              <span class="block text-[11px] text-slate-400">${ct.phone}</span>
+              <span class="block text-[11px] text-slate-500 font-mono">${ct.email || ct.phone}</span>
             </td>
             <td class="p-3.5 font-mono text-slate-600">${ct.cccd}</td>
             <td class="p-3.5">${ct.startDate} &rarr; ${ct.endDate}</td>
@@ -1549,10 +1980,7 @@
             </td>
             <td class="p-3.5">${badge}</td>
             <td class="p-3.5 text-right">
-              <button onclick="viewExistingContract('${ct.code}')" class="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded font-bold text-[11px] border border-teal-200 transition-colors inline-flex items-center gap-1 shadow-xs">
-                <span>Xem HĐ</span>
-                <i data-lucide="file-text" class="w-3 h-3"></i>
-              </button>
+              ${actionBtn}
             </td>
           </tr>
         `;
@@ -1567,7 +1995,7 @@
       checkContractRoleAccess();
       renderContracts();
       window.onFilterBuilding = function (bldId) {
-        renderContracts();
+        renderContracts(bldId);
         const bldInput = document.getElementById('new-ct-bld');
         const bldDisplay = document.getElementById('new-ct-bld-display');
         const buildings = DataStore.getBuildings();

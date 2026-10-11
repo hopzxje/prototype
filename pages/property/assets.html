@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,236 +10,211 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/data.js"></script>
   <script src="../../js/app.js"></script>
+  <style>
+    /* Smooth transitions for accordion and drawer */
+    .accordion-content {
+      transition: max-height 0.25s ease-out, opacity 0.2s ease-out;
+    }
+    .table-row-hover:hover {
+      background-color: rgba(248, 250, 252, 0.95);
+    }
+    .drawer-backdrop-open {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+    .drawer-panel-open {
+      transform: translateX(0) !important;
+    }
+    .asset-condition-menu {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-4px) scale(0.98);
+      transform-origin: top left;
+      transition: opacity 100ms ease-in, transform 100ms ease-in, visibility 0s linear 100ms;
+    }
+    .asset-condition-menu.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+      transition: opacity 150ms ease-out, transform 150ms ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .asset-condition-menu {
+        transition: none;
+      }
+    }
+  </style>
 </head>
+
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
+  <!-- Demo Role Bar -->
   <div id="demo-role-bar"></div>
 
   <div class="flex-1 flex overflow-hidden">
-    <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
+    <!-- Sidebar -->
+    <aside id="app-sidebar"
+      class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-41px)]"></aside>
 
+    <!-- Main Content -->
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
       <header id="app-topbar"></header>
       <script>initStayHubShell('assets.html', 'Quản lý Tài sản thiết bị', 'Cơ sở / Trang thiết bị');</script>
 
-      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-5">
 
-        <!-- Header & Action Buttons -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <i data-lucide="package" class="w-6 h-6 text-[#0F766E]"></i>
-              <span>Quản Lý Tài Sản & Trang Thiết Bị Căn Hộ</span>
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Quy trình Tạo mới tài sản (Create Asset) và Gán tài sản vào căn hộ (Assign Asset) theo sơ đồ chuẩn</p>
-          </div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <button onclick="openAssignAssetModal()" class="flex items-center gap-2 px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold shadow-xs transition-colors cursor-pointer">
-              <i data-lucide="corner-down-right" class="w-4 h-4"></i>
-              <span>Gán Thiết Bị Vào Căn Hộ</span>
+        <!-- Page actions -->
+        <div class="flex items-center justify-end gap-2.5 flex-wrap">
+            <!-- Nút Nhập Thêm Số Lượng (Secondary) -->
+            <button type="button" id="btn-restock-assets" onclick="openRestockModal()"
+              class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+              title="Nhập thêm số lượng tài sản vào kho">
+              <i data-lucide="package-plus" class="w-4 h-4 text-slate-500"></i>
+              <span>Nhập Thêm Số Lượng</span>
             </button>
-            <button onclick="openCreateAssetModal()" class="flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg text-xs font-bold shadow-xs transition-colors cursor-pointer">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i>
-              <span>Tạo Mới Tài Sản (Create Asset)</span>
+
+            <!-- Nút tạo loại và tài sản mới -->
+            <button type="button" id="btn-new-asset-type" onclick="showNewAssetTypeForm()"
+              class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+              title="Tạo loại thiết bị và nhập tài sản mới">
+              <i data-lucide="folder-plus" class="w-4 h-4 text-slate-500"></i>
+              <span>Thêm loại thiết bị</span>
             </button>
-          </div>
+
+            <!-- Quick Stats pill -->
+            <div class="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-xs font-medium text-slate-600 shadow-xs">
+              <span>Tổng thiết bị: <strong class="text-slate-900" id="header-stat-total">0</strong></span>
+              <span class="text-slate-300">|</span>
+              <span class="text-emerald-700 font-semibold" id="header-stat-good">Tốt: 0</span>
+              <span class="text-slate-300">|</span>
+              <span class="text-rose-600 font-semibold" id="header-stat-issue">Sự cố: 0</span>
+            </div>
         </div>
 
-        <!-- Metric Cards -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tổng số tài sản</span>
-              <span class="p-1.5 rounded-lg bg-teal-50 text-teal-700"><i data-lucide="boxes" class="w-4 h-4"></i></span>
-            </div>
-            <h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="stat-total-assets">0</h3>
-            <p class="text-[11px] text-slate-500 mt-0.5" id="stat-total-sub">Bao gồm trong phòng & kho</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Đang trang bị (In Use)</span>
-              <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700"><i data-lucide="check-circle" class="w-4 h-4"></i></span>
-            </div>
-            <h3 class="text-2xl font-extrabold text-emerald-600 mt-1" id="stat-assigned-assets">0</h3>
-            <p class="text-[11px] text-slate-500 mt-0.5">Đã gán vào các căn hộ</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tồn kho sẵn sàng</span>
-              <span class="p-1.5 rounded-lg bg-amber-50 text-amber-700"><i data-lucide="warehouse" class="w-4 h-4"></i></span>
-            </div>
-            <h3 class="text-2xl font-extrabold text-amber-600 mt-1" id="stat-instock-assets">0</h3>
-            <p class="text-[11px] text-slate-500 mt-0.5">Sẵn sàng để gán vào phòng</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Lượt gán thiết bị</span>
-              <span class="p-1.5 rounded-lg bg-blue-50 text-blue-700"><i data-lucide="clipboard-list" class="w-4 h-4"></i></span>
-            </div>
-            <h3 class="text-2xl font-extrabold text-blue-600 mt-1" id="stat-total-assignments">0</h3>
-            <p class="text-[11px] text-slate-500 mt-0.5">Hồ sơ bàn giao thiết bị</p>
-          </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="flex border-b border-slate-200 gap-6 text-xs font-bold">
-          <button onclick="switchAssetTab('inventory')" id="tab-btn-inventory" class="pb-3 border-b-2 border-[#0F766E] text-[#0F766E] flex items-center gap-1.5 transition-all cursor-pointer">
-            <i data-lucide="layers" class="w-4 h-4"></i>
-            <span>Kho Tài Sản & Thiết Bị (Master Assets)</span>
-          </button>
-          <button onclick="switchAssetTab('apartments')" id="tab-btn-apartments" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-all cursor-pointer">
-            <i data-lucide="home" class="w-4 h-4"></i>
-            <span>Trang Bị Theo Căn Hộ (Apartment Assets)</span>
-          </button>
-          <button onclick="switchAssetTab('history')" id="tab-btn-history" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-all cursor-pointer">
-            <i data-lucide="file-text" class="w-4 h-4"></i>
-            <span>Nhật Ký Gán Tài Sản (Asset Assignments)</span>
-          </button>
-        </div>
-
-        <!-- ===================================================================
-             TAB 1: KHO TÀI SẢN & THIẾT BỊ (MASTER ASSETS)
-             =================================================================== -->
-        <div id="tab-content-inventory" class="space-y-4">
-          <!-- Filters Bar -->
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-2 flex-wrap flex-1 min-w-[280px]">
-              <div class="relative flex-1 min-w-[200px]">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
-                <input type="text" id="asset-search" oninput="renderAssetsTable()" placeholder="Tìm mã tài sản, tên thiết bị, model, phòng..."
-                  class="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600 focus:bg-white transition-colors">
+        <!-- 2. Filter & View Switcher Bar (Mockup Style) -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 shadow-xs">
+          <div class="flex flex-col xl:flex-row xl:items-center gap-3">
+            <div class="grid min-w-0 flex-1 grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-[1.35fr_1fr_1fr_1fr]">
+              <!-- Search Input -->
+              <div class="relative min-w-0">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="asset-search" oninput="onFilterChange()"
+                placeholder="Tìm theo tên thiết bị, phòng, mã tài sản, số serial..."
+                class="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-colors hover:border-slate-300 focus-visible:border-[#0F766E] focus-visible:ring-2 focus-visible:ring-teal-600/10">
               </div>
 
-              <select id="filter-asset-type" onchange="renderAssetsTable()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-teal-600">
-                <option value="ALL">Tất cả loại tài sản</option>
-                <!-- Rendered dynamically -->
-              </select>
-
-              <select id="filter-asset-status" onchange="renderAssetsTable()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-teal-600">
-                <option value="ALL">Tất cả trạng thái</option>
-                <option value="IN_STOCK">📦 Tồn kho sẵn sàng</option>
-                <option value="ASSIGNED">✓ Đang dùng trong phòng</option>
-              </select>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <span class="text-xs text-slate-500" id="assets-count-badge">0 tài sản</span>
-            </div>
-          </div>
-
-          <!-- Assets Table Card -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-slate-600">
-                <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
-                  <tr>
-                    <th class="p-3.5">Mã Tài Sản</th>
-                    <th class="p-3.5">Tên Thiết Bị / Model</th>
-                    <th class="p-3.5">Loại Tài Sản</th>
-                    <th class="p-3.5">Vị Trí Hiện Tại</th>
-                    <th class="p-3.5">Nguyên Giá</th>
-                    <th class="p-3.5">Bảo Hành / Tình Trạng</th>
-                    <th class="p-3.5">Trạng Thái</th>
-                    <th class="p-3.5 text-right">Thao Tác</th>
-                  </tr>
-                </thead>
-                <tbody id="assets-tbody" class="divide-y divide-slate-100 font-medium">
-                  <!-- Rendered dynamically -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- ===================================================================
-             TAB 2: TRANG BỊ THEO CĂN HỘ (APARTMENT ASSETS)
-             =================================================================== -->
-        <div id="tab-content-apartments" class="space-y-4 hidden">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Cột Trái: Danh Sách Căn Hộ (Choose an Apartment) -->
-            <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden flex flex-col h-[580px]">
-              <div class="p-3.5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-                <div>
-                  <h3 class="font-bold text-slate-900 text-xs">1. Chọn Căn Hộ (Choose Apartment)</h3>
-                  <p class="text-[11px] text-slate-500">Bấm chọn phòng để quản lý thiết bị</p>
-                </div>
-                <span class="text-[11px] font-mono font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200" id="apartment-list-count">0 Phòng</span>
-              </div>
-              <div class="p-2 border-b border-slate-200 bg-white">
-                <input type="text" id="room-search-input" oninput="renderApartmentSelector()" placeholder="Tìm số phòng, người thuê..." class="w-full text-xs px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600">
-              </div>
-              <div id="apartment-rooms-list" class="flex-1 overflow-y-auto divide-y divide-slate-100 p-1">
-                <!-- Rendered dynamically -->
-              </div>
-            </div>
-
-            <!-- Cột Phải: Danh Sách Thiết Bị Của Phòng Đã Chọn -->
-            <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-xs p-5 flex flex-col h-[580px]">
-              <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-                <div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-base font-bold text-slate-900" id="selected-room-title">Chưa chọn căn hộ</span>
-                    <span id="selected-room-badge" class="badge badge-neutral">Chờ chọn</span>
-                  </div>
-                  <p class="text-xs text-slate-500 mt-0.5" id="selected-room-desc">Chọn một căn hộ ở danh sách bên trái để xem và gán tài sản</p>
-                </div>
-                <button id="btn-assign-to-selected-room" onclick="openAssignModalForSelectedRoom()" disabled class="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F766E] hover:bg-[#115E59] disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-xs">
-                  <i data-lucide="plus" class="w-4 h-4"></i>
-                  <span>Gán Thêm Thiết Bị</span>
+              <!-- Condition dropdown -->
+              <div class="relative w-full" data-asset-condition-dropdown>
+                <button id="asset-condition-filter-trigger" type="button" role="combobox"
+                  aria-haspopup="listbox" aria-controls="asset-condition-filter-menu" aria-expanded="false"
+                  onclick="toggleAssetConditionDropdown()" onkeydown="handleAssetConditionTriggerKeydown(event)"
+                  class="group flex h-10 w-full items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3.5 text-left text-base md:text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 focus-visible:outline-none focus-visible:border-[#0F766E] focus-visible:ring-2 focus-visible:ring-teal-600/10 cursor-pointer">
+                  <span id="asset-condition-filter-label" class="truncate">Tình trạng: Tất cả</span>
+                  <i data-lucide="chevron-down"
+                    class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-150 group-aria-expanded:rotate-180"></i>
                 </button>
+                <div id="asset-condition-filter-menu" role="listbox" aria-label="Lọc theo tình trạng thiết bị"
+                  class="asset-condition-menu absolute left-0 top-[calc(100%+8px)] z-40 flex w-full min-w-[240px] flex-col gap-1 rounded-2xl border border-slate-200 bg-white p-1 shadow-lg">
+                </div>
               </div>
 
-              <!-- Bảng thiết bị trong phòng -->
-              <div class="flex-1 overflow-y-auto py-3">
-                <div id="room-assets-empty" class="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400">
-                  <i data-lucide="box" class="w-12 h-12 stroke-[1.5] mb-2 opacity-50"></i>
-                  <p class="text-xs font-medium">Chọn một căn hộ để quản lý trang thiết bị.</p>
-                </div>
-                <div id="room-assets-container" class="hidden space-y-2.5">
-                  <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Trang thiết bị hiện có trong phòng:</div>
-                  <div id="room-assets-list" class="space-y-2">
-                    <!-- Rendered dynamically -->
-                  </div>
-                </div>
+              <div class="relative w-full">
+                <select id="asset-class-filter" onchange="setAssetClassFilter(this.value)"
+                  class="h-10 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3.5 pr-9 text-sm font-semibold text-slate-700 outline-none transition-colors hover:border-slate-300 focus:border-[#0F766E] focus:ring-2 focus:ring-teal-600/10 cursor-pointer">
+                  <option value="ALL">Phân loại: Tất cả</option>
+                  <option value="FIXED">Phân loại: Tài sản cố định</option>
+                  <option value="EQUIPMENT">Phân loại: Trang thiết bị</option>
+                  <option value="CONSUMABLE">Phân loại: Vật tư tiêu hao</option>
+                </select>
+                <i data-lucide="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+              </div>
+
+              <div class="relative w-full">
+                <select id="asset-type-filter" onchange="setAssetTypeFilter(this.value)"
+                  class="h-10 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3.5 pr-9 text-sm font-semibold text-slate-700 outline-none transition-colors hover:border-slate-300 focus:border-[#0F766E] focus:ring-2 focus:ring-teal-600/10 cursor-pointer">
+                  <option value="ALL">Loại thiết bị: Tất cả</option>
+                </select>
+                <i data-lucide="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
               </div>
             </div>
 
+            <!-- View Switcher -->
+            <div class="grid w-full grid-cols-2 items-center p-1 bg-slate-100/90 rounded-xl border border-slate-200/80 text-xs shrink-0 xl:w-[260px]">
+              <button id="view-btn-types" onclick="switchViewMode('types')"
+                class="inline-flex min-h-8 items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-bold bg-[#0F766E] text-white shadow-xs transition-all cursor-pointer whitespace-nowrap">
+                <i data-lucide="package" class="w-3.5 h-3.5"></i>
+                <span>Theo Loại Thiết Bị</span>
+              </button>
+              <button id="view-btn-rooms" onclick="switchViewMode('rooms')"
+                class="inline-flex min-h-8 items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition-all cursor-pointer whitespace-nowrap">
+                <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span>Theo Phòng</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- ===================================================================
-             TAB 3: NHẬT KÝ GÁN TÀI SẢN (ASSET ASSIGNMENTS)
-             =================================================================== -->
-        <div id="tab-content-history" class="space-y-4 hidden">
-          <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <div class="p-4 border-b border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 class="font-bold text-slate-900 text-xs">Lịch Sử Phân Bổ & Gán Tài Sản (Asset Assignment Records)</h3>
-                <p class="text-[11px] text-slate-500 mt-0.5">Lưu vết toàn bộ các lần bàn giao thiết bị vào căn hộ</p>
-              </div>
-              <span class="text-xs font-semibold text-slate-500" id="assignments-count-badge">0 bản ghi</span>
+        <!-- 3. VIEW MODE 1: THEO LOẠI THIẾT BỊ (CARD LIST WITH ACCORDION DETAILS) -->
+        <div id="view-content-types" class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-1">
+            <h3 class="text-sm font-semibold text-slate-800">Danh sách theo loại thiết bị</h3>
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <button onclick="expandAllTypeCards()" class="min-h-8 rounded-lg px-2 hover:bg-white hover:text-[#0F766E] font-medium transition-colors cursor-pointer">Mở rộng tất cả</button>
+              <span class="text-slate-300">•</span>
+              <button onclick="collapseAllTypeCards()" class="min-h-8 rounded-lg px-2 hover:bg-white hover:text-[#0F766E] font-medium transition-colors cursor-pointer">Thu gọn tất cả</button>
             </div>
+          </div>
+          <!-- Dynamically Rendered Category Cards -->
+          <div id="asset-type-cards-container" class="space-y-3">
+            <!-- Cards will be rendered by renderAssetTypeCards() -->
+          </div>
+        </div>
 
+        <!-- 4. VIEW MODE 2: THEO PHÒNG (APARTMENT ROOMS GRID) -->
+        <div id="view-content-rooms" class="hidden space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="text-slate-500 font-medium">Bộ lọc phòng:</span>
+              <div class="relative">
+              <select id="apartment-equip-filter" onchange="setApartmentEquipFilter(this.value)"
+                class="appearance-none min-w-[190px] rounded-lg border border-slate-200 bg-white py-1.5 pl-3 pr-8 text-xs font-semibold text-slate-700 shadow-xs outline-none transition-colors focus:border-teal-500 focus:ring-2 focus:ring-teal-100 cursor-pointer">
+                <option value="ALL">Tất cả phòng</option>
+                <option value="EQUIPPED">Đã có đồ</option>
+                <option value="EMPTY">Chưa có đồ (Cần trang bị)</option>
+              </select>
+              <i data-lucide="chevron-down" class="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500"></i>
+              </div>
+            </div>
+          </div>
+
+          <div id="apartment-rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Rendered by renderApartmentRoomsGrid() -->
+          </div>
+        </div>
+
+        <!-- 5. VIEW MODE 3: BẢNG PHẲNG (FLAT MASTER INVENTORY TABLE) -->
+        <div id="view-content-flat" class="hidden space-y-4">
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-700">Danh sách tài sản chi tiết từng mã serial</span>
+              <span class="text-xs text-slate-400" id="flat-table-count">0 tài sản</span>
+            </div>
             <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-slate-600">
-                <thead class="bg-slate-50 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
-                  <tr>
-                    <th class="p-3.5">Mã Bản Ghi</th>
-                    <th class="p-3.5">Mã Tài Sản</th>
-                    <th class="p-3.5">Tên Thiết Bị</th>
-                    <th class="p-3.5">Căn Hộ Nhận</th>
-                    <th class="p-3.5">Ngày Bàn Giao</th>
-                    <th class="p-3.5">Người Thực Hiện</th>
-                    <th class="p-3.5">Ghi Chú Bàn Giao</th>
-                    <th class="p-3.5 text-right">Trạng Thái</th>
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50/80 text-slate-400 font-semibold border-b border-slate-100 uppercase tracking-wider text-[11px]">
+                    <th class="py-3 px-4">Mã & Loại tài sản</th>
+                    <th class="py-3 px-4">Tên thiết bị & Model</th>
+                    <th class="py-3 px-4">Vị trí hiện tại</th>
+                    <th class="py-3 px-4">Nguyên giá mua</th>
+                    <th class="py-3 px-4">Bảo hành & Hiện trạng</th>
+                    <th class="py-3 px-4 text-right">Thao tác</th>
                   </tr>
                 </thead>
-                <tbody id="assignments-tbody" class="divide-y divide-slate-100 font-medium">
-                  <!-- Rendered dynamically -->
+                <tbody id="assets-table-body" class="divide-y divide-slate-100">
+                  <!-- Rendered by renderAssetsTable() -->
                 </tbody>
               </table>
             </div>
@@ -249,312 +225,1244 @@
     </main>
   </div>
 
-  <!-- ===================================================================
-       MODAL 1: TẠO MỚI TÀI SẢN (CREATE ASSET)
-       Theo đúng làn:
-       Lane 1: Create Asset -> Lane 2: Load dropdown Asset Type -> Display form
-       Lane 1: Select AssetType & Enter asset info -> Lane 2: Validate data & Duplicate check
-       =================================================================== -->
-  <div id="createAssetModal" class="modal-backdrop">
-    <div class="modal-content max-w-xl w-full p-6 space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+  <!-- SLIDE-OVER DRAWER: HỒ SƠ CHI TIẾT TÀI SẢN -->
+  <div id="asset-detail-drawer" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
+    <div id="drawer-backdrop" onclick="closeAssetDrawer()"
+      class="absolute inset-0 bg-slate-900/40 backdrop-blur-xs opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+
+    <div id="drawer-panel"
+      class="absolute top-0 right-0 h-full w-full max-w-lg bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto">
+      <!-- Drawer Header -->
+      <div class="p-5 border-b border-slate-100 flex items-start justify-between bg-slate-50/60">
         <div>
-          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-teal-100 text-[#0F766E] flex items-center justify-center text-xs font-extrabold">1</span>
-            <span>Tạo Mới Tài Sản (Create Asset)</span>
-          </h3>
-          <p class="text-xs text-slate-500 mt-0.5">Khởi tạo thiết bị vào hệ thống và kiểm tra trùng lặp (Duplicate Check)</p>
+          <div class="flex items-center gap-2 mb-1">
+            <span id="drawer-asset-code" class="font-mono font-bold text-xs px-2 py-0.5 rounded bg-teal-50 text-[#0F766E] border border-teal-200">AC-001</span>
+            <span id="drawer-asset-type" class="text-xs text-slate-500 font-medium">Điều hòa</span>
+          </div>
+          <h3 id="drawer-asset-name" class="text-base font-bold text-slate-900 leading-snug">Điều hòa Inverter Daikin 1.5 HP</h3>
+          <p id="drawer-asset-model" class="text-xs text-slate-500 mt-0.5">Daikin • Model: FTKQ35SVMV</p>
         </div>
-        <button type="button" onclick="closeModal('createAssetModal')" class="text-slate-400 hover:text-slate-600">
+        <button onclick="closeAssetDrawer()"
+          class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Alert Box hiển thị khi có lỗi Validate hoặc Duplicate data (Enter again) -->
-      <div id="create-asset-error-box" class="hidden p-3 bg-rose-50 border border-rose-300 rounded-xl text-xs text-rose-800 space-y-1">
-        <div class="flex items-start gap-2">
-          <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600 shrink-0 mt-0.5"></i>
-          <div>
-            <p class="font-bold text-rose-900" id="create-asset-error-title">Lỗi kiểm tra dữ liệu</p>
-            <p class="text-rose-700 mt-0.5" id="create-asset-error-desc">Vui lòng kiểm tra lại thông tin.</p>
-          </div>
-        </div>
-      </div>
-
-      <form onsubmit="handleCreateAssetSubmit(event)" class="space-y-3.5 text-xs">
-        
-        <!-- Bước: Select AssetType (Lane 2 Load dropdown Asset Type) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Loại tài sản (Asset Type) <span class="text-red-500">*</span></label>
-            <select id="modal-asset-type" onchange="onAssetTypeSelected()" required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-teal-800 focus:outline-teal-600">
-              <option value="">-- Chọn loại tài sản --</option>
-              <!-- Nạp động qua loadAssetTypeDropdown() -->
-            </select>
-          </div>
-
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Mã tài sản (Asset Code) <span class="text-red-500">*</span></label>
-            <div class="flex gap-1.5">
-              <input type="text" id="modal-asset-code" placeholder="VD: AC-CENTRAL-301" required
-                class="flex-1 bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-mono uppercase font-bold focus:outline-teal-600">
-              <button type="button" onclick="generateRandomAssetCode()" title="Tạo mã ngẫu nhiên" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold border border-slate-300">
-                Tạo mã
-              </button>
-            </div>
-            <p class="text-[10.5px] text-slate-400 mt-0.5">Mã định danh duy nhất (hệ thống sẽ check trùng lặp)</p>
-          </div>
-        </div>
-
-        <!-- Bước: Enter asset information -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="sm:col-span-2">
-            <label class="block font-semibold text-slate-700 mb-1">Tên thiết bị / tài sản <span class="text-red-500">*</span></label>
-            <input type="text" id="modal-asset-name" placeholder="VD: Điều hòa Daikin Inverter 1.5 HP" required
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600 font-semibold">
-          </div>
-
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Thương hiệu / Hãng sản xuất</label>
-            <input type="text" id="modal-asset-brand" placeholder="VD: Daikin, Panasonic, Toshiba..." class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600">
-          </div>
-
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Model / Số hiệu thiết bị</label>
-            <input type="text" id="modal-asset-model" placeholder="VD: FTKQ35SVMV" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Cơ sở / Tòa nhà lưu trữ <span class="text-red-500">*</span></label>
-            <select id="modal-asset-building" required class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600">
-              <!-- Rendered dynamically -->
-            </select>
-          </div>
-
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Nguyên giá mua (VNĐ)</label>
-            <input type="number" id="modal-asset-price" placeholder="11500000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600">
-          </div>
-
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Bảo hành (tháng)</label>
-            <input type="number" id="modal-asset-warranty" value="24" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Ngày nhập kho / mua</label>
-            <input type="date" id="modal-asset-date" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600">
-          </div>
-
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Tình trạng vật lý ban đầu</label>
-            <select id="modal-asset-condition" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600">
-              <option value="Mới 100%">Mới 100% (Nguyên hộp/seal)</option>
-              <option value="Tốt">Tốt (Đã qua kiểm định)</option>
-              <option value="Khá">Khá (Đã qua sử dụng)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2.5">
-          <button type="button" onclick="closeModal('createAssetModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-semibold cursor-pointer">
-            Hủy Bỏ
-          </button>
-          <button type="submit" class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold transition-colors cursor-pointer shadow-sm flex items-center gap-1.5">
-            <i data-lucide="check" class="w-4 h-4"></i>
-            <span>Lưu Tài Sản (Save Asset)</span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ===================================================================
-       MODAL 2: GÁN TÀI SẢN VÀO CĂN HỘ (ASSIGN ASSET)
-       Theo đúng làn:
-       Lane 1: Choose apartment & Click "Assign Asset" -> Lane 2: Display list
-       Lane 1: Select the AssetType you want to assign & Submit
-       Lane 2: Create an asset_assignment record & Log activity -> Success notification
-       =================================================================== -->
-  <div id="assignAssetModal" class="modal-backdrop">
-    <div class="modal-content max-w-lg w-full p-6 space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-        <div>
-          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-extrabold">2</span>
-            <span>Gán Tài Sản Vào Căn Hộ (Assign Asset)</span>
-          </h3>
-          <p class="text-xs text-slate-500 mt-0.5">Phân bổ trang thiết bị từ kho lưu trữ vào căn hộ/phòng</p>
-        </div>
-        <button type="button" onclick="closeModal('assignAssetModal')" class="text-slate-400 hover:text-slate-600">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <form onsubmit="handleAssignAssetSubmit(event)" class="space-y-3.5 text-xs">
-        
-        <!-- Bước: Choose an apartment -->
-        <div>
-          <label class="block font-semibold text-slate-700 mb-1">Căn hộ nhận thiết bị <span class="text-red-500">*</span></label>
-          <select id="modal-assign-room" required onchange="onAssignRoomChanged()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-slate-900 focus:outline-teal-600">
-            <option value="">-- Chọn căn hộ / phòng --</option>
-            <!-- Rendered dynamically -->
-          </select>
-          <p class="text-[11px] text-slate-500 mt-0.5" id="modal-assign-room-info">Chọn phòng cần trang bị thêm tài sản</p>
-        </div>
-
-        <!-- Bước: Select the AssetType you want to assign -->
-        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+      <!-- Drawer Body -->
+      <div class="flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+        <!-- Vị trí hiện tại -->
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-900 text-xs">Chọn Thiết Bị Từ Kho (Available in Stock)</span>
-            <span class="text-[10.5px] text-amber-700 font-semibold" id="modal-stock-count-info">Đang tải kho...</span>
-          </div>
-
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">1. Lọc theo Loại thiết bị</label>
-            <select id="modal-assign-filter-type" onchange="filterAvailableAssetsForAssign()" class="w-full bg-white border border-slate-200 rounded-lg p-2 focus:outline-teal-600">
-              <option value="ALL">-- Tất cả loại tài sản có trong kho --</option>
-              <!-- Rendered dynamically -->
-            </select>
-          </div>
-
-          <!-- Bước: Display list & Select specific asset -->
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">2. Chọn thiết bị cụ thể <span class="text-red-500">*</span></label>
-            <select id="modal-assign-asset-select" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 font-mono font-semibold text-teal-900 focus:outline-teal-600">
-              <option value="">-- Chọn thiết bị khả dụng trong kho --</option>
-              <!-- Rendered dynamically -->
-            </select>
-            <p class="text-[10.5px] text-slate-500 mt-1" id="modal-assign-asset-detail">Mã tài sản, hãng sản xuất và tình trạng vật lý</p>
+            <div>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Vị trí hiện tại</span>
+              <span id="drawer-location-name" class="text-sm font-bold text-slate-900 block mt-0.5">Phòng P201</span>
+              <span id="drawer-building-name" class="text-xs text-slate-500">StayHub Central - Quận 1</span>
+            </div>
+            <span id="drawer-location-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Đang trong phòng
+            </span>
           </div>
         </div>
 
-        <!-- Bước: Ghi chú bàn giao & Submit -->
+        <!-- Thông số kỹ thuật & Nguyên giá -->
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">Ghi chú bàn giao / Tình trạng khi gán</label>
-          <textarea id="modal-assign-notes" rows="2" placeholder="Ví dụ: Thiết bị mới 100%, kèm điều khiển từ xa, tem niêm phong nguyên vẹn..."
-            class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-teal-600 resize-none">Bàn giao trang bị vào phòng đầy đủ phụ kiện, hoạt động bình thường</textarea>
+          <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[11px] mb-3">Thông số & Nguyên giá</h4>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 bg-white border border-slate-200 rounded-lg">
+              <span class="text-slate-400 text-[11px] block">Nguyên giá mua:</span>
+              <span id="drawer-asset-price" class="font-extrabold text-sm text-slate-900 block mt-0.5">11.500.000 đ</span>
+              <span id="drawer-asset-date" class="text-[10px] text-slate-400 block mt-0.5">Ngày mua: 10/01/2025</span>
+            </div>
+            <div class="p-3 bg-white border border-slate-200 rounded-lg">
+              <span class="text-slate-400 text-[11px] block">Thời hạn bảo hành:</span>
+              <span id="drawer-asset-warranty" class="font-bold text-slate-800 block mt-0.5">24 tháng</span>
+              <span class="text-[10px] text-emerald-600 font-medium block mt-0.5">Bảo hành chính hãng</span>
+            </div>
+            <div class="p-3 bg-white border border-slate-200 rounded-lg">
+              <span class="text-slate-400 text-[11px] block">Tình trạng vật lý:</span>
+              <span id="drawer-asset-condition" class="font-bold text-slate-800 block mt-0.5">Tốt</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">Đã qua kiểm định</span>
+            </div>
+            <div class="p-3 bg-white border border-slate-200 rounded-lg">
+              <span class="text-slate-400 text-[11px] block">Lần gán gần nhất:</span>
+              <span id="drawer-assigned-at" class="font-bold text-slate-800 block mt-0.5">15/01/2025</span>
+              <span id="drawer-assigned-by" class="text-[10px] text-slate-400 block mt-0.5">Bởi: Phạm Tuấn Anh</span>
+            </div>
+          </div>
         </div>
 
-        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2.5">
-          <button type="button" onclick="closeModal('assignAssetModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-semibold cursor-pointer">
-            Hủy Bỏ
+        <!-- Lịch sử điều chuyển -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <i data-lucide="history" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Lịch sử điều chuyển</span>
+            </h4>
+            <span id="drawer-history-count" class="text-slate-400 text-[11px]">1 lần</span>
+          </div>
+          <div id="drawer-history-timeline" class="space-y-2 border-l-2 border-teal-500/40 ml-2 pl-4">
+            <!-- Timeline items rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawer Footer Actions -->
+      <div id="drawer-footer-actions" class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2.5">
+        <!-- Dynamic Action buttons -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: BÀN GIAO / GÁN THIẾT BỊ VÀO PHÒNG -->
+  <div id="assignAssetModal"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 max-h-[92vh] overflow-hidden flex flex-col">
+      <div class="px-6 pt-5 pb-4 bg-gradient-to-br from-teal-50 via-white to-white border-b border-slate-200">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#0F766E] text-white flex items-center justify-center shadow-sm shrink-0">
+              <i data-lucide="package-check" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase tracking-wider font-bold text-[#0F766E]">Điều chuyển tài sản</p>
+              <h3 class="text-lg font-extrabold text-slate-900 leading-tight mt-0.5">Bàn giao thiết bị vào phòng</h3>
+              <p class="text-xs text-slate-500 mt-1">Chọn thiết bị trong kho và phòng nhận bàn giao</p>
+            </div>
+          </div>
+          <button onclick="closeModal('assignAssetModal')"
+            class="w-8 h-8 inline-flex items-center justify-center text-slate-500 hover:text-slate-800 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition-colors shrink-0">
+            <i data-lucide="x" class="w-5 h-5"></i>
           </button>
-          <button type="submit" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-colors cursor-pointer shadow-sm flex items-center gap-1.5">
+        </div>
+      </div>
+
+      <form id="assignAssetForm" onsubmit="handleAssignSubmit(event)" class="p-6 pt-5 space-y-5 text-xs overflow-y-auto">
+        <div class="rounded-xl border border-teal-100 bg-teal-50/60 px-3.5 py-3 flex items-center gap-3">
+          <i data-lucide="building-2" class="w-5 h-5 text-[#0F766E] shrink-0"></i>
+          <div class="min-w-0">
+            <p class="text-[11px] font-semibold text-slate-500">Cơ sở bàn giao</p>
+            <p id="modal-assign-building-display" class="font-bold text-slate-900 truncate">StayHub Central - Quận 1</p>
+            <p class="text-[10px] text-slate-500 mt-0.5">Theo cơ sở đang chọn trên thanh đầu trang</p>
+          </div>
+          <select id="modal-assign-building" class="sr-only" aria-hidden="true" tabindex="-1" required></select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-800 mb-1.5">1. Thiết bị sẵn sàng trong kho <span class="text-rose-500">*</span></label>
+          <div id="modal-assign-asset-list" class="space-y-2 max-h-44 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/70 p-2">
+            <!-- Danh sách loại thiết bị còn thiếu được render theo phòng -->
+          </div>
+          <select id="modal-assign-asset" class="hidden" aria-hidden="true"></select>
+          <p class="text-[11px] text-slate-400 mt-1">Chọn một hoặc nhiều loại còn thiếu. Mỗi loại sẽ lấy một thiết bị sẵn sàng trong kho.</p>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-semibold text-slate-800">2. Phòng nhận thiết bị <span class="text-rose-500">*</span></label>
+            <label id="modal-filter-only-empty-rooms-label" class="inline-flex items-center gap-1.5 cursor-pointer text-[11px] font-bold text-[#0F766E]">
+              <input type="checkbox" id="modal-filter-only-empty-rooms" onchange="loadRoomsForAssignModal()"
+                class="rounded border-slate-300 text-[#0F766E] focus:ring-[#0F766E]">
+              <span>Chỉ hiện phòng chưa có đồ</span>
+            </label>
+          </div>
+          <select id="modal-assign-room" onchange="renderAssignableAssetOptions()"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-500 font-medium" required>
+            <!-- Options populated by JS with 'Chưa có đồ (Sẵn sàng nhận thiết bị)' -->
+          </select>
+          <div id="modal-assign-room-display" class="hidden rounded-xl border border-teal-200 bg-teal-50/60 px-3 py-3">
+            <p class="text-[10px] font-semibold uppercase tracking-wide text-teal-700">Phòng đã chọn</p>
+            <p id="modal-assign-room-display-name" class="mt-0.5 font-bold text-slate-900"></p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-800 mb-1.5">Ghi chú bàn giao <span class="font-normal text-slate-400">(không bắt buộc)</span></label>
+          <textarea id="modal-assign-notes" rows="2"
+            placeholder="Ví dụ: Thiết bị mới 100%, kèm điều khiển từ xa, tem niêm phong nguyên vẹn..."
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-500 resize-none">Bàn giao trang bị vào phòng đầy đủ phụ kiện, hoạt động bình thường</textarea>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
+          <button type="button" onclick="closeModal('assignAssetModal')"
+            class="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 font-semibold cursor-pointer">
+            Đóng
+          </button>
+          <button type="submit"
+            class="px-5 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl font-bold shadow-sm transition-colors cursor-pointer flex items-center gap-1.5">
             <i data-lucide="check-check" class="w-4 h-4"></i>
-            <span>Xác Nhận Gán (Submit Assignment)</span>
+            <span>Xác nhận bàn giao</span>
           </button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- MODAL: CHUYỂN THIẾT BỊ SANG PHÒNG KHÁC -->
+  <div id="transferAssetModal"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-start justify-between gap-4 pb-4 border-b border-slate-200">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Chuyển thiết bị</h3>
+          <p id="transfer-asset-name" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+        <button type="button" onclick="closeModal('transferAssetModal')" class="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="confirmTransferAsset(event)" class="mt-4 space-y-4 text-xs">
+        <input type="hidden" id="transfer-asset-id">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Phòng mới <span class="text-rose-500">*</span></label>
+          <select id="transfer-room-id" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 font-medium" required></select>
+        </div>
+        <textarea id="transfer-asset-notes" rows="2" placeholder="Ghi chú chuyển phòng (không bắt buộc)"
+          class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100"></textarea>
+        <div class="pt-3 border-t border-slate-200 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('transferAssetModal')" class="px-4 py-2 border border-slate-200 rounded-xl text-slate-600 font-semibold">Đóng</button>
+          <button type="submit" class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl font-bold">Xác nhận chuyển</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: THÊM NHANH MỘT LOẠI THIẾT BỊ VÀO NHIỀU PHÒNG -->
+  <div id="quickBulkAssignModal"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-4 pb-4 border-b border-slate-200">
+        <div>
+          <p class="text-[10px] uppercase tracking-wider font-bold text-[#0F766E]">Gán thiết bị nhanh</p>
+          <h3 class="text-lg font-extrabold text-slate-900 mt-0.5">Thêm vào nhiều phòng</h3>
+          <p class="text-xs text-slate-500 mt-1">Chọn các phòng chưa có loại thiết bị này trong cơ sở hiện tại.</p>
+        </div>
+        <button type="button" onclick="closeModal('quickBulkAssignModal')"
+          class="w-8 h-8 inline-flex items-center justify-center text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-50">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 rounded-xl border border-teal-100 bg-teal-50/60 px-3.5 py-3">
+        <p class="text-[11px] font-semibold text-slate-500">Loại thiết bị</p>
+        <p id="quick-bulk-type-name" class="font-bold text-slate-900">---</p>
+      </div>
+
+      <div class="mt-4">
+        <div class="flex items-center justify-between mb-2">
+          <label class="font-semibold text-slate-800">Chọn phòng nhận thiết bị</label>
+          <button type="button" onclick="toggleQuickBulkRooms(true)" class="text-[11px] font-bold text-[#0F766E] hover:underline">Chọn tất cả</button>
+        </div>
+        <div id="quick-bulk-room-list" class="space-y-2 max-h-64 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/70 p-2">
+          <!-- Render danh sách phòng -->
+        </div>
+      </div>
+
+      <textarea id="quick-bulk-notes" rows="2" placeholder="Ghi chú bàn giao (không bắt buộc)"
+        class="mt-4 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100"></textarea>
+
+      <div class="mt-5 pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
+        <button type="button" onclick="closeModal('quickBulkAssignModal')"
+          class="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 font-semibold cursor-pointer">Đóng</button>
+        <button type="button" onclick="confirmQuickBulkAssign()"
+          class="px-5 py-2.5 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl font-bold shadow-sm cursor-pointer">
+          Xác nhận thêm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: NHẬP THÊM SỐ LƯỢNG (RESTOCK ASSET MODAL) -->
+  <div id="restockAssetModal"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-7 shadow-2xl border border-slate-100 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Nhập Thêm Số Lượng</h3>
+          <p class="text-xs text-slate-500">Tăng số lượng thiết bị có sẵn vào kho lưu trữ</p>
+        </div>
+        <button onclick="closeModal('restockAssetModal')"
+          class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="restockAssetForm" onsubmit="handleRestockSubmit(event)" class="mt-4 space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">1. Phân loại tài sản <span class="text-rose-500">*</span></label>
+          <select id="modal-restock-asset-class" onchange="loadRestockTypesByClass()"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-[#0F766E] font-medium" required>
+            <option value="">-- Chọn phân loại tài sản --</option>
+            <option value="FIXED">Tài sản cố định</option>
+            <option value="EQUIPMENT">Trang thiết bị / vật dụng</option>
+            <option value="CONSUMABLE">Vật tư tiêu hao</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">2. Chọn loại thiết bị <span class="text-rose-500">*</span></label>
+          <select id="modal-restock-type" onchange="loadRestockAssetsByType()" disabled
+            class="w-full bg-slate-100 border border-slate-200 rounded-xl p-3 focus:outline-[#0F766E] font-medium cursor-not-allowed" required>
+            <option value="">-- Vui lòng chọn phân loại trước --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">3. Chọn mẫu thiết bị <span class="text-rose-500">*</span></label>
+          <select id="modal-restock-target-asset" disabled
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-[#0F766E] font-medium" required>
+            <option value="">-- Vui lòng chọn loại thiết bị trước --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Số lượng nhập thêm (chiếc) <span class="text-rose-500">*</span></label>
+          <input type="number" id="modal-asset-quantity" min="1" max="100" value="5"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-[#0F766E] font-bold text-slate-900" required>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Tình trạng thiết bị <span class="text-rose-500">*</span></label>
+          <select id="modal-restock-condition"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-[#0F766E] font-medium" required>
+            <option value="Mới 100%">Mới 100%</option>
+            <option value="Tốt">Tốt</option>
+            <option value="Đã qua sử dụng">Đã qua sử dụng</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Đơn giá nhập mới (VNĐ) <span class="text-rose-500">*</span></label>
+          <input type="number" id="modal-restock-price" min="0" step="50000" value="11500000"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-[#0F766E] font-medium" required>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Ghi chú đợt nhập hàng</label>
+          <textarea id="modal-restock-notes" rows="2"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-[#0F766E] resize-none">Nhập bổ sung đợt mới</textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeModal('restockAssetModal')"
+            class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-semibold cursor-pointer">
+            Hủy Bỏ
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="package-plus" class="w-4 h-4"></i>
+            <span>Xác nhận</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: TẠO MỚI LOẠI THIẾT BỊ THEO LÔ -->
+  <div id="createAssetModal"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Khai Báo Thiết Bị Mới</h3>
+          <p class="text-xs text-slate-500">Khai báo mẫu thiết bị và thông tin nhập kho</p>
+        </div>
+        <button onclick="closeModal('createAssetModal')"
+          class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="createAssetForm" onsubmit="handleCreateAssetSubmit(event)" class="mt-5 space-y-5 text-xs">
+        <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+          <i data-lucide="building-2" class="w-4 h-4 text-[#0F766E]"></i>
+          <span class="text-[11px] font-extrabold uppercase tracking-wide text-slate-700">Phạm vi quản lý</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Cơ sở lưu trữ</label>
+            <select id="modal-create-building"
+              class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2.5 font-semibold text-slate-700 cursor-not-allowed" disabled>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Tên loại thiết bị <span class="text-rose-500">*</span></label>
+            <input type="text" id="modal-create-type-name" list="modal-create-type-suggestions"
+              oninput="onAssetTypeSelected()" placeholder="Ví dụ: Điều hòa, Tủ lạnh..."
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-[#0F766E] font-medium" required>
+            <datalist id="modal-create-type-suggestions"></datalist>
+            <input type="hidden" id="modal-create-type-code">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Phân loại tài sản <span class="text-rose-500">*</span></label>
+            <select id="modal-create-asset-class"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-[#0F766E] font-medium" required>
+              <option value="FIXED">Tài sản cố định</option>
+              <option value="EQUIPMENT">Trang thiết bị / vật dụng</option>
+              <option value="CONSUMABLE">Vật tư tiêu hao</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Mã tài sản</label>
+            <input type="text" id="modal-create-code-preview" value="Nhập tên loại để sinh mã"
+              class="w-full rounded-lg border border-dashed border-teal-200 bg-teal-50/60 p-2.5 font-mono font-bold text-[#0F766E] outline-none" readonly>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 border-b border-slate-100 pb-2 pt-1">
+          <i data-lucide="settings-2" class="w-4 h-4 text-[#0F766E]"></i>
+          <span class="text-[11px] font-extrabold uppercase tracking-wide text-slate-700">Thông tin mẫu thiết bị</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Hãng sản xuất <span class="text-rose-500">*</span></label>
+            <input type="text" id="modal-create-brand" oninput="updateGeneratedAssetName()" placeholder="Ví dụ: Daikin, Toshiba..."
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-[#0F766E]" required>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Model <span class="text-rose-500">*</span></label>
+            <input type="text" id="modal-create-model" oninput="updateGeneratedAssetName()" placeholder="Ví dụ: FTKQ35SVMV"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-[#0F766E]" required>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 border-b border-slate-100 pb-2 pt-1">
+          <i data-lucide="clipboard-list" class="w-4 h-4 text-[#0F766E]"></i>
+          <span class="text-[11px] font-extrabold uppercase tracking-wide text-slate-700">Thông tin nhập kho</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Công suất / Thông số chính <span class="text-rose-500">*</span></label>
+            <input type="text" id="modal-create-specs" oninput="updateGeneratedAssetName()" placeholder="Ví dụ: Inverter, 1.5HP"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-[#0F766E]" required>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Số lượng nhập <span class="text-rose-500">*</span></label>
+            <input type="number" id="modal-create-quantity" min="1" max="100" value="1"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-[#0F766E] font-bold text-slate-900" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Tên thiết bị hiển thị</label>
+          <input type="text" id="modal-create-name" placeholder="Tên hiển thị tự động"
+            class="w-full bg-teal-50/60 border border-teal-200 rounded-lg p-2.5 font-semibold text-slate-800 outline-none" readonly required>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Nguyên giá mua (VNĐ) <span class="text-rose-500">*</span></label>
+            <input type="number" id="modal-create-price" value="" min="1" step="50000" placeholder="Nhập giá mua"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-[#0F766E] font-medium" required>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Thời hạn bảo hành (tháng) <span class="text-rose-500">*</span></label>
+            <input type="number" id="modal-create-warranty" value="" min="1" placeholder="Nhập số tháng"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:outline-[#0F766E]" required>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeModal('createAssetModal')"
+            class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-semibold cursor-pointer">
+            Hủy Bỏ
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Tạo & Lưu Vào Kho</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN SCRIPT LOGIC -->
   <script data-stayhub-page="assets.html">
-    let currentTab = 'inventory';
-    let selectedRoomId = null;
+    let currentViewMode = 'types'; // 'types' | 'rooms' | 'flat'
+    let currentStatusFilter = 'ALL'; // 'ALL' | 'GOOD' | 'DAMAGED' | 'REPAIRING' | 'INACTIVE'
+    let currentAssetClassFilter = 'ALL';
+    let currentAssetTypeFilter = 'ALL';
+    let aptEquipFilter = 'ALL'; // 'ALL' | 'EQUIPPED' | 'EMPTY'
+    let openedAccordionTypes = new Set(); // Stores expanded type codes
+
+    const ASSET_CONDITION_FILTERS = [
+      { key: 'ALL', label: 'Tất cả', dotClass: 'bg-slate-300' },
+      { key: 'GOOD', label: 'Tốt', dotClass: 'bg-emerald-500' },
+      { key: 'DAMAGED', label: 'Hư hỏng', dotClass: 'bg-rose-500' },
+      { key: 'REPAIRING', label: 'Đang sửa', dotClass: 'bg-amber-500' },
+      { key: 'INACTIVE', label: 'Ngừng sử dụng', dotClass: 'bg-slate-500' }
+    ];
+
+    // Map Category Icon
+    function getAssetTypeIcon(typeCode) {
+      const code = (typeCode || '').toUpperCase();
+      if (code === 'AC') return 'wind';
+      if (code === 'FRIDGE') return 'snowflake';
+      if (code === 'WATER_HEATER') return 'flame';
+      if (code === 'BED') return 'bed';
+      if (code === 'WARDROBE') return 'archive';
+      if (code === 'DESK_CHAIR' || code === 'DESK') return 'briefcase';
+      if (code === 'WASHING_MACHINE' || code === 'WM') return 'disc';
+      if (code === 'SMART_LOCK' || code === 'LOCK') return 'key';
+      return 'package';
+    }
+
+    // Format Currency
+    function formatVND(num) {
+      return (num || 0).toLocaleString('vi-VN') + ' đ';
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('hidden');
+        el.classList.add('active');
+      }
+    }
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.add('hidden');
+        el.classList.remove('active');
+      }
+    }
 
     // =========================================================================
-    // 1. Quản lý Chuyển Tab
+    // 1. Chuyển đổi View Mode ('types' | 'rooms' | 'flat')
     // =========================================================================
-    function switchAssetTab(tab) {
-      currentTab = tab;
-      const tabs = ['inventory', 'apartments', 'history'];
-      tabs.forEach(t => {
-        const btn = document.getElementById(`tab-btn-${t}`);
-        const content = document.getElementById(`tab-content-${t}`);
+    function switchViewMode(mode) {
+      currentViewMode = mode;
+      const modes = ['types', 'rooms', 'flat'];
+
+      modes.forEach(m => {
+        const btn = document.getElementById('view-btn-' + m);
+        const content = document.getElementById('view-content-' + m);
         if (btn && content) {
-          if (t === tab) {
-            btn.className = 'pb-3 border-b-2 border-[#0F766E] text-[#0F766E] flex items-center gap-1.5 transition-all font-bold cursor-pointer';
+          if (m === mode) {
+            btn.className = 'inline-flex min-h-8 items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-bold bg-[#0F766E] text-white shadow-xs transition-all cursor-pointer whitespace-nowrap';
             content.classList.remove('hidden');
           } else {
-            btn.className = 'pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-all font-bold cursor-pointer';
+            btn.className = 'inline-flex min-h-8 items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition-all cursor-pointer whitespace-nowrap';
             content.classList.add('hidden');
           }
         }
       });
 
-      if (tab === 'inventory') renderAssetsTable();
-      if (tab === 'apartments') renderApartmentSelector();
-      if (tab === 'history') renderAssignmentsTable();
+      if (mode === 'types') renderAssetTypeCards();
+      if (mode === 'rooms') renderApartmentRoomsGrid();
+      if (mode === 'flat') renderAssetsTable();
+    }
+
+    // Status filter
+    function setStatusFilter(filter) {
+      currentStatusFilter = filter;
+      renderAssetConditionDropdown();
+      closeAssetConditionDropdown();
+      renderCurrentView();
+    }
+
+    function setAssetTypeFilter(typeCode) {
+      currentAssetTypeFilter = typeCode || 'ALL';
+      renderCurrentView();
+    }
+
+    function setAssetClassFilter(assetClass) {
+      currentAssetClassFilter = assetClass || 'ALL';
+      const typeFilter = document.getElementById('asset-type-filter');
+      if (typeFilter) {
+        currentAssetTypeFilter = 'ALL';
+        renderAssetTypeFilter();
+      }
+      renderCurrentView();
+    }
+
+    function renderAssetClassFilter() {
+      const select = document.getElementById('asset-class-filter');
+      if (select) select.value = currentAssetClassFilter;
+    }
+
+    function renderAssetTypeFilter() {
+      const select = document.getElementById('asset-type-filter');
+      if (!select) return;
+      const types = DataStore.getAssetTypes ? DataStore.getAssetTypes() : [];
+      select.innerHTML = '<option value="ALL">Loại thiết bị: Tất cả</option>' + types.map(type =>
+        `<option value="${type.code}" ${type.code === currentAssetTypeFilter ? 'selected' : ''}>${type.name}</option>`
+      ).join('');
+    }
+
+    function renderAssetConditionDropdown() {
+      const selected = ASSET_CONDITION_FILTERS.find(item => item.key === currentStatusFilter) || ASSET_CONDITION_FILTERS[0];
+      const label = document.getElementById('asset-condition-filter-label');
+      const menu = document.getElementById('asset-condition-filter-menu');
+
+      if (label) label.textContent = `Tình trạng: ${selected.label}`;
+      if (!menu) return;
+
+      menu.innerHTML = ASSET_CONDITION_FILTERS.map(item => {
+        const isSelected = item.key === currentStatusFilter;
+        return `
+          <button type="button" role="option" aria-selected="${isSelected}"
+            onclick="setStatusFilter('${item.key}')" onkeydown="handleAssetConditionOptionKeydown(event)"
+            class="flex min-h-10 w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-600/20 ${isSelected ? 'bg-slate-50 font-semibold text-slate-900' : 'font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900'}">
+            <span class="h-2 w-2 shrink-0 rounded-full ${item.dotClass}"></span>
+            <span class="flex-1">${item.label}</span>
+            ${isSelected ? '<i data-lucide="check" class="h-4 w-4 shrink-0 text-[#0F766E]"></i>' : ''}
+          </button>`;
+      }).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeAssetConditionDropdown(restoreFocus = false) {
+      const trigger = document.getElementById('asset-condition-filter-trigger');
+      const menu = document.getElementById('asset-condition-filter-menu');
+      if (!trigger || !menu) return;
+
+      trigger.setAttribute('aria-expanded', 'false');
+      menu.classList.remove('is-open');
+      if (restoreFocus) trigger.focus();
+    }
+
+    function toggleAssetConditionDropdown() {
+      const trigger = document.getElementById('asset-condition-filter-trigger');
+      const menu = document.getElementById('asset-condition-filter-menu');
+      if (!trigger || !menu) return;
+
+      const shouldOpen = trigger.getAttribute('aria-expanded') !== 'true';
+      if (!shouldOpen) return closeAssetConditionDropdown();
+
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.classList.add('is-open');
+    }
+
+    function handleAssetConditionTriggerKeydown(event) {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      event.preventDefault();
+
+      const trigger = document.getElementById('asset-condition-filter-trigger');
+      const menu = document.getElementById('asset-condition-filter-menu');
+      if (!trigger || !menu) return;
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.classList.add('is-open');
+
+      const options = [...document.querySelectorAll('#asset-condition-filter-menu [role="option"]')];
+      const selectedIndex = Math.max(0, options.findIndex(option => option.getAttribute('aria-selected') === 'true'));
+      const targetIndex = event.key === 'ArrowUp' ? Math.max(0, options.length - 1) : selectedIndex;
+      options[targetIndex]?.focus();
+    }
+
+    function handleAssetConditionOptionKeydown(event) {
+      const options = [...document.querySelectorAll('#asset-condition-filter-menu [role="option"]')];
+      const currentIndex = options.indexOf(event.currentTarget);
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeAssetConditionDropdown(true);
+      } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const step = event.key === 'ArrowDown' ? 1 : -1;
+        options[(currentIndex + step + options.length) % options.length]?.focus();
+      } else if (event.key === 'Home' || event.key === 'End') {
+        event.preventDefault();
+        options[event.key === 'Home' ? 0 : options.length - 1]?.focus();
+      }
+    }
+
+    function initAssetConditionDropdown() {
+      renderAssetConditionDropdown();
+
+      document.addEventListener('click', event => {
+        if (!event.target.closest('[data-asset-condition-dropdown]')) closeAssetConditionDropdown();
+      });
+      document.addEventListener('keydown', event => {
+        const trigger = document.getElementById('asset-condition-filter-trigger');
+        if (event.key === 'Escape' && trigger?.getAttribute('aria-expanded') === 'true') {
+          closeAssetConditionDropdown(true);
+        }
+      });
+    }
+
+    function onFilterChange() {
+      renderCurrentView();
+    }
+
+    function renderCurrentView() {
+      updateMetrics();
+      if (currentViewMode === 'types') renderAssetTypeCards();
+      else if (currentViewMode === 'rooms') renderApartmentRoomsGrid();
+      else if (currentViewMode === 'flat') renderAssetsTable();
+    }
+
+    // Expand / Collapse all accordions
+    function expandAllTypeCards() {
+      const allTypes = getAggregatedAssetTypes();
+      allTypes.forEach(t => openedAccordionTypes.add(t.typeCode));
+      renderAssetTypeCards();
+    }
+
+    function collapseAllTypeCards() {
+      openedAccordionTypes.clear();
+      renderAssetTypeCards();
+    }
+
+    function toggleTypeAccordion(typeCode) {
+      if (openedAccordionTypes.has(typeCode)) {
+        openedAccordionTypes.delete(typeCode);
+      } else {
+        openedAccordionTypes.add(typeCode);
+      }
+      renderAssetTypeCards();
+    }
+
+    // =========================================================================
+    // 2. TỔNG HỢP & GOM NHÓM THEO LOẠI THIẾT BỊ (THEO ẢNH MẪU CỦA USER)
+    // =========================================================================
+    function getAggregatedAssetTypes() {
+      const currentBldId = DataStore.getCurrentBuilding();
+      const allAssets = DataStore.getAssets();
+      const search = (document.getElementById('asset-search')?.value || '').toLowerCase().trim();
+
+      // Lọc theo cơ sở hiện tại
+      let filteredAssets = allAssets;
+      if (currentBldId !== 'ALL') {
+        filteredAssets = filteredAssets.filter(a => a.buildingId === currentBldId);
+      }
+
+      // Lấy danh mục chuẩn từ DataStore.getAssetTypes()
+      const registeredTypes = DataStore.getAssetTypes ? DataStore.getAssetTypes() : [];
+      const typeMap = new Map();
+
+      // Khởi tạo type map từ registered types
+      registeredTypes.forEach(rt => {
+        typeMap.set(rt.code, {
+          typeCode: rt.code,
+          typeName: rt.name,
+          defaultBrand: rt.defaultBrand || '',
+          icon: rt.icon || getAssetTypeIcon(rt.code),
+          items: []
+        });
+      });
+
+      // Bổ sung assets vào từng nhóm
+      filteredAssets.forEach(asset => {
+        const code = asset.typeCode || 'OTHER';
+        if (!typeMap.has(code)) {
+          typeMap.set(code, {
+            typeCode: code,
+            typeName: asset.typeName || code,
+            defaultBrand: asset.brand || '',
+            icon: getAssetTypeIcon(code),
+            items: []
+          });
+        }
+        typeMap.get(code).items.push(asset);
+      });
+
+      // Chỉ hiển thị các nhóm đã có tài sản thực tế.
+      // Danh mục chuẩn vẫn được giữ trong DataStore để dùng khi tạo mới/gán thiết bị,
+      // nhưng không hiển thị thành các thẻ "0 chiếc" gây hiểu nhầm.
+      let result = Array.from(typeMap.values()).filter(group => group.items.length > 0);
+
+      if (currentAssetClassFilter !== 'ALL') {
+        result = result.filter(group => {
+          const type = registeredTypes.find(item => item.code === group.typeCode);
+          return (type?.assetClass || 'FIXED') === currentAssetClassFilter;
+        });
+      }
+
+      if (currentAssetTypeFilter !== 'ALL') {
+        result = result.filter(group => group.typeCode === currentAssetTypeFilter);
+      }
+
+      // Lọc theo Status nếu khác ALL
+      if (currentStatusFilter !== 'ALL') {
+        result = result.filter(group => {
+          return group.items.some(item => {
+            const isGood = item.condition === 'Tốt' || item.condition === 'Mới 100%' || !item.condition;
+            if (currentStatusFilter === 'GOOD') return isGood;
+            if (currentStatusFilter === 'DAMAGED') return item.condition === 'Hỏng';
+            if (currentStatusFilter === 'REPAIRING') return item.status === 'MAINTENANCE' || item.condition === 'Đang sửa';
+            if (currentStatusFilter === 'INACTIVE') return item.status === 'INACTIVE';
+            return true;
+          });
+        });
+      }
+
+      // Lọc theo Search keyword
+      if (search) {
+        result = result.filter(group => {
+          const matchTypeName = (group.typeName || '').toLowerCase().includes(search);
+          const matchItems = group.items.some(item =>
+            (item.name || '').toLowerCase().includes(search) ||
+            (item.code || '').toLowerCase().includes(search) ||
+            (item.roomNumber || '').toLowerCase().includes(search) ||
+            (item.model || '').toLowerCase().includes(search)
+          );
+          return matchTypeName || matchItems;
+        });
+      }
+
+      return result;
+    }
+
+    // =========================================================================
+    // 3. RENDER THẺ LOẠI THIẾT BỊ (THEO ĐÚNG ẢNH MẪU CỦA USER)
+    // =========================================================================
+    function renderAssetTypeCards() {
+      const container = document.getElementById('asset-type-cards-container');
+      if (!container) return;
+
+      const groups = getAggregatedAssetTypes();
+
+      if (groups.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-400">
+            <i data-lucide="package-open" class="w-8 h-8 mx-auto mb-2 text-[#0F766E] opacity-70"></i>
+            <p class="font-semibold text-slate-700">Chưa có thiết bị nào trong kho hoặc phòng.</p>
+            <p class="text-xs mt-1">Hãy tạo mới hoặc nhập thiết bị để danh sách hiển thị tại đây.</p>
+          </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = groups.map(group => {
+        const items = group.items;
+        const totalCount = items.length;
+        const assignedItems = items.filter(i => i.allocationStatus === 'ASSIGNED');
+        const assignedRoomsCount = new Set(assignedItems.map(i => i.roomNumber)).size;
+
+        const goodCount = items.filter(i => (i.condition === 'Tốt' || i.condition === 'Mới 100%' || !i.condition) && i.status !== 'MAINTENANCE').length;
+        const issueCount = totalCount - goodCount;
+
+        const isExpanded = openedAccordionTypes.has(group.typeCode);
+        const iconName = getAssetTypeIcon(group.typeCode);
+
+        // Subtext description: Chỉ hiển thị tên / số phòng ở ngoài
+        const stockCount = totalCount - assignedItems.length;
+        const subtext = totalCount > 0
+          ? `Trang bị tại ${assignedRoomsCount} phòng trong cơ sở${stockCount > 0 ? ` • ${stockCount} chiếc trong kho` : ''}`
+          : `Chưa có thiết bị nào được lưu kho hoặc phân bổ`;
+
+        // Render accordion expanded table
+        let expandedHtml = '';
+        if (isExpanded) {
+          if (items.length === 0) {
+            expandedHtml = `
+              <div class="px-5 py-4 border-t border-slate-100 bg-slate-50/50 text-slate-400 text-center">
+                <p>Chưa có dữ liệu chi tiết cho loại thiết bị này.</p>
+                <div class="mt-2.5 flex items-center justify-center gap-2">
+                  <button onclick="quickRestockType('${group.typeCode}')"
+                    class="px-3 py-1.5 bg-[#0F766E] text-white rounded-lg font-bold text-xs hover:bg-[#115E59] cursor-pointer">
+                    + Nhập Thêm Số Lượng
+                  </button>
+                </div>
+              </div>
+            `;
+          } else {
+            expandedHtml = `
+              <div class="border-t border-slate-100 bg-slate-50/40 p-4 space-y-3">
+                <div class="flex items-center justify-between text-xs pb-1">
+                  <span class="font-bold text-slate-700">Chi tiết phân bổ các căn hộ đang có thiết bị này:</span>
+                  <div class="flex items-center gap-2">
+                    <button onclick="quickAssignType('${group.typeCode}')"
+                      class="px-3 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg font-semibold text-xs shadow-xs cursor-pointer flex items-center gap-1">
+                      <i data-lucide="plus" class="w-3.5 h-3.5 text-slate-500"></i>
+                      <span>Gán vào phòng khác</span>
+                    </button>
+                    <button onclick="quickRestockType('${group.typeCode}')"
+                      class="px-3 py-1 bg-white hover:bg-slate-50 text-[#0F766E] border border-teal-200 rounded-lg font-semibold text-xs shadow-xs cursor-pointer flex items-center gap-1">
+                      <i data-lucide="package-plus" class="w-3.5 h-3.5"></i>
+                      <span>Nhập Thêm Số Lượng</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                  <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr class="bg-slate-50 text-slate-400 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-100">
+                        <th class="py-2.5 px-3.5">Vị trí phòng</th>
+                        <th class="py-2.5 px-3.5">Mã thiết bị</th>
+                        <th class="py-2.5 px-3.5">Model / Thông số</th>
+                        <th class="py-2.5 px-3.5">Ngày kiểm tra</th>
+                        <th class="py-2.5 px-3.5">Hiện trạng</th>
+                        <th class="py-2.5 px-3.5 text-right">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                      ${items.map(a => {
+                        const isAssigned = a.allocationStatus === 'ASSIGNED';
+                        const isGood = (a.condition === 'Tốt' || a.condition === 'Mới 100%' || !a.condition) && a.status !== 'MAINTENANCE';
+
+                        const locBadge = isAssigned
+                          ? `<span class="inline-flex items-center gap-1 font-bold text-slate-900 bg-teal-50/70 border border-teal-200/60 px-2 py-0.5 rounded text-xs"><i data-lucide="home" class="w-3 h-3 text-[#0F766E]"></i> Phòng ${a.roomNumber}</span>`
+                          : `<span class="inline-flex items-center gap-1 font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded text-xs"><i data-lucide="warehouse" class="w-3 h-3"></i> Tồn kho lưu trữ</span>`;
+
+                        const condBadge = isGood
+                          ? `<span class="inline-flex items-center gap-1 text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Tốt</span>`
+                          : `<span class="inline-flex items-center gap-1 text-rose-700 font-bold bg-rose-50 border border-rose-200/70 px-2 py-0.5 rounded text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Sự cố</span>`;
+
+                        return `
+                          <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-2.5 px-3.5">${locBadge}</td>
+                            <td class="py-2.5 px-3.5 font-mono font-bold text-slate-800">${a.code}</td>
+                            <td class="py-2.5 px-3.5 text-slate-700 font-medium">${a.name} <span class="text-slate-400 font-mono text-[11px]">• Model: ${a.model || 'Tiêu chuẩn'}</span></td>
+                            <td class="py-2.5 px-3.5">
+                              <span class="font-medium text-slate-700 block">${a.lastChecked || '27/09/2026'}</span>
+                              <span class="text-[10px] text-slate-400 block">${isAssigned ? 'Bàn giao: ' + (a.assignedAt || '15/01/2025') : 'Tồn kho'}</span>
+                            </td>
+                            <td class="py-2.5 px-3.5">${condBadge}</td>
+                            <td class="py-2.5 px-3.5 text-right">
+                              <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="openAssetDrawer('${a.id}')"
+                                  class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold cursor-pointer">
+                                  Hồ sơ
+                                </button>
+                                ${isAssigned ? `
+                                  <button onclick="handleUnassignAsset('${a.id}')" title="Thu hồi về kho"
+                                    class="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 cursor-pointer">
+                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                  </button>
+                                ` : `
+                                  <button onclick="quickAssignAsset('${a.id}')" title="Gán vào phòng"
+                                    class="p-1 rounded text-amber-700 hover:bg-amber-50 border border-amber-200 cursor-pointer">
+                                    <i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i>
+                                  </button>
+                                `}
+                              </div>
+                            </td>
+                          </tr>
+                        `;
+                      }).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all overflow-hidden">
+            <!-- Card Header matching user mockup -->
+            <div onclick="toggleTypeAccordion('${group.typeCode}')"
+              class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none">
+
+              <!-- Left Info -->
+              <div class="flex items-center gap-3.5 min-w-0">
+                <!-- Mint Round Icon -->
+                <div class="w-10 h-10 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center text-[#0F766E] shrink-0">
+                  <i data-lucide="${iconName}" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-bold text-slate-900 text-sm tracking-tight">${group.typeName}</span>
+                    <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 border border-slate-200/70 px-2 py-0.5 rounded-full">
+                      ${totalCount} chiếc
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">${subtext}</p>
+                </div>
+              </div>
+
+              <!-- Right Actions & Badges -->
+              <div class="flex items-center gap-2 shrink-0 self-end sm:self-center" onclick="event.stopPropagation()">
+                <!-- Badges -->
+                <div class="flex items-center gap-1.5">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+                    ${goodCount} Tốt
+                  </span>
+                  ${issueCount > 0 ? `
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80">
+                      ${issueCount} Sự cố
+                    </span>
+                  ` : ''}
+                </div>
+
+                <!-- Action Button 1: Thêm nhanh -->
+                <button onclick="openQuickBulkAssignModal('${group.typeCode}')"
+                  class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer shadow-2xs transition-colors">
+                  <i data-lucide="plus" class="w-3.5 h-3.5 text-slate-500"></i>
+                  <span>Thêm nhanh</span>
+                </button>
+
+                <!-- Action Button 2: Xem chi tiết > -->
+                <button onclick="toggleTypeAccordion('${group.typeCode}')"
+                  class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-teal-800 bg-teal-50/60 hover:bg-teal-50 border border-teal-200/80 rounded-lg cursor-pointer shadow-2xs transition-colors">
+                  <span>${isExpanded ? 'Thu gọn' : 'Xem chi tiết'}</span>
+                  <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-right'}" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Accordion Content -->
+            ${expandedHtml}
+          </div>
+        `;
+      }).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Quick helpers from type card
+    let quickBulkTypeCode = '';
+
+    function openQuickBulkAssignModal(typeCode) {
+      quickBulkTypeCode = typeCode;
+      const type = (DataStore.getAssetTypes ? DataStore.getAssetTypes() : []).find(item => item.code === typeCode);
+      const typeName = type ? type.name : typeCode;
+      const typeNameEl = document.getElementById('quick-bulk-type-name');
+      if (typeNameEl) typeNameEl.textContent = typeName;
+
+      const currentBldId = DataStore.getCurrentBuilding();
+      const assets = DataStore.getAssets();
+      const availableAssets = DataStore.getAvailableAssetsForBuilding
+        ? DataStore.getAvailableAssetsForBuilding(currentBldId).filter(asset => asset.typeCode === typeCode)
+        : [];
+      const typeInfo = (DataStore.getAssetTypes ? DataStore.getAssetTypes() : []).find(item => item.code === typeCode);
+      const rooms = DataStore.getRooms().filter(room => {
+        if (!availableAssets.length) return false;
+        if (currentBldId !== 'ALL' && room.buildingId !== currentBldId) return false;
+        return typeInfo?.allowMultiplePerRoom || !assets.some(asset => asset.roomId === room.id && asset.typeCode === typeCode && asset.allocationStatus === 'ASSIGNED');
+      });
+      const roomList = document.getElementById('quick-bulk-room-list');
+      if (!roomList) return;
+
+      roomList.innerHTML = rooms.length
+        ? rooms.map(room => `
+          <label class="flex items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-2.5 hover:border-teal-300 hover:bg-teal-50/50 cursor-pointer transition-colors">
+            <input type="checkbox" name="quick-bulk-room" value="${room.id}"
+              class="h-4 w-4 rounded border-slate-300 text-[#0F766E] focus:ring-[#0F766E]">
+            <span class="min-w-0 flex-1">
+              <span class="block font-semibold text-slate-800">Phòng ${room.roomNumber}</span>
+              <span class="block text-[10px] text-slate-400">Tầng ${room.floor} · ${room.type} · ${room.area} m²</span>
+            </span>
+          </label>
+        `).join('')
+        : '<p class="p-4 text-center text-amber-700 font-medium">Không còn phòng phù hợp hoặc kho đã hết thiết bị loại này.</p>';
+
+      document.getElementById('quick-bulk-notes').value = '';
+      openModal('quickBulkAssignModal');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function toggleQuickBulkRooms(checked) {
+      document.querySelectorAll('input[name="quick-bulk-room"]').forEach(input => {
+        input.checked = checked;
+      });
+    }
+
+    function confirmQuickBulkAssign() {
+      const roomIds = Array.from(document.querySelectorAll('input[name="quick-bulk-room"]:checked')).map(input => input.value);
+      if (!roomIds.length) {
+        alert('Vui lòng chọn ít nhất một phòng để thêm thiết bị.');
+        return;
+      }
+
+      const result = DataStore.bulkAssignAssetsToRooms({
+        buildingId: DataStore.getCurrentBuilding(),
+        typeCode: quickBulkTypeCode,
+        roomIds,
+        notes: document.getElementById('quick-bulk-notes').value.trim()
+      });
+      if (result.success) {
+        closeModal('quickBulkAssignModal');
+        showToast(`Đã thêm thiết bị vào ${result.assigned.length} phòng!`);
+        renderCurrentView();
+      } else {
+        alert(result.error || 'Không thể thêm thiết bị vào các phòng đã chọn.');
+      }
+    }
+
+    function quickAssignType(typeCode) {
+      openAssignAssetModal(typeCode);
+    }
+
+    function quickRestockType(typeCode) {
+      openRestockModal(typeCode);
+    }
+
+    // =========================================================================
+    // 4. VIEW MODE 2: LƯỚI PHÒNG (THEO PHÒNG)
+    // =========================================================================
+    function setApartmentEquipFilter(filter) {
+      aptEquipFilter = filter;
+      const filterSelect = document.getElementById('apartment-equip-filter');
+      if (filterSelect) filterSelect.value = filter;
+      renderApartmentRoomsGrid();
+    }
+
+    function renderApartmentRoomsGrid() {
+      const container = document.getElementById('apartment-rooms-grid');
+      if (!container) return;
+
+      const currentBldId = DataStore.getCurrentBuilding();
+      const q = (document.getElementById('asset-search')?.value || '').toLowerCase().trim();
+      let rooms = DataStore.getRooms();
+      const assets = DataStore.getAssets();
+
+      if (currentBldId !== 'ALL') {
+        rooms = rooms.filter(r => r.buildingId === currentBldId);
+      }
+
+      const registeredTypes = DataStore.getAssetTypes ? DataStore.getAssetTypes() : [];
+      const typeMap = new Map(registeredTypes.map(type => [type.code, type]));
+      const visibleAssets = assets.filter(asset => {
+        const assetType = typeMap.get(asset.typeCode);
+        const assetClass = assetType?.assetClass || 'FIXED';
+        const matchesClass = currentAssetClassFilter === 'ALL' || assetClass === currentAssetClassFilter;
+        const matchesType = currentAssetTypeFilter === 'ALL' || asset.typeCode === currentAssetTypeFilter;
+        return matchesClass && matchesType;
+      });
+
+      if (q) {
+        rooms = rooms.filter(r =>
+          r.roomNumber.toLowerCase().includes(q) ||
+          (r.tenant && r.tenant.toLowerCase().includes(q)) ||
+          r.type.toLowerCase().includes(q)
+        );
+      }
+
+      if (aptEquipFilter === 'EMPTY') {
+        rooms = rooms.filter(r => visibleAssets.filter(a => a.roomId === r.id || a.roomNumber === r.roomNumber).length === 0);
+      } else if (aptEquipFilter === 'EQUIPPED') {
+        rooms = rooms.filter(r => visibleAssets.filter(a => a.roomId === r.id || a.roomNumber === r.roomNumber).length > 0);
+      }
+
+      if (rooms.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400">
+            <i data-lucide="home" class="w-10 h-10 mx-auto mb-2 opacity-50"></i>
+            <p class="font-medium text-xs">Không tìm thấy căn hộ nào phù hợp với bộ lọc.</p>
+          </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = rooms.map(room => {
+        const roomAssets = visibleAssets.filter(a => a.roomId === room.id || a.roomNumber === room.roomNumber);
+        const hasEquip = roomAssets.length > 0;
+        const isOccupied = room.status === 'OCCUPIED';
+
+        const statusBadge = isOccupied
+          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/70"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Đang thuê</span>`
+          : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Trống</span>`;
+
+        let equipListHtml = '';
+        if (hasEquip) {
+          equipListHtml = `
+            <div class="space-y-1.5 my-3">
+              ${roomAssets.map(a => `
+                <div onclick="openAssetDrawer('${a.id}')"
+                  class="p-2 rounded-lg bg-slate-50 hover:bg-teal-50/60 border border-slate-100 hover:border-teal-200/70 flex items-center justify-between text-xs transition-colors cursor-pointer">
+                  <div class="flex items-center gap-2 min-w-0 flex-1">
+                    <i data-lucide="${getAssetTypeIcon(a.typeCode)}" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+                    <span class="font-medium text-slate-800 truncate">${a.name}</span>
+                  </div>
+                  <span class="font-mono text-[10px] text-slate-400 shrink-0 ml-1.5 max-w-[96px] truncate" title="${a.code}">${a.code}</span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        } else {
+          equipListHtml = `
+            <div class="my-4 p-3 rounded-xl bg-amber-50/50 border border-dashed border-amber-200 text-center">
+              <i data-lucide="package-open" class="w-5 h-5 mx-auto text-amber-500 mb-1"></i>
+              <p class="text-[11px] font-semibold text-amber-800">Chưa có đồ (Sẵn sàng nhận thiết bị)</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">Cần bổ sung điều hòa, tủ lạnh, giường...</p>
+            </div>
+          `;
+        }
+
+        const roomDisplay = room.roomNumber.startsWith('P') ? room.roomNumber : 'P' + room.roomNumber;
+
+        return `
+          <div class="min-w-0 bg-white rounded-2xl border border-slate-200/90 p-4 flex flex-col justify-between hover:border-teal-500/50 hover:shadow-md transition-all duration-200">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1.5">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-lg font-bold text-slate-900 tracking-tight">${roomDisplay}</span>
+                    <span class="text-[10px] font-bold text-slate-600 bg-slate-100 border border-slate-200/80 px-2 py-0.5 rounded-md">Tầng ${room.floor}</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 mt-0.5">${room.type} · ${room.area} m²</p>
+                </div>
+                <div>${statusBadge}</div>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 pb-1 border-t border-slate-100 text-xs">
+                <span class="text-slate-400 font-medium">Trang thiết bị:</span>
+                <span class="font-bold ${hasEquip ? 'text-teal-800' : 'text-amber-700'}">
+                  ${hasEquip ? `${roomAssets.length} thiết bị` : 'Trống 0/4'}
+                </span>
+              </div>
+
+              ${equipListHtml}
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 mt-2">
+              <button onclick="openAssignAssetModalForRoom('${room.id}')"
+                class="w-full py-1.5 px-3 rounded-lg border border-slate-200 hover:border-teal-600 hover:bg-teal-50 text-slate-700 hover:text-[#0F766E] text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                <span>Gán thiết bị nhanh</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
       if (window.lucide) lucide.createIcons();
     }
 
     // =========================================================================
-    // 2. Nạp Thống Kê & Dữ Liệu Chung
-    // =========================================================================
-    function updateMetrics() {
-      const currentBldId = DataStore.getCurrentBuilding();
-      let assets = DataStore.getAssets();
-      let assignments = DataStore.getAssetAssignments();
-
-      if (currentBldId !== 'ALL') {
-        assets = assets.filter(a => a.buildingId === currentBldId);
-        assignments = assignments.filter(a => a.buildingId === currentBldId);
-      }
-
-      const total = assets.length;
-      const assigned = assets.filter(a => a.allocationStatus === 'ASSIGNED').length;
-      const inStock = assets.filter(a => a.allocationStatus === 'IN_STOCK').length;
-
-      document.getElementById('stat-total-assets').textContent = total;
-      document.getElementById('stat-assigned-assets').textContent = assigned;
-      document.getElementById('stat-instock-assets').textContent = inStock;
-      document.getElementById('stat-total-assignments').textContent = assignments.length;
-    }
-
-    // =========================================================================
-    // 3. Tab 1: Render Bảng Danh Sách Tài Sản (Master Assets)
+    // 5. VIEW MODE 3: BẢNG PHẲNG TẤT CẢ TÀI SẢN (FLAT TABLE)
     // =========================================================================
     function renderAssetsTable() {
-      updateMetrics();
-      const tbody = document.getElementById('assets-tbody');
+      const tbody = document.getElementById('assets-table-body');
       if (!tbody) return;
 
       const currentBldId = DataStore.getCurrentBuilding();
       const q = (document.getElementById('asset-search')?.value || '').toLowerCase().trim();
-      const typeFilter = document.getElementById('filter-asset-type')?.value || 'ALL';
-      const statusFilter = document.getElementById('filter-asset-status')?.value || 'ALL';
-
       let assets = DataStore.getAssets();
 
-      // Lọc theo cơ sở
       if (currentBldId !== 'ALL') {
         assets = assets.filter(a => a.buildingId === currentBldId);
       }
 
-      // Lọc theo loại
-      if (typeFilter !== 'ALL') {
-        assets = assets.filter(a => a.typeCode === typeFilter);
+      const typeMap = new Map((DataStore.getAssetTypes ? DataStore.getAssetTypes() : []).map(type => [type.code, type]));
+      if (currentAssetClassFilter !== 'ALL') {
+        assets = assets.filter(asset => (typeMap.get(asset.typeCode)?.assetClass || 'FIXED') === currentAssetClassFilter);
+      }
+      if (currentAssetTypeFilter !== 'ALL') {
+        assets = assets.filter(asset => asset.typeCode === currentAssetTypeFilter);
       }
 
-      // Lọc theo trạng thái phân bổ
-      if (statusFilter !== 'ALL') {
-        assets = assets.filter(a => a.allocationStatus === statusFilter);
-      }
-
-      // Tìm kiếm từ khóa
       if (q) {
-        assets = assets.filter(a => 
+        assets = assets.filter(a =>
           a.code.toLowerCase().includes(q) ||
           a.name.toLowerCase().includes(q) ||
-          (a.brand && a.brand.toLowerCase().includes(q)) ||
           (a.model && a.model.toLowerCase().includes(q)) ||
           (a.roomNumber && a.roomNumber.toLowerCase().includes(q))
         );
       }
 
-      document.getElementById('assets-count-badge').textContent = `${assets.length} tài sản`;
+      const countEl = document.getElementById('flat-table-count');
+      if (countEl) countEl.textContent = assets.length + ' tài sản';
 
       if (assets.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="8" class="p-8 text-center text-slate-400">
+            <td colspan="6" class="p-8 text-center text-slate-400">
               <i data-lucide="package-x" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
-              <p>Không tìm thấy tài sản nào phù hợp với bộ lọc.</p>
+              <p class="font-medium">Không tìm thấy tài sản nào phù hợp với bộ lọc.</p>
             </td>
           </tr>
         `;
@@ -568,52 +1476,68 @@
         const isAssigned = a.allocationStatus === 'ASSIGNED';
         const bld = buildings.find(b => b.id === a.buildingId);
         const bldName = bld ? bld.name.split(' - ')[0] : 'Cơ sở';
+        const iconName = getAssetTypeIcon(a.typeCode);
 
-        const statusBadge = isAssigned 
-          ? `<span class="badge badge-success flex items-center gap-1"><i data-lucide="home" class="w-3 h-3"></i>Phòng ${a.roomNumber}</span>`
-          : `<span class="badge badge-warning flex items-center gap-1 font-bold"><i data-lucide="warehouse" class="w-3 h-3"></i>Tồn kho</span>`;
+        const locationBadge = isAssigned
+          ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+               <i data-lucide="home" class="w-3.5 h-3.5"></i>
+               <span>Phòng ${a.roomNumber}</span>
+             </span>`
+          : `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200/80">
+               <i data-lucide="warehouse" class="w-3.5 h-3.5"></i>
+               <span>Kho thiết bị</span>
+             </span>`;
 
         return `
-          <tr class="hover:bg-slate-50 transition-colors">
-            <td class="p-3.5">
-              <span class="font-mono font-bold text-slate-900 block">${a.code}</span>
-              <span class="text-[10.5px] text-slate-400">${bldName}</span>
+          <tr onclick="openAssetDrawer('${a.id}')"
+            class="table-row-hover cursor-pointer border-b border-slate-100/90 transition-colors">
+            <td class="py-3.5 px-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center text-[#0F766E] shrink-0">
+                  <i data-lucide="${iconName}" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="font-mono font-bold text-slate-900 block">${a.code}</span>
+                  <span class="text-[10px] text-slate-400 font-medium">${a.typeName || a.typeCode} • ${bldName}</span>
+                </div>
+              </div>
             </td>
-            <td class="p-3.5">
+            <td class="py-3.5 px-4">
               <span class="font-bold text-slate-900 block">${a.name}</span>
               <span class="text-[11px] text-slate-500">${a.brand || '---'} • Model: ${a.model || 'Tiêu chuẩn'}</span>
             </td>
-            <td class="p-3.5">
-              <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-teal-50 text-teal-800 border border-teal-200">
-                ${a.typeName || a.typeCode}
-              </span>
+            <td class="py-3.5 px-4">
+              ${locationBadge}
             </td>
-            <td class="p-3.5 font-bold ${isAssigned ? 'text-emerald-700' : 'text-slate-500'}">
-              ${isAssigned ? `${a.roomNumber}` : '📦 Kho thiết bị'}
+            <td class="py-3.5 px-4 font-mono">
+              <span class="font-extrabold text-slate-900 block">${formatVND(a.price || 0)}</span>
+              <span class="text-[10px] text-slate-400 font-sans">Ngày mua: ${a.purchaseDate || '---'}</span>
             </td>
-            <td class="p-3.5 font-bold text-slate-900">
-              ${formatVND(a.price || 0)}
+            <td class="py-3.5 px-4">
+              <span class="font-semibold text-slate-700 block">${a.warrantyMonths || 24} tháng BH</span>
+              <span class="text-[11px] text-slate-500 font-medium">Tình trạng: ${a.condition || 'Mới 100%'}</span>
             </td>
-            <td class="p-3.5">
-              <span class="block">${a.warrantyMonths || 24} tháng BH</span>
-              <span class="text-[10.5px] text-slate-400">${a.condition || 'Tốt'}</span>
-            </td>
-            <td class="p-3.5">
-              ${statusBadge}
-            </td>
-            <td class="p-3.5 text-right">
-              <div class="inline-flex items-center gap-1.5 justify-end">
+            <td class="py-3.5 px-4 text-right" onclick="event.stopPropagation()">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="openAssetDrawer('${a.id}')" title="Xem hồ sơ chi tiết"
+                  class="px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer">
+                  Chi tiết
+                </button>
                 ${!isAssigned ? `
-                  <button onclick="quickAssignAsset('${a.id}')" title="Gán vào căn hộ" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded text-xs font-bold transition-colors cursor-pointer flex items-center gap-1">
+                  <button onclick="quickAssignAsset('${a.id}')" title="Gán vào phòng"
+                    class="p-1.5 rounded-md text-amber-700 hover:bg-amber-50 border border-amber-200/80 transition-colors cursor-pointer">
                     <i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i>
-                    <span>Gán phòng</span>
                   </button>
                 ` : `
-                  <button onclick="handleUnassignAsset('${a.id}')" title="Thu hồi về kho lưu trữ" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1">
-                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
-                    <span>Thu hồi</span>
+                  <button onclick="handleUnassignAsset('${a.id}')" title="Thu hồi về kho"
+                    class="p-1.5 rounded-md text-slate-500 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 transition-colors cursor-pointer">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                   </button>
                 `}
+                <button onclick="handleDeleteAsset('${a.id}')" title="Xóa tài sản này"
+                  class="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
               </div>
             </td>
           </tr>
@@ -624,488 +1548,742 @@
     }
 
     // =========================================================================
-    // 4. Tab 2: Render Chọn Căn Hộ & Thiết Bị Của Phòng
+    // 6. THỐNG KÊ METRICS KPI TỔNG HỢP
     // =========================================================================
-    function renderApartmentSelector() {
-      const listEl = document.getElementById('apartment-rooms-list');
-      if (!listEl) return;
-
+    function updateMetrics() {
       const currentBldId = DataStore.getCurrentBuilding();
-      const q = (document.getElementById('room-search-input')?.value || '').toLowerCase().trim();
-      let rooms = DataStore.getRooms();
-      const assets = DataStore.getAssets();
-
+      let assets = DataStore.getAssets();
       if (currentBldId !== 'ALL') {
-        rooms = rooms.filter(r => r.buildingId === currentBldId);
+        assets = assets.filter(a => a.buildingId === currentBldId);
       }
 
-      if (q) {
-        rooms = rooms.filter(r => 
-          r.roomNumber.toLowerCase().includes(q) ||
-          (r.tenant && r.tenant.toLowerCase().includes(q)) ||
-          r.type.toLowerCase().includes(q)
-        );
+      const total = assets.length;
+      const goodCount = assets.filter(a => (a.condition === 'Tốt' || a.condition === 'Mới 100%' || !a.condition) && a.status !== 'MAINTENANCE').length;
+      const issueCount = total - goodCount;
+
+      const elTotal = document.getElementById('header-stat-total');
+      const elGood = document.getElementById('header-stat-good');
+      const elIssue = document.getElementById('header-stat-issue');
+
+      if (elTotal) elTotal.textContent = total;
+      if (elGood) elGood.textContent = 'Tốt: ' + goodCount;
+      if (elIssue) elIssue.textContent = 'Sự cố: ' + issueCount;
+
+      // Update building name subtitle
+      const bldDisplay = document.getElementById('current-building-display');
+      if (bldDisplay) {
+        if (currentBldId === 'ALL') {
+          bldDisplay.textContent = 'Tất cả cơ sở StayHub';
+        } else {
+          const b = DataStore.getBuildings().find(x => x.id === currentBldId);
+          bldDisplay.textContent = b ? b.name : 'StayHub Central - Quận 1';
+        }
+      }
+    }
+
+    // =========================================================================
+    // 7. SLIDE-OVER DRAWER CHI TIẾT TÀI SẢN
+    // =========================================================================
+    function openAssetDrawer(assetId) {
+      const asset = DataStore.getAssets().find(a => a.id === assetId);
+      if (!asset) return;
+
+      const isAssigned = asset.allocationStatus === 'ASSIGNED';
+      const building = DataStore.getBuildings().find(b => b.id === asset.buildingId);
+
+      document.getElementById('drawer-asset-code').textContent = asset.code;
+      document.getElementById('drawer-asset-type').textContent = asset.typeName || asset.typeCode;
+      document.getElementById('drawer-asset-name').textContent = asset.name;
+      document.getElementById('drawer-asset-model').textContent = (asset.brand || 'StayHub') + ' • Model: ' + (asset.model || 'Tiêu chuẩn');
+
+      const locNameEl = document.getElementById('drawer-location-name');
+      const bldNameEl = document.getElementById('drawer-building-name');
+      const locBadgeEl = document.getElementById('drawer-location-badge');
+
+      if (isAssigned) {
+        locNameEl.textContent = 'Phòng ' + asset.roomNumber;
+        bldNameEl.textContent = building ? building.name : 'StayHub';
+        locBadgeEl.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+        locBadgeEl.textContent = 'Đang trong phòng';
+      } else {
+        locNameEl.textContent = 'Kho lưu trữ thiết bị';
+        bldNameEl.textContent = building ? building.name : 'StayHub';
+        locBadgeEl.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200';
+        locBadgeEl.textContent = 'Sẵn sàng trong kho';
       }
 
-      document.getElementById('apartment-list-count').textContent = `${rooms.length} Phòng`;
+      document.getElementById('drawer-asset-price').textContent = formatVND(asset.price || 0);
+      document.getElementById('drawer-asset-date').textContent = 'Ngày mua: ' + (asset.purchaseDate || '---');
+      document.getElementById('drawer-asset-warranty').textContent = (asset.warrantyMonths || 24) + ' tháng';
+      document.getElementById('drawer-asset-condition').textContent = asset.condition || 'Tốt';
+      document.getElementById('drawer-assigned-at').textContent = asset.assignedAt || '---';
+      document.getElementById('drawer-assigned-by').textContent = 'Bởi: ' + (asset.assignedBy || 'Quản lý cơ sở');
 
-      if (rooms.length === 0) {
-        listEl.innerHTML = '<p class="text-xs text-slate-400 p-4 text-center">Không tìm thấy phòng phù hợp.</p>';
-        return;
-      }
+      // Timeline lịch sử
+      const timeline = document.getElementById('drawer-history-timeline');
+      const assignments = DataStore.getAssetAssignments ? DataStore.getAssetAssignments().filter(h => h.assetId === asset.id || h.assetCode === asset.code) : [];
+      document.getElementById('drawer-history-count').textContent = (assignments.length || 1) + ' lần';
 
-      listEl.innerHTML = rooms.map(r => {
-        const roomAssets = assets.filter(a => a.roomId === r.id || a.roomNumber === r.roomNumber);
-        const isSelected = selectedRoomId === r.id;
-
-        return `
-          <div onclick="selectApartment('${r.id}')" class="p-3 rounded-lg cursor-pointer transition-colors ${isSelected ? 'bg-teal-50 border border-teal-300 shadow-xs' : 'hover:bg-slate-50 border border-transparent'}">
+      if (assignments.length === 0) {
+        timeline.innerHTML = `
+          <div class="relative pb-2">
+            <span class="font-bold text-slate-800 block text-xs">Khai báo thiết bị vào hệ thống</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">${asset.purchaseDate || '10/01/2025'}</span>
+            <p class="text-[11px] text-slate-500 mt-1">Khởi tạo dữ liệu kiểm kê ban đầu</p>
+          </div>
+        `;
+      } else {
+        timeline.innerHTML = assignments.map(h => `
+          <div class="relative pb-3">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-xs ${isSelected ? 'text-[#0F766E]' : 'text-slate-900'}">${r.roomNumber}</span>
-              <span class="px-2 py-0.5 rounded text-[10.5px] font-bold ${r.status === 'OCCUPIED' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}">
-                ${r.status === 'OCCUPIED' ? 'Đang thuê' : 'Trống'}
-              </span>
+              <span class="font-bold text-teal-900 text-xs">Bàn giao vào ${h.roomNumber}</span>
+              <span class="text-[10px] text-slate-400">${h.assignedAt}</span>
             </div>
-            <div class="flex items-center justify-between text-[11px] text-slate-500 mt-1">
-              <span>${r.type} • Tầng ${r.floor}</span>
-              <span class="font-bold text-teal-800">${roomAssets.length} thiết bị</span>
-            </div>
+            <p class="text-[11px] text-slate-600 mt-0.5">${h.notes || 'Bàn giao nguyên vẹn'}</p>
+            <span class="text-[10px] text-slate-400 block mt-0.5">Thực hiện: ${h.assignedBy}</span>
           </div>
-        `;
-      }).join('');
-
-      if (!selectedRoomId && rooms.length > 0) {
-        selectApartment(rooms[0].id);
-      } else if (selectedRoomId) {
-        renderSelectedRoomAssets();
-      }
-    }
-
-    function selectApartment(roomId) {
-      selectedRoomId = roomId;
-      renderApartmentSelector();
-      renderSelectedRoomAssets();
-    }
-
-    function renderSelectedRoomAssets() {
-      const room = DataStore.getRooms().find(r => r.id === selectedRoomId);
-      if (!room) return;
-
-      document.getElementById('selected-room-title').textContent = `Căn Hộ ${room.roomNumber} (${room.type})`;
-      document.getElementById('selected-room-badge').textContent = room.status === 'OCCUPIED' ? `Đang thuê: ${room.tenant || 'Cư dân'}` : 'Phòng trống';
-      document.getElementById('selected-room-badge').className = room.status === 'OCCUPIED' ? 'badge badge-success' : 'badge badge-neutral';
-      document.getElementById('selected-room-desc').textContent = `Tầng ${room.floor} • Diện tích ${room.area}m² • Giá thuê ${formatVND(room.price)}/tháng`;
-      document.getElementById('btn-assign-to-selected-room').disabled = false;
-
-      const assets = DataStore.getAssets().filter(a => a.roomId === room.id || a.roomNumber === room.roomNumber);
-
-      const emptyEl = document.getElementById('room-assets-empty');
-      const containerEl = document.getElementById('room-assets-container');
-      const listEl = document.getElementById('room-assets-list');
-
-      if (assets.length === 0) {
-        emptyEl.classList.remove('hidden');
-        containerEl.classList.add('hidden');
-        emptyEl.innerHTML = `
-          <i data-lucide="package-open" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
-          <p class="font-bold text-xs text-slate-700">Căn hộ ${room.roomNumber} chưa được trang bị tài sản nào.</p>
-          <p class="text-[11px] text-slate-400 mt-0.5">Bấm nút "Gán Thêm Thiết Bị" phía trên để bàn giao thiết bị từ kho vào phòng.</p>
-        `;
-        if (window.lucide) lucide.createIcons();
-        return;
+        `).join('');
       }
 
-      emptyEl.classList.add('hidden');
-      containerEl.classList.remove('hidden');
-
-      listEl.innerHTML = assets.map(a => `
-        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3 hover:bg-white transition-all shadow-xs">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-teal-100 text-[#0F766E] flex items-center justify-center font-bold text-xs">
-              <i data-lucide="package" class="w-4 h-4"></i>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-slate-900">${a.name}</span>
-                <span class="font-mono text-[10.5px] px-1.5 py-0.2 rounded bg-white text-slate-600 border border-slate-200">${a.code}</span>
-              </div>
-              <p class="text-[11px] text-slate-500">${a.brand || '---'} • ${a.model || ''} • BH: ${a.warrantyMonths || 24}T • Bàn giao: ${a.assignedAt || 'Gần đây'}</p>
-            </div>
-          </div>
-          <button onclick="handleUnassignAsset('${a.id}')" title="Thu hồi về kho" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
+      // Footer Actions
+      const footer = document.getElementById('drawer-footer-actions');
+      if (isAssigned) {
+        footer.innerHTML = `
+          <button onclick="openTransferAssetModal('${asset.id}')"
+            class="px-4 py-2 border border-teal-200 text-teal-800 hover:bg-teal-50 rounded-lg font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="move-right" class="w-3.5 h-3.5"></i>
+            <span>Chuyển phòng</span>
           </button>
-        </div>
-      `).join('');
-
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function openAssignModalForSelectedRoom() {
-      if (!selectedRoomId) return;
-      openAssignAssetModal(selectedRoomId);
-    }
-
-    // =========================================================================
-    // 5. Tab 3: Render Lịch Sử Gán Thiết Bị (Asset Assignment Records)
-    // =========================================================================
-    function renderAssignmentsTable() {
-      const tbody = document.getElementById('assignments-tbody');
-      if (!tbody) return;
-
-      const currentBldId = DataStore.getCurrentBuilding();
-      let list = DataStore.getAssetAssignments();
-
-      if (currentBldId !== 'ALL') {
-        list = list.filter(a => a.buildingId === currentBldId);
-      }
-
-      document.getElementById('assignments-count-badge').textContent = `${list.length} bản ghi`;
-
-      if (list.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="8" class="p-8 text-center text-slate-400">
-              <i data-lucide="file-question" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
-              <p>Chưa có bản ghi phân bổ tài sản nào.</p>
-            </td>
-          </tr>
+          <button onclick="handleUnassignAsset('${asset.id}'); closeAssetDrawer();"
+            class="px-4 py-2 border border-slate-200 text-slate-700 hover:text-rose-600 hover:bg-rose-50 rounded-lg font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Thu Hồi Về Kho</span>
+          </button>
+          <button onclick="openRestockModal(); closeAssetDrawer();"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="package-plus" class="w-3.5 h-3.5"></i>
+            <span>Nhập thêm</span>
+          </button>
         `;
-        if (window.lucide) lucide.createIcons();
-        return;
+      } else {
+        footer.innerHTML = `
+          <button onclick="quickAssignAsset('${asset.id}'); closeAssetDrawer();"
+            class="px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-lg font-bold text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs">
+            <i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i>
+            <span>Bàn Giao Vào Phòng</span>
+          </button>
+          <button onclick="openRestockModal(); closeAssetDrawer();"
+            class="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 rounded-lg font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="package-plus" class="w-3.5 h-3.5"></i>
+            <span>Nhập thêm</span>
+          </button>
+        `;
       }
 
-      tbody.innerHTML = list.map(item => `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="p-3.5 font-mono font-bold text-slate-900">${item.id}</td>
-          <td class="p-3.5 font-mono text-teal-800 font-bold">${item.assetCode}</td>
-          <td class="p-3.5 font-bold text-slate-900">${item.assetName}</td>
-          <td class="p-3.5">
-            <span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-              ${item.roomNumber}
-            </span>
-          </td>
-          <td class="p-3.5 font-mono">${item.assignedDate}</td>
-          <td class="p-3.5">${item.assignedBy || 'Nhân sự StayHub'}</td>
-          <td class="p-3.5 text-slate-500 max-w-xs truncate">${item.notes || '---'}</td>
-          <td class="p-3.5 text-right">
-            <span class="badge badge-success">Thành công</span>
-          </td>
-        </tr>
-      `).join('');
+      if (window.lucide) lucide.createIcons();
 
+      // Open drawer
+      document.getElementById('drawer-backdrop').classList.add('drawer-backdrop-open');
+      document.getElementById('drawer-panel').classList.add('drawer-panel-open');
+    }
+
+    function closeAssetDrawer() {
+      document.getElementById('drawer-backdrop').classList.remove('drawer-backdrop-open');
+      document.getElementById('drawer-panel').classList.remove('drawer-panel-open');
+    }
+
+    function openTransferAssetModal(assetId) {
+      const asset = DataStore.getAssets().find(item => item.id === assetId);
+      if (!asset || asset.allocationStatus !== 'ASSIGNED') return;
+      const roomSelect = document.getElementById('transfer-room-id');
+      const rooms = DataStore.getRooms().filter(room => room.buildingId === asset.buildingId && room.id !== asset.roomId);
+      roomSelect.innerHTML = rooms.map(room => `<option value="${room.id}">Phòng ${room.roomNumber} · Tầng ${room.floor} · ${room.type}</option>`).join('');
+      if (!rooms.length) {
+        roomSelect.innerHTML = '<option value="">Không còn phòng phù hợp</option>';
+        roomSelect.disabled = true;
+      } else {
+        roomSelect.disabled = false;
+      }
+      document.getElementById('transfer-asset-id').value = asset.id;
+      document.getElementById('transfer-asset-name').textContent = `${asset.code} · ${asset.name} · đang ở phòng ${asset.roomNumber}`;
+      document.getElementById('transfer-asset-notes').value = '';
+      closeAssetDrawer();
+      openModal('transferAssetModal');
       if (window.lucide) lucide.createIcons();
     }
 
-    // =========================================================================
-    // 6. Xử Lý Luồng MODAL 1: CREATE ASSET (Tạo Tài Sản)
-    // Theo đúng Swimlane:
-    // Lane 1: Create Asset -> Lane 2: Load dropdown Asset Type -> Display form
-    // Lane 1: Select AssetType & Enter asset info -> Lane 2: Validate data & Duplicate check
-    // If Duplicate -> Enter again (báo lỗi)
-    // If Not duplicate -> Save asset status = ACTIVE -> Log activity -> Receive success notification
-    // =========================================================================
-    function openCreateAssetModal() {
-      // 1. Lane 2: Load dropdown Asset Type
-      loadAssetTypeDropdown();
-      loadBuildingDropdown('modal-asset-building');
-
-      // Reset form & error box
-      document.getElementById('create-asset-error-box').classList.add('hidden');
-      document.getElementById('modal-asset-code').value = '';
-      document.getElementById('modal-asset-name').value = '';
-      document.getElementById('modal-asset-brand').value = '';
-      document.getElementById('modal-asset-model').value = '';
-      document.getElementById('modal-asset-price').value = '';
-      document.getElementById('modal-asset-warranty').value = '24';
-      document.getElementById('modal-asset-date').value = new Date().toISOString().split('T')[0];
-
-      // Mở modal (Display the form)
-      openModal('createAssetModal');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function loadAssetTypeDropdown() {
-      const select = document.getElementById('modal-asset-type');
-      const filterSelect = document.getElementById('filter-asset-type');
-      const types = DataStore.getAssetTypes();
-
-      const optionsHtml = types.map(t => `<option value="${t.code}">${t.name} (${t.code})</option>`).join('');
-
-      if (select) {
-        select.innerHTML = `<option value="">-- Chọn loại tài sản (Asset Type) --</option>` + optionsHtml;
-      }
-      if (filterSelect) {
-        filterSelect.innerHTML = `<option value="ALL">Tất cả loại tài sản</option>` + optionsHtml;
+    function confirmTransferAsset(e) {
+      e.preventDefault();
+      const result = DataStore.transferAssetToRoom({
+        assetId: document.getElementById('transfer-asset-id').value,
+        roomId: document.getElementById('transfer-room-id').value,
+        notes: document.getElementById('transfer-asset-notes').value.trim()
+      });
+      if (result.success) {
+        closeModal('transferAssetModal');
+        showToast(`Đã chuyển thiết bị sang phòng ${result.asset.roomNumber}!`);
+        renderCurrentView();
+      } else {
+        alert(result.error || 'Không thể chuyển thiết bị.');
       }
     }
 
-    function loadBuildingDropdown(elementId) {
-      const select = document.getElementById(elementId);
-      if (!select) return;
+    // =========================================================================
+    // 8. MODAL HANDLERS (ASSIGN, RESTOCK, CREATE)
+    // =========================================================================
+    function openAssignAssetModal(filterTypeCode) {
+      const bldSelect = document.getElementById('modal-assign-building');
       const buildings = DataStore.getBuildings();
       const currentBldId = DataStore.getCurrentBuilding();
+      const currentBuilding = buildings.find(b => b.id === currentBldId);
+      const roomSelect = document.getElementById('modal-assign-room');
+      const roomDisplay = document.getElementById('modal-assign-room-display');
+      const roomDisplayName = document.getElementById('modal-assign-room-display-name');
+      const roomFilterLabel = document.getElementById('modal-filter-only-empty-rooms-label');
 
-      select.innerHTML = buildings.map(b => `
-        <option value="${b.id}" ${b.id === currentBldId ? 'selected' : ''}>${b.name}</option>
-      `).join('');
-    }
+      roomSelect?.classList.remove('hidden');
+      roomDisplay?.classList.add('hidden');
+      if (roomFilterLabel) roomFilterLabel.classList.remove('hidden');
 
-    // Khi người dùng chọn AssetType -> tự động gợi ý mã và thương hiệu
-    function onAssetTypeSelected() {
-      const typeCode = document.getElementById('modal-asset-type').value;
-      const types = DataStore.getAssetTypes();
-      const targetType = types.find(t => t.code === typeCode);
+      bldSelect.innerHTML = currentBuilding
+        ? `<option value="${currentBuilding.id}" selected>${currentBuilding.name}</option>`
+        : '<option value="">Chưa xác định cơ sở</option>';
+      const bldDisplay = document.getElementById('modal-assign-building-display');
+      if (bldDisplay) bldDisplay.textContent = currentBuilding ? currentBuilding.name : 'Chưa xác định cơ sở';
 
-      if (targetType) {
-        if (!document.getElementById('modal-asset-name').value) {
-          document.getElementById('modal-asset-name').value = targetType.name;
-        }
-        if (!document.getElementById('modal-asset-brand').value) {
-          document.getElementById('modal-asset-brand').value = targetType.defaultBrand.split(' / ')[0];
-        }
-        generateRandomAssetCode(typeCode);
-      }
-    }
-
-    function generateRandomAssetCode(pref) {
-      const typeCode = pref || document.getElementById('modal-asset-type').value || 'AST';
-      const randNum = Math.floor(100 + Math.random() * 900);
-      document.getElementById('modal-asset-code').value = `${typeCode}-STOCK-${randNum}`;
-    }
-
-    // Xử lý gửi Form Tạo Mới Tài Sản (Submit Form)
-    function handleCreateAssetSubmit(e) {
-      e.preventDefault();
-      const errorBox = document.getElementById('create-asset-error-box');
-      errorBox.classList.add('hidden');
-
-      const assetData = {
-        code: document.getElementById('modal-asset-code').value.trim(),
-        typeCode: document.getElementById('modal-asset-type').value,
-        name: document.getElementById('modal-asset-name').value.trim(),
-        brand: document.getElementById('modal-asset-brand').value.trim(),
-        model: document.getElementById('modal-asset-model').value.trim(),
-        buildingId: document.getElementById('modal-asset-building').value,
-        price: document.getElementById('modal-asset-price').value,
-        warrantyMonths: document.getElementById('modal-asset-warranty').value,
-        purchaseDate: document.getElementById('modal-asset-date').value,
-        condition: document.getElementById('modal-asset-condition').value
-      };
-
-      // =====================================================================
-      // Lane 2: Validate Data & Duplicate Data Check
-      // =====================================================================
-      const result = DataStore.createAsset(assetData);
-
-      if (!result.success) {
-        // KIỂM TRA TRÙNG LẶP HOẶC LỖI VALIDATION -> Yêu cầu nhập lại (Enter again)
-        errorBox.classList.remove('hidden');
-        document.getElementById('create-asset-error-title').textContent = result.isDuplicate ? '❌ Trùng lặp dữ liệu (Duplicate data)!' : '⚠️ Dữ liệu không hợp lệ!';
-        document.getElementById('create-asset-error-desc').textContent = result.error;
-        if (result.field === 'code') {
-          const codeInput = document.getElementById('modal-asset-code');
-          codeInput.focus();
-          codeInput.select();
-        }
-        if (window.lucide) lucide.createIcons();
-        return;
-      }
-
-      // THÀNH CÔNG: Đã lưu với status = ACTIVE, đã log activity
-      closeModal('createAssetModal');
-      showToast(`🎉 Tạo thành công tài sản ${result.asset.code} (${result.asset.name}) vào kho!`);
-      renderAssetsTable();
-      updateMetrics();
-
-      // Hỏi người dùng có muốn gán ngay vào căn hộ không
-      setTimeout(() => {
-        if (confirm(`Tài sản [${result.asset.code}] đã được lưu vào kho thành công với trạng thái ACTIVE!\n\nBạn có muốn chuyển sang bước GÁN TÀI SẢN NÀY VÀO MỘT CĂN HỘ ngay bây giờ không?`)) {
-          openAssignAssetModal(null, result.asset.id);
-        }
-      }, 400);
-    }
-
-    // =========================================================================
-    // 7. Xử Lý Luồng MODAL 2: ASSIGN ASSET (Gán Tài Sản Vào Căn Hộ)
-    // Theo đúng Swimlane:
-    // Lane 1: Choose an apartment -> Click "Assign Asset"
-    // Lane 2: Display list (tải danh sách tài sản khả dụng trong kho)
-    // Lane 1: Select the AssetType you want to assign & Submit
-    // Lane 2: Create an asset_assignment record & Log activity -> Success notification
-    // =========================================================================
-    function openAssignAssetModal(preSelectedRoomId = null, preSelectedAssetId = null) {
-      loadAssignRoomDropdown(preSelectedRoomId);
-      loadAssignAssetTypeFilter();
-      filterAvailableAssetsForAssign(preSelectedAssetId);
-
+      onAssignBuildingChange(filterTypeCode);
       openModal('assignAssetModal');
       if (window.lucide) lucide.createIcons();
     }
 
+    function openAssignAssetModalForRoom(roomId) {
+      openAssignAssetModal();
+      setTimeout(() => {
+        const roomSelect = document.getElementById('modal-assign-room');
+        const room = DataStore.getRooms().find(r => r.id === roomId);
+        if (roomSelect) {
+          roomSelect.value = roomId;
+          roomSelect.classList.add('hidden');
+        }
+        const roomDisplay = document.getElementById('modal-assign-room-display');
+        const roomDisplayName = document.getElementById('modal-assign-room-display-name');
+        const roomFilterLabel = document.getElementById('modal-filter-only-empty-rooms-label');
+        if (roomDisplay) roomDisplay.classList.remove('hidden');
+        if (roomDisplayName && room) {
+          roomDisplayName.textContent = `Phòng ${room.roomNumber} · Tầng ${room.floor} · ${room.type}`;
+        }
+        if (roomFilterLabel) roomFilterLabel.classList.add('hidden');
+        renderAssignableAssetOptions();
+      }, 50);
+    }
+
     function quickAssignAsset(assetId) {
-      openAssignAssetModal(null, assetId);
+      openAssignAssetModal();
+      setTimeout(() => {
+        const assetSelect = document.getElementById('modal-assign-asset');
+        if (assetSelect) assetSelect.value = assetId;
+        const assetCheckbox = document.querySelector(`input[name="assign-asset-item"][value="${assetId}"]`);
+        if (assetCheckbox) assetCheckbox.checked = true;
+      }, 50);
     }
 
-    function loadAssignRoomDropdown(preSelectedRoomId) {
-      const select = document.getElementById('modal-assign-room');
-      const currentBldId = DataStore.getCurrentBuilding();
-      let rooms = DataStore.getRooms();
+    function onAssignBuildingChange(filterTypeCode) {
+      const bldId = document.getElementById('modal-assign-building').value;
+      const inStock = DataStore.getAvailableAssetsForBuilding ? DataStore.getAvailableAssetsForBuilding(bldId) : [];
+      const assetSelect = document.getElementById('modal-assign-asset');
 
-      if (currentBldId !== 'ALL') {
-        rooms = rooms.filter(r => r.buildingId === currentBldId);
+      let filteredStock = inStock;
+      if (filterTypeCode) {
+        const matched = inStock.filter(a => a.typeCode === filterTypeCode);
+        if (matched.length > 0) filteredStock = matched;
       }
 
-      select.innerHTML = '<option value="">-- Chọn căn hộ / phòng nhận thiết bị --</option>' + rooms.map(r => `
-        <option value="${r.id}" ${preSelectedRoomId === r.id ? 'selected' : ''}>
-          ${r.roomNumber} (${r.type}) - ${r.status === 'OCCUPIED' ? `Đang thuê [${r.tenant}]` : 'Phòng trống'}
-        </option>
-      `).join('');
+      assetSelect.innerHTML = filteredStock.map(a =>
+        `<option value="${a.id}">[${a.code}] ${a.name} (${formatVND(a.price || 0)})</option>`
+      ).join('');
 
-      onAssignRoomChanged();
+      loadRoomsForAssignModal();
+      renderAssignableAssetOptions(filterTypeCode);
     }
 
-    function onAssignRoomChanged() {
-      const roomId = document.getElementById('modal-assign-room').value;
-      const room = DataStore.getRooms().find(r => r.id === roomId);
-      const infoEl = document.getElementById('modal-assign-room-info');
-      if (room) {
-        infoEl.textContent = `✓ Đã chọn phòng ${room.roomNumber} • ${room.type} • Tầng ${room.floor} • Khách thuê: ${room.tenant || 'Chưa có'}`;
-        infoEl.className = 'text-[11px] text-teal-700 font-semibold mt-0.5';
+    function loadRoomsForAssignModal() {
+      const bldId = document.getElementById('modal-assign-building').value;
+      const roomSelect = document.getElementById('modal-assign-room');
+      const onlyEmpty = document.getElementById('modal-filter-only-empty-rooms')?.checked || false;
+
+      let rooms = DataStore.getRooms().filter(r => r.buildingId === bldId);
+      const allAssets = DataStore.getAssets();
+
+      if (onlyEmpty) {
+        rooms = rooms.filter(r => allAssets.filter(a => a.roomId === r.id || a.roomNumber === r.roomNumber).length === 0);
+      }
+
+      if (rooms.length === 0) {
+        roomSelect.innerHTML = '<option value="">(Không có phòng nào phù hợp)</option>';
       } else {
-        infoEl.textContent = 'Chọn phòng cần trang bị thêm tài sản';
-        infoEl.className = 'text-[11px] text-slate-500 mt-0.5';
+        roomSelect.innerHTML = rooms.map(r => {
+          const count = allAssets.filter(a => a.roomId === r.id || a.roomNumber === r.roomNumber).length;
+          const statusText = count === 0 ? ' - Chưa có đồ (Sẵn sàng nhận thiết bị)' : ` - Đã có ${count} thiết bị`;
+          return `<option value="${r.id}">Phòng ${r.roomNumber} (Tầng ${r.floor})${statusText}</option>`;
+        }).join('');
       }
+      renderAssignableAssetOptions();
     }
 
-    function loadAssignAssetTypeFilter() {
-      const select = document.getElementById('modal-assign-filter-type');
-      const types = DataStore.getAssetTypes();
-      select.innerHTML = '<option value="ALL">-- Tất cả loại tài sản có trong kho --</option>' + types.map(t => `
-        <option value="${t.code}">${t.name} (${t.code})</option>
-      `).join('');
-    }
+    function renderAssignableAssetOptions(filterTypeCode) {
+      const list = document.getElementById('modal-assign-asset-list');
+      const roomId = document.getElementById('modal-assign-room')?.value;
+      const bldId = DataStore.getCurrentBuilding();
+      if (!list) return;
 
-    // Lane 2: Display list (Tải danh sách các tài sản khả dụng trong kho)
-    function filterAvailableAssetsForAssign(preSelectedAssetId = null) {
-      const typeFilter = document.getElementById('modal-assign-filter-type').value;
-      const assetSelect = document.getElementById('modal-assign-asset-select');
-      const currentBldId = DataStore.getCurrentBuilding();
+      const inStock = DataStore.getAvailableAssetsForBuilding ? DataStore.getAvailableAssetsForBuilding(bldId) : [];
+      const room = DataStore.getRooms().find(r => r.id === roomId);
+      const missing = room && DataStore.getMissingAssetTypesForRoom
+        ? DataStore.getMissingAssetTypesForRoom(room.id)
+        : [];
+      const missingCodes = new Set(missing.map(item => item.code));
+      let candidates = inStock.filter(asset => missingCodes.has(asset.typeCode));
 
-      let availableAssets = DataStore.getAssets().filter(a => a.allocationStatus === 'IN_STOCK');
-
-      if (currentBldId !== 'ALL') {
-        availableAssets = availableAssets.filter(a => a.buildingId === currentBldId);
+      if (filterTypeCode) {
+        candidates = candidates.filter(asset => asset.typeCode === filterTypeCode);
       }
 
-      if (typeFilter !== 'ALL') {
-        availableAssets = availableAssets.filter(a => a.typeCode === typeFilter);
-      }
+      // Hiển thị mỗi loại một lựa chọn đại diện; một phòng không được gán trùng cùng loại.
+      candidates = Array.from(new Map(candidates.map(asset => [asset.typeCode, asset])).values());
 
-      document.getElementById('modal-stock-count-info').textContent = `${availableAssets.length} thiết bị sẵn sàng`;
-
-      if (availableAssets.length === 0) {
-        assetSelect.innerHTML = '<option value="">-- Kho hiện không còn thiết bị thuộc loại này --</option>';
-        document.getElementById('modal-assign-asset-detail').textContent = 'Vui lòng chọn loại khác hoặc bấm "Tạo Mới Tài Sản" để nhập thêm.';
+      if (!room) {
+        list.innerHTML = '<p class="p-3 text-center text-slate-400">Vui lòng chọn phòng trước.</p>';
         return;
       }
 
-      assetSelect.innerHTML = '<option value="">-- Chọn thiết bị cụ thể cần gán --</option>' + availableAssets.map(a => `
-        <option value="${a.id}" ${preSelectedAssetId === a.id ? 'selected' : ''}>
-          [${a.code}] ${a.name} (${a.brand || '---'}) - Tình trạng: ${a.condition || 'Mới'}
-        </option>
-      `).join('');
+      if (candidates.length === 0) {
+        list.innerHTML = missing.length === 0
+          ? '<p class="p-3 text-center text-emerald-700 font-medium">Phòng này đã đủ các thiết bị tiêu chuẩn.</p>'
+          : '<p class="p-3 text-center text-amber-700 font-medium">Các loại còn thiếu hiện chưa có sẵn trong kho.</p>';
+        return;
+      }
 
-      assetSelect.onchange = function() {
-        const selectedId = this.value;
-        const item = availableAssets.find(a => a.id === selectedId);
-        if (item) {
-          document.getElementById('modal-assign-asset-detail').textContent = `Mã: ${item.code} • Giá: ${formatVND(item.price)} • Bảo hành: ${item.warrantyMonths}T • Tình trạng: ${item.condition}`;
+      list.innerHTML = candidates.map(asset => `
+        <label class="flex items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-2.5 hover:border-teal-300 hover:bg-teal-50/50 cursor-pointer transition-colors">
+          <input type="checkbox" name="assign-asset-item" value="${asset.id}"
+            class="h-4 w-4 rounded border-slate-300 text-[#0F766E] focus:ring-[#0F766E]">
+          <span class="min-w-0 flex-1">
+            <span class="block truncate font-semibold text-slate-800">${asset.typeName || asset.name}</span>
+            <span class="block truncate text-[10px] text-slate-400">${asset.code} · ${asset.name}</span>
+          </span>
+          <span class="shrink-0 text-[10px] font-semibold text-emerald-700">Sẵn sàng</span>
+        </label>
+      `).join('');
+    }
+
+    function handleAssignSubmit(e) {
+      e.preventDefault();
+      const selectedAssetIds = Array.from(document.querySelectorAll('input[name="assign-asset-item"]:checked')).map(input => input.value);
+      const assetId = selectedAssetIds[0] || document.getElementById('modal-assign-asset').value;
+      const roomId = document.getElementById('modal-assign-room').value;
+      const notes = document.getElementById('modal-assign-notes').value;
+      const bldId = DataStore.getCurrentBuilding();
+
+      if (!assetId || !roomId || !bldId || bldId === 'ALL') {
+        alert('Vui lòng chọn đầy đủ thiết bị trong kho và căn hộ nhận bàn giao!');
+        return;
+      }
+
+      const room = DataStore.getRooms().find(r => r.id === roomId);
+      if (!room) return;
+
+      const assetIds = selectedAssetIds.length ? selectedAssetIds : [assetId];
+      const results = assetIds.map(id => DataStore.assignAssetToRoom({
+        assetId: id,
+        buildingId: bldId,
+        roomId: room.id,
+        roomNumber: room.roomNumber,
+        notes: notes || 'Bàn giao thiết bị vào phòng'
+      }));
+      const successful = results.filter(result => result.success);
+
+      if (successful.length) {
+        closeModal('assignAssetModal');
+        showToast(`Đã bàn giao ${successful.length} thiết bị vào phòng ${room.roomNumber}!`);
+        renderCurrentView();
+      } else {
+        alert(results[0]?.error || 'Có lỗi khi bàn giao thiết bị!');
+      }
+    }
+
+    // Restock modal
+    function openRestockModal(targetTypeCode) {
+      const classSelect = document.getElementById('modal-restock-asset-class');
+      const typeSelect = document.getElementById('modal-restock-type');
+      const targetSelect = document.getElementById('modal-restock-target-asset');
+      const assets = DataStore.getAssets();
+      targetSelect.innerHTML = '<option value="">-- Vui lòng chọn loại thiết bị trước --</option>';
+      targetSelect.disabled = true;
+      targetSelect.classList.add('bg-slate-100', 'cursor-not-allowed');
+      targetSelect.classList.remove('bg-slate-50');
+
+      targetSelect.onchange = function () {
+        const selected = assets.find(a => a.id === targetSelect.value);
+        if (selected) {
+          document.getElementById('modal-restock-price').value = selected.price || 10000000;
         }
       };
 
-      if (preSelectedAssetId) {
-        assetSelect.value = preSelectedAssetId;
-        assetSelect.dispatchEvent(new Event('change'));
+      const assetTypes = DataStore.getAssetTypes();
+      const selectedType = assetTypes.find(type => type.code === targetTypeCode);
+      classSelect.value = selectedType?.assetClass || '';
+      typeSelect.value = '';
+      typeSelect.innerHTML = '<option value="">-- Vui lòng chọn phân loại trước --</option>';
+      typeSelect.disabled = true;
+      typeSelect.classList.add('bg-slate-100', 'cursor-not-allowed');
+      typeSelect.classList.remove('bg-slate-50');
+
+      if (classSelect.value) {
+        loadRestockTypesByClass(targetTypeCode);
       }
+
+      openModal('restockAssetModal');
+      if (window.lucide) lucide.createIcons();
     }
 
-    // Xử lý gửi Form Gán Tài Sản (Lane 1 Submit -> Lane 2 Create asset_assignment record)
-    function handleAssignAssetSubmit(e) {
-      e.preventDefault();
-      const roomId = document.getElementById('modal-assign-room').value;
-      const assetId = document.getElementById('modal-assign-asset-select').value;
-      const notes = document.getElementById('modal-assign-notes').value.trim();
+    function loadRestockTypesByClass(preferredTypeCode = '') {
+      const classSelect = document.getElementById('modal-restock-asset-class');
+      const typeSelect = document.getElementById('modal-restock-type');
+      const targetSelect = document.getElementById('modal-restock-target-asset');
+      const selectedClass = classSelect.value;
+      const assets = DataStore.getAssets();
+      const assetTypeCodes = new Set(assets.map(asset => asset.typeCode));
+      const typeMap = new Map(DataStore.getAssetTypes().map(type => [type.code, type]));
 
-      if (!roomId) {
-        alert('Vui lòng chọn căn hộ nhận thiết bị!');
+      if (!selectedClass) {
+        typeSelect.innerHTML = '<option value="">-- Vui lòng chọn phân loại trước --</option>';
+        typeSelect.disabled = true;
+        typeSelect.classList.add('bg-slate-100', 'cursor-not-allowed');
+        typeSelect.classList.remove('bg-slate-50');
+        loadRestockAssetsByType();
         return;
       }
-      if (!assetId) {
-        alert('Vui lòng chọn thiết bị trong kho cần gán!');
+
+      const types = Array.from(assetTypeCodes).map(code => {
+        const type = typeMap.get(code);
+        const firstAsset = assets.find(asset => asset.typeCode === code);
+        return {
+          code,
+          name: type?.name || firstAsset?.typeName || code,
+          assetClass: type?.assetClass || 'FIXED'
+        };
+      }).filter(type => type.assetClass === selectedClass);
+
+      typeSelect.innerHTML = types.length
+        ? '<option value="">-- Chọn loại thiết bị --</option>' + types.map(type =>
+          `<option value="${type.code}" ${preferredTypeCode === type.code ? 'selected' : ''}>${type.name} (${type.code})</option>`
+        ).join('')
+        : '<option value="">-- Chưa có thiết bị thuộc phân loại này --</option>';
+      typeSelect.disabled = types.length === 0;
+      typeSelect.classList.toggle('bg-slate-100', types.length === 0);
+      typeSelect.classList.toggle('cursor-not-allowed', types.length === 0);
+      typeSelect.classList.toggle('bg-slate-50', types.length > 0);
+
+      loadRestockAssetsByType();
+    }
+
+    function loadRestockAssetsByType() {
+      const typeCode = document.getElementById('modal-restock-type').value;
+      const targetSelect = document.getElementById('modal-restock-target-asset');
+      const assets = DataStore.getAssets().filter(asset => !typeCode || asset.typeCode === typeCode);
+
+      if (!typeCode) {
+        targetSelect.innerHTML = '<option value="">-- Vui lòng chọn loại thiết bị trước --</option>';
+        targetSelect.disabled = true;
+        targetSelect.classList.add('bg-slate-100', 'cursor-not-allowed');
+        targetSelect.classList.remove('bg-slate-50');
         return;
       }
 
-      const room = DataStore.getRooms().find(r => r.id === roomId);
-
-      // =====================================================================
-      // Lane 2: Create an asset_assignment record & Log activity
-      // =====================================================================
-      const result = DataStore.assignAssetToRoom({
-        assetId: assetId,
-        buildingId: room.buildingId,
-        roomId: room.id,
-        roomNumber: room.roomNumber,
-        notes: notes
+      const uniqueAssets = [];
+      const seen = new Set();
+      assets.forEach(asset => {
+        const key = asset.typeCode + '_' + asset.name + '_' + asset.model;
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueAssets.push(asset);
+        }
       });
 
-      if (!result.success) {
-        alert(result.error);
+      targetSelect.innerHTML = uniqueAssets.length
+        ? uniqueAssets.map(asset => `<option value="${asset.id}">${asset.name} · ${asset.model || 'Chưa có model'} · ${formatVND(asset.price || 0)}</option>`).join('')
+        : '<option value="">(Chưa có mẫu thiết bị thuộc loại này)</option>';
+      targetSelect.disabled = uniqueAssets.length === 0;
+      targetSelect.classList.toggle('bg-slate-100', uniqueAssets.length === 0);
+      targetSelect.classList.toggle('cursor-not-allowed', uniqueAssets.length === 0);
+      targetSelect.classList.toggle('bg-slate-50', uniqueAssets.length > 0);
+      if (uniqueAssets[0]) {
+        targetSelect.dispatchEvent(new Event('change'));
+      }
+    }
+
+    function handleRestockSubmit(e) {
+      e.preventDefault();
+      const assetId = document.getElementById('modal-restock-target-asset').value;
+      const quantity = parseInt(document.getElementById('modal-asset-quantity').value, 10) || 1;
+      const condition = document.getElementById('modal-restock-condition').value;
+      const price = parseFloat(document.getElementById('modal-restock-price').value) || 0;
+      const notes = document.getElementById('modal-restock-notes').value;
+
+      if (!assetId || quantity <= 0 || !condition || price <= 0) {
+        alert('Vui lòng chọn đủ mẫu thiết bị, số lượng, tình trạng và đơn giá hợp lệ!');
         return;
       }
 
-      closeModal('assignAssetModal');
-      showToast(`🎉 Gán thành công tài sản ${result.asset.code} vào căn hộ ${room.roomNumber}!`);
-
-      renderAssetsTable();
-      renderApartmentSelector();
-      renderAssignmentsTable();
-      updateMetrics();
+      const res = DataStore.restockAsset(assetId, quantity, price, notes, condition);
+      if (res.success) {
+        closeModal('restockAssetModal');
+        showToast(`Đã nhập thêm thành công ${res.count} thiết bị vào kho lưu trữ!`);
+        renderCurrentView();
+      } else {
+        alert(res.error || 'Có lỗi khi nhập thêm số lượng!');
+      }
     }
 
-    // Xử lý Thu hồi thiết bị từ phòng về kho
+    // Create modal
+    function showNewAssetTypeForm() {
+      const modal = document.getElementById('createAssetModal');
+      if (!modal) return;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('active');
+
+      const currentBldId = DataStore.getCurrentBuilding();
+      const currentBuilding = DataStore.getBuildings().find(b => b.id === currentBldId);
+      const bldSelect = document.getElementById('modal-create-building');
+      if (bldSelect) {
+        bldSelect.innerHTML = currentBuilding
+          ? `<option value="${currentBuilding.id}" selected>${currentBuilding.name}</option>`
+          : '<option value="">Chưa xác định cơ sở</option>';
+      }
+
+      const types = DataStore.getAssetTypes ? DataStore.getAssetTypes() : [];
+      const suggestions = document.getElementById('modal-create-type-suggestions');
+      if (suggestions) {
+        suggestions.innerHTML = types.map(t => `<option value="${t.name}">${t.code}</option>`).join('');
+      }
+
+      const values = {
+        'modal-create-type-name': '',
+        'modal-create-type-code': '',
+        'modal-create-name': '',
+        'modal-create-brand': '',
+        'modal-create-model': '',
+        'modal-create-specs': '',
+        'modal-create-quantity': '1',
+        'modal-create-price': '',
+        'modal-create-warranty': ''
+      };
+      Object.entries(values).forEach(([id, value]) => {
+        const field = document.getElementById(id);
+        if (field) field.value = value;
+      });
+      const assetClass = document.getElementById('modal-create-asset-class');
+      if (assetClass) assetClass.value = 'FIXED';
+      const preview = document.getElementById('modal-create-code-preview');
+      if (preview) preview.value = 'Nhập tên loại để sinh mã';
+
+      document.getElementById('modal-create-type-name')?.focus();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function openCreateAssetModal() {
+      const modal = document.getElementById('createAssetModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('active');
+      }
+
+      const bldSelect = document.getElementById('modal-create-building');
+      const currentBldId = DataStore.getCurrentBuilding();
+      const currentBuilding = DataStore.getBuildings().find(b => b.id === currentBldId);
+      if (bldSelect) bldSelect.innerHTML = currentBuilding
+        ? `<option value="${currentBuilding.id}" selected>${currentBuilding.name}</option>`
+        : '<option value="">Chưa xác định cơ sở</option>';
+
+      const typeInput = document.getElementById('modal-create-type-name');
+      const types = DataStore.getAssetTypes ? DataStore.getAssetTypes() : [];
+      const typeSuggestions = document.getElementById('modal-create-type-suggestions');
+      if (typeSuggestions) typeSuggestions.innerHTML = types.map(t =>
+        `<option value="${t.name}">${t.code}</option>`
+      ).join('');
+      if (typeInput) typeInput.value = '';
+      const typeCodeInput = document.getElementById('modal-create-type-code');
+      const codePreview = document.getElementById('modal-create-code-preview');
+      if (typeCodeInput) typeCodeInput.value = '';
+      if (codePreview) codePreview.value = 'Nhập tên loại để sinh mã';
+      const nameInput = document.getElementById('modal-create-name');
+      const brandInput = document.getElementById('modal-create-brand');
+      const modelInput = document.getElementById('modal-create-model');
+      if (nameInput) nameInput.value = '';
+      if (brandInput) brandInput.value = '';
+      if (modelInput) modelInput.value = '';
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function onAssetTypeSelected() {
+      const typeName = document.getElementById('modal-create-type-name').value.trim();
+      const types = DataStore.getAssetTypes ? DataStore.getAssetTypes() : [];
+      const t = types.find(x => x.name.toLowerCase() === typeName.toLowerCase());
+      const typeCode = t ? t.code : (typeName.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/gi, 'd').toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 24));
+      document.getElementById('modal-create-type-code').value = typeCode;
+      const preview = document.getElementById('modal-create-code-preview');
+      const bldId = DataStore.getCurrentBuilding();
+      if (preview) {
+        preview.value = typeCode && bldId && bldId !== 'ALL'
+          ? `${DataStore.getAssetCodePrefix(typeCode, bldId)}-${String(DataStore.getNextAssetSequence(typeCode, bldId)).padStart(3, '0')}`
+          : (typeCode ? `${typeCode}-[CƠ_SỞ]-001` : 'Nhập tên loại để sinh mã');
+      }
+      if (t) {
+        if (!document.getElementById('modal-create-name').value) document.getElementById('modal-create-name').value = t.name;
+        if (!document.getElementById('modal-create-brand').value) document.getElementById('modal-create-brand').value = (t.defaultBrand || '').split(' ')[0] || '';
+      }
+      updateGeneratedAssetName();
+    }
+
+    function updateGeneratedAssetName() {
+      const typeName = document.getElementById('modal-create-type-name')?.value.trim() || '';
+      const brand = document.getElementById('modal-create-brand')?.value.trim() || '';
+      const model = document.getElementById('modal-create-model')?.value.trim() || '';
+      const specs = document.getElementById('modal-create-specs')?.value.trim() || '';
+      const name = [typeName, brand, specs, model].filter(Boolean).join(' ');
+      const nameInput = document.getElementById('modal-create-name');
+      if (nameInput) nameInput.value = name;
+    }
+
+    function handleCreateAssetSubmit(e) {
+      e.preventDefault();
+      // Không lấy cơ sở từ select (select bị khóa); luôn lấy theo context của topbar.
+      const bldId = DataStore.getCurrentBuilding();
+      if (!bldId || bldId === 'ALL') {
+        alert('Vui lòng chọn một cơ sở cụ thể trên thanh đầu trang trước khi tạo thiết bị.');
+        return;
+      }
+      const typeName = document.getElementById('modal-create-type-name').value.trim();
+      const existingType = DataStore.getAssetTypes().find(t => t.name.toLowerCase() === typeName.toLowerCase());
+      const typeResult = existingType
+        ? { success: true, type: existingType }
+        : DataStore.createAssetType({
+          name: typeName,
+          defaultBrand: document.getElementById('modal-create-brand').value.trim(),
+          assetClass: document.getElementById('modal-create-asset-class').value
+        });
+      if (!typeResult.success) {
+        alert(typeResult.error || 'Không thể tạo loại thiết bị.');
+        return;
+      }
+      const typeCode = typeResult.type.code;
+      const code = '';
+      const quantity = parseInt(document.getElementById('modal-create-quantity').value, 10) || 1;
+      const name = document.getElementById('modal-create-name').value.trim();
+      const brand = document.getElementById('modal-create-brand').value.trim();
+      const model = document.getElementById('modal-create-model').value.trim();
+      const specs = document.getElementById('modal-create-specs').value.trim();
+      const price = parseFloat(document.getElementById('modal-create-price').value) || 0;
+      const warranty = parseInt(document.getElementById('modal-create-warranty').value, 10) || 0;
+
+      if (!brand || !model || !specs || !name || price <= 0 || warranty <= 0) {
+        alert('Vui lòng nhập đầy đủ hãng, model, công suất/thông số, giá mua và thời hạn bảo hành hợp lệ.');
+        return;
+      }
+
+      const typeObj = typeResult.type;
+
+      const res = DataStore.createAsset({
+        code,
+        quantity,
+        typeCode,
+        typeName: typeObj ? typeObj.name : typeCode,
+        name,
+        brand,
+        model,
+        specifications: specs,
+        price,
+        warrantyMonths: warranty,
+        buildingId: bldId
+      });
+
+      if (res.success) {
+        closeModal('createAssetModal');
+        showToast(`Đã tạo mới thành công ${res.totalCreated} thiết bị vào kho!`);
+        renderAssetTypeFilter();
+        renderCurrentView();
+      } else {
+        alert(res.error || 'Có lỗi khi tạo thiết bị!');
+      }
+    }
+
+    // Unassign & Delete
     function handleUnassignAsset(assetId) {
       const asset = DataStore.getAssets().find(a => a.id === assetId);
       if (!asset) return;
 
-      if (!confirm(`Bạn có chắc chắn muốn thu hồi tài sản [${asset.code}] (${asset.name}) từ phòng ${asset.roomNumber} về kho lưu trữ?`)) {
+      if (!confirm(`Bạn có chắc chắn muốn thu hồi thiết bị [${asset.code}] (${asset.name}) từ phòng ${asset.roomNumber} về kho lưu trữ?`)) {
         return;
       }
 
       const result = DataStore.unassignAsset(assetId);
       if (result.success) {
         showToast(`Đã thu hồi tài sản ${asset.code} về kho thiết bị!`);
-        renderAssetsTable();
-        renderApartmentSelector();
-        updateMetrics();
+        renderCurrentView();
       }
     }
 
-    // Khởi tạo trang
+    function handleDeleteAsset(assetId) {
+      const asset = DataStore.getAssets().find(a => a.id === assetId);
+      if (!asset) return;
+
+      if (asset.allocationStatus === 'ASSIGNED') {
+        alert(`Không thể xóa thiết bị [${asset.code}] vì đang được trang bị tại phòng ${asset.roomNumber}. Vui lòng thu hồi về kho trước khi xóa!`);
+        return;
+      }
+
+      if (!confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn thiết bị [${asset.code}] khỏi hệ thống?`)) {
+        return;
+      }
+
+      const result = DataStore.deleteAsset(assetId);
+      if (result && result.success) {
+        showToast(`Đã xóa thiết bị ${asset.code}!`);
+        renderCurrentView();
+      } else {
+        alert(result?.error || 'Có lỗi khi xóa tài sản!');
+      }
+    }
+
+    function applyAssetRoleActions() {
+      const isStaff = DataStore.getRole() === 'STAFF';
+      ['btn-restock-assets', 'btn-new-asset-type'].forEach(id => {
+        const button = document.getElementById(id);
+        if (button) button.classList.toggle('hidden', isStaff);
+      });
+    }
+
+    // =========================================================================
+    // KHỞI TẠO TRANG
+    // =========================================================================
     registerPage('assets.html', () => {
       renderSidebar('assets.html');
       renderTopbar('Quản lý Tài sản thiết bị', 'Cơ sở / Trang thiết bị');
-      loadAssetTypeDropdown();
-      renderAssetsTable();
-      updateMetrics();
 
-      window.onFilterBuilding = function() {
-        renderAssetsTable();
-        if (currentTab === 'apartments') renderApartmentSelector();
-        if (currentTab === 'history') renderAssignmentsTable();
-        updateMetrics();
+      applyAssetRoleActions();
+      initAssetConditionDropdown();
+      renderAssetClassFilter();
+      renderAssetTypeFilter();
+      renderCurrentView();
+
+      window.onFilterBuilding = function () {
+        renderCurrentView();
       };
     });
   </script>
 </body>
+
 </html>

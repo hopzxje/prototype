@@ -26,15 +26,9 @@
 
       <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
 
-        <!-- Page Header -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <span>Giám sát Hệ thống & Nhật ký Kiểm toán (Audit Logs)</span>
-              <span id="log-total-badge" class="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold border border-teal-200/60">0 Sự kiện</span>
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Lưu vết thời gian thực toàn bộ hoạt động đăng nhập, sửa đổi dữ liệu phòng, lập hóa đơn, đối soát SePay và phân quyền</p>
-          </div>
+        <!-- Page actions -->
+        <div class="flex flex-wrap items-center justify-end gap-3">
+          <span id="log-total-badge" class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold border border-teal-200/60">0 Sự kiện</span>
           <button onclick="handleExportLogs()" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-700 hover:text-teal-700 hover:border-teal-300 hover:bg-teal-50/30 rounded-xl text-xs font-bold shadow-sm transition-all">
             <i data-lucide="download" class="w-4 h-4 text-teal-600"></i>
             <span>Xuất Nhật Ký CSV</span>
